@@ -79,6 +79,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)/../bin/$(SolutionName)/$(Platform)/$(Configuration)</OutDir>
+    <IntDir>$(SolutionDir)/../temp/$(Platform)/$(Configuration)/$(ProjectName)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -117,10 +119,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>./External;./External/glad/include;./Framework;./</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -142,21 +146,15 @@
   <ItemGroup>
     <ClCompile Include="Framework\Common\BaseApplication.cpp" />
     <ClCompile Include="External\glad\src\glad.c" />
-    <ClCompile Include="External\glad\src\glad_egl.c" />
-    <ClCompile Include="External\glad\src\glad_glx.c" />
     <ClCompile Include="External\glad\src\glad_wgl.c" />
     <ClCompile Include="External\glm\detail\glm.cpp" />
-    <ClCompile Include="External\glm\glm.cppm" />
     <ClCompile Include="Framework\Common\main.cpp" />
     <ClCompile Include="Platform\Windows\OpenGLApplication.cpp" />
     <ClCompile Include="Platform\Windows\WindowsApplication.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\Common\BaseApplication.hpp" />
-    <ClInclude Include="External\glad\include\EGL\eglplatform.h" />
     <ClInclude Include="External\glad\include\glad\glad.h" />
-    <ClInclude Include="External\glad\include\glad\glad_egl.h" />
-    <ClInclude Include="External\glad\include\glad\glad_glx.h" />
     <ClInclude Include="External\glad\include\glad\glad_wgl.h" />
     <ClInclude Include="External\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="External\glm\common.hpp" />

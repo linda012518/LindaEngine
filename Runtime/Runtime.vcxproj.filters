@@ -21,19 +21,10 @@
     <ClCompile Include="External\glad\src\glad.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="External\glad\src\glad_egl.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="External\glad\src\glad_glx.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="External\glad\src\glad_wgl.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="External\glm\detail\glm.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="External\glm\glm.cppm">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Framework\Common\BaseApplication.cpp">
@@ -47,16 +38,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="External\glad\include\EGL\eglplatform.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="External\glad\include\glad\glad.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="External\glad\include\glad\glad_egl.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="External\glad\include\glad\glad_glx.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="External\glad\include\glad\glad_wgl.h">
