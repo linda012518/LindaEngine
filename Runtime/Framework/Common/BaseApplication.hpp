@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GfxConfiguration.h"
-#include "../Interface/IApplication.hpp"
+#include "Interface/IApplication.hpp"
 
 namespace LindaEngine
 {

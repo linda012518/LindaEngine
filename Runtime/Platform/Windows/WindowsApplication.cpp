@@ -3,6 +3,12 @@
 
 using namespace LindaEngine;
 
+WindowsApplication::WindowsApplication(GfxConfiguration& config) 
+    : BaseApplication(config)
+{
+
+}
+
 int WindowsApplication::Initialize()
 {
     int result;

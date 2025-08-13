@@ -2,7 +2,7 @@
 
 using namespace LindaEngine;
 
-bool BaseApplication::_quit = fasle;
+bool BaseApplication::_quit = false;
 
 BaseApplication::BaseApplication(GfxConfiguration& config)
 	:_config(config)

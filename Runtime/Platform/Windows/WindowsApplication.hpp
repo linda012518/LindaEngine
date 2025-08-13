@@ -1,15 +1,14 @@
 #pragma once
 
 #include <Windows.h>
-#include "../../Framework/Common/BaseApplication.hpp"
+#include "Framework/Common/BaseApplication.hpp"
 
 namespace LindaEngine
 {
 	class WindowsApplication : public BaseApplication
 	{
     public:
-        WindowsApplication(GfxConfiguration& config)
-            : BaseApplication(config) { }
+        WindowsApplication(GfxConfiguration& config);
 
         virtual int Initialize();
         virtual void Finalize();
@@ -29,9 +28,6 @@ namespace LindaEngine
     protected:
         HWND _hWnd;
         HDC  _hDc;
-        bool _bInDrag = false;
-        int  _iPreviousX = 0;
-        int  _iPreviousY = 0;
 	};
 }
 
