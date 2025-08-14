@@ -124,7 +124,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Framework\Core\Entity.cpp" />
     <ClCompile Include="Framework\Common\BaseApplication.cpp" />
     <ClCompile Include="External\glad\src\glad.c" />
     <ClCompile Include="External\glad\src\glad_wgl.c" />
@@ -153,6 +154,7 @@
     <ClCompile Include="Platform\Windows\WindowsApplication.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Framework\Core\Entity.hpp" />
     <ClInclude Include="Framework\Common\BaseApplication.hpp" />
     <ClInclude Include="External\glad\include\glad\glad.h" />
     <ClInclude Include="External\glad\include\glad\glad_wgl.h" />

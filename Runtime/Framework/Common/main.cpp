@@ -1,4 +1,6 @@
-﻿#include <iostream>
+﻿#pragma comment(lib, "opengl32.lib")
+
+#include <iostream>
 
 #include "Platform/Windows/OpenGLApplication.hpp"
 

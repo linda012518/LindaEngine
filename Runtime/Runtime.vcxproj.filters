@@ -36,6 +36,9 @@
     <ClCompile Include="Platform\Windows\OpenGLApplication.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Framework\Core\Entity.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\glad\include\glad\glad.h">
@@ -930,6 +933,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Platform\Windows\OpenGLApplication.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\Entity.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
