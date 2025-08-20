@@ -1,0 +1,26 @@
+
+#define DECLARE_Rtti \
+public: \
+	virtual Rtti & GetType()const{return ms_Type;}\
+	static Rtti ms_Type; \
+public: \
+	static Priority ms_Priority;	
+
+
+#define IMPLEMENT_RTTI(classname,baseclassname) \
+	Rtti classname::ms_Type(_T(#classname),&baseclassname::ms_Type,classname::FactoryFunc); \
+	Priority classname::ms_Priority;
+
+
+#define IMPLEMENT_RTTI_NoCreateFun(classname,baseclassname) \
+	Rtti classname::ms_Type(_T(#classname),&baseclassname::ms_Type,NULL); \
+	Priority classname::ms_Priority;
+
+#define IMPLEMENT_RTTI_NoParent(classname) \
+	Rtti classname::ms_Type(_T(#classname),NULL,classname::FactoryFunc); \
+	Priority classname::ms_Priority;
+
+
+#define IMPLEMENT_RTTI_NoParent_NoCreateFun(classname) \
+	Rtti classname::ms_Type(_T(#classname),NULL,NULL); \
+	Priority classname::ms_Priority;

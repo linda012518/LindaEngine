@@ -245,9 +245,9 @@ void OpenGLApplication::Tick()
 
 	glViewport(0, 0, _config.screenWidth, _config.screenHeight);
 
-
-	Entity e;
-	e.setName("abc");
+	std::string str("111111");
+	Entity e(str.c_str());
+	e.setName("fdafda");
 
 	std::cout << e << std::endl;
 

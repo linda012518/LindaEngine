@@ -6,6 +6,8 @@
 
 using namespace LindaEngine;
 
+
+
 int main()
 {
 	GfxConfiguration config(8, 8, 8, 8, 24, 8, 0, 960, 540, "Test");
@@ -24,6 +26,8 @@ int main()
 	}
 
 	g_pApp->Finalize();
+
+	delete g_pApp;
 
 	return 0;
 }

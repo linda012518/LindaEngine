@@ -1,22 +1,40 @@
 #pragma once
 
-#include <iostream>
+#include <vector>
+#include <string>
+#include "LObject.hpp"
 
 namespace LindaEngine
 {
-	class Entity
+	class Component;
+
+	class Entity : public LObject
 	{
 	protected:
-		char	_name[64];
-		int		_id;
+		std::string _name;
 
 	public:
 		Entity();
+		Entity(const char* name);
 		virtual ~Entity();
 
-		virtual void setName(const char* name);
+		virtual void setName(const std::string& name);
 
-		char* getName();
+		std::string& getName();
+
+		Ref<Component> AddComponent(const std::string& className);
+		template <typename TComponent>
+		Ref<TComponent> AddComponent()
+		{
+			Ref<TComponent> c = CreateRef<TComponent>();
+			_components.push_back(c);
+		}
+
+		template <typename TComponent>
+		Ref<TComponent> GetComponent()
+		{
+			return nullptr;
+		}
 
 		friend std::ostream& operator<<(std::ostream& out, const Entity& entity)
 		{
@@ -25,7 +43,7 @@ namespace LindaEngine
 		}
 
 	private:
-		static int _entityCount;
+		std::vector<Ref<Component>> _components;
 
 	};
 }

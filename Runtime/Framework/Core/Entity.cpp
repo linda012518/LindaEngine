@@ -5,23 +5,33 @@
 
 using namespace LindaEngine;
 
-int Entity::_entityCount = 0;
-
 Entity::Entity()
 {
-	_id = _entityCount++;
+	std::cout << "Entity" << std::endl;
+}
+
+Entity::Entity(const char* name)
+{
+	_name = name;
+	std::cout << "Entity" << std::endl;
 }
 
 Entity::~Entity()
 {
+	std::cout << "~Entity" << std::endl;
 }
 
-void Entity::setName(const char* name)
+void Entity::setName(const std::string& name)
 {
-	strncpy(_name, name, sizeof(_name));
+	_name = name;
 }
 
-char* Entity::getName()
+std::string& Entity::getName()
 {
 	return _name;
+}
+
+Ref<Component> Entity::AddComponent(const std::string& className)
+{
+	return nullptr;
 }
