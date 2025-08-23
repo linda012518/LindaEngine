@@ -3,7 +3,10 @@
 #include <tchar.h>
 
 #include "glad/glad_wgl.h"
+
 #include "Core/Entity.hpp"
+#include "glm/glm.hpp"
+#include "Component/Transform.h"
 
 using namespace LindaEngine;
 
@@ -245,9 +248,12 @@ void OpenGLApplication::Tick()
 
 	glViewport(0, 0, _config.screenWidth, _config.screenHeight);
 
-	std::string str("111111");
-	Entity e(str.c_str());
-	e.setName("fdafda");
+	Entity e("hello");
+
+	Transform t;
+	t.SetWorldPosition(glm::vec3(0.0, 1.0, 6.0));
+	t.SetWorldRotation(glm::quat(0.1, 0.2, 0.3, 0.4));
+	t.SetWorldScale(glm::vec3(1.0, 2.0, 1.0));
 
 	std::cout << e << std::endl;
 

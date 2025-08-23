@@ -12,7 +12,10 @@ namespace LindaEngine
 		LObject();
 		virtual ~LObject();
 
-	private:
+		int GetID() const;
 
+	private:
+		static int _id;
+		int _selfID;
 	};
 }

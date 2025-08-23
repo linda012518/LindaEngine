@@ -7,20 +7,22 @@
 namespace LindaEngine
 {
 	class Component;
+	class Transform;
 
 	class Entity : public LObject
 	{
 	protected:
 		std::string _name;
+		Ref<Transform> _transform;
 
 	public:
 		Entity();
 		Entity(const char* name);
 		virtual ~Entity();
 
-		virtual void setName(const std::string& name);
+		void setName(const std::string& name);
 
-		std::string& getName();
+		const std::string& getName() const;
 
 		Ref<Component> AddComponent(const std::string& className);
 		template <typename TComponent>
@@ -28,6 +30,7 @@ namespace LindaEngine
 		{
 			Ref<TComponent> c = CreateRef<TComponent>();
 			_components.push_back(c);
+			return c;
 		}
 
 		template <typename TComponent>

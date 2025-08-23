@@ -1,5 +1,6 @@
 #include "Interface/IDefined.h"
 #include "Entity.hpp"
+#include "Component/Transform.h"
 
 #include <string.h>
 
@@ -7,13 +8,15 @@ using namespace LindaEngine;
 
 Entity::Entity()
 {
-	std::cout << "Entity" << std::endl;
+	_transform = AddComponent<Transform>();
+	std::cout << "Entity()" << std::endl;
 }
 
 Entity::Entity(const char* name)
 {
 	_name = name;
-	std::cout << "Entity" << std::endl;
+	_transform = AddComponent<Transform>();
+	std::cout << "Entity(name)" << std::endl;
 }
 
 Entity::~Entity()
@@ -26,7 +29,7 @@ void Entity::setName(const std::string& name)
 	_name = name;
 }
 
-std::string& Entity::getName()
+const std::string& Entity::getName() const
 {
 	return _name;
 }
