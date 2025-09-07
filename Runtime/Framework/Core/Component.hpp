@@ -7,7 +7,6 @@
 
 namespace LindaEngine
 {
-	//class Entity;
 	class Component : public LObject
 	{
 	public:

@@ -6,7 +6,7 @@
 
 using namespace LindaEngine;
 
-std::string TextLoader::Open(const char* path)
+std::string TextLoader::Load(const char* path)
 {
 	std::string str;
 

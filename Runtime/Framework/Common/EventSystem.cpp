@@ -26,7 +26,7 @@ void EventSystem::Bind(int code, LObject* obj)
     }
 }
 
-void EventSystem::Dispatch(int code, void* userData)
+void EventSystem::Dispatch(LObject* sender, int code, void* userData)
 {
     auto it = _eventMap.find(code);
     if (it == _eventMap.end())
@@ -37,6 +37,6 @@ void EventSystem::Dispatch(int code, void* userData)
     for (auto it = go.begin(); it != go.end(); ++it) {
         LObject* temp = *it;
         if (nullptr != temp)
-            temp->OnEvent(userData);
+            temp->OnEvent(sender, userData);
     }
 }

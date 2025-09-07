@@ -301,7 +301,7 @@ void Transform::UpdateWhenWorldChange()
 
 void Transform::NotifyChange()
 {
-	Dispatch(EventCode::TransformChange, nullptr);
+	Dispatch(this, EventCode::TransformChange, nullptr);
 }
 
 void Transform::Tick()

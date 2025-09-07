@@ -27,12 +27,12 @@ void LObject::Bind(int eventCode)
 	EventSystem::Bind(eventCode, this);
 }
 
-void LObject::Dispatch(int eventCode, void* userData)
+void LObject::Dispatch(LObject* sender, int eventCode, void* userData)
 {
-	EventSystem::Dispatch(eventCode, userData);
+	EventSystem::Dispatch(sender, eventCode, userData);
 }
 
-void LObject::OnEvent(void* userData)
+void LObject::OnEvent(LObject* sender, void* userData)
 {
 	std::cout << "LObject::OnEvent" << std::endl;
 }

@@ -7,6 +7,6 @@ namespace LindaEngine
 	class TextLoader
 	{
 	public:
-		static std::string Open(const char* path);
+		static std::string Load(const char* path);
 	};
 }
