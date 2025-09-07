@@ -24,9 +24,6 @@
     <ClCompile Include="External\glad\src\glad_wgl.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="External\glm\detail\glm.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Framework\Common\BaseApplication.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -45,31 +42,16 @@
     <ClCompile Include="Framework\Core\Component.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Framework\Core\Rtti.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Component\Transform.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Component\Renderer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Component\MeshFilter.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Component\Collider.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Framework\Core\Material.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Framework\Core\Shader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Framework\Component\Camera.cpp">
+    <ClCompile Include="Framework\Loader\TextLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Framework\Component\Light.cpp">
+    <ClCompile Include="External\glm\detail\glm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Common\EventSystem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Framework\Component\Animation.cpp">
@@ -78,7 +60,31 @@
     <ClCompile Include="Framework\Component\Animator.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Framework\Component\Camera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Component\Collider.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Component\Light.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Component\MeshFilter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Component\Renderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\Material.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="Framework\Core\Mesh.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\Rtti.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Core\Transform.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -90,6 +96,48 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="External\glad\include\KHR\khrplatform.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Interface\IDefined.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Interface\IRuntimeModule.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Interface\IApplication.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Common\BaseApplication.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Common\GfxConfiguration.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Windows\WindowsApplication.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform\Windows\OpenGLApplication.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\Entity.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\LObject.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\Component.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\Base.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\Shader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\stb_image.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Loader\TextLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="External\glm\detail\_features.hpp">
@@ -956,64 +1004,10 @@
     <ClInclude Include="External\glm\vector_relational.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Framework\Interface\IDefined.h">
+    <ClInclude Include="Framework\Core\EventCode.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Framework\Interface\IRuntimeModule.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Interface\IApplication.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Common\BaseApplication.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Common\GfxConfiguration.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Platform\Windows\WindowsApplication.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Platform\Windows\OpenGLApplication.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\Entity.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\LObject.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\Component.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\Base.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\Rtti.hpp">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Component\Transform.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Component\Renderer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Component\MeshFilter.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Component\Collider.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\Material.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Core\Shader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Component\Camera.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Framework\Component\Light.h">
+    <ClInclude Include="Framework\Common\EventSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Framework\Component\Animation.h">
@@ -1022,7 +1016,31 @@
     <ClInclude Include="Framework\Component\Animator.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Framework\Component\Camera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Component\Collider.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Component\Light.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Component\MeshFilter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Component\Renderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\Material.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="Framework\Core\Mesh.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\Rtti.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Core\Transform.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

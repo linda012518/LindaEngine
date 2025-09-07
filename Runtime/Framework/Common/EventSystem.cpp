@@ -1,0 +1,42 @@
+#include "EventSystem.h"
+#include "Core/LObject.hpp"
+
+using namespace LindaEngine;
+
+std::unordered_map<int, std::list<LObject*>> EventSystem::_eventMap;
+
+void EventSystem::Bind(int code, LObject* obj)
+{
+    auto it = _eventMap.find(code);
+    if (it != _eventMap.end())
+    {
+        std::list<LObject*>& go = _eventMap[code];
+
+        auto it = std::find(go.begin(), go.end(), obj);
+        if (it == go.end())
+        {
+            go.push_back(obj);
+        }
+    }
+    else
+    {
+        std::list<LObject*> go;
+        go.push_back(obj);
+        _eventMap[code] = go;
+    }
+}
+
+void EventSystem::Dispatch(int code, void* userData)
+{
+    auto it = _eventMap.find(code);
+    if (it == _eventMap.end())
+        return;
+
+    std::list<LObject*> go = _eventMap[code];
+
+    for (auto it = go.begin(); it != go.end(); ++it) {
+        LObject* temp = *it;
+        if (nullptr != temp)
+            temp->OnEvent(userData);
+    }
+}

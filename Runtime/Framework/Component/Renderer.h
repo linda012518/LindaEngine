@@ -6,5 +6,8 @@ namespace LindaEngine
 {
 	class Renderer : public Component
 	{
+	public:
+		Renderer();
+		virtual ~Renderer();
 	};
 }

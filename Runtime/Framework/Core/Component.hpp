@@ -1,21 +1,25 @@
 #pragma once
 
 #include <vector>
+
 #include "LObject.hpp"
+#include "Entity.hpp"
 
 namespace LindaEngine
 {
-	class Entity;
-
+	//class Entity;
 	class Component : public LObject
 	{
 	public:
 		Component();
 		virtual ~Component();
 
-		void SetEntity(Ref<Entity>& e);
+		void SetEntity(Entity* e);
 
-	private:
-		Ref<Entity> _entity;
+		virtual void Tick();
+		
+
+	protected:
+		Entity* _entity;
 	};
 }

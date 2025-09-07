@@ -120,6 +120,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>./External;./External/glad/include;./Framework;./</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,41 +145,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="External\glm\detail\glm.cpp" />
+    <ClCompile Include="Framework\Common\EventSystem.cpp" />
     <ClCompile Include="Framework\Component\Animation.cpp" />
     <ClCompile Include="Framework\Component\Animator.cpp" />
     <ClCompile Include="Framework\Component\Camera.cpp" />
     <ClCompile Include="Framework\Component\Collider.cpp" />
+    <ClCompile Include="Framework\Component\Light.cpp" />
+    <ClCompile Include="Framework\Component\MeshFilter.cpp" />
+    <ClCompile Include="Framework\Component\Renderer.cpp" />
     <ClCompile Include="Framework\Core\Component.cpp" />
     <ClCompile Include="Framework\Core\Entity.cpp" />
     <ClCompile Include="Framework\Common\BaseApplication.cpp" />
     <ClCompile Include="External\glad\src\glad.c" />
     <ClCompile Include="External\glad\src\glad_wgl.c" />
-    <ClCompile Include="External\glm\detail\glm.cpp" />
     <ClCompile Include="Framework\Common\main.cpp" />
     <ClCompile Include="Framework\Core\LObject.cpp" />
     <ClCompile Include="Framework\Core\Material.cpp" />
-    <ClCompile Include="Framework\Component\MeshFilter.cpp" />
-    <ClCompile Include="Framework\Component\Light.cpp" />
     <ClCompile Include="Framework\Core\Mesh.cpp" />
+    <ClCompile Include="Framework\Core\Rtti.cpp" />
+    <ClCompile Include="Framework\Core\Transform.cpp" />
     <ClCompile Include="Platform\Windows\OpenGLApplication.cpp" />
     <ClCompile Include="Platform\Windows\WindowsApplication.cpp" />
-    <ClCompile Include="Framework\Core\Rtti.cpp" />
-    <ClCompile Include="Framework\Component\Transform.cpp" />
-    <ClCompile Include="Framework\Component\Renderer.cpp" />
     <ClCompile Include="Framework\Core\Shader.cpp" />
+    <ClCompile Include="Framework\Loader\TextLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Framework\Component\Animation.h" />
-    <ClInclude Include="Framework\Component\Animator.h" />
-    <ClInclude Include="Framework\Component\Camera.h" />
-    <ClInclude Include="Framework\Component\Collider.h" />
-    <ClInclude Include="Framework\Core\Base.h" />
-    <ClInclude Include="Framework\Core\Component.hpp" />
-    <ClInclude Include="Framework\Core\Entity.hpp" />
-    <ClInclude Include="Framework\Common\BaseApplication.hpp" />
-    <ClInclude Include="External\glad\include\glad\glad.h" />
-    <ClInclude Include="External\glad\include\glad\glad_wgl.h" />
-    <ClInclude Include="External\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="External\glm\common.hpp" />
     <ClInclude Include="External\glm\detail\compute_common.hpp" />
     <ClInclude Include="External\glm\detail\compute_vector_decl.hpp" />
@@ -467,21 +459,36 @@
     <ClInclude Include="External\glm\vec3.hpp" />
     <ClInclude Include="External\glm\vec4.hpp" />
     <ClInclude Include="External\glm\vector_relational.hpp" />
+    <ClInclude Include="External\stb_image.h" />
+    <ClInclude Include="Framework\Common\EventSystem.h" />
+    <ClInclude Include="Framework\Component\Animation.h" />
+    <ClInclude Include="Framework\Component\Animator.h" />
+    <ClInclude Include="Framework\Component\Camera.h" />
+    <ClInclude Include="Framework\Component\Collider.h" />
+    <ClInclude Include="Framework\Component\Light.h" />
+    <ClInclude Include="Framework\Component\MeshFilter.h" />
+    <ClInclude Include="Framework\Component\Renderer.h" />
+    <ClInclude Include="Framework\Core\Base.h" />
+    <ClInclude Include="Framework\Core\Component.hpp" />
+    <ClInclude Include="Framework\Core\Entity.hpp" />
+    <ClInclude Include="Framework\Common\BaseApplication.hpp" />
+    <ClInclude Include="External\glad\include\glad\glad.h" />
+    <ClInclude Include="External\glad\include\glad\glad_wgl.h" />
+    <ClInclude Include="External\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="Framework\Common\GfxConfiguration.h" />
+    <ClInclude Include="Framework\Core\EventCode.h" />
+    <ClInclude Include="Framework\Core\Material.h" />
+    <ClInclude Include="Framework\Core\Mesh.h" />
+    <ClInclude Include="Framework\Core\Rtti.hpp" />
+    <ClInclude Include="Framework\Core\Transform.h" />
     <ClInclude Include="Framework\Interface\IApplication.hpp" />
     <ClInclude Include="Framework\Interface\IDefined.h" />
     <ClInclude Include="Framework\Interface\IRuntimeModule.hpp" />
     <ClInclude Include="Framework\Core\LObject.hpp" />
-    <ClInclude Include="Framework\Core\Material.h" />
-    <ClInclude Include="Framework\Component\MeshFilter.h" />
-    <ClInclude Include="Framework\Component\Light.h" />
-    <ClInclude Include="Framework\Core\Mesh.h" />
     <ClInclude Include="Platform\Windows\OpenGLApplication.hpp" />
     <ClInclude Include="Platform\Windows\WindowsApplication.hpp" />
-    <ClInclude Include="Framework\Core\Rtti.hpp" />
-    <ClInclude Include="Framework\Component\Transform.h" />
-    <ClInclude Include="Framework\Component\Renderer.h" />
     <ClInclude Include="Framework\Core\Shader.h" />
+    <ClInclude Include="Framework\Loader\TextLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External\glm\detail\func_common.inl" />

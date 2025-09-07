@@ -2,13 +2,13 @@
 
 #include <vector>
 #include <string>
+
 #include "LObject.hpp"
+#include "Transform.h"
 
 namespace LindaEngine
 {
 	class Component;
-	class Transform;
-
 	class Entity : public LObject
 	{
 	protected:
@@ -20,15 +20,18 @@ namespace LindaEngine
 		Entity(const char* name);
 		virtual ~Entity();
 
-		void setName(const std::string& name);
+		void SetName(const std::string& name);
 
-		const std::string& getName() const;
+		const std::string& GetName() const;
+
+		Transform* GetTransform();
 
 		Ref<Component> AddComponent(const std::string& className);
 		template <typename TComponent>
 		Ref<TComponent> AddComponent()
 		{
 			Ref<TComponent> c = CreateRef<TComponent>();
+			c->SetEntity(this);
 			_components.push_back(c);
 			return c;
 		}

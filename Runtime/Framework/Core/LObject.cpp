@@ -1,4 +1,5 @@
 #include "LObject.hpp"
+#include "Common/EventSystem.h"
 
 using namespace LindaEngine;
 
@@ -19,4 +20,19 @@ LObject::~LObject()
 int LObject::GetID() const
 {
 	return _selfID;
+}
+
+void LObject::Bind(int eventCode)
+{
+	EventSystem::Bind(eventCode, this);
+}
+
+void LObject::Dispatch(int eventCode, void* userData)
+{
+	EventSystem::Dispatch(eventCode, userData);
+}
+
+void LObject::OnEvent(void* userData)
+{
+	std::cout << "LObject::OnEvent" << std::endl;
 }
