@@ -4,10 +4,10 @@ using namespace LindaEngine;
 
 Renderer::Renderer()
 {
-	std::cout << "Renderer" << std::endl;
+	std::cout << "Renderer" << _selfID << std::endl;
 }
 
 Renderer::~Renderer()
 {
-	std::cout << "~Renderer" << std::endl;
+	std::cout << "~Renderer" << _selfID << std::endl;
 }

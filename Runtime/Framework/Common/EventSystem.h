@@ -12,6 +12,8 @@ namespace LindaEngine
 
 		static void Bind(int code, LObject* obj);
 
+		static void Unbind(int code, LObject* obj);
+
 		static void Dispatch(LObject* sender, int code, void* userData);
 	};
 }

@@ -20,7 +20,7 @@ namespace LindaEngine
 
 		virtual void OnEvent(LObject* sender, void* userData);
 
-	private:
+	protected:
 		static int _id;
 		int _selfID;
 	};

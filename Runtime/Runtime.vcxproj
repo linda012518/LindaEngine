@@ -165,10 +165,12 @@
     <ClCompile Include="Framework\Core\Mesh.cpp" />
     <ClCompile Include="Framework\Core\Rtti.cpp" />
     <ClCompile Include="Framework\Core\Transform.cpp" />
+    <ClCompile Include="Framework\Component\PerspectiveCamera.cpp" />
     <ClCompile Include="Platform\Windows\OpenGLApplication.cpp" />
     <ClCompile Include="Platform\Windows\WindowsApplication.cpp" />
     <ClCompile Include="Framework\Core\Shader.cpp" />
     <ClCompile Include="Framework\Loader\TextLoader.cpp" />
+    <ClCompile Include="Framework\Loader\TextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\glm\common.hpp" />
@@ -461,6 +463,7 @@
     <ClInclude Include="External\glm\vector_relational.hpp" />
     <ClInclude Include="External\stb_image.h" />
     <ClInclude Include="Framework\Common\EventSystem.h" />
+    <ClInclude Include="Framework\Common\Singleton.h" />
     <ClInclude Include="Framework\Component\Animation.h" />
     <ClInclude Include="Framework\Component\Animator.h" />
     <ClInclude Include="Framework\Component\Camera.h" />
@@ -485,10 +488,12 @@
     <ClInclude Include="Framework\Interface\IDefined.h" />
     <ClInclude Include="Framework\Interface\IRuntimeModule.hpp" />
     <ClInclude Include="Framework\Core\LObject.hpp" />
+    <ClInclude Include="Framework\Component\PerspectiveCamera.h" />
     <ClInclude Include="Platform\Windows\OpenGLApplication.hpp" />
     <ClInclude Include="Platform\Windows\WindowsApplication.hpp" />
     <ClInclude Include="Framework\Core\Shader.h" />
     <ClInclude Include="Framework\Loader\TextLoader.h" />
+    <ClInclude Include="Framework\Loader\TextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External\glm\detail\func_common.inl" />

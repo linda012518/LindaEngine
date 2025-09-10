@@ -74,6 +74,11 @@ void WindowsApplication::CreateMainWindow()
     // register the window class
     RegisterClassEx(&wc);
 
+    RECT window_rect = { 0, 0, _config.screenWidth,  _config.screenHeight };
+    AdjustWindowRect(&window_rect, WS_OVERLAPPEDWINDOW, FALSE);
+    int NewWidth = window_rect.right - window_rect.left;
+    int NewHeight = window_rect.bottom - window_rect.top;
+
     // create the window and use the result as the handle
     _hWnd = CreateWindowEx(0,
         _T("LindaEngine"),      // name of the window class
@@ -81,13 +86,12 @@ void WindowsApplication::CreateMainWindow()
         WS_OVERLAPPEDWINDOW,    // window style
         CW_USEDEFAULT,          // x-position of the window
         CW_USEDEFAULT,          // y-position of the window
-        _config.screenWidth,    // width of the window
-        _config.screenHeight,   // height of the window
+        NewWidth,               // width of the window
+        NewHeight,              // height of the window
         NULL,                   // we have no parent window, NULL
         NULL,                   // we aren't using menus, NULL
         hInstance,              // application handle
         this);                  // pass pointer to current object
-
 
     ShowWindow(_hWnd, SW_SHOW);
 

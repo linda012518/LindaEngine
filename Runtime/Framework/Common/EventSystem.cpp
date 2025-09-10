@@ -7,13 +7,13 @@ std::unordered_map<int, std::list<LObject*>> EventSystem::_eventMap;
 
 void EventSystem::Bind(int code, LObject* obj)
 {
-    auto it = _eventMap.find(code);
-    if (it != _eventMap.end())
+    auto it1 = _eventMap.find(code);
+    if (it1 != _eventMap.end())
     {
         std::list<LObject*>& go = _eventMap[code];
 
-        auto it = std::find(go.begin(), go.end(), obj);
-        if (it == go.end())
+        auto it2 = std::find(go.begin(), go.end(), obj);
+        if (it2 == go.end())
         {
             go.push_back(obj);
         }
@@ -26,10 +26,25 @@ void EventSystem::Bind(int code, LObject* obj)
     }
 }
 
+void EventSystem::Unbind(int code, LObject* obj)
+{
+    auto it1 = _eventMap.find(code);
+    if (it1 == _eventMap.end())
+        return;
+
+    std::list<LObject*>& go = _eventMap[code];
+
+    auto it2 = std::find(go.begin(), go.end(), obj);
+    if (it2 != go.end())
+    {
+        go.erase(it2);
+    }
+}
+
 void EventSystem::Dispatch(LObject* sender, int code, void* userData)
 {
-    auto it = _eventMap.find(code);
-    if (it == _eventMap.end())
+    auto itr = _eventMap.find(code);
+    if (itr == _eventMap.end())
         return;
 
     std::list<LObject*> go = _eventMap[code];

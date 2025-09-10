@@ -4,51 +4,68 @@
 
 using namespace LindaEngine;
 
-Camera::Camera()
+Camera::Camera(const glm::mat4& projectMat)
 {
-	Bind(EventCode::TransformChange);
-	std::cout << "		Camera" << std::endl;
+	_projectMatrix = projectMat;
+
+	std::cout << "		Camera" << _selfID << std::endl;
 }
 
 Camera::~Camera()
 {
-	std::cout << "		~Camera" << std::endl;
+	std::cout << "		~Camera" << _selfID << std::endl;
 }
 
 const glm::mat4& Camera::GetViewMatrix()
+{
+	return _viewMatrix;
+}
+
+const glm::mat4& Camera::GetProjectMatrix()
+{
+	return _projectMatrix;
+}
+
+const glm::mat4& Camera::GetViewProjectMatrix()
+{
+	return _viewProjectMatrix;
+}
+
+void Camera::Awake()
+{
+	UpdateMatrix();
+}
+
+void Camera::Tick()
+{
+	UpdateMatrix();
+}
+
+void Camera::TransformChange()
+{
+	UpdateMatrix();
+
+	std::cout << "		CameraTransformChange" << std::endl;
+}
+
+void Camera::UpdateMatrix()
 {
 	Transform* go = _entity->GetTransform();
 
 	glm::vec3 pos = go->GetWorldPosition();
 	glm::quat rotation = go->GetWorldRotation();
 
-	_viewMatrix = glm::mat4_cast(rotation);
+	_viewInverseMatrix = glm::mat4_cast(rotation);
 
-	_viewMatrix[3][0] = pos.x;
-	_viewMatrix[3][1] = pos.y;
-	_viewMatrix[3][2] = pos.z;
-	_viewMatrix[3][3] = 1.0f;
+	_viewInverseMatrix[3][0] = pos.x;
+	_viewInverseMatrix[3][1] = pos.y;
+	_viewInverseMatrix[3][2] = pos.z;
+	_viewInverseMatrix[3][3] = 1.0f;
 
-	_viewMatrix = glm::inverse(_viewMatrix);
+	_viewMatrix = glm::inverse(_viewInverseMatrix);
 
-	return _viewMatrix;
-}
+	_viewProjectMatrix = _projectMatrix * _viewMatrix;
 
-const glm::mat4& Camera::GetProjectMatrix()
-{
-	return NULL;
-}
-
-const glm::mat4& Camera::GetViewProjectMatrix()
-{
-	return NULL;
-}
-
-void Camera::OnEvent(void* userData)
-{
-	std::cout << "Camera::OnEvent" << std::endl;
-}
-
-void Camera::Tick()
-{
+	_projectInverseMatrix = glm::inverse(_projectMatrix);
+	_viewProjectInverseMatrix = glm::inverse(_viewProjectMatrix);
 }

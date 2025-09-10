@@ -37,14 +37,14 @@ Shader::Shader(const char* vs, const char* fs)
 	_fs = fs;
 
 	CompileShader();
-	std::cout << "	Shader" << std::endl;
+	std::cout << "	Shader" << _selfID << std::endl;
 }
 
 Shader::~Shader()
 {
 	if (_program != -1)
 		glDeleteProgram(_program);
-	std::cout << "	~Shader" << std::endl;
+	std::cout << "	~Shader" << _selfID << std::endl;
 }
 
 void Shader::Begin()

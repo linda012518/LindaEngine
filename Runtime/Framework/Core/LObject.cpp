@@ -9,12 +9,12 @@ LObject::LObject()
 {
 	_selfID = _id;
 	_id++;
-	std::cout << "LObject" << std::endl;
+	std::cout << "LObject" << _selfID << std::endl;
 }
 
 LObject::~LObject()
 {
-	std::cout << "~LObject" << std::endl;
+	std::cout << "~LObject" << _selfID << std::endl;
 }
 
 int LObject::GetID() const

@@ -1,6 +1,5 @@
 #include "Transform.h"
 #include "Core/Entity.hpp"
-#include "EventCode.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 
@@ -23,13 +22,13 @@ using namespace LindaEngine;
 
 Transform::Transform(Entity * entity)
 {
-	std::cout << "	Transform" << std::endl;
+	std::cout << "	Transform" << _selfID << std::endl;
 	_entity = entity;
 }
 
 Transform::~Transform()
 {
-	std::cout << "	~Transform" << std::endl;
+	std::cout << "	~Transform" << _selfID << std::endl;
 }
 
 const Entity* Transform::GetEntity() const
@@ -301,7 +300,7 @@ void Transform::UpdateWhenWorldChange()
 
 void Transform::NotifyChange()
 {
-	Dispatch(this, EventCode::TransformChange, nullptr);
+	_entity->TransformChange();
 }
 
 void Transform::Tick()

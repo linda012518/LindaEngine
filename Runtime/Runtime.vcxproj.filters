@@ -87,6 +87,12 @@
     <ClCompile Include="Framework\Core\Transform.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Framework\Loader\TextureLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Framework\Component\PerspectiveCamera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\glad\include\glad\glad.h">
@@ -1041,6 +1047,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Framework\Core\Transform.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Common\Singleton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Loader\TextureLoader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Component\PerspectiveCamera.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

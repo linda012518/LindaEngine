@@ -10,7 +10,7 @@ using namespace LindaEngine;
 
 int main()
 {
-	GfxConfiguration config(8, 8, 8, 8, 24, 8, 0, 960, 540, "Test");
+	GfxConfiguration config(8, 8, 8, 8, 24, 8, 0, 800, 600, "Test");
 
 	IApplication* g_pApp = static_cast<IApplication*>(new OpenGLApplication(config));
 

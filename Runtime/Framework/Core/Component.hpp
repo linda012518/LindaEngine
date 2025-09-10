@@ -15,10 +15,15 @@ namespace LindaEngine
 
 		void SetEntity(Entity* e);
 
+		virtual void Awake();
+
+		virtual void Destroy();
+
 		virtual void Tick();
-		
+
+		virtual void TransformChange();
 
 	protected:
-		Entity* _entity;
+		Entity* _entity = nullptr;
 	};
 }

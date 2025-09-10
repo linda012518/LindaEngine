@@ -26,14 +26,17 @@ namespace LindaEngine
 
 		Transform* GetTransform();
 
+		void TransformChange();
+
 		Ref<Component> AddComponent(const std::string& className);
-		template <typename TComponent>
-		Ref<TComponent> AddComponent()
+		template <typename TComponent, typename ... Args>
+		TComponent* AddComponent(Args&& ... args)
 		{
-			Ref<TComponent> c = CreateRef<TComponent>();
+			Ref<TComponent> c = CreateRef<TComponent>(std::forward<Args>(args)...);
 			c->SetEntity(this);
+			c->Awake();
 			_components.push_back(c);
-			return c;
+			return c.get();
 		}
 
 		template <typename TComponent>
