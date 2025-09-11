@@ -463,6 +463,7 @@
     <ClInclude Include="External\glm\vector_relational.hpp" />
     <ClInclude Include="External\stb_image.h" />
     <ClInclude Include="Framework\Common\EventSystem.h" />
+    <ClInclude Include="Framework\Common\FunctionCheck.h" />
     <ClInclude Include="Framework\Common\Singleton.h" />
     <ClInclude Include="Framework\Component\Animation.h" />
     <ClInclude Include="Framework\Component\Animator.h" />

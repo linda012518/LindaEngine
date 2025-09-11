@@ -1058,6 +1058,9 @@
     <ClInclude Include="Framework\Component\PerspectiveCamera.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Framework\Common\FunctionCheck.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\glm\detail\func_common.inl">
