@@ -6,7 +6,11 @@
 
 #include "Core/Entity.hpp"
 #include "glm/glm.hpp"
-#include "Component/Transform.h"
+#include "Core/Transform.h"
+#include "stb_image.h"
+#include "Loader/TextLoader.h"
+#include "Core/Shader.h"
+#include "Component/PerspectiveCamera.h"
 
 using namespace LindaEngine;
 
@@ -28,6 +32,204 @@ static LRESULT CALLBACK TmpWndProc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM 
 OpenGLApplication::OpenGLApplication(GfxConfiguration& config) 
 	: WindowsApplication(config)
 {
+}
+
+void OpenGLApplication::testInit()
+{
+	
+
+	float vertices[] = {
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+			};
+
+	unsigned int VBO, VAO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+	unsigned int texture, texture2;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	int width, height, nrChannels;
+	unsigned char* data = stbi_load("Assets/Map/wall.jpg", &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		//当前绑定的纹理对象就会被附加上纹理图像
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		//当前绑定的纹理自动生成所有需要的多级渐远纹理
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data);
+
+	glGenTextures(1, &texture2);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+	// 设置包装uv两个方向的参数
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// 设置滤波器
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);//缩小(Minify)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);//放大(Magnify)
+
+	stbi_set_flip_vertically_on_load(true);//翻转y轴
+	data = stbi_load("Assets/Map/awesomeface.png", &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		//当前绑定的纹理对象就会被附加上纹理图像
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		//当前绑定的纹理自动生成所有需要的多级渐远纹理
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data);
+
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+
+
+
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//glBindVertexArray(0);
+}
+
+void OpenGLApplication::testTick()
+{
+	glEnable(GL_DEPTH_TEST);
+
+	glClearColor(0.0f, 0.3f, 0.0f, 1.0f);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+	glViewport(0, 0, _config.screenWidth, _config.screenHeight);
+
+	std::string vs = TextLoader::Load("Assets/Shaders/texture.vs");
+	std::string fs = TextLoader::Load("Assets/Shaders/texture.fs");
+	Shader ourShader(vs.c_str(), fs.c_str());
+	ourShader.Begin();
+
+	ourShader.SetInt("texture1", 0);
+	ourShader.SetInt("texture2", 1);
+	ourShader.SetFloat("mixValue", 0.2f);
+
+	Entity entityCamera("Camera");
+	PerspectiveCamera* pc = entityCamera.AddComponent<PerspectiveCamera>(60.0f, (float)_config.screenWidth / (float)_config.screenHeight, 0.1f, 100.0f);
+	entityCamera.GetTransform()->SetWorldPosition(glm::vec3(0.0f, 0.0f, 3.0f));
+	entityCamera.GetTransform()->Tick();
+
+	glm::mat4 go1 = pc->GetProjectMatrix();
+	glm::mat4 go2 = pc->GetViewMatrix();
+
+	ourShader.SetMat4("projection", go1); // 
+	ourShader.SetMat4("view", go2);
+
+	glm::vec3 cubePositions[] = {
+		glm::vec3(0.0f,  0.0f,  0.0f),
+		glm::vec3(2.0f,  5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f,  3.0f, -7.5f),
+		glm::vec3(1.3f, -2.0f, -2.5f),
+		glm::vec3(1.5f,  2.0f, -2.5f),
+		glm::vec3(1.5f,  0.2f, -1.5f),
+		glm::vec3(-1.3f,  1.0f, -1.5f)
+	};
+
+	Entity entity;
+	// 
+	//glBindVertexArray(VAO);
+	for (unsigned int i = 0; i < 10; i++)
+	{
+
+		//glm::mat4 model = glm::mat4(1.0f);
+		//model = glm::translate(model, cubePositions[i]);
+		float angle = 20.0f * i;
+		//model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+		entity.GetTransform()->SetWorldPosition(cubePositions[i]);
+		entity.GetTransform()->SetWorldEulerAngles(glm::vec3(-angle, 0, 0));
+		entity.GetTransform()->Tick();
+		glm::mat4 tempp = entity.GetTransform()->GetLocalToWorldMat();
+		ourShader.SetMat4("model", tempp);
+		//----------------------------------
+		//glm::mat4 tempp1 = glm::mat4_cast(glm::quat(glm::vec3(angle, 0, 0)));
+		//glm::mat4 model = glm::mat4(1.0f);
+		//glm::mat4 tempp2 = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
+		//----------------------------------
+
+		//glm::mat4 model = glm::mat4(1.0f);
+		////if (i % 3 == 0 || i == 0)
+		////	model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0, 0, 1));
+		//model = glm::translate(model, cubePositions[i]);
+		////float angle = 20.0f * i;
+		//model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
+		//ourShader.SetMat4("model", model);
+
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
+
 }
 
 int OpenGLApplication::Initialize()
@@ -223,6 +425,8 @@ int OpenGLApplication::Initialize()
 		return result;
 	}
 
+	testInit();
+
 	return result;
 
 }
@@ -242,20 +446,7 @@ void OpenGLApplication::Tick()
 {
 	WindowsApplication::Tick();
 
-	glClearColor(0.0f, 0.3f, 0.0f, 1.0f);
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-	glViewport(0, 0, _config.screenWidth, _config.screenHeight);
-
-	Entity e("hello");
-
-	Transform t;
-	t.SetWorldPosition(glm::vec3(0.0, 1.0, 6.0));
-	t.SetWorldRotation(glm::quat(0.1, 0.2, 0.3, 0.4));
-	t.SetWorldScale(glm::vec3(1.0, 2.0, 1.0));
-
-	std::cout << e << std::endl;
+	testTick();
 
 	SwapBuffers(_hDc);
 }

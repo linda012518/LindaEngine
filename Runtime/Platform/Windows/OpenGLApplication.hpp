@@ -13,6 +13,9 @@ namespace LindaEngine
         void Finalize() override;
         void Tick() override;
 
+        void testInit();
+        void testTick();
+
     private:
         HGLRC _renderContext;
 	};
