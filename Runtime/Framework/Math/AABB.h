@@ -1,5 +1,8 @@
 #pragma once
-class AABB
-{
-};
 
+namespace LindaEngine
+{
+	class AABB
+	{
+	};
+}

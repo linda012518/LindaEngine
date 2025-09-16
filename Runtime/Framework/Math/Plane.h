@@ -1,5 +1,8 @@
 #pragma once
-class Plane
-{
-};
 
+namespace LindaEngine
+{
+	class Plane
+	{
+	};
+}

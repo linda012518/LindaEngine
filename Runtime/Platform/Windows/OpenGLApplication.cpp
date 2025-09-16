@@ -9,6 +9,7 @@
 #include "Core/Transform.h"
 #include "stb_image.h"
 #include "Loader/TextLoader.h"
+#include "Loader/ShaderLoader.h"
 #include "Core/Shader.h"
 #include "Component/PerspectiveCamera.h"
 
@@ -36,7 +37,8 @@ OpenGLApplication::OpenGLApplication(GfxConfiguration& config)
 
 void OpenGLApplication::testInit()
 {
-	
+	std::string vs = TextLoader::Load("Assets/Shaders/test.shader");
+	ShaderLoader::Load("Assets/Shaders/test.shader");
 
 	float vertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -446,7 +448,7 @@ void OpenGLApplication::Tick()
 {
 	WindowsApplication::Tick();
 
-	testTick();
+	//testTick();
 
 	SwapBuffers(_hDc);
 }

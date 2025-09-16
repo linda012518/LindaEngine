@@ -162,15 +162,21 @@
     <ClCompile Include="Framework\Common\main.cpp" />
     <ClCompile Include="Framework\Core\LObject.cpp" />
     <ClCompile Include="Framework\Core\Material.cpp" />
+    <ClCompile Include="Framework\Core\MaterialPass.cpp" />
     <ClCompile Include="Framework\Core\Mesh.cpp" />
     <ClCompile Include="Framework\Core\Rtti.cpp" />
     <ClCompile Include="Framework\Core\Transform.cpp" />
     <ClCompile Include="Framework\Component\PerspectiveCamera.cpp" />
+    <ClCompile Include="Framework\Math\AABB.cpp" />
+    <ClCompile Include="Framework\Math\OBB.cpp" />
+    <ClCompile Include="Framework\Math\Plane.cpp" />
     <ClCompile Include="Platform\Windows\OpenGLApplication.cpp" />
     <ClCompile Include="Platform\Windows\WindowsApplication.cpp" />
     <ClCompile Include="Framework\Core\Shader.cpp" />
     <ClCompile Include="Framework\Loader\TextLoader.cpp" />
     <ClCompile Include="Framework\Loader\TextureLoader.cpp" />
+    <ClCompile Include="Framework\Loader\ShaderLoader.cpp" />
+    <ClCompile Include="Framework\Core\ShaderManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\glm\common.hpp" />
@@ -481,8 +487,11 @@
     <ClInclude Include="External\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="Framework\Common\GfxConfiguration.h" />
     <ClInclude Include="Framework\Core\EventCode.h" />
+    <ClInclude Include="Framework\Core\Global.hpp" />
     <ClInclude Include="Framework\Core\Material.h" />
+    <ClInclude Include="Framework\Core\MaterialPass.h" />
     <ClInclude Include="Framework\Core\Mesh.h" />
+    <ClInclude Include="Framework\Core\RenderState.h" />
     <ClInclude Include="Framework\Core\Rtti.hpp" />
     <ClInclude Include="Framework\Core\Transform.h" />
     <ClInclude Include="Framework\Interface\IApplication.hpp" />
@@ -490,11 +499,16 @@
     <ClInclude Include="Framework\Interface\IRuntimeModule.hpp" />
     <ClInclude Include="Framework\Core\LObject.hpp" />
     <ClInclude Include="Framework\Component\PerspectiveCamera.h" />
+    <ClInclude Include="Framework\Math\AABB.h" />
+    <ClInclude Include="Framework\Math\OBB.h" />
+    <ClInclude Include="Framework\Math\Plane.h" />
     <ClInclude Include="Platform\Windows\OpenGLApplication.hpp" />
     <ClInclude Include="Platform\Windows\WindowsApplication.hpp" />
     <ClInclude Include="Framework\Core\Shader.h" />
     <ClInclude Include="Framework\Loader\TextLoader.h" />
     <ClInclude Include="Framework\Loader\TextureLoader.h" />
+    <ClInclude Include="Framework\Loader\ShaderLoader.h" />
+    <ClInclude Include="Framework\Core\ShaderManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External\glm\detail\func_common.inl" />
