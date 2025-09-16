@@ -1,73 +1,70 @@
-Shader "MyShader/URP/P2_10"
+Name
 {
-    Properties {}
-    SubShader
-    {
-        Tags
-        {
-            //告诉引擎，该Shader只用于 URP 渲染管线
-            "RenderPipeline"="UniversalPipeline"
-            //渲染类型
-            "RenderType"="Opaque"
-            //渲染队列
-            "Queue"="Geometry"
-        }
-        Pass
-        {
-            Name "Universal Forward"
-            Tags
-            {
-                // LightMode: <None>
-            }
+	Pass
+	{
+		Vertex
+		{
+			#version 330 core
 
-            Cull Back
-            Blend One Zero
-            ZTest LEqual
-            ZWrite On
-          
-            HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-            // Pragmas
-            #pragma target 2.0
-            
-            // Includes
-            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Input.hlsl"
+			layout (location = 0) in vec3 aPos;
+			layout (location = 1) in vec3 aColor;
+			layout (location = 2) in vec2 aTexCoord;
 
-            //struct appdata
-            //顶点着色器的输入
-            struct Attributes
-            {
-                float3 positionOS : POSITION;
-            };
-            //struct v2f
-            //片元着色器的输入
-            struct Varyings
-            {
-                float4 positionCS : SV_POSITION;
-            };
-            //v2f vert(Attributes v)
-            //顶点着色器
-            Varyings vert(Attributes v)
-            {
-                Varyings o = (Varyings)0;
-                float3 positionWS = TransformObjectToWorld(v.positionOS);
-                o.positionCS = TransformWorldToHClip(positionWS);
-                return o;
-            }
-            //fixed4 frag(v2f i) : SV_TARGET
-            //片元着色器
-            half4 frag(Varyings i) : SV_TARGET
-            {
-                half4 c;
-                c.rgb = 0.5;
-                c.a = 1;
-                return c;
-            }
-            ENDHLSL
-        }
-    }
+			out vec3 ourColor;
+			out vec2 TexCoord;
 
-    FallBack "Hidden/Shader Graph/FallbackError"
+			void main()
+			{
+				gl_Position = 	vec4(aPos, 1.0);
+				ourColor 	= 	aColor;
+				TexCoord	=	aTexCoord;
+			}
+		}
+		
+		Fragment
+		{
+		#if defined( USE_COLOR_ALPHA )
+
+			vColor = vec4( 1.0 );
+
+		#elif defined( USE_COLOR ) || defined( USE_INSTANCING_COLOR ) || defined( USE_BATCHING_COLOR )
+
+			vColor = vec3( 1.0 );
+
+		#endif
+
+		#ifdef USE_INSTANCING_COLOR
+
+			vColor.xyz *= instanceColor.xyz;
+
+		#endif
+		}
+	}
+
+	Pass
+	{
+		Vertex
+		{
+			#version 330 core
+
+			layout (location = 0) in vec3 aPos;
+			layout (location = 1) in vec3 aColor;
+			layout (location = 2) in vec2 aTexCoord;
+
+			out vec3 ourColor;
+			out vec2 TexCoord;
+
+			void main()
+			{
+				gl_Position = 	vec4(aPos, 1.0);
+				ourColor 	= 	aColor;
+				TexCoord	=	aTexCoord;
+			}
+		}
+		
+		Fragment
+		{
+			
+		}
+	}
 }
