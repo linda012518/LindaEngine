@@ -16,11 +16,22 @@ void MaterialPass::Setup()
 	CheckBlendState(state);
 }
 
-void MaterialPass::AddKeyword(std::string& key)
+void MaterialPass::AddKeyword(std::string& key, bool dynamic)
 {
-	auto itr = std::find(_keywords.begin(), _keywords.end(), key);
-	if (itr == _keywords.end())
-		_keywords.push_back(key);
+	std::vector<std::string>& keyword = _keywords;
+	if (dynamic)
+		keyword = _keywordsDynamic;
+
+	auto itr = std::find(keyword.begin(), keyword.end(), key);
+	if (itr == keyword.end())
+		keyword.push_back(key);
+}
+
+void MaterialPass::UpdateUniforms()
+{
+	for (const auto& pair : _uniformMap) {
+
+	}
 }
 
 void MaterialPass::CheckColorMask(RenderState& state)

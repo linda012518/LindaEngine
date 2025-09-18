@@ -26,4 +26,7 @@ void Renderer::AddMaterial(Material* mat)
 
 void Renderer::Render()
 {
+	for (Material* element : _materials) {
+
+	}
 }

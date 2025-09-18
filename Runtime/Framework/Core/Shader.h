@@ -19,8 +19,6 @@ namespace LindaEngine
 		SHADER_COMPUTE	=	GL_COMPUTE_SHADER,			//º∆À„
 	};
 
-	typedef int uniform;
-
 	class Shader : public LObject
 	{
 	public:

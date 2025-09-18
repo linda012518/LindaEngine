@@ -2,9 +2,11 @@
 
 #include "LObject.hpp"
 #include "RenderState.h"
+#include "ShaderUniform.h"
 
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 namespace LindaEngine
 {
@@ -27,7 +29,9 @@ namespace LindaEngine
 
 		void Setup();
 
-		void AddKeyword(std::string& key);
+		void AddKeyword(std::string& key, bool dynamic = false);
+
+		void UpdateUniforms();
 
 	private:
 		void CheckColorMask(RenderState& state);
@@ -38,6 +42,7 @@ namespace LindaEngine
 		void CheckBlendState(RenderState& state);
 
 	private:
+		std::unordered_map<std::string, ShaderUniform> _uniformMap;
 		std::vector<std::string> _keywords; //关键字宏定义
 		std::vector<std::string> _keywordsDynamic; //动态添加的关键字宏定义
 		PassMode _passMode = PassMode::Common;
