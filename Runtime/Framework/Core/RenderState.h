@@ -132,7 +132,7 @@ namespace LindaEngine
 	struct StencilState
 	{
 		bool stencilTest = false; //是否开启模版测试
-		bool stencilWrite = true; //是否开启模版写入
+		int stencilWriteMask = 0xFF; //是否开启模版写入
 		StencilOp stencilFail = StencilOp::KEEP; //模板测试失败时采取的行为
 		StencilOp stencilZFail = StencilOp::KEEP; //模板测试通过，但深度测试失败时采取的行为
 		StencilOp stencilZPass = StencilOp::KEEP; //模板测试和深度测试都通过时采取的行为
