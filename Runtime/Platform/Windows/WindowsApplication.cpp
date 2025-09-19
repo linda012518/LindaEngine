@@ -70,6 +70,8 @@ void WindowsApplication::CreateMainWindow()
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
     wc.lpszClassName = _T("LindaEngine");
+    wc.hIcon = LoadIcon(NULL, "glfw.ico");
+    wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
     //wc.hIcon = (HICON)LoadImageW(GetModuleHandleW(NULL), L"glfw.ico", IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
 
     // register the window class
@@ -95,7 +97,7 @@ void WindowsApplication::CreateMainWindow()
         this);                  // pass pointer to current object
 
     ShowWindow(_hWnd, SW_SHOW);
-
+    UpdateWindow(_hWnd);
 }
 
 LRESULT WindowsApplication::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

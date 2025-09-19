@@ -12,8 +12,6 @@ int main()
 {
 	GfxConfiguration config(8, 8, 8, 8, 24, 8, 0, 800, 600, "Test");
 
-	IApplication* g_pApp = static_cast<IApplication*>(new OpenGLApplication(config));
-
 	int ret;
 
 	if ((ret = g_pApp->Initialize()) != 0) {

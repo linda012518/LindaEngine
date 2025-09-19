@@ -1,21 +1,22 @@
 #pragma once
 
 #include "LObject.hpp"
+#include "MaterialPass.h"
 #include <vector>
 
 namespace LindaEngine
 {
-	class MaterialPass;
-
 	class Material : public LObject
 	{
 	public:
 		Material();
 		virtual ~Material();
 
-		void Use();
-
 	private:
+		Ref<MaterialPass> _depthPass = nullptr;
+		Ref<MaterialPass> _shadowCasterPass = nullptr;
+		Ref<MaterialPass> _depthNormalPass = nullptr;
+
 		std::vector<MaterialPass> _passes;
 	};
 }
