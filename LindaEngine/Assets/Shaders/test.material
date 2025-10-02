@@ -1,0 +1,119 @@
+Material
+{
+	Shader "Path"
+	MaterialPass
+	{
+		Name=Common
+		RenderType=Opaque
+		RenderQueue=2000
+		ShadowCast=true
+		ReceiveShadow=true
+
+		RenderState
+		{
+			ColorMask=RGBA
+			CullFaceFunc=BACK
+			DepthState
+			{
+				DepthTest=true
+				DepthWrite=true
+				DepthFunc=LESS
+			}
+			PolygonModeState
+			{
+				PolygonMode=FILL
+				SmoothLine=false
+				LineWidth=1.0
+				SmoothPoint=false
+				PointSize=1.0
+			}
+			StencilState
+			{
+				StencilTest=false
+				StencilWriteMask=0xFF
+				StencilFail = KEEP
+				StencilZFail = KEEP
+				StencilZPass = KEEP
+				StencilFunc = ALWAYS
+				StencilRef = 1
+				StencilFuncMask = 0xFF
+			}
+			BlendState
+			{
+				EnableBlend = false
+				EnableBlendSeparate = false
+				BlendSrc = SRC_ALPHA
+				BlendDis = ONE_MINUS_SRC_ALPHA
+				BlendEqua = FUNC_ADD
+				BlendSrcAlpha = SRC_ALPHA
+				BlendDisAlpha = ONE_MINUS_SRC_ALPHA
+				ConstantColor = (1,1,1,1)
+			}
+		}
+		Uniforms
+		{
+		}
+		Keywords
+		{
+		}
+	}
+
+
+	MaterialPass
+	{
+		Name=Depth
+		RenderType=Opaque
+		RenderQueue=2000
+		ShadowCast=true
+		ReceiveShadow=true
+
+		RenderState
+		{
+			ColorMask=RGBA
+			CullFaceFunc=BACK
+			DepthState
+			{
+				DepthTest=true
+				DepthWrite=true
+				DepthFunc=LESS
+			}
+			PolygonModeState
+			{
+				PolygonMode=FILL
+				SmoothLine=false
+				LineWidth=1.0
+				SmoothPoint=false
+				PointSize=1.0
+			}
+			StencilState
+			{
+				StencilTest=false
+				StencilWriteMask=0xFF
+				StencilFail = KEEP
+				StencilZFail = KEEP
+				StencilZPass = KEEP
+				StencilFunc = ALWAYS
+				StencilRef = 1
+				StencilFuncMask = 0xFF
+			}
+			BlendState
+			{
+				EnableBlend = false
+				EnableBlendSeparate = false
+				BlendSrc = SRC_ALPHA
+				BlendDis = ONE_MINUS_SRC_ALPHA
+				BlendEqua = FUNC_ADD
+				BlendSrcAlpha = SRC_ALPHA
+				BlendDisAlpha = ONE_MINUS_SRC_ALPHA
+				ConstantColor = (1,1,1,1)
+			}
+		}
+		Uniforms
+		{
+		}
+		Keywords
+		{
+		}
+	}
+
+}  
