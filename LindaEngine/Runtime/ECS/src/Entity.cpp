@@ -63,6 +63,13 @@ void Entity::Destroy()
 	_components.clear();
 }
 
+void Entity::TransformDirty()
+{
+	for (auto& com : _components) {
+		com->TransformDirty();
+	}
+}
+
 void Entity::OnComponentAdded(Component* com)
 {
 	auto ptr = dynamic_cast<Transform*>(com);

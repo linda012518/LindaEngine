@@ -1,8 +1,6 @@
 #include "Component.h"
 #include "Entity.h"
 
-
-
 using namespace LindaEngine;
 
 Component::Component(Entity& entity, bool enable) :

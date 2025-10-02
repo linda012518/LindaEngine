@@ -19,13 +19,13 @@ namespace LindaEngine
 		virtual ~Entity();
 
 		void SetName(const std::string& name);
-
 		const std::string& GetName() const;
 
 		void SetActive(bool active);
 		bool IsActive();
 
 		void Destroy();
+		void TransformDirty();
 
 		template <typename TComponent, typename ... Args>
 		TComponent* AddComponent(Args&& ... args);

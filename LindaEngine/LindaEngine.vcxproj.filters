@@ -69,6 +69,9 @@
     <ClCompile Include="Runtime\Core\src\Scene.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\ECS\src\Camera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\stb_image.h">
@@ -1011,6 +1014,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Core\include\Scene.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\ECS\include\Camera.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

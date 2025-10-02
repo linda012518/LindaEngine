@@ -19,7 +19,7 @@ _localChange = true;
 
 using namespace LindaEngine;
 
-Transform::Transform(Entity& entity) : Component(entity)
+Transform::Transform(Entity& entity) : Component(entity, true)
 {
 	std::cout << "	Transform" << _selfID << std::endl;
 }
@@ -196,6 +196,11 @@ void Transform::SetWorldScale(const glm::vec3& scale)
 	_worldScale = scale;
 }
 
+const glm::mat4& Transform::LookAt(const glm::vec3& center, const glm::vec3& up)
+{
+	return glm::lookAt(_worldPosition, _worldPosition + center, up);
+}
+
 void Transform::Tick()
 {
 	if (_dirty == false)
@@ -359,7 +364,7 @@ void Transform::UpdateChildren()
 void Transform::NotifyChange()
 {
 	//通知其它系统变更
-
+	_entity.TransformDirty();
 }
 
 void Transform::GetDir(glm::quat& rotation, glm::vec3& forward, glm::vec3& up, glm::vec3& right)

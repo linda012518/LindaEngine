@@ -21,7 +21,7 @@ namespace LindaEngine
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
-	#define CastAutoPointer(type, pointer) std::shared_ptr<type>(pointer)
+
 	#define StaticCastRef(type, pointer) std::static_pointer_cast<type>(pointer);
 	#define DynamicCastRef(type, pointer) std::dynamic_pointer_cast<type>(pointer);
 	

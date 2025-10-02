@@ -69,6 +69,8 @@ namespace LindaEngine
 		void SetWorldRotation(const glm::quat& rotation);
 		void SetWorldScale(const glm::vec3& scale);
 
+		const glm::mat4& LookAt(const glm::vec3& center, const glm::vec3& up);
+
 		void Tick();
 		void Update();
 		void OnEnable();

@@ -9,7 +9,7 @@ namespace LindaEngine
 	class Component : public LObject
 	{
 	public:
-		Component(Entity& entity, bool enable = false);
+		Component(Entity& entity, bool enable = true);
 		virtual ~Component();
 
 		Entity& GetEntity() const;
@@ -25,6 +25,8 @@ namespace LindaEngine
 		virtual void LateUpdate() {}
 		virtual void OnDisable() {}
 		virtual void OnDestroy() {}
+
+		virtual void TransformDirty() {}
 
 	protected:
 		bool _enable;

@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\ECS\src\Camera.cpp" />
     <ClCompile Include="Runtime\Core\src\Application.cpp" />
     <ClCompile Include="External\glad\src\glad.c" />
     <ClCompile Include="External\glad\src\glad_wgl.c" />
@@ -165,6 +166,7 @@
     <ClCompile Include="Runtime\Core\src\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\ECS\include\Camera.h" />
     <ClInclude Include="Runtime\Core\include\Application.h" />
     <ClInclude Include="External\glad\include\glad\glad.h" />
     <ClInclude Include="External\glad\include\glad\glad_wgl.h" />
