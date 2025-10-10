@@ -53,8 +53,11 @@ void Camera::MakeViewProjectionMatrix()
 	_viewProjectInverseMatrix = glm::inverse(_viewProjectMatrix);
 }
 
-void Camera::MakeMatrixs()
+void Camera::Tick()
 {
+	if (_enable == false || _entity.IsActive() == false)
+		return;
+
 	MakeViewMatrix();
 	MakeProjectionMatrix();
 	MakeViewProjectionMatrix();

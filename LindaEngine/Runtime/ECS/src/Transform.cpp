@@ -203,37 +203,14 @@ const glm::mat4& Transform::LookAt(const glm::vec3& center, const glm::vec3& up)
 
 void Transform::Tick()
 {
-	if (_dirty == false)
+	if (_entity.IsActive() == false)
 		return;
-	_dirty = false;
 
-	OnAwake();
-	OnEnable();
-	OnDisable();
-	OnStart();
-}
-
-void Transform::Update()
-{
 	UpdateWhenLocalChange();
 	UpdateWhenWorldChange();
 }
 
-void Transform::OnEnable()
-{
-	if (_enable == false || _entity.IsActive() == false)
-		return;
-	TransformSystem::AddToWhite(this);
-}
-
-void Transform::OnDisable()
-{
-	if (_enable == true && _entity.IsActive() == true)
-		return;
-	TransformSystem::AddToBlack(this);
-}
-
-void Transform::OnDestroy()
+void Transform::Destroy()
 {
 	_parent = nullptr;
 	_children.clear();

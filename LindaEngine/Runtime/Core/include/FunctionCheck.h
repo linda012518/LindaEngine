@@ -2,6 +2,8 @@
 
 #include <type_traits>
 
+//检查是否有指定函数和成员  HasUpdate<T>::value
+
 #define DEFINE_HAS_MEMBER_FUNCTION(func) \
 template <typename T, typename = void> \
 struct Has##func { \
@@ -23,3 +25,6 @@ DEFINE_HAS_MEMBER_FUNCTION(OnPreRender)
 DEFINE_HAS_MEMBER_FUNCTION(OnPostRender)
 DEFINE_HAS_MEMBER_FUNCTION(LateUpdate)
 DEFINE_HAS_MEMBER_FUNCTION(OnEvent)
+
+//检查是否重写父类函数  
+#define OVERRIDE(baseType, DerivedType, func) std::is_same<decltype(&DerivedType::func), decltype(&baseType::func)>::value

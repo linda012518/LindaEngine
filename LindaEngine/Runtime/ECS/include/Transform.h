@@ -72,10 +72,7 @@ namespace LindaEngine
 		const glm::mat4& LookAt(const glm::vec3& center, const glm::vec3& up);
 
 		void Tick();
-		void Update();
-		void OnEnable();
-		void OnDisable();
-		void OnDestroy();
+		void Destroy();
 
 	private:
 		void UpdateWhenLocalChange();

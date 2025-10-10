@@ -7,14 +7,23 @@
 #include "Entity.h"
 #include "Transform.h"
 #include "TransformSystem.h"
+#include "Camera.h"
+#include "CameraSystem.h"
 #include "Scene.h"
+#include "LifeCycleFuncSystem.h"
+#include "ShaderManager.h"
 
 using namespace LindaEngine;
 
 int main()
 {
+	std::string path = "Assets/Shaders/Unlit.shader";
+	ShaderManager::GetShaderSource(path);
+
+
 	Scene scene;
 	Entity* e1 = scene.CreateEntity("test1");
+	//e1->AddComponent< OrthoCamera>();
 	Transform* temp1 = e1->GetComponent<Transform>();
 
 	Entity* e2 = scene.CreateEntity("test2", false);
@@ -35,32 +44,35 @@ int main()
 	scene.DestroyEntity(e3);
 
 
-	TransformSystem::OnAwake();
-	TransformSystem::OnEnable();
-	TransformSystem::OnStart();
+	//TransformSystem::OnAwake();
+	//TransformSystem::OnEnable();
+	//TransformSystem::OnStart();
 
 	int count = 0;
 
 	while (true)
 	{
+		//LifeCycleFuncSystem::DoComponentAwake();
+		//LifeCycleFuncSystem::DoComponentStart();
+
 		count++;
 		TransformSystem::Tick();
-		//if (count == 1)
-		//	entity1.SetActive(true);
-		//else if (count == 2)
-		//	temp3->SetEnable(true);
-		//else if (count == 3)
-		//	entity2.SetActive(true);
-		//else if (count == 4)
-		//	temp2->SetEnable(true);
-		//else if (count == 5)
-		//	entity.SetActive(false);
-		//else if (count == 6)
-		//	entity.SetActive(true);
-		//else if (count == 7)
-		//	temp->SetEnable(false);
-		//else if (count == 8)
-		//	temp->SetEnable(true);
+		if (count == 1)
+			e2->SetActive(true);
+		else if (count == 2)
+			temp3->SetEnable(true);
+		else if (count == 3)
+			e3->SetActive(true);
+		else if (count == 4)
+			temp4->SetEnable(true);
+		else if (count == 5)
+			e1->SetActive(false);
+		else if (count == 6)
+			e1->SetActive(true);
+		else if (count == 7)
+			temp1->SetEnable(false);
+		else if (count == 8)
+			temp1->SetEnable(true);
 	}
 
 

@@ -1,7 +1,9 @@
 #include "Entity.h"
-
+#include "LifeCycleFuncSystem.h"
 #include "Transform.h"
 #include "TransformSystem.h"
+#include "Camera.h"
+#include "CameraSystem.h"
 
 #include <string.h>
 
@@ -42,10 +44,6 @@ void Entity::SetActive(bool active)
 	if (_active == active)
 		return;
 	_active = active;
-
-	for (auto& com : _components) {
-		com->SetDirty();
-	}
 }
 
 bool Entity::IsActive()
@@ -57,8 +55,9 @@ bool Entity::IsActive()
 void Entity::Destroy()
 {
 	for (auto& com : _components) {
-		com->OnDestroy();
+		com->Destroy();
 		OnComponentRemoved(com.get());
+		//LifeCycleFuncSystem::RemoveComponent(com.get());
 	}
 	_components.clear();
 }
@@ -72,15 +71,26 @@ void Entity::TransformDirty()
 
 void Entity::OnComponentAdded(Component* com)
 {
-	auto ptr = dynamic_cast<Transform*>(com);
-	if (nullptr != ptr)
-		TransformSystem::Add(ptr);
+	//LifeCycleFuncSystem::AddComponentAwake(com);
+	//LifeCycleFuncSystem::AddComponentStart(com);
+
+	Transform* trans = dynamic_cast<Transform*>(com);
+	if (nullptr != trans)
+		TransformSystem::Add(trans);
+
+	Camera* camera = dynamic_cast<Camera*>(com);
+	if (nullptr != camera)
+		CameraSystem::Add(camera);
 }
 
 void Entity::OnComponentRemoved(Component* com)
 {
-	auto ptr = dynamic_cast<Transform*>(com);
-	if (nullptr != ptr)
-		TransformSystem::Remove(ptr);
+	Transform* trans = dynamic_cast<Transform*>(com);
+	if (nullptr != trans)
+		TransformSystem::Remove(trans);
+
+	Camera* camera = dynamic_cast<Camera*>(com);
+	if (nullptr != camera)
+		CameraSystem::Remove(camera);
 }
 
