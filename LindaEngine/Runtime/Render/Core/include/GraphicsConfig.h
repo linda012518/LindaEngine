@@ -3,9 +3,12 @@
 #include <stdint.h>
 #include <iostream>
 
+#include "GraphicsDriverAPI.h"
+#include "Platform.h"
+
 namespace LindaEngine 
 {
-	struct GfxConfiguration 
+	struct GraphicsConfig
 	{
 		/// Inline all-elements constructor.
 		/// \param[in] r the red color depth in bits
@@ -17,13 +20,15 @@ namespace LindaEngine
 		/// \param[in] msaa the msaa sample count
 		/// \param[in] width the screen width in pixel
 		/// \param[in] height the screen height in pixel
-		GfxConfiguration(uint32_t r = 8, uint32_t g = 8,
-			uint32_t b = 8, uint32_t a = 8,
+		GraphicsConfig(uint32_t r = 8, uint32_t g = 8, uint32_t b = 8, uint32_t a = 8,
 			uint32_t d = 24, uint32_t s = 8, uint32_t msaa = 0,
-			uint32_t width = 1920, uint32_t height = 1080, const char* app_name = "LindaEngine") :
+			uint32_t width = 1920, uint32_t height = 1080, 
+			const char* app_name = "LindaEngine", bool fullScreen_ = false,
+			GraphicsDriverAPI api = GraphicsDriverAPI::None, Platform p = Platform::Windows) :
 			redBits(r), greenBits(g), blueBits(b), alphaBits(a),
 			depthBits(d), stencilBits(s), msaaSamples(msaa),
-			screenWidth(width), screenHeight(height), appName(app_name), screenNewWidth(width), screenNewHeight(height)
+			screenWidth(width), screenHeight(height), screenNewWidth(width), screenNewHeight(height), 
+			appName(app_name), fullScreen(fullScreen_), graphicsAPI(api), platformOS(p)
 		{}
 
 		uint32_t redBits; ///< red color channel depth in bits
@@ -38,8 +43,11 @@ namespace LindaEngine
 		const char* appName;
 		uint32_t screenNewWidth; //win会重新匹配窗口
 		uint32_t screenNewHeight; //win会重新匹配窗口
+		GraphicsDriverAPI graphicsAPI;
+		Platform platformOS;
+		bool fullScreen;
 
-		friend std::ostream& operator<<(std::ostream& out, const GfxConfiguration& conf)
+		friend std::ostream& operator<<(std::ostream& out, const GraphicsConfig& conf)
 		{
 			out << "App Name:" << conf.appName << std::endl;
 			out << "GfxConfiguration:" <<

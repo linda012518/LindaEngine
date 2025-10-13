@@ -1,0 +1,46 @@
+Material:
+  FileName: Name
+  ShaderPath: Path
+  ShadowCast: false
+  ReceiveShadow: true
+  MaterialPasses:
+    - PassName: Color
+      RenderType: Opaque
+      RenderQueue: 2000
+      Uniforms:
+        UniformName1: 66.5999985
+        UniformName2: aaa
+      Keywords:
+        - EnableLogDepth
+        - NORMAL_MAP
+      RenderState:
+        ColorMask: RGBA
+        CullFaceFunc: BACK
+        DepthState:
+          DepthTest: false
+        PolygonModeState:
+          PolygonMode: FILL
+        StencilState:
+          StencilTest: false
+        BlendState:
+          EnableBlend: false
+    - PassName: Color
+      RenderType: Opaque
+      RenderQueue: 2000
+      Uniforms:
+        UniformName1: 66.5999985
+        UniformName2: aaa
+      Keywords:
+        - EnableLogDepth
+        - NORMAL_MAP
+      RenderState:
+        ColorMask: RGBA
+        CullFaceFunc: BACK
+        DepthState:
+          DepthTest: false
+        PolygonModeState:
+          PolygonMode: FILL
+        StencilState:
+          StencilTest: false
+        BlendState:
+          EnableBlend: false

@@ -32,8 +32,7 @@ int OpenglGraphicsContext::Initialize()
 {
 	int result;
 
-	GfxConfiguration& config = _window->GetGfxConfig();
-	auto colorBits = config.redBits + config.greenBits + config.blueBits; // note on windows this does not include alpha bitplane
+	auto colorBits = graphicsConfig.redBits + graphicsConfig.greenBits + graphicsConfig.blueBits; // note on windows this does not include alpha bitplane
 
 	PIXELFORMATDESCRIPTOR pfd;
 	memset(&pfd, 0, sizeof(PIXELFORMATDESCRIPTOR));
@@ -42,12 +41,12 @@ int OpenglGraphicsContext::Initialize()
 	pfd.dwFlags = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
 	pfd.iPixelType = PFD_TYPE_RGBA;
 	pfd.cColorBits = colorBits;
-	pfd.cRedBits = config.redBits;
-	pfd.cGreenBits = config.greenBits;
-	pfd.cBlueBits = config.blueBits;
-	pfd.cAlphaBits = config.alphaBits;
-	pfd.cDepthBits = config.depthBits;
-	pfd.cStencilBits = config.stencilBits;
+	pfd.cRedBits = graphicsConfig.redBits;
+	pfd.cGreenBits = graphicsConfig.greenBits;
+	pfd.cBlueBits = graphicsConfig.blueBits;
+	pfd.cAlphaBits = graphicsConfig.alphaBits;
+	pfd.cDepthBits = graphicsConfig.depthBits;
+	pfd.cStencilBits = graphicsConfig.stencilBits;
 	pfd.iLayerType = PFD_MAIN_PLANE;
 
 	//------------------------------------------------
@@ -121,14 +120,14 @@ int OpenglGraphicsContext::Initialize()
 			WGL_DOUBLE_BUFFER_ARB,  GL_TRUE,
 			WGL_PIXEL_TYPE_ARB,     WGL_TYPE_RGBA_ARB,
 			WGL_COLOR_BITS_ARB,     (int)colorBits,
-			WGL_RED_BITS_ARB,		(int)config.redBits,
-			WGL_GREEN_BITS_ARB,		(int)config.greenBits,
-			WGL_BLUE_BITS_ARB,		(int)config.blueBits,
-			WGL_ALPHA_BITS_ARB,		(int)config.alphaBits,
-			WGL_DEPTH_BITS_ARB,     (int)config.depthBits,
-			WGL_STENCIL_BITS_ARB,   (int)config.stencilBits,
-			WGL_SAMPLE_BUFFERS_ARB, config.msaaSamples > 0 ? 1 : 0,  // 4x MSAA
-			WGL_SAMPLES_ARB,        (int)config.msaaSamples,  // 4x MSAA
+			WGL_RED_BITS_ARB,		(int)graphicsConfig.redBits,
+			WGL_GREEN_BITS_ARB,		(int)graphicsConfig.greenBits,
+			WGL_BLUE_BITS_ARB,		(int)graphicsConfig.blueBits,
+			WGL_ALPHA_BITS_ARB,		(int)graphicsConfig.alphaBits,
+			WGL_DEPTH_BITS_ARB,     (int)graphicsConfig.depthBits,
+			WGL_STENCIL_BITS_ARB,   (int)graphicsConfig.stencilBits,
+			WGL_SAMPLE_BUFFERS_ARB, graphicsConfig.msaaSamples > 0 ? 1 : 0,  // 4x MSAA
+			WGL_SAMPLES_ARB,        (int)graphicsConfig.msaaSamples,  // 4x MSAA
 			0
 		};
 

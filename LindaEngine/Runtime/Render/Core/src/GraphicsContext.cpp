@@ -5,10 +5,12 @@
 
 using namespace LindaEngine;
 
+GraphicsConfig GraphicsContext::graphicsConfig;
+
 //实现后期用宏定义割开
-Scope<GraphicsContext> GraphicsContext::Create(GraphicsDriverAPI api, void* window)
+Scope<GraphicsContext> GraphicsContext::Create(void* window)
 {
-    switch (api)
+    switch (graphicsConfig.graphicsAPI)
     {
     case GraphicsDriverAPI::OpenGL:
         return CreateScope<OpenglGraphicsContext>(static_cast<WinWindow*>(window));

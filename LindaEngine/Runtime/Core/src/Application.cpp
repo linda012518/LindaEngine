@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "Platform.h"
 #include "GraphicsDriverAPI.h"
+#include "YamlSerializer.h"
 
 using namespace LindaEngine;
 
@@ -8,9 +9,10 @@ bool Application::_isQuit = false;
 
 int Application::Initialize()
 {
-    GfxConfiguration gfx(8, 8, 8, 8, 24, 8, 0, 800, 600, "Test");
-    _window = Window::Create(Platform::Windows, gfx);
-    _graphicContext = GraphicsContext::Create(GraphicsDriverAPI::OpenGL, _window.get());
+    YamlSerializer::DeSerializeGraphicsConfig("Assets/Config/GraphicsConfig");
+
+    _window = Window::Create();
+    _graphicContext = GraphicsContext::Create(_window.get());
 
     int ret = 0;
 

@@ -1,15 +1,17 @@
 #include "Window.h"
 #include "WinWindow.h"
+#include "GraphicsContext.h"
 
 using namespace LindaEngine;
 
 //实现后期用宏定义割开
-Scope<Window> Window::Create(Platform platform, GfxConfiguration& gfx)
+Scope<Window> Window::Create()
 {
-    switch (platform)
+    GraphicsConfig& config = GraphicsContext::graphicsConfig;
+    switch (config.platformOS)
     {
     case Platform::Windows:
-        return CreateScope<WinWindow>(gfx);
+        return CreateScope<WinWindow>();
         break;
     case Platform::Android:
         break;

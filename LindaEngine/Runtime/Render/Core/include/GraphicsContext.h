@@ -3,7 +3,7 @@
 #include "AutoPtr.h"
 #include "IRuntimeModule.hpp"
 #include "GraphicsDriverAPI.h"
-#include "GfxConfiguration.h"
+#include "GraphicsConfig.h"
 
 namespace LindaEngine
 {
@@ -14,6 +14,8 @@ namespace LindaEngine
 		virtual void Finalize() = 0;
 		virtual void Tick() = 0;
 
-		static Scope<GraphicsContext> Create(GraphicsDriverAPI api, void* window);
+		static GraphicsConfig graphicsConfig;
+
+		static Scope<GraphicsContext> Create(void* window);
 	};
 }

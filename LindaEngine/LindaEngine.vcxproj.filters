@@ -1136,7 +1136,7 @@
     <ClInclude Include="Runtime\Window\include\Platform.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\Render\Core\include\GfxConfiguration.h">
+    <ClInclude Include="Runtime\Render\Core\include\GraphicsConfig.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Render\Core\include\GraphicsContext.h">

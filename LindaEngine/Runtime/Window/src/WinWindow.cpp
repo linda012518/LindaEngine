@@ -1,12 +1,12 @@
 #include "WinWindow.h"
 #include "Application.h"
+#include "GraphicsContext.h"
 #include <tchar.h>
 
 using namespace LindaEngine;
 
-WinWindow::WinWindow(GfxConfiguration& gfx)
+WinWindow::WinWindow()
 { 
-    _gfx = gfx;
     _hWnd = NULL;
     _hDc = NULL;
 }
@@ -36,18 +36,19 @@ int WinWindow::Initialize()
 
     RegisterClassEx(&wc);
 
-    RECT window_rect = { 0, 0, (LONG)_gfx.screenWidth,  (LONG)_gfx.screenHeight };
+    GraphicsConfig& config = GraphicsContext::graphicsConfig;
+    RECT window_rect = { 0, 0, (LONG)config.screenWidth,  (LONG)config.screenHeight };
     AdjustWindowRect(&window_rect, WS_OVERLAPPEDWINDOW, FALSE);
     int NewWidth = window_rect.right - window_rect.left;
     int NewHeight = window_rect.bottom - window_rect.top;
 
-    _gfx.screenNewWidth = NewWidth;
-    _gfx.screenNewHeight = NewHeight;
+    config.screenNewWidth = NewWidth;
+    config.screenNewHeight = NewHeight;
 
     // create the window and use the result as the handle
     _hWnd = CreateWindowEx(0,
         _T("LindaEngine"),      // name of the window class
-        _gfx.appName,           // title of the window
+        config.appName,           // title of the window
         WS_OVERLAPPEDWINDOW,    // window style
         CW_USEDEFAULT,          // x-position of the window
         CW_USEDEFAULT,          // y-position of the window
@@ -92,11 +93,6 @@ void WinWindow::Tick()
 HDC WinWindow::GetWinDC()
 {
     return _hDc;
-}
-
-GfxConfiguration& WinWindow::GetGfxConfig()
-{
-    return _gfx;
 }
 
 LRESULT WinWindow::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

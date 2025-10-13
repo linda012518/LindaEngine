@@ -2,5 +2,5 @@
 
 enum class GraphicsDriverAPI
 {
-	OpenGL, OpenGLES, DX11, DX12, Vulkan, Metal
+	None, OpenGL, OpenGLES, DX11, DX12, Vulkan, Metal
 };

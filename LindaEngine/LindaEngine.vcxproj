@@ -641,7 +641,7 @@
     <ClInclude Include="Runtime\ECS\include\Component.h" />
     <ClInclude Include="Runtime\ECS\include\Entity.h" />
     <ClInclude Include="Runtime\ECS\include\Transform.h" />
-    <ClInclude Include="Runtime\Render\Core\include\GfxConfiguration.h" />
+    <ClInclude Include="Runtime\Render\Core\include\GraphicsConfig.h" />
     <ClInclude Include="Runtime\Render\Core\include\GraphicsContext.h" />
     <ClInclude Include="Runtime\Render\Core\include\GraphicsDriverAPI.h" />
     <ClInclude Include="Runtime\Render\Opengl\include\OpenglAPIContext.h" />

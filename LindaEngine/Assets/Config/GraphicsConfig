@@ -1,0 +1,13 @@
+GraphicsConfig:
+  redBits: 8
+  greenBits: 8
+  blueBits: 8
+  alphaBits: 8
+  depthBits: 24
+  stencilBits: 8
+  msaaSamples: 0
+  screenWidth: 800
+  screenHeight: 600
+  appName: LindaEngine
+  graphicsAPI: 1
+  platformOS: 0
