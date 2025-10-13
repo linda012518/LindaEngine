@@ -181,7 +181,7 @@ std::vector<ShaderSource> ShaderLoader::GetPasses(std::string url, std::string& 
 		ss.vertex = vertex;
 		ss.fragment = fragment;
 
-		CollectRemoveAttributes(ss.vertex);
+		CollectAttributes(ss);
 		CollectUniforms(vertex);
 		CollectUniforms(fragment);
 
@@ -191,28 +191,20 @@ std::vector<ShaderSource> ShaderLoader::GetPasses(std::string url, std::string& 
 	return shaders;
 }
 
-void ShaderLoader::CollectRemoveAttributes(std::string& tex)
+void ShaderLoader::CollectAttributes(ShaderSource& ss)
 {
-	std::regex layout_pattern_(R"(layout\s*\(\s*location\s*=\s*(\d+)\s*\)\s*in\s+([a-zA-Z_][a-zA-Z0-9_]*)\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*;)");
-	std::smatch matches;
-	std::string::const_iterator searchStart(tex.cbegin());
-
-	while (std::regex_search(searchStart, tex.cend(), matches, layout_pattern_)) {
-		if (matches.size() == 4) {
-			//GLSLAttribute attr;
-			//attr.location = std::stoi(matches[1].str());
-			//attr.type = matches[2].str();
-			//attr.name = matches[3].str();
-
-			size_t start = matches.position(0) + (searchStart - tex.cbegin());
-			size_t end = start + matches.length(0);
-		}
-		searchStart = matches.suffix().first;
-	}
-
-	int a = 0;
+	//替换AttributeNames字符串为layout
+	//再收集AttributeNames留给Mesh生成VAO
 }
 
 void ShaderLoader::CollectUniforms(std::string& tex)
 {
+	//删除Uniforms包装
+	//提取uniform名字和类型留给Material自动传数据
+}
+
+void ShaderLoader::AddGlobalContent(ShaderSource& ss)
+{
+	//加入UniformBlock
+	//加入LOD LogDepth等
 }

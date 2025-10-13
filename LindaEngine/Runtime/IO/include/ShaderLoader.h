@@ -23,7 +23,8 @@ namespace LindaEngine
 
 		static std::vector<ShaderSource> GetPasses(std::string url, std::string& tex);
 
-		static void CollectRemoveAttributes(std::string& tex);
+		static void CollectAttributes(ShaderSource& ss);
 		static void CollectUniforms(std::string& tex);
+		static void AddGlobalContent(ShaderSource& ss);
 	};
 }

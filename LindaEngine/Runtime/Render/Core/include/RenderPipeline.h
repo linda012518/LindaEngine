@@ -23,7 +23,7 @@ namespace LindaEngine
 		void CheckLightList();
 		void Render();
 
-		//void test();
+		void test();
 
 	private:
 		Ref<RenderAPIContext> _renderContext = nullptr;

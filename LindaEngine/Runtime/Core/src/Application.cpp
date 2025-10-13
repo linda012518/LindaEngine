@@ -1,6 +1,4 @@
 #include "Application.h"
-#include "Platform.h"
-#include "GraphicsDriverAPI.h"
 #include "YamlSerializer.h"
 
 using namespace LindaEngine;

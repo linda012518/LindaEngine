@@ -21,10 +21,10 @@ int main()
 	//YamlSerializer::SerializeGraphicsConfig("Assets/Config/GraphicsConfig");
 	//YamlSerializer::SerializeMaterial("Assets/Materials/Unlit.mat");
 
-	//std::string path = "Assets/Shaders/Unlit.shader";
-	//ShaderManager::GetShaderSource(path.c_str());
+	std::string path = "Assets/Shaders/Unlit.shader";
+	ShaderManager::GetShaderSource(path.c_str());
 
-
+	return 0;
 	//Scene scene;
 	//Entity* e1 = scene.CreateEntity("test1");
 	////e1->AddComponent< OrthoCamera>();
