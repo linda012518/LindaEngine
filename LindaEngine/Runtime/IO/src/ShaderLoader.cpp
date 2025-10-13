@@ -60,7 +60,7 @@ void ShaderLoader::ProcessInclude(std::string& tex, std::vector<std::string>& pa
 			}
 			go += path;
 
-			tex.replace(firstPos, two - firstPos + 1, ShaderManager::GetInclude(go) + "\n");
+			tex.replace(firstPos, two - firstPos + 1, ShaderManager::GetInclude(go.c_str()) + "\n");
 		}
 		else
 		{
@@ -181,7 +181,7 @@ std::vector<ShaderSource> ShaderLoader::GetPasses(std::string url, std::string& 
 		ss.vertex = vertex;
 		ss.fragment = fragment;
 
-		CollectAttributes(vertex);
+		CollectRemoveAttributes(ss.vertex);
 		CollectUniforms(vertex);
 		CollectUniforms(fragment);
 
@@ -191,7 +191,7 @@ std::vector<ShaderSource> ShaderLoader::GetPasses(std::string url, std::string& 
 	return shaders;
 }
 
-void ShaderLoader::CollectAttributes(std::string& tex)
+void ShaderLoader::CollectRemoveAttributes(std::string& tex)
 {
 	std::regex layout_pattern_(R"(layout\s*\(\s*location\s*=\s*(\d+)\s*\)\s*in\s+([a-zA-Z_][a-zA-Z0-9_]*)\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*;)");
 	std::smatch matches;
@@ -199,15 +199,13 @@ void ShaderLoader::CollectAttributes(std::string& tex)
 
 	while (std::regex_search(searchStart, tex.cend(), matches, layout_pattern_)) {
 		if (matches.size() == 4) {
-			ShaderAttribute sa;
-			sa.index = std::stoi(matches[1].str());
-			sa.normalized = false;
-			sa.type = matches[2].str();
 			//GLSLAttribute attr;
 			//attr.location = std::stoi(matches[1].str());
 			//attr.type = matches[2].str();
 			//attr.name = matches[3].str();
-			//attributes.push_back(attr);
+
+			size_t start = matches.position(0) + (searchStart - tex.cbegin());
+			size_t end = start + matches.length(0);
 		}
 		searchStart = matches.suffix().first;
 	}

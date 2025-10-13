@@ -1,0 +1,42 @@
+#include "MeshManager.h"
+#include "MeshLoader.h"
+
+using namespace LindaEngine;
+
+std::unordered_map<std::string, Ref<Mesh>> MeshManager::_meshMap;
+
+Ref<Mesh> MeshManager::GetMesh(const char* path)
+{
+    auto itr = _meshMap.find(path);
+    if (itr == _meshMap.end())
+    {
+        _meshMap[path] = MeshLoader::Load(path);
+    }
+
+    return _meshMap[path];
+}
+
+Ref<Mesh> MeshManager::GetSphereMesh()
+{
+    return GetMesh("Sphere");
+}
+
+Ref<Mesh> MeshManager::GetCube()
+{
+    return GetMesh("Cube");
+}
+
+Ref<Mesh> MeshManager::GetCapsule()
+{
+    return GetMesh("Capsule");
+}
+
+Ref<Mesh> MeshManager::GetPlane()
+{
+    return GetMesh("Plane");
+}
+
+Ref<Mesh> MeshManager::GetSkybox()
+{
+    return GetMesh("Skybox");
+}

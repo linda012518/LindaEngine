@@ -17,8 +17,8 @@ namespace LindaEngine
 	{
 
 	public:
-		static std::vector<ShaderSource>& GetShaderSource(std::string& path);
-		static std::string& GetInclude(std::string& path);
+		static std::vector<ShaderSource>& GetShaderSource(const char* path);
+		static std::string& GetInclude(const char* path);
 
 	private:
 		

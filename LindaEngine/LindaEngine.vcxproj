@@ -122,11 +122,12 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>./External/lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -145,8 +146,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Runtime\Render\Opengl\src\OpenglRenderDataBuffer.cpp" />
-    <ClCompile Include="Runtime\Render\Core\src\RenderDataBuffer.cpp" />
+    <ClCompile Include="Runtime\Render\Core\src\MeshManager.cpp" />
+    <ClCompile Include="Runtime\IO\src\MeshLoader.cpp" />
     <ClCompile Include="External\yaml-cpp\src\binary.cpp" />
     <ClCompile Include="External\yaml-cpp\src\contrib\graphbuilder.cpp" />
     <ClCompile Include="External\yaml-cpp\src\contrib\graphbuilderadapter.cpp" />
@@ -215,10 +216,48 @@
     <ClCompile Include="Runtime\Window\src\WinWindow.cpp" />
     <ClCompile Include="Runtime\ECS\src\TransformSystem.cpp" />
     <ClCompile Include="Runtime\Core\src\Scene.cpp" />
+    <ClCompile Include="Runtime\IO\src\YamlSerializer.cpp" />
+    <ClCompile Include="Runtime\Render\Core\src\VertexArray.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Runtime\Render\Opengl\include\OpenglRenderDataBuffer.h" />
-    <ClInclude Include="Runtime\Render\Core\include\RenderDataBuffer.h" />
+    <ClInclude Include="External\assimp\assimp\ai_assert.h" />
+    <ClInclude Include="External\assimp\assimp\anim.h" />
+    <ClInclude Include="External\assimp\assimp\camera.h" />
+    <ClInclude Include="External\assimp\assimp\cexport.h" />
+    <ClInclude Include="External\assimp\assimp\cfileio.h" />
+    <ClInclude Include="External\assimp\assimp\cimport.h" />
+    <ClInclude Include="External\assimp\assimp\color4.h" />
+    <ClInclude Include="External\assimp\assimp\Compiler\poppack1.h" />
+    <ClInclude Include="External\assimp\assimp\Compiler\pstdint.h" />
+    <ClInclude Include="External\assimp\assimp\Compiler\pushpack1.h" />
+    <ClInclude Include="External\assimp\assimp\config.h" />
+    <ClInclude Include="External\assimp\assimp\DefaultLogger.hpp" />
+    <ClInclude Include="External\assimp\assimp\defs.h" />
+    <ClInclude Include="External\assimp\assimp\Exporter.hpp" />
+    <ClInclude Include="External\assimp\assimp\Importer.hpp" />
+    <ClInclude Include="External\assimp\assimp\importerdesc.h" />
+    <ClInclude Include="External\assimp\assimp\IOStream.hpp" />
+    <ClInclude Include="External\assimp\assimp\IOSystem.hpp" />
+    <ClInclude Include="External\assimp\assimp\light.h" />
+    <ClInclude Include="External\assimp\assimp\Logger.hpp" />
+    <ClInclude Include="External\assimp\assimp\LogStream.hpp" />
+    <ClInclude Include="External\assimp\assimp\material.h" />
+    <ClInclude Include="External\assimp\assimp\matrix3x3.h" />
+    <ClInclude Include="External\assimp\assimp\matrix4x4.h" />
+    <ClInclude Include="External\assimp\assimp\mesh.h" />
+    <ClInclude Include="External\assimp\assimp\metadata.h" />
+    <ClInclude Include="External\assimp\assimp\NullLogger.hpp" />
+    <ClInclude Include="External\assimp\assimp\postprocess.h" />
+    <ClInclude Include="External\assimp\assimp\ProgressHandler.hpp" />
+    <ClInclude Include="External\assimp\assimp\quaternion.h" />
+    <ClInclude Include="External\assimp\assimp\scene.h" />
+    <ClInclude Include="External\assimp\assimp\texture.h" />
+    <ClInclude Include="External\assimp\assimp\types.h" />
+    <ClInclude Include="External\assimp\assimp\vector2.h" />
+    <ClInclude Include="External\assimp\assimp\vector3.h" />
+    <ClInclude Include="External\assimp\assimp\version.h" />
+    <ClInclude Include="Runtime\Render\Core\include\MeshManager.h" />
+    <ClInclude Include="Runtime\IO\include\MeshLoader.h" />
     <ClInclude Include="External\yaml-cpp\include\yaml-cpp\anchor.h" />
     <ClInclude Include="External\yaml-cpp\include\yaml-cpp\binary.h" />
     <ClInclude Include="External\yaml-cpp\include\yaml-cpp\contrib\anchordict.h" />
@@ -613,8 +652,17 @@
     <ClInclude Include="Runtime\Window\include\WinWindow.h" />
     <ClInclude Include="Runtime\ECS\include\TransformSystem.h" />
     <ClInclude Include="Runtime\Core\include\Scene.h" />
+    <ClInclude Include="Runtime\IO\include\YamlSerializer.h" />
+    <ClInclude Include="Runtime\Render\Core\include\VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="External\assimp\assimp\color4.inl" />
+    <None Include="External\assimp\assimp\material.inl" />
+    <None Include="External\assimp\assimp\matrix3x3.inl" />
+    <None Include="External\assimp\assimp\matrix4x4.inl" />
+    <None Include="External\assimp\assimp\quaternion.inl" />
+    <None Include="External\assimp\assimp\vector2.inl" />
+    <None Include="External\assimp\assimp\vector3.inl" />
     <None Include="External\glm\glm\detail\func_common.inl" />
     <None Include="External\glm\glm\detail\func_common_simd.inl" />
     <None Include="External\glm\glm\detail\func_exponential.inl" />

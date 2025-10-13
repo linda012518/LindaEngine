@@ -23,7 +23,7 @@ namespace LindaEngine
 			uint32_t width = 1920, uint32_t height = 1080, const char* app_name = "LindaEngine") :
 			redBits(r), greenBits(g), blueBits(b), alphaBits(a),
 			depthBits(d), stencilBits(s), msaaSamples(msaa),
-			screenWidth(width), screenHeight(height), appName(app_name)
+			screenWidth(width), screenHeight(height), appName(app_name), screenNewWidth(width), screenNewHeight(height)
 		{}
 
 		uint32_t redBits; ///< red color channel depth in bits

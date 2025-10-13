@@ -1,7 +1,10 @@
 #pragma once
 
 #include "LObject.h"
+#include "glm/glm.hpp"
 
+#include <unordered_map>
+#include <string>
 #include <vector>
 
 namespace LindaEngine
@@ -25,26 +28,56 @@ namespace LindaEngine
 
 	enum class VertexAttributeType
 	{
-		Position, Color, Normal, Tangent, UV0, UV1, UV2, UV3, UV4, UV5, UV6, UV7, BoneID1, BoneID2, BoneWeights1, BoneWeights2
+		None, Position, Normal, Tangent, UV0, UV1, UV2, UV3, UV4, UV5, UV6, UV7, Color, BoneID1, BoneID2, BoneWeights1, BoneWeights2
 	};
 
 	struct VertexAttribute
 	{
+		VertexAttribute(VertexAttributeType attrType, uint32_t offset_, uint32_t index_);
+
+		std::string attributeName;
 		VertexAttributeType attributeType;
 		VertexDataType dateType;
 		uint32_t size;
 		uint32_t offset;
 		uint32_t index;
 		bool normalized;
+
+		static const char* GetAttributeName(VertexAttributeType attrType);
+		static VertexDataType GetAttributeDataType(VertexAttributeType attrType);
+		static uint32_t GetAttributeDataSize(VertexAttributeType attrType);
+		static VertexAttributeType GetAttributeType(const char* name);
 	};
+
+	class VertexArray;
 
 	class Mesh : public LObject
 	{
 	public:
+		struct Data
+		{
+			unsigned int VAO = -1;
+			unsigned int VBO = -1;
+			unsigned int IBO = -1;
+
+			std::vector<float> vertexData;
+			std::vector<unsigned int> indexData;
+			size_t indexSize = -1;
+			int attributeIndex = 0;
+			int attributeOffset = 0;
+			std::vector<VertexAttribute> attributes;
+
+			void AddAttribute(VertexAttributeType attrType);
+			void AddAttribute(const char* name);
+			VertexAttribute* GetAttribute(const char* name);
+			VertexAttribute* GetAttribute(VertexAttributeType attrType);
+		};
+	public:
+		Mesh::Data& AddMeshData(Mesh::Data data);
 		const int GetMeshCount() { return _meshCount; }
 
 	private:
-		int _meshCount = 1;
-		std::vector<VertexAttribute> _attributes;
+		int _meshCount = 0;
+		std::vector<Mesh::Data> _data;
 	};
 }

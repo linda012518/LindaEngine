@@ -1,4 +1,5 @@
 ﻿#pragma comment(lib, "opengl32.lib")
+#pragma comment(lib, "assimp-vc143-mtd.lib")
 
 #include <iostream>
 
@@ -18,7 +19,7 @@ using namespace LindaEngine;
 int main()
 {
 	std::string path = "Assets/Shaders/Unlit.shader";
-	ShaderManager::GetShaderSource(path);
+	ShaderManager::GetShaderSource(path.c_str());
 
 
 	Scene scene;
