@@ -2,6 +2,7 @@
 
 #include "WinWindow.h"
 #include "OpenglGraphicsContext.h"
+#include "RenderPipeline.h"
 
 using namespace LindaEngine;
 

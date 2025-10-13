@@ -16,6 +16,9 @@ namespace LindaEngine
 		virtual void Finalize();
 		virtual void Tick();
 
+	protected:
+		virtual void CreateRenderPipeline();
+
 	private:
 		HGLRC _renderContext;
 		HDC  _hDc;

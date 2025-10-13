@@ -82,8 +82,8 @@ int main()
 
 	Application app;
 	app.Initialize();
-	//app.Tick();
-	//app.Finalize();
+	app.Tick();
+	app.Finalize();
 
 	return 0;
 }

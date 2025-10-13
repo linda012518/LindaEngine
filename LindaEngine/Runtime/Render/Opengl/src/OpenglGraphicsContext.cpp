@@ -1,6 +1,8 @@
 #include "OpenglGraphicsContext.h"
 #include "WinWindow.h"
 #include "glad/glad_wgl.h"
+#include "RenderPipeline.h"
+#include "RenderAPIContext.h"
 
 #include <iostream>
 #include <tchar.h>
@@ -203,12 +205,14 @@ int OpenglGraphicsContext::Initialize()
 		return result;
 	}
 
-	return 0;
+	CreateRenderPipeline();
 
+	return 0;
 }
 
 void OpenglGraphicsContext::Finalize()
 {
+	_renderPipeline->Finalize();
 	if (_renderContext) {
 		wglMakeCurrent(NULL, NULL);
 		wglDeleteContext(_renderContext);
@@ -218,6 +222,14 @@ void OpenglGraphicsContext::Finalize()
 
 void OpenglGraphicsContext::Tick()
 {
+	_renderPipeline->Tick();
 	SwapBuffers(_hDc);
+}
+
+void OpenglGraphicsContext::CreateRenderPipeline()
+{
+	_renderPipeline = RenderPipeline::Create();
+	_renderPipeline->SetRenderAPIContext(RenderAPIContext::Create(graphicsConfig.graphicsAPI));
+	_renderPipeline->Initialize();
 }
 

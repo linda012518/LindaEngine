@@ -1,6 +1,5 @@
 #include "RenderPipeline.h"
-#include "Application.h"
-
+#include "GraphicsContext.h"
 
 
 //#include "glad/glad.h"
@@ -98,7 +97,7 @@ void RenderPipeline::Tick()
 
  //   CheckLightList();
  //   CheckCameraList();
- //   Render();
+    Render();
 }
 
 void RenderPipeline::SetRenderAPIContext(Ref<RenderAPIContext> rc)
@@ -136,10 +135,10 @@ void RenderPipeline::Render()
     //7 渲染天空
     //8 渲染透明物体
 
-    //GfxConfiguration& config = Application::GetConfig();
-    //_renderContext->SetViewport(0, 0, config.screenWidth, config.screenHeight);
-    //_renderContext->SetClearColor(0, 0.3, 0, 0);
-    //_renderContext->Clear(true, true, true);
+	GraphicsConfig& config = GraphicsContext::graphicsConfig;
+    _renderContext->SetViewport(0, 0, config.screenWidth, config.screenHeight);
+    _renderContext->SetClearColor(0, 0.3, 0, 0);
+    _renderContext->Clear(true, true, true);
 
 	//test();
 }
