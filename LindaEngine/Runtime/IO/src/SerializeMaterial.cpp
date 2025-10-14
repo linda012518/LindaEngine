@@ -253,6 +253,8 @@ bool YamlSerializer::DeSerializeMaterial(const char* path)
 			{
 				Ref<TextureUniformData> pointer = CreateRef<TextureUniformData>();
 				std::string tempStr = unif["Value"].as<std::string>();
+				pointer->name = uniformName;
+				pointer->dataType = dataType;
 				pointer->textureURL = tempStr.c_str();
 				pointer->offsetScale = unif["OffsetScale"].as<glm::vec4>();
 				matPass->_uniformNameMap[uniformName] = pointer;
@@ -261,6 +263,8 @@ bool YamlSerializer::DeSerializeMaterial(const char* path)
 			case UniformType::INT:
 			{
 				Ref<IntUniformData> pointer = CreateRef<IntUniformData>();
+				pointer->name = uniformName;
+				pointer->dataType = dataType;
 				pointer->value = unif["Value"].as<int>();
 				matPass->_uniformNameMap[uniformName] = pointer;
 				break;
@@ -268,6 +272,8 @@ bool YamlSerializer::DeSerializeMaterial(const char* path)
 			case UniformType::INT4:
 			{
 				Ref<Int4UniformData> pointer = CreateRef<Int4UniformData>();
+				pointer->name = uniformName;
+				pointer->dataType = dataType;
 				pointer->value = unif["Value"].as<glm::ivec4>();
 				matPass->_uniformNameMap[uniformName] = pointer;
 				break;
@@ -275,6 +281,8 @@ bool YamlSerializer::DeSerializeMaterial(const char* path)
 			case UniformType::FLOAT:
 			{
 				Ref<FloatUniformData> pointer = CreateRef<FloatUniformData>();
+				pointer->name = uniformName;
+				pointer->dataType = dataType;
 				pointer->value = unif["Value"].as<float>();
 				matPass->_uniformNameMap[uniformName] = pointer;
 				break;
@@ -282,6 +290,8 @@ bool YamlSerializer::DeSerializeMaterial(const char* path)
 			case UniformType::FLOAT4:
 			{
 				Ref<Float4UniformData> pointer = CreateRef<Float4UniformData>();
+				pointer->name = uniformName;
+				pointer->dataType = dataType;
 				pointer->value = unif["Value"].as<glm::vec4>();
 				matPass->_uniformNameMap[uniformName] = pointer;
 				break;
