@@ -11,6 +11,8 @@ namespace LindaEngine
 		std::string name;
 		std::string vertex;
 		std::string fragment;
+		std::vector<std::string> attributeNames;
+		std::unordered_map<std::string, std::string> uniformsNameMapType;
 	};
 
 	class ShaderManager
@@ -20,7 +22,8 @@ namespace LindaEngine
 		static std::vector<ShaderSource>& GetShaderSource(const char* path);
 		static std::string& GetInclude(const char* path);
 
-	private:
+	public:
+		static std::vector<std::string> defaultAttributeNames;
 		
 	private:
 		static std::unordered_map<std::string, std::vector<ShaderSource>> _shaderSrcMap;

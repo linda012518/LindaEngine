@@ -1,7 +1,5 @@
 Vertex
 {
-	#version 330 core
-
 	AttributeNames { aPosition, aNormal }
 	//layout (location = 0) in vec3 aPos;
 	//layout (location = 0) in vec3 aNormal;
@@ -22,8 +20,6 @@ Vertex
 		
 Fragment
 {
-	#version 330 core
-
 	out vec4 FragColor;
 	in vec3 worldNormal;
 

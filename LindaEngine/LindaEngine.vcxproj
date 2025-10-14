@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\IO\src\SerializeMaterial.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\MeshManager.cpp" />
     <ClCompile Include="Runtime\IO\src\MeshLoader.cpp" />
     <ClCompile Include="External\yaml-cpp\src\binary.cpp" />

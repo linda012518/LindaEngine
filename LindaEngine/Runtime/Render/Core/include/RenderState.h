@@ -94,7 +94,7 @@ namespace LindaEngine
 
 		friend bool operator != (const Color& a, const Color& b)
 		{
-			return a.r != b.r && a.g != b.g && a.b != b.b && a.a != b.a;
+			return a.r != b.r || a.g != b.g || a.b != b.b || a.a != b.a;
 		}
 	};
 
@@ -109,7 +109,7 @@ namespace LindaEngine
 
 		friend bool operator != (const ColorMask& a, const ColorMask& b)
 		{
-			return a.R != b.R && a.G != b.G && a.B != b.B && a.A != b.A;
+			return a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A;
 		}
 	};
 

@@ -1,0 +1,72 @@
+Material:
+  FileName: Material
+  ShaderPath: Assets/Shaders/Unlit.shader
+  RenderType: 2
+  ShadowCast: true
+  ReceiveShadow: true
+  MaterialPasses:
+    - PassName: Color
+      RenderQueue: 2000
+      ShaderUniforms:
+        []
+      Keywords:
+        []
+      RenderState:
+        {}
+    - PassName: customLightMode
+      RenderQueue: 3000
+      ShaderUniforms:
+        - UniformName: MainTex
+          Value: texturl/aa/bb
+          OffsetScale: [1, 2.5999999, 0, 0]
+          MainTex: 1
+        - UniformName: Vector
+          Value: [0, 0, 8, 0]
+          Vector: 4
+        - UniformName: Range
+          Value: 3.5999999
+          Range: 6
+      Keywords:
+        - NORMAL_MAP
+        - LogDepth
+      RenderState:
+        ColorMask: [true, true, true, false]
+        CullFaceFunc: 65535
+        DepthState:
+          DepthTest: false
+        PolygonModeState:
+          PolygonMode: 6913
+          LineWidth: 1
+        StencilState:
+          StencilTest: true
+          StencilFuncMask: 255
+          StencilRef: 6
+          StencilFunc: 519
+        BlendState:
+          EnableBlend: true
+          BlendSrc: 773
+          BlendDis: 771
+    - PassName: ShadowCaster
+      RenderQueue: 2000
+      ShaderUniforms:
+        []
+      Keywords:
+        []
+      RenderState:
+        {}
+    - PassName: Depth
+      RenderQueue: 2000
+      ShaderUniforms:
+        []
+      Keywords:
+        []
+      RenderState:
+        {}
+    - PassName: DepthNormal
+      RenderQueue: 2000
+      ShaderUniforms:
+        []
+      Keywords:
+        []
+      RenderState:
+        {}

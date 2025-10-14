@@ -4,9 +4,7 @@ Shader
 	{
 		Vertex
 		{
-			#version 330 core
-
-			AttributeNames { aPosition, aColor, aUV0 }
+			AttributeNameArray { aPosition, aColor, aUV0 }
 			//layout (location = 0) in vec3 aPos;
 			//layout (location = 1) in vec3 aColor;
 			//layout (location = 2) in vec2 aTexCoord;
@@ -14,7 +12,7 @@ Shader
 			out vec3 color;
 			out vec2 uv;
 
-			Uniforms
+			UniformArray
 			{
 				uniform mat4 model;
 				uniform mat4 view;
@@ -31,14 +29,15 @@ Shader
 		
 		Fragment
 		{
-			#version 330 core
-
 			out vec4 FragColor;
 
 			in vec3 color;
 			in vec2 uv;
 
-			uniform sampler2D texture1;
+			UniformArray
+			{
+				uniform sampler2D texture1;
+			}
 
 			void main()
 			{
@@ -50,21 +49,21 @@ Shader
 
 	Pass
 	{
-		Name "ShadowCaster"
+		LightMode "ShadowCaster"
 
 		#include "DirectionalShadowPass.glsl"
 	}
 
 	Pass
 	{
-		Name "Depth"
+		LightMode "Depth"
 
 		#include "DepthPass.glsl"
 	}
 
 	Pass
 	{
-		Name "DepthNormal"
+		LightMode "DepthNormal"
 
 		#include "DepthNormalPass.glsl"
 	}

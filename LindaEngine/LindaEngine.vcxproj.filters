@@ -231,6 +231,9 @@
     <ClCompile Include="Runtime\Render\Core\src\MeshManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\IO\src\SerializeMaterial.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">

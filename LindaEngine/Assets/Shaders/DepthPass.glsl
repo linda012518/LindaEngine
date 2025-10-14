@@ -1,7 +1,5 @@
 Vertex
 {
-	#version 330 core
-
 	AttributeNames { aPosition }
 	//layout (location = 0) in vec3 aPos;
 
@@ -17,8 +15,6 @@ Vertex
 		
 Fragment
 {
-	#version 330 core
-
 	void main()
 	{
 		gl_FragDepth = gl_FragCoord.z;

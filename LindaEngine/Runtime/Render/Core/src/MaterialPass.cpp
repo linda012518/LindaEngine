@@ -5,6 +5,7 @@ using namespace LindaEngine;
 
 RenderState MaterialPass::_defualtState;
 RenderState MaterialPass::_currentState;
+Ref<MaterialPass> MaterialPass::overrideMatPass = nullptr;
 
 void MaterialPass::Setup()
 {
@@ -16,20 +17,16 @@ void MaterialPass::Setup()
 	CheckBlendState(_currentState);
 }
 
-void MaterialPass::AddKeyword(std::string& key, bool dynamic)
+void MaterialPass::AddKeyword(std::string& key)
 {
-	std::vector<std::string>& keyword = _keywords;
-	if (dynamic)
-		keyword = _keywordsDynamic;
-
-	auto itr = std::find(keyword.begin(), keyword.end(), key);
-	if (itr == keyword.end())
-		keyword.push_back(key);
+	auto itr = std::find(_keywords.begin(), _keywords.end(), key);
+	if (itr == _keywords.end())
+		_keywords.push_back(key);
 }
 
 void MaterialPass::UpdateUniforms()
 {
-	for (const auto& pair : _uniformMap) {
+	for (const auto& pair : _uniformNameMap) {
 
 	}
 }

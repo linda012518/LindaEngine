@@ -111,9 +111,9 @@ void ShaderLoader::DeleteShaderFrame(std::string& tex)
 
 std::string ShaderLoader::GetPassName(std::string& tex)
 {
-	std::string includes = "Name";
+	std::string name = "LightMode";
 
-	size_t firstPos = tex.find(includes);
+	size_t firstPos = tex.find(name);
 	if (firstPos == std::string::npos)
 	{
 		std::string go = "Color";
@@ -123,7 +123,7 @@ std::string ShaderLoader::GetPassName(std::string& tex)
 	size_t one = tex.find('"', firstPos + 1);
 	size_t two = tex.find('"', one + 1);
 
-	std::string name = tex.substr(one + 1, two - one - 1);
+	name = tex.substr(one + 1, two - one - 1);
 	tex = tex.substr(two + 1);
 
 	return name;
@@ -178,12 +178,12 @@ std::vector<ShaderSource> ShaderLoader::GetPasses(std::string url, std::string& 
 
 		std::string fragment = pass.substr(firstPos + 1, lastPos - firstPos - 1);
 
-		ss.vertex = vertex;
-		ss.fragment = fragment;
+		ss.vertex = "#version 330 core\n" + vertex;
+		ss.fragment = "#version 330 core\n" + fragment;
 
 		CollectAttributes(ss);
-		CollectUniforms(vertex);
-		CollectUniforms(fragment);
+		CollectUniforms(ss, ss.vertex);
+		CollectUniforms(ss, ss.fragment);
 
 		shaders.push_back(ss);
 	}
@@ -195,12 +195,80 @@ void ShaderLoader::CollectAttributes(ShaderSource& ss)
 {
 	//替换AttributeNames字符串为layout
 	//再收集AttributeNames留给Mesh生成VAO
+
+	std::string& tex = ss.vertex;
+	std::string attributeTitle = "AttributeNameArray";
+
+	size_t firstPos = tex.find(attributeTitle);
+	if (firstPos == std::string::npos)
+	{
+		return;
+	}
+
+	size_t one = tex.find('{', firstPos + 1);
+	size_t two = tex.find('}', one + 1);
+
+	std::string attributes = tex.substr(one + 1, two - one - 1);
+	attributes.erase(std::remove_if(attributes.begin(), attributes.end(), isspace), attributes.end());
+
+	std::vector<std::string> tokens;
+	std::string token;
+	std::istringstream tokenStream(attributes);
+	while (std::getline(tokenStream, token, ',')) {
+		tokens.push_back(token);
+	}
+
+	std::string layout;
+	int index = 0;
+
+	std::vector<std::string>& def = ShaderManager::defaultAttributeNames;
+	for (int i = 0; i < def.size(); i++)
+	{
+		if (tokens.size() <= 0)
+			break;
+		auto itr = std::find(tokens.begin(), tokens.end(), def[i]);
+		if (itr == tokens.end())
+			continue;
+
+		ss.attributeNames.push_back(def[i]);
+		tokens.erase(std::remove(tokens.begin(), tokens.end(), def[i]), tokens.end());
+
+		std::string type = GetDataTypeByName(def[i], index);
+		layout += "layout (location = " + std::to_string(index) + ") in " + type + def[i] + ";\n";
+	}
+
+	tex.replace(firstPos, two - firstPos + 1, layout);
 }
 
-void ShaderLoader::CollectUniforms(std::string& tex)
+void ShaderLoader::CollectUniforms(ShaderSource& ss, std::string& tex)
 {
 	//删除Uniforms包装
 	//提取uniform名字和类型留给Material自动传数据
+	std::string uniformTitle = "UniformArray";
+
+	size_t uniformPos = tex.find(uniformTitle);
+	if (uniformPos == std::string::npos)
+	{
+		return;
+	}
+
+	size_t firstPos = tex.find('{', uniformPos + 1);
+	size_t lastPos = tex.find('}', firstPos + 1);
+
+	std::string uniforms = tex.substr(firstPos + 1, lastPos - firstPos - 1);
+
+	tex.replace(uniformPos, lastPos - uniformPos + 1, uniforms);
+
+	std::regex uniform_pattern(R"(\buniform\s+(\w+)\s+(\w+)\s*;)");
+	std::smatch matches;
+	std::string::const_iterator searchStart = uniforms.cbegin();
+
+	while (std::regex_search(searchStart, uniforms.cend(), matches, uniform_pattern)) {
+		if (matches.size() == 3) {
+			ss.uniformsNameMapType[matches[2].str()] = matches[1].str();
+		}
+		searchStart = matches.suffix().first;
+	}
 }
 
 void ShaderLoader::AddGlobalContent(ShaderSource& ss)
@@ -208,3 +276,89 @@ void ShaderLoader::AddGlobalContent(ShaderSource& ss)
 	//加入UniformBlock
 	//加入LOD LogDepth等
 }
+
+std::string ShaderLoader::GetDataTypeByName(std::string& name, int& index)
+{
+	if (name == "aPosition")
+	{
+		index = 0;
+		return "vec3 ";
+	}
+	else if (name == "aNormal")
+	{
+		index++;
+		return "vec3 ";
+	}
+	else if (name == "aTangent")
+	{
+		index++;
+		return "vec3 ";
+	}
+	else if (name == "aUV0")
+	{
+		index++;
+		return "vec2 ";
+	}
+	else if (name == "aUV1")
+	{
+		index++;
+		return "vec2 ";
+	}
+	else if (name == "aUV2")
+	{
+		index++;
+		return "vec2 ";
+	}
+	else if (name == "aUV3")
+	{
+		index++;
+		return "vec2 ";
+	}
+	else if (name == "aUV4")
+	{
+		index++;
+		return "vec2 ";
+	}
+	else if (name == "aUV5")
+	{
+		index++;
+		return "vec2 ";
+	}
+	else if (name == "aUV6")
+	{
+		index++;
+		return "vec2 ";
+	}
+	else if (name == "aUV7")
+	{
+		index++;
+		return "vec2 ";
+	}
+	else if (name == "aColor")
+	{
+		index++;
+		return "vec4 ";
+	}
+	else if (name == "aBoneID1")
+	{
+		index++;
+		return "ivec4 ";
+	}
+	else if (name == "aBoneID2")
+	{
+		index++;
+		return "ivec4 ";
+	}
+	else if (name == "aBoneWeights1")
+	{
+		index++;
+		return "vec4 ";
+	}
+	else if (name == "aBoneWeights2")
+	{
+		index++;
+		return "vec4 ";
+	}
+	else return " ";
+}
+

@@ -57,11 +57,6 @@ void Shader::End()
 	glUseProgram(0);
 }
 
-void Shader::SetBool(const std::string& name, bool value)
-{
-	SetInt(name, (int)value);
-}
-
 void Shader::SetInt(const std::string& name, int value)
 {
 	IMPLEMENT_UNIFORM(glUniform1i(addr, value))
@@ -102,49 +97,14 @@ void Shader::SetFloatArray(const std::string& name, int count, float* value)
 	//}
 }
 
-void Shader::SetVec2(const std::string& name, const glm::vec2& value)
+void Shader::SetIVec4(const std::string& name, const glm::ivec4& value, int count)
 {
-	IMPLEMENT_UNIFORM(glUniform2fv(addr, 1, &value[0]))
-	//int addr = GetUniform(name);
-	//if (addr >= 0)
-	//{
-	//	glUniform2fv(addr, 1, &value[0]);
-	//}
+	IMPLEMENT_UNIFORM(glUniform4iv(addr, count, &value[0]))
 }
 
-void Shader::SetVec2Array(const std::string& name, int count, glm::vec2* value)
+void Shader::SetVec4(const std::string& name, const glm::vec4& value, int count)
 {
-	IMPLEMENT_UNIFORM(glUniform2fv(addr, count, &((*value)[0])))
-	//int addr = GetUniform(name);
-	//if (addr >= 0)
-	//{
-	//	glUniform2fv(addr, count, &((*value)[0]));
-	//}
-}
-
-void Shader::SetVec3(const std::string& name, const glm::vec3& value)
-{
-	IMPLEMENT_UNIFORM(glUniform3fv(addr, 1, &value[0]))
-	//int addr = GetUniform(name);
-	//if (addr >= 0)
-	//{
-	//	glUniform3fv(addr, 1, &value[0]);
-	//}
-}
-
-void Shader::SetVec3Array(const std::string& name, int count, glm::vec3* value)
-{
-	IMPLEMENT_UNIFORM(glUniform3fv(addr, count, &((*value)[0])))
-	//int addr = GetUniform(name);
-	//if (addr >= 0)
-	//{
-	//	glUniform3fv(addr, count, &((*value)[0]));
-	//}
-}
-
-void Shader::SetVec4(const std::string& name, const glm::vec4& value)
-{
-	IMPLEMENT_UNIFORM(glUniform4fv(addr, 1, &value[0]))
+	IMPLEMENT_UNIFORM(glUniform4fv(addr, count, &value[0]))
 
 	//int addr = GetUniform(name);
 	//if (addr >= 0)
@@ -153,20 +113,9 @@ void Shader::SetVec4(const std::string& name, const glm::vec4& value)
 	//}
 }
 
-void Shader::SetVec4Array(const std::string& name, int count, glm::vec4* value)
+void Shader::SetMat2(const std::string& name, const glm::mat2& mat, int count)
 {
-	IMPLEMENT_UNIFORM(glUniform4fv(addr, count, &((*value)[0])))
-
-	//int addr = GetUniform(name);
-	//if (addr >= 0)
-	//{
-	//	glUniform4fv(addr, count, &((*value)[0]));
-	//}
-}
-
-void Shader::SetMat2(const std::string& name, const glm::mat2& mat)
-{
-	IMPLEMENT_UNIFORM(glUniformMatrix2fv(addr, 1, GL_FALSE, &mat[0][0]))
+	IMPLEMENT_UNIFORM(glUniformMatrix2fv(addr, count, GL_FALSE, &mat[0][0]))
 
 	//int addr = GetUniform(name);
 	//if (addr >= 0)
@@ -175,20 +124,9 @@ void Shader::SetMat2(const std::string& name, const glm::mat2& mat)
 	//}
 }
 
-void Shader::SetMat2Array(const std::string& name, int count, const glm::mat2* mat)
+void Shader::SetMat3(const std::string& name, const glm::mat3& mat, int count)
 {
-	IMPLEMENT_UNIFORM(glUniformMatrix2fv(addr, count, GL_FALSE, &((*mat)[0][0])))
-
-	//int addr = GetUniform(name);
-	//if (addr >= 0)
-	//{
-	//	glUniformMatrix2fv(addr, count, GL_FALSE, &((*mat)[0][0]));
-	//}
-}
-
-void Shader::SetMat3(const std::string& name, const glm::mat3& mat)
-{
-	IMPLEMENT_UNIFORM(glUniformMatrix3fv(addr, 1, GL_FALSE, &mat[0][0]))
+	IMPLEMENT_UNIFORM(glUniformMatrix3fv(addr, count, GL_FALSE, &mat[0][0]))
 
 	//int addr = GetUniform(name);
 	//if (addr >= 0)
@@ -197,36 +135,14 @@ void Shader::SetMat3(const std::string& name, const glm::mat3& mat)
 	//}
 }
 
-void Shader::SetMat3Array(const std::string& name, int count, const glm::mat3* mat)
+void Shader::SetMat4(const std::string& name, const glm::mat4& mat, int count)
 {
-	IMPLEMENT_UNIFORM(glUniformMatrix3fv(addr, count, GL_FALSE, &((*mat)[0][0])))
-
-	//int addr = GetUniform(name);
-	//if (addr >= 0)
-	//{
-	//	glUniformMatrix3fv(addr, count, GL_FALSE, &((*mat)[0][0]));
-	//}
-}
-
-void Shader::SetMat4(const std::string& name, const glm::mat4& mat)
-{
-	IMPLEMENT_UNIFORM(glUniformMatrix4fv(addr, 1, GL_FALSE, &mat[0][0]))
+	IMPLEMENT_UNIFORM(glUniformMatrix4fv(addr, count, GL_FALSE, &mat[0][0]))
 
 	//int addr = GetUniform(name);
 	//if (addr >= 0)
 	//{
 	//	glUniformMatrix4fv(addr, 1, GL_FALSE, &mat[0][0]);
-	//}
-}
-
-void Shader::SetMat4Array(const std::string& name, int count, const glm::mat4* mat)
-{
-	IMPLEMENT_UNIFORM(glUniformMatrix4fv(addr, count, GL_FALSE, &((*mat)[0][0])))
-
-	//int addr = GetUniform(name);
-	//if (addr >= 0)
-	//{
-	//	glUniformMatrix4fv(addr, count, GL_FALSE, &((*mat)[0][0]));
 	//}
 }
 

@@ -30,29 +30,16 @@ namespace LindaEngine
 
 		void End();
 
-		void SetBool(const std::string& name, bool value);
 		void SetInt(const std::string& name, int value);
 		void SetFloat(const std::string& name, float value);
 		void SetIntArray(const std::string& name, int count, int* value);
 		void SetFloatArray(const std::string& name, int count, float* value);
 
-		void SetVec2(const std::string& name, const glm::vec2& value);
-		void SetVec2Array(const std::string& name, int count, glm::vec2* value);
-
-		void SetVec3(const std::string& name, const glm::vec3& value);
-		void SetVec3Array(const std::string& name, int count, glm::vec3* value);
-
-		void SetVec4(const std::string& name, const glm::vec4& value);
-		void SetVec4Array(const std::string& name, int count, glm::vec4* value);
-
-		void SetMat2(const std::string& name, const glm::mat2& mat);
-		void SetMat2Array(const std::string& name, int count, const glm::mat2* mat);
-
-		void SetMat3(const std::string& name, const glm::mat3& mat);
-		void SetMat3Array(const std::string& name, int count, const glm::mat3* mat);
-
-		void SetMat4(const std::string& name, const glm::mat4& mat);
-		void SetMat4Array(const std::string& name, int count, const glm::mat4* mat);
+		void SetIVec4(const std::string& name, const glm::ivec4& value, int count = 1);
+		void SetVec4(const std::string& name, const glm::vec4& value, int count = 1);
+		void SetMat2(const std::string& name, const glm::mat2& mat, int count = 1);
+		void SetMat3(const std::string& name, const glm::mat3& mat, int count = 1);
+		void SetMat4(const std::string& name, const glm::mat4& mat, int count = 1);
 
 	private:
 		GLint	_program = -1;

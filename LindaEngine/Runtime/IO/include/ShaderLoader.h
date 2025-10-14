@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace LindaEngine
 {
@@ -24,7 +25,9 @@ namespace LindaEngine
 		static std::vector<ShaderSource> GetPasses(std::string url, std::string& tex);
 
 		static void CollectAttributes(ShaderSource& ss);
-		static void CollectUniforms(std::string& tex);
+		static void CollectUniforms(ShaderSource& ss, std::string& tex);
 		static void AddGlobalContent(ShaderSource& ss);
+		static std::string GetDataTypeByName(std::string& name, int& index);
+
 	};
 }

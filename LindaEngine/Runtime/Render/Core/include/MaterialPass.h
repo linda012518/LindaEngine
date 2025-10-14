@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AutoPtr.h"
 #include "LObject.h"
 #include "RenderState.h"
 #include "ShaderUniform.h"
@@ -12,24 +13,14 @@ namespace LindaEngine
 {
 	class Shader;
 
-	enum class PassMode
-	{
-		Color, Depth, ShadowCaster, DepthNormal
-	};
-	enum class RenderType
-	{
-		Opaque, Skybox, Transparent, Overlay
-	};
-
 	class MaterialPass : public LObject
 	{
-	public:
-		MaterialPass();
-		virtual ~MaterialPass();
+		friend class YamlSerializer;
 
+	public:
 		void Setup();
 
-		void AddKeyword(std::string& key, bool dynamic = false);
+		void AddKeyword(std::string& key);
 
 		void UpdateUniforms();
 
@@ -42,17 +33,16 @@ namespace LindaEngine
 		void CheckBlendState(RenderState& state);
 
 	private:
-		std::unordered_map<std::string, ShaderUniform> _uniformMap;
-		std::vector<std::string> _keywords; //关键字宏定义
-		std::vector<std::string> _keywordsDynamic; //动态添加的关键字宏定义
-		PassMode _passMode = PassMode::Color;
-		RenderType _renderType = RenderType::Opaque; //是否不透明物体
+		std::unordered_map<std::string, Ref<ShaderUniform>> _uniformNameMap; //从shader文件解析
+		std::vector<std::string> _keywords; //关键字宏定义，全局的从其它配置添加，不记录
+		std::string _lightMode = "Color";
 		int _renderQueue = 2000; //渲染队列
-		bool _ShadowCast = true; //是否投射阴影
-		bool _receiveShadow = true; //是否接收阴影
 
-		RenderState _renderState;
-		static RenderState _currentState;
+		RenderState _renderState; //材质需要的状态
+		static Ref<MaterialPass> overrideMatPass;
+
+	private:
+		static RenderState _currentState; //当前渲染正在用的状态
 		static RenderState _defualtState;
 	};
 }

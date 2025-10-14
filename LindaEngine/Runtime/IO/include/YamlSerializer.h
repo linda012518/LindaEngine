@@ -7,9 +7,6 @@ namespace LindaEngine
 	class YamlSerializer
 	{
 	public:
-		static void Serialize(const char* path);
-		static bool DeSerialize(const char* path);
-
 		static void SerializeMaterial(const char* path);
 		static bool DeSerializeMaterial(const char* path);
 
@@ -18,5 +15,6 @@ namespace LindaEngine
 
 	private:
 		static void SerializeMaterialPass(YAML::Emitter& out);
+		static void SerializeMaterialUniform(YAML::Emitter& out, void* uniform);
 	};
 }
