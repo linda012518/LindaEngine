@@ -28,6 +28,8 @@ namespace LindaEngine
 		MaterialPass* GetShadowCasterPass() { return _shadowCasterPass.get(); }
 		std::vector<Ref<MaterialPass>>& GetColorPass() { return _colorPasses; }
 
+		void CompileShader();
+
 	private:
 		Ref<MaterialPass> _depthPass = nullptr;
 		Ref<MaterialPass> _shadowCasterPass = nullptr;

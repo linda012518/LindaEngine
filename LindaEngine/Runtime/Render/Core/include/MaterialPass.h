@@ -16,6 +16,7 @@ namespace LindaEngine
 	class MaterialPass : public LObject
 	{
 		friend class YamlSerializer;
+		friend class Material;
 
 	public:
 		void Setup();
