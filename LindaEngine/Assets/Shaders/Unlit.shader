@@ -9,6 +9,20 @@ Shader
 			//layout (location = 1) in vec3 aColor;
 			//layout (location = 2) in vec2 aTexCoord;
 
+// #define
+// #undef
+// #if
+// #ifdef
+
+// #ifndef
+// #else
+// #elif
+// #endif
+
+// #if USE_VERTEX_COLOR
+//   in vec4 v_color;
+// #endif
+
 			out vec3 color;
 			out vec2 uv;
 
@@ -47,7 +61,7 @@ Shader
 		}
 	}
 
-	Pass
+	FallbackPass Pass
 	{
 		LightMode "ShadowCaster"
 

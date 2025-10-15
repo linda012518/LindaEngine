@@ -15,14 +15,16 @@ namespace LindaEngine
 	{
 		std::string name;
 		UniformType dataType = UniformType::None;
+
+		virtual ~ShaderUniform() = default;
 	};
 
 	struct TextureUniformData : public ShaderUniform
 	{
 		TextureUniformData() { dataType = UniformType::TEXTURE; }
-
-		const char* textureURL = nullptr;
-		glm::vec4 offsetScale = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
+		int ID = 0; //纹理ID
+		int acitveChannel = 0; //在激活的哪个通道
+		const char* value = nullptr;
 	};
 
 	struct FloatUniformData : public ShaderUniform

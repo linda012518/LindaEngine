@@ -4,14 +4,18 @@
 #include <vector>
 #include <unordered_map>
 
+#include "AutoPtr.h"
+
 namespace LindaEngine
 {
 	struct ShaderSource;
+	struct ShaderSourceCode;
+	enum class UniformType;
 
 	class ShaderLoader
 	{
 	public:
-		static std::vector<ShaderSource> Load(const char* path);
+		static Ref<ShaderSource> Load(const char* path);
 
 	private:
 		static void GetFilePaths(const char* path, std::vector<std::string>& paths);
@@ -20,14 +24,15 @@ namespace LindaEngine
 
 		static void DeleteShaderFrame(std::string& tex);
 
+		static bool HasFallback(std::string& tex);
+
 		static std::string GetPassName(std::string& tex);
 
-		static std::vector<ShaderSource> GetPasses(std::string url, std::string& tex);
+		static void GetPasses(std::string url, std::string& tex);
 
-		static void CollectAttributes(ShaderSource& ss);
-		static void CollectUniforms(ShaderSource& ss, std::string& tex);
-		static void AddGlobalContent(ShaderSource& ss);
-		static std::string GetDataTypeByName(std::string& name, int& index);
-
+		static void CollectAttributes(Ref<ShaderSourceCode> ss);
+		static void CollectUniforms(Ref<ShaderSourceCode> ss, std::string& tex);
+		static std::string GetAttrDataTypeByName(std::string& name, int& index);
+		static UniformType GetUniformDataTypeByName(std::string& name);
 	};
 }

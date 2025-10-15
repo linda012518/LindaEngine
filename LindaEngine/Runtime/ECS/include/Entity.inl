@@ -48,6 +48,7 @@ namespace LindaEngine
 			{
 				OnComponentRemoved(*result.get());
 				_components.erase(it);
+				break;
 			}
 		}
 	}

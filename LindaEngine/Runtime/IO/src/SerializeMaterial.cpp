@@ -254,9 +254,7 @@ bool YamlSerializer::DeSerializeMaterial(const char* path)
 				Ref<TextureUniformData> pointer = CreateRef<TextureUniformData>();
 				std::string tempStr = unif["Value"].as<std::string>();
 				pointer->name = uniformName;
-				pointer->dataType = dataType;
-				pointer->textureURL = tempStr.c_str();
-				pointer->offsetScale = unif["OffsetScale"].as<glm::vec4>();
+				pointer->value = tempStr.c_str();
 				matPass->_uniformNameMap[uniformName] = pointer;
 				break;
 			}
@@ -264,7 +262,6 @@ bool YamlSerializer::DeSerializeMaterial(const char* path)
 			{
 				Ref<IntUniformData> pointer = CreateRef<IntUniformData>();
 				pointer->name = uniformName;
-				pointer->dataType = dataType;
 				pointer->value = unif["Value"].as<int>();
 				matPass->_uniformNameMap[uniformName] = pointer;
 				break;
@@ -273,7 +270,6 @@ bool YamlSerializer::DeSerializeMaterial(const char* path)
 			{
 				Ref<Int4UniformData> pointer = CreateRef<Int4UniformData>();
 				pointer->name = uniformName;
-				pointer->dataType = dataType;
 				pointer->value = unif["Value"].as<glm::ivec4>();
 				matPass->_uniformNameMap[uniformName] = pointer;
 				break;
@@ -282,7 +278,6 @@ bool YamlSerializer::DeSerializeMaterial(const char* path)
 			{
 				Ref<FloatUniformData> pointer = CreateRef<FloatUniformData>();
 				pointer->name = uniformName;
-				pointer->dataType = dataType;
 				pointer->value = unif["Value"].as<float>();
 				matPass->_uniformNameMap[uniformName] = pointer;
 				break;
@@ -291,7 +286,6 @@ bool YamlSerializer::DeSerializeMaterial(const char* path)
 			{
 				Ref<Float4UniformData> pointer = CreateRef<Float4UniformData>();
 				pointer->name = uniformName;
-				pointer->dataType = dataType;
 				pointer->value = unif["Value"].as<glm::vec4>();
 				matPass->_uniformNameMap[uniformName] = pointer;
 				break;
@@ -569,8 +563,7 @@ void YamlSerializer::SerializeMaterialUniform(YAML::Emitter& out, void* uniform)
 		auto pointer = static_cast<TextureUniformData*>(su);
 		out << YAML::Value << YAML::BeginMap;
 		out << YAML::Key << "UniformName" << YAML::Value << pointer->name;
-		out << YAML::Key << "Value" << YAML::Value << pointer->textureURL;
-		out << YAML::Key << "OffsetScale" << YAML::Value << pointer->offsetScale;
+		out << YAML::Key << "Value" << YAML::Value << pointer->value;
 		out << YAML::Key << pointer->name << YAML::Value << static_cast<int>(pointer->dataType);
 		out << YAML::EndMap;
 		break;

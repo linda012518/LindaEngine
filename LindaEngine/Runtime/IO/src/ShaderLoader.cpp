@@ -9,7 +9,9 @@
 
 using namespace LindaEngine;
 
-std::vector<ShaderSource> ShaderLoader::Load(const char* url)
+ShaderSource* curSS = nullptr;
+
+Ref<ShaderSource> ShaderLoader::Load(const char* url)
 {
 	std::string tex = TextLoader::Load(url);
 
@@ -20,7 +22,12 @@ std::vector<ShaderSource> ShaderLoader::Load(const char* url)
 
 	ProcessInclude(tex, paths);
 
-	return GetPasses(url, tex);
+	Ref<ShaderSource> ss = CreateRef<ShaderSource>();
+	ss->hasFallback = HasFallback(tex);
+	curSS = ss.get();
+	GetPasses(url, tex);
+	curSS = nullptr;
+	return ss;
 }
 
 void ShaderLoader::GetFilePaths(const char* path, std::vector<std::string>& paths)
@@ -109,6 +116,15 @@ void ShaderLoader::DeleteShaderFrame(std::string& tex)
 	tex = tex.substr(firstPos + 1, lastPos - firstPos - 1);
 }
 
+bool ShaderLoader::HasFallback(std::string& tex)
+{
+	size_t firstPos = tex.find("FallbackPass");
+	if (firstPos == std::string::npos)
+		return false;
+	tex.replace(firstPos, 12, "");
+	return true;
+}
+
 std::string ShaderLoader::GetPassName(std::string& tex)
 {
 	std::string name = "LightMode";
@@ -129,7 +145,7 @@ std::string ShaderLoader::GetPassName(std::string& tex)
 	return name;
 }
 
-std::vector<ShaderSource> ShaderLoader::GetPasses(std::string url, std::string& tex)
+void ShaderLoader::GetPasses(std::string url, std::string& tex)
 {
 	std::vector<std::string> passes;
 
@@ -157,13 +173,13 @@ std::vector<ShaderSource> ShaderLoader::GetPasses(std::string url, std::string& 
 		}
 	}
 
-	std::vector<ShaderSource> shaders;
+	std::vector<Ref<ShaderSourceCode>>& shaders = curSS->shaderSrcCode;
 
 	for (std::string pass : passes)
 	{
-		ShaderSource ss;
+		Ref<ShaderSourceCode> ss = CreateRef<ShaderSourceCode>();
 
-		ss.name = GetPassName(pass);
+		ss->name = GetPassName(pass);
 
 		size_t vertexPos = pass.find("Vertex");
 		size_t fragPos = pass.find("Fragment");
@@ -178,25 +194,23 @@ std::vector<ShaderSource> ShaderLoader::GetPasses(std::string url, std::string& 
 
 		std::string fragment = pass.substr(firstPos + 1, lastPos - firstPos - 1);
 
-		ss.vertex = "#version 330 core\n" + vertex;
-		ss.fragment = "#version 330 core\n" + fragment;
+		ss->vertex = vertex;
+		ss->fragment = fragment;
 
 		CollectAttributes(ss);
-		CollectUniforms(ss, ss.vertex);
-		CollectUniforms(ss, ss.fragment);
+		CollectUniforms(ss, ss->vertex);
+		CollectUniforms(ss, ss->fragment);
 
 		shaders.push_back(ss);
 	}
-
-	return shaders;
 }
 
-void ShaderLoader::CollectAttributes(ShaderSource& ss)
+void ShaderLoader::CollectAttributes(Ref<ShaderSourceCode> ss)
 {
 	//替换AttributeNames字符串为layout
 	//再收集AttributeNames留给Mesh生成VAO
 
-	std::string& tex = ss.vertex;
+	std::string& tex = ss->vertex;
 	std::string attributeTitle = "AttributeNameArray";
 
 	size_t firstPos = tex.find(attributeTitle);
@@ -230,17 +244,17 @@ void ShaderLoader::CollectAttributes(ShaderSource& ss)
 		if (itr == tokens.end())
 			continue;
 
-		ss.attributeNames.push_back(def[i]);
+		ss->attributeNames.push_back(def[i]);
 		tokens.erase(std::remove(tokens.begin(), tokens.end(), def[i]), tokens.end());
 
-		std::string type = GetDataTypeByName(def[i], index);
+		std::string type = GetAttrDataTypeByName(def[i], index);
 		layout += "layout (location = " + std::to_string(index) + ") in " + type + def[i] + ";\n";
 	}
 
 	tex.replace(firstPos, two - firstPos + 1, layout);
 }
 
-void ShaderLoader::CollectUniforms(ShaderSource& ss, std::string& tex)
+void ShaderLoader::CollectUniforms(Ref<ShaderSourceCode> ss, std::string& tex)
 {
 	//删除Uniforms包装
 	//提取uniform名字和类型留给Material自动传数据
@@ -265,19 +279,14 @@ void ShaderLoader::CollectUniforms(ShaderSource& ss, std::string& tex)
 
 	while (std::regex_search(searchStart, uniforms.cend(), matches, uniform_pattern)) {
 		if (matches.size() == 3) {
-			ss.uniformsNameMapType[matches[2].str()] = matches[1].str();
+			std::string type = matches[1].str();
+			ss->uniformsNameMapType[matches[2].str()] = GetUniformDataTypeByName(type);
 		}
 		searchStart = matches.suffix().first;
 	}
 }
 
-void ShaderLoader::AddGlobalContent(ShaderSource& ss)
-{
-	//加入UniformBlock
-	//加入LOD LogDepth等
-}
-
-std::string ShaderLoader::GetDataTypeByName(std::string& name, int& index)
+std::string ShaderLoader::GetAttrDataTypeByName(std::string& name, int& index)
 {
 	if (name == "aPosition")
 	{
@@ -360,5 +369,15 @@ std::string ShaderLoader::GetDataTypeByName(std::string& name, int& index)
 		return "vec4 ";
 	}
 	else return " ";
+}
+
+UniformType ShaderLoader::GetUniformDataTypeByName(std::string& name)
+{
+	if (name == "float") return UniformType::FLOAT;
+	else if (name == "vec4") return UniformType::FLOAT4;
+	else if (name == "int") return UniformType::INT;
+	else if (name == "ivec4") return UniformType::INT4;
+	else if (name == "sampler2D" || name == "samplerCube") return UniformType::TEXTURE;
+	else return UniformType::None;
 }
 
