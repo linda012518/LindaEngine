@@ -1,0 +1,14 @@
+Texture:
+  left: left
+  right: right
+  top: top
+  bottom: bottom
+  front: front
+  back: back
+  type: 2
+  isDataSRGB: false
+  mipmapCount: 6
+  filter: 0
+  warpU: 0
+  warpV: 0
+  warpW: 0

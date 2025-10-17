@@ -1,8 +1,9 @@
 #include "TextureLoader.h"
+#include "Texture.h"
 
 using namespace LindaEngine;
 
-unsigned int TextureLoader::Load(const char* path, bool gammaCorrection)
+Ref<Texture2D> TextureLoader::Load(const char* path, bool gammaCorrection)
 {
 	return 0;
 }

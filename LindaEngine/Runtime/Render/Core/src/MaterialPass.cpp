@@ -2,6 +2,7 @@
 #include "Shader.h"
 #include "TextureManager.h"
 #include "ShaderManager.h"
+#include "Texture.h"
 
 #define IMPLEMENT_SETUNIFORM(dataType, UniformClass) \
 template<> \
@@ -59,7 +60,7 @@ void MaterialPass::UpdateUniforms()
 		case UniformType::TEXTURE:
 		{
 			Ref<TextureUniformData> tud = DynamicCastRef(TextureUniformData, pair.second);
-			tud->ID = TextureManager::GetTexture(tud->value);
+			tud->ID = TextureManager::GetTexture(tud->value)->nativeColorID;
 			//TODO 需要Texture类 纹理过滤等等信息
 			tud->acitveChannel = _acitveChannel++;
 			_shader->SetInt(pair.first, tud->ID);

@@ -234,6 +234,15 @@
     <ClCompile Include="Runtime\IO\src\SerializeMaterial.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Render\Core\src\Texture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Render\Core\src\TextureManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\IO\src\SerializeTexture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -1536,6 +1545,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="External\assimp\assimp\version.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\Core\include\Texture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\Core\include\TextureManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

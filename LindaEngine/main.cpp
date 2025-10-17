@@ -15,6 +15,7 @@
 #include "YamlSerializer.h"
 #include "Material.h"
 #include "MaterialPass.h"
+#include "Texture.h"
 
 using namespace LindaEngine;
 
@@ -67,7 +68,37 @@ int main()
 	//Material::overrideMat = mat;
 	//YamlSerializer::SerializeMaterial("Assets/Materials/test.mat");
 
-	YamlSerializer::DeSerializeMaterial("Assets/Materials/test.mat");
+	//YamlSerializer::DeSerializeMaterial("Assets/Materials/test.mat");
+
+
+	//Ref<Texture2D> tex2d = CreateRef<Texture2D>();
+	//tex2d->path = "Assets/Maps/wall.jpg";
+	//tex2d->isDataSRGB = true;
+	//tex2d->mipmapCount = 6;
+	//tex2d->filter = FilterMode::Point;
+	//tex2d->warpU = TextureWrapMode::Repeat;
+	//tex2d->warpV = TextureWrapMode::Repeat;
+	//tex2d->warpW = TextureWrapMode::Repeat;
+	//Texture::overrideTexture = tex2d;
+	YamlSerializer::DeSerializeTexture("Assets/Maps/Yamls/go.texture");
+
+	//Ref<Cubemap> cubemap = CreateRef<Cubemap>();
+	//cubemap->isDataSRGB = false;
+	//cubemap->mipmapCount = 6;
+	//cubemap->filter = FilterMode::Point;
+	//cubemap->warpU = TextureWrapMode::Repeat;
+	//cubemap->warpV = TextureWrapMode::Repeat;
+	//cubemap->warpW = TextureWrapMode::Repeat;
+	//cubemap->left = "left";
+	//cubemap->right = "right";
+	//cubemap->top = "top";
+	//cubemap->bottom = "bottom";
+	//cubemap->front = "front";
+	//cubemap->back = "back";
+	//cubemap->srcType = CubemapSrcType::SixTexture;
+	//Texture::overrideTexture = cubemap;
+	YamlSerializer::DeSerializeTexture("Assets/Maps/Yamls/testCube.texture");
+
 	return 0;
 	//Scene scene;
 	//Entity* e1 = scene.CreateEntity("test1");

@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Runtime\IO\src\SerializeMaterial.cpp" />
+    <ClCompile Include="Runtime\IO\src\SerializeTexture.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\MeshManager.cpp" />
     <ClCompile Include="Runtime\IO\src\MeshLoader.cpp" />
     <ClCompile Include="External\yaml-cpp\src\binary.cpp" />
@@ -194,6 +195,8 @@
     <ClCompile Include="Runtime\Render\Core\src\Shader.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\ShaderManager.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\ShaderAttribute.cpp" />
+    <ClCompile Include="Runtime\Render\Core\src\Texture.cpp" />
+    <ClCompile Include="Runtime\Render\Core\src\TextureManager.cpp" />
     <ClCompile Include="Temp\LifeCycleFuncSystem.cpp" />
     <ClCompile Include="Temp\Behavior.cpp" />
     <ClCompile Include="Temp\ComponentSystem.cpp" />
@@ -335,6 +338,8 @@
     <ClInclude Include="Runtime\Render\Core\include\ShaderManager.h" />
     <ClInclude Include="Runtime\Render\Core\include\ShaderUniform.h" />
     <ClInclude Include="Runtime\Render\Core\include\ShaderAttribute.h" />
+    <ClInclude Include="Runtime\Render\Core\include\Texture.h" />
+    <ClInclude Include="Runtime\Render\Core\include\TextureManager.h" />
     <ClInclude Include="Temp\LifeCycleFuncSystem.h" />
     <ClInclude Include="Temp\Behavior.h" />
     <ClInclude Include="Temp\ComponentSystem.h" />

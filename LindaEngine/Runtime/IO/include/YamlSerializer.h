@@ -10,6 +10,9 @@ namespace LindaEngine
 		static void SerializeMaterial(const char* path);
 		static bool DeSerializeMaterial(const char* path);
 
+		static void SerializeTexture(const char* path);
+		static bool DeSerializeTexture(const char* path);
+
 		static void SerializeGraphicsConfig(const char* path);
 		static bool DeSerializeGraphicsConfig(const char* path);
 

@@ -2,4 +2,4 @@
 
 using namespace LindaEngine;
 
-
+Ref<Texture> Texture::overrideTexture = nullptr;

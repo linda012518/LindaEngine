@@ -150,7 +150,7 @@ namespace LindaEngine
 		BlendEquation blendEqua = BlendEquation::FUNC_ADD; //混合方程
 		BlendFunc blendSrcAlpha = BlendFunc::SRC_ALPHA; //glBlendFuncSeparate 分别设置时的源alpha因子
 		BlendFunc blendDisAlpha = BlendFunc::ONE_MINUS_SRC_ALPHA; //glBlendFuncSeparate 分别设置时的目标alpha因子
-		Color constantColor; //CONSTANT_COLOR  通过glBlendColor设置
+		Color constantColor = Color(); //CONSTANT_COLOR  通过glBlendColor设置
 	};
 
 	struct RenderState
