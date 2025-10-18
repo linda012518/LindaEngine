@@ -6,13 +6,14 @@
 
 #include "AutoPtr.h"
 #include "LObject.h"
+#include "ISerializable.h"
 
 namespace LindaEngine
 {
 	class Component;
 	class Transform;
 
-	class Entity : public LObject
+	class Entity : public LObject, public ISerializable
 	{
 	public:
 		Entity(const char* name, bool active = true);
@@ -24,8 +25,13 @@ namespace LindaEngine
 		void SetActive(bool active);
 		bool IsActive();
 
+		void SetUUID(std::string& uuid) { _uuid = uuid; }
+		std::string& GetUUID() { return _uuid; }
+
 		void Destroy();
 		void TransformDirty();
+
+		Transform* GetTransform();
 
 		template <typename TComponent, typename ... Args>
 		TComponent* AddComponent(Args&& ... args);
@@ -35,6 +41,9 @@ namespace LindaEngine
 
 		template <typename TComponent>
 		void RemoveComponent();
+
+		void Serialize();
+		bool Deserialize();
 
 		friend std::ostream& operator<<(std::ostream& out, const Entity& entity)
 		{
@@ -49,6 +58,8 @@ namespace LindaEngine
 	private:
 		std::string _name;
 		bool _active;
+		std::string _uuid;
+		Transform* _transform;
 		std::vector<Ref<Component>> _components;
 		static bool _isPlaying;
 	};

@@ -243,6 +243,12 @@
     <ClCompile Include="Runtime\IO\src\SerializeTexture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\IO\src\Path.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Tools\src\UUID.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -1553,6 +1559,12 @@
     <ClInclude Include="Runtime\Render\Core\include\TextureManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Runtime\IO\include\Path.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Tools\include\UUID.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\glm\glm\detail\func_common.inl">
@@ -1991,6 +2003,9 @@
       <Filter>头文件</Filter>
     </None>
     <None Include="External\assimp\assimp\vector3.inl">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="Runtime\IO\include\YamlCustomType.h">
       <Filter>头文件</Filter>
     </None>
   </ItemGroup>

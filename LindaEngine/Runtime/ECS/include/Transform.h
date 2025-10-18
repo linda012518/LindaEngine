@@ -32,12 +32,16 @@ namespace LindaEngine
 		bool _localChange = false;
 		bool _worldChange = false;
 
+		std::string _parentID;
+
 		Transform* _parent = nullptr;
 		std::list<Transform*> _children;
 
 	public:
 		Transform(Entity& entity);
 		virtual ~Transform();
+
+		std::string& GetParentID() { return _parentID; }
 
 		const glm::mat4& GetLocalToWorldMat() const;
 		const glm::mat4& GetWorldToLocalMat() const;
@@ -73,6 +77,9 @@ namespace LindaEngine
 
 		void Tick();
 		void Destroy();
+
+		void Serialize();
+		bool Deserialize();
 
 	private:
 		void UpdateWhenLocalChange();

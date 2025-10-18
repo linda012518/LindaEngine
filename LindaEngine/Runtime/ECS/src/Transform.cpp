@@ -1,11 +1,15 @@
 #include "Transform.h"
 #include "Entity.h"
-#include "TransformSystem.h"
+#include "YamlSerializer.h"
+#include "YamlCustomType.h"
+#include "Scene.h"
 
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/quaternion.hpp"
 #include "glm/gtx/matrix_decompose.hpp"
 #include "glm/gtx/euler_angles.hpp"
+
+#define PI 3.14159265358979323f
 
 #define DO_LOCALCHANGE \
 if (_localChange) \
@@ -107,7 +111,14 @@ void Transform::SetParent(Transform* parent)
 	_parent = parent;
 
 	if (nullptr != _parent)
+	{
 		_parent->_children.push_back(this);
+		_parentID = _parent->GetEntity().GetUUID();
+	}
+	else
+	{
+		_parentID = "";
+	}
 }
 
 void Transform::GetWorldDir(glm::vec3& forward, glm::vec3& up, glm::vec3& right)
@@ -136,7 +147,7 @@ void Transform::SetLocalEulerAngles(const glm::vec3& angle)
 	_localChange = true;
 
 	_localEulerAngles = angle;
-	_localRotation = glm::quat(angle);
+	_localRotation = glm::quat(glm::radians(angle));
 }
 
 void Transform::SetLocalRotation(const glm::quat& rotation)
@@ -146,7 +157,7 @@ void Transform::SetLocalRotation(const glm::quat& rotation)
 	_localChange = true;
 
 	_localRotation = rotation;
-	_localEulerAngles = glm::eulerAngles(rotation);
+	_localEulerAngles = glm::eulerAngles(rotation) * 180.f / PI;
 }
 
 void Transform::SetLocalScale(const glm::vec3& scale)
@@ -174,7 +185,7 @@ void Transform::SetWorldEulerAngles(const glm::vec3& angle)
 	_worldChange = true;
 
 	_worldEulerAngles = angle;
-	_worldRotation = glm::quat(angle);
+	_worldRotation = glm::quat(glm::radians(angle));
 }
 
 void Transform::SetWorldRotation(const glm::quat& rotation)
@@ -184,7 +195,7 @@ void Transform::SetWorldRotation(const glm::quat& rotation)
 	_worldChange = true;
 
 	_worldRotation = rotation;
-	_worldRotation = glm::eulerAngles(rotation);
+	_worldEulerAngles = glm::eulerAngles(rotation) * 180.f / PI;
 }
 
 void Transform::SetWorldScale(const glm::vec3& scale)
@@ -241,7 +252,7 @@ void Transform::UpdateWhenLocalChange()
 		glm::vec3 skew;
 		glm::vec4 m;
 		glm::decompose(_worldMatrix, _worldScale, _worldRotation, _worldPosition, skew, m);
-		_worldEulerAngles = glm::eulerAngles(_worldRotation);
+		_worldEulerAngles = glm::eulerAngles(_worldRotation) * 180.f / PI;
 	}
 	else
 	{
@@ -282,11 +293,11 @@ void Transform::UpdateWhenWorldChange()
 
 	if (nullptr != _parent)
 	{
-		_localMatrix = glm::inverse(_parent->_worldMatrix) * _worldMatrix;
+		_localMatrix = glm::inverse(_parent->_localMatrix) * _worldMatrix;
 		glm::vec3 skew;
 		glm::vec4 m;
 		glm::decompose(_localMatrix, _localScale, _localRotation, _localPosition, skew, m);
-		_localEulerAngles = glm::eulerAngles(_localRotation);
+		_localEulerAngles = glm::eulerAngles(_localRotation) * 180.f / PI;
 	}
 	else
 	{
@@ -359,5 +370,74 @@ void Transform::GetDir(glm::quat& rotation, glm::vec3& forward, glm::vec3& up, g
 	forward.x = temp[0][2];
 	forward.y = temp[1][2];
 	forward.z = temp[2][2];
+}
+
+void Transform::Serialize()
+{
+	YAML::Emitter& out = *YamlSerializer::out;
+
+	out << YAML::Value << YAML::BeginMap;
+
+	out << YAML::Key << "localPosition" << YAML::Value << _localPosition;
+	out << YAML::Key << "localEulerAngles" << YAML::Value << _localEulerAngles;
+	out << YAML::Key << "localScale" << YAML::Value << _localScale;
+	out << YAML::Key << "localRotation" << YAML::Value << _localRotation;
+
+	out << YAML::Key << "worldPosition" << YAML::Value << _worldPosition;
+	out << YAML::Key << "worldEulerAngles" << YAML::Value << _worldEulerAngles;
+	out << YAML::Key << "worldScale" << YAML::Value << _worldScale;
+	out << YAML::Key << "worldRotation" << YAML::Value << _worldRotation;
+
+	out << YAML::Key << "parent" << YAML::Value << _parentID;
+
+	out << YAML::EndMap;
+}
+
+bool Transform::Deserialize()
+{
+	////¸²¸ÇMaterial::overrideMat£¬ÇëÌáÇ°±£´æ
+	//YAML::Node data;
+	//try
+	//{
+	//	data = YAML::LoadFile(path);
+	//}
+	//catch (const std::exception&)
+	//{
+	//	return false;
+	//}
+
+	//if (!data["Material"])
+	//	return false;
+
+	//Ref<Material> mat = CreateRef<Material>();
+	//Material::overrideMat = mat;
+	//auto material = data["Material"];
+
+	//mat->_fileName = material["FileName"].as<std::string>();
+	//mat->_shaderPath = material["ShaderPath"].as<std::string>();
+	//mat->_renderType = static_cast<RenderType>(material["RenderType"].as<int>());
+	//mat->_shadowCast = material["ShadowCast"].as<bool>();
+	//mat->_receiveShadow = material["ReceiveShadow"].as<bool>();
+
+	//Ref<MaterialPass> matPass = nullptr;
+	//auto passes = material["MaterialPasses"];
+	//for (auto pass : passes)
+	//{
+	//	std::string passName = pass["PassName"].as<std::string>();
+	//	matPass = CreateRef<MaterialPass>();
+	//	matPass->_lightMode = passName;
+	//	if (passName == "Depth")
+	//		mat->_depthPass = matPass;
+	//	else if (passName == "DepthNormal")
+	//		mat->_depthNormalPass = matPass;
+	//	else if (passName == "ShadowCaster")
+	//		mat->_shadowCasterPass = matPass;
+	//	else
+	//		mat->_colorPasses.push_back(matPass);
+
+	//}
+
+	return true;
+
 }
 

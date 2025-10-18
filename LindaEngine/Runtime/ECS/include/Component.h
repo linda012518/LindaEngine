@@ -1,12 +1,13 @@
 #pragma once
 
 #include "LObject.h"
+#include "ISerializable.h"
 
 namespace LindaEngine
 {
 	class Entity;
 
-	class Component : public LObject
+	class Component : public LObject, public ISerializable
 	{
 	public:
 		Component(Entity& entity, bool enable = true);
@@ -19,6 +20,9 @@ namespace LindaEngine
 		virtual void Tick() {}
 		virtual void Destroy() {}
 		virtual void TransformDirty() {}
+
+		virtual void Serialize() = 0;
+		virtual bool Deserialize() = 0;
 
 	protected:
 		bool _enable;

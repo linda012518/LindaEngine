@@ -7,7 +7,7 @@ namespace LindaEngine
 	public:
 		virtual void Serialize() = 0;
 
-		virtual void Deserialize() = 0;
+		virtual bool Deserialize() = 0;
 
 		virtual ~ISerializable() = default;
 	};

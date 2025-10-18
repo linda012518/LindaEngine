@@ -27,7 +27,8 @@ namespace LindaEngine
 		MeshRenderer(Entity& entity, bool enable = true);
 		virtual ~MeshRenderer();
 
-
+		void Serialize();
+		bool Deserialize();
 	};
 
 	class SkinMeshRenderer : public Renderer
@@ -36,6 +37,7 @@ namespace LindaEngine
 		SkinMeshRenderer(Entity& entity, bool enable = true);
 		virtual ~SkinMeshRenderer();
 
-
+		void Serialize();
+		bool Deserialize();
 	};
 }

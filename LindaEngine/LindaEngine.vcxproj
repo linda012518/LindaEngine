@@ -122,7 +122,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\IO\src\Path.cpp" />
     <ClCompile Include="Runtime\IO\src\SerializeMaterial.cpp" />
     <ClCompile Include="Runtime\IO\src\SerializeTexture.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\MeshManager.cpp" />
@@ -222,6 +223,7 @@
     <ClCompile Include="Runtime\Core\src\Scene.cpp" />
     <ClCompile Include="Runtime\IO\src\YamlSerializer.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\VertexArray.cpp" />
+    <ClCompile Include="Runtime\Tools\src\UUID.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\assimp\assimp\ai_assert.h" />
@@ -260,6 +262,7 @@
     <ClInclude Include="External\assimp\assimp\vector2.h" />
     <ClInclude Include="External\assimp\assimp\vector3.h" />
     <ClInclude Include="External\assimp\assimp\version.h" />
+    <ClInclude Include="Runtime\IO\include\Path.h" />
     <ClInclude Include="Runtime\Render\Core\include\MeshManager.h" />
     <ClInclude Include="Runtime\IO\include\MeshLoader.h" />
     <ClInclude Include="External\yaml-cpp\include\yaml-cpp\anchor.h" />
@@ -660,6 +663,7 @@
     <ClInclude Include="Runtime\Core\include\Scene.h" />
     <ClInclude Include="Runtime\IO\include\YamlSerializer.h" />
     <ClInclude Include="Runtime\Render\Core\include\VertexArray.h" />
+    <ClInclude Include="Runtime\Tools\include\UUID.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External\assimp\assimp\color4.inl" />
@@ -808,6 +812,7 @@
     <None Include="External\glm\glm\gtx\vector_query.inl" />
     <None Include="External\glm\glm\gtx\wrap.inl" />
     <None Include="Runtime\ECS\include\Entity.inl" />
+    <None Include="Runtime\IO\include\YamlCustomType.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

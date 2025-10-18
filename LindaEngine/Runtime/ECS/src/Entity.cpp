@@ -4,8 +4,12 @@
 #include "TransformSystem.h"
 #include "Camera.h"
 #include "CameraSystem.h"
+#include "YamlSerializer.h"
+#include "UUID.h"
 
-#include <string.h>
+#include <fstream>
+#include <iostream>
+#include <string>
 
 using namespace LindaEngine;
 
@@ -15,10 +19,12 @@ Entity::Entity(const char* name, bool active)
 {
 	_name = name;
 	_active = active;
+	_uuid = UUID::Get();
 
 	Ref<Transform> c = CreateRef<Transform>(*this);
 	_components.push_back(c);
 	OnComponentAdded(c.get());
+	_transform = c.get();
 
 	std::cout << "	Entity" << _selfID << std::endl;
 }
@@ -60,6 +66,7 @@ void Entity::Destroy()
 		//LifeCycleFuncSystem::RemoveComponent(com.get());
 	}
 	_components.clear();
+	_transform = nullptr;
 }
 
 void Entity::TransformDirty()
@@ -67,6 +74,11 @@ void Entity::TransformDirty()
 	for (auto& com : _components) {
 		com->TransformDirty();
 	}
+}
+
+Transform* Entity::GetTransform()
+{
+	return _transform;
 }
 
 void Entity::OnComponentAdded(Component* com)
@@ -94,3 +106,24 @@ void Entity::OnComponentRemoved(Component* com)
 		CameraSystem::Remove(camera);
 }
 
+void Entity::Serialize()
+{
+	YAML::Emitter& out = *YamlSerializer::out;
+	out << YAML::Value << YAML::BeginMap;
+	out << YAML::Key << "Name" << YAML::Value << _name;
+	out << YAML::Key << "ID" << YAML::Value << _uuid;
+	out << YAML::Key << "Active" << YAML::Value << _active;
+	out << YAML::Key << "Components";
+	out << YAML::Value << YAML::BeginSeq;
+	for (auto& com : _components)
+	{
+		com->Serialize();
+	}
+	out << YAML::EndSeq;
+	out << YAML::EndMap;
+}
+
+bool Entity::Deserialize()
+{
+	return true;
+}

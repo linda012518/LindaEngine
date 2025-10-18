@@ -31,6 +31,7 @@ namespace LindaEngine
 	public:
 		static Ref<ShaderSource>& GetShaderSource(const char* path);
 		static std::string& GetInclude(const char* path);
+		static void Clear();
 
 	public:
 		static std::vector<std::string> defaultAttributeNames;
@@ -40,6 +41,5 @@ namespace LindaEngine
 	private:
 		static std::unordered_map<std::string, Ref<ShaderSource>> _shaderSrcMap;
 		static std::unordered_map<std::string, std::string> _includes;
-		static std::unordered_map<Ref<ShaderSourceCode>, Ref<Shader>> _shaderProgramMap;
 	};
 }

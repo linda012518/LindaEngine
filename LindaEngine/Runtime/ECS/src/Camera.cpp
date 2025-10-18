@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "Entity.h"
 #include "Transform.h"
+#include "YamlSerializer.h"
 
 using namespace LindaEngine;
 
@@ -107,6 +108,22 @@ void PerspectiveCamera::SetProjectionData(float fov, float ratio, float near, fl
 	SetNearFar(near, far, dontCare);
 }
 
+void PerspectiveCamera::Serialize()
+{
+	YAML::Emitter& out = *YamlSerializer::out;
+
+	out << YAML::Value << YAML::BeginMap;
+	//out << YAML::Key << "UniformName" << YAML::Value << pointer->name;
+	//out << YAML::Key << "Value" << YAML::Value << pointer->value;
+	//out << YAML::Key << pointer->name << YAML::Value << static_cast<int>(pointer->dataType);
+	out << YAML::EndMap;
+}
+
+bool PerspectiveCamera::Deserialize()
+{
+	return true;
+}
+
 /////////////////////////////////////////////////////////////////////
 
 OrthoCamera::OrthoCamera(Entity& entity, bool enable) : Camera(entity, enable)
@@ -141,6 +158,22 @@ void OrthoCamera::SetProjectionData(float left, float right, float top, float bo
 		_bottom = bottom;
 
 	SetNearFar(near, far, dontCare);
+}
+
+void OrthoCamera::Serialize()
+{
+	YAML::Emitter& out = *YamlSerializer::out;
+
+	out << YAML::Value << YAML::BeginMap;
+	//out << YAML::Key << "UniformName" << YAML::Value << pointer->name;
+	//out << YAML::Key << "Value" << YAML::Value << pointer->value;
+	//out << YAML::Key << pointer->name << YAML::Value << static_cast<int>(pointer->dataType);
+	out << YAML::EndMap;
+}
+
+bool OrthoCamera::Deserialize()
+{
+	return true;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -196,5 +229,21 @@ void CubeCamera::MakeViewProjectionMatrix()
 void CubeCamera::SetProjectionData(float near, float far, float dontCare)
 {
 	SetNearFar(near, far, dontCare);
+}
+
+void CubeCamera::Serialize()
+{
+	YAML::Emitter& out = *YamlSerializer::out;
+
+	out << YAML::Value << YAML::BeginMap;
+	//out << YAML::Key << "UniformName" << YAML::Value << pointer->name;
+	//out << YAML::Key << "Value" << YAML::Value << pointer->value;
+	//out << YAML::Key << pointer->name << YAML::Value << static_cast<int>(pointer->dataType);
+	out << YAML::EndMap;
+}
+
+bool CubeCamera::Deserialize()
+{
+	return true;
 }
 

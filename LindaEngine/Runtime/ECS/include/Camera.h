@@ -89,6 +89,9 @@ namespace LindaEngine
 
 		void SetProjectionData(float fov, float ratio, float near, float far, float dontCare = -1.0f);
 
+		void Serialize();
+		bool Deserialize();
+
 	private:
 		float _fov;
 		float _aspectRatio;
@@ -103,6 +106,9 @@ namespace LindaEngine
 		virtual void MakeProjectionMatrix();
 
 		void SetProjectionData(float left, float right, float top, float bottom, float near, float far, float dontCare = -1.0f);
+
+		void Serialize();
+		bool Deserialize();
 
 	private:
 		float _left;
@@ -122,6 +128,9 @@ namespace LindaEngine
 		virtual void MakeViewProjectionMatrix();
 
 		void SetProjectionData(float near, float far, float dontCare = -1.0f);
+
+		void Serialize();
+		bool Deserialize();
 
 	private:
 		PerspectiveCamera _right;

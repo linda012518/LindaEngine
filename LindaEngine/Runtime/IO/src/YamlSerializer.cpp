@@ -7,6 +7,8 @@
 
 using namespace LindaEngine;
 
+YAML::Emitter* YamlSerializer::out = nullptr;
+
 void YamlSerializer::SerializeGraphicsConfig(const char* path)
 {
 	GraphicsConfig& config = GraphicsContext::graphicsConfig;

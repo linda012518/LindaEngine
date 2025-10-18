@@ -20,8 +20,6 @@ namespace LindaEngine
 		friend class Material;
 
 	public:
-		void Setup();
-
 		void AddKeyword(std::string& key);
 		void CompileShader(Ref<ShaderSourceCode> sss);
 
@@ -29,14 +27,6 @@ namespace LindaEngine
 
 		template <typename T>
 		void SetUniformValue(const char* name, T val);
-
-	private:
-		void CheckColorMask(RenderState& state);
-		void CheckDepthState(RenderState& state);
-		void CheckCullFaceState(RenderState& state);
-		void CheckPolygonModeState(RenderState& state);
-		void CheckStencilState(RenderState& state);
-		void CheckBlendState(RenderState& state);
 
 	private:
 		//Editor可以从shader文件解析，Runtime只从材质获取，动态创建材质用户需要知道有哪些uniform

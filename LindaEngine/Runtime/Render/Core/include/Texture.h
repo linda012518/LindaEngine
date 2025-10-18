@@ -74,6 +74,7 @@ namespace LindaEngine
 		RenderTexture() { type = TextureType::RenderTexture; }
 
 		TextureFormat depthFormat = TextureFormat::None;
+		TextureFormat stencilFormat = TextureFormat::None;
 		int nativeDepthID = -1;
 		int msaa = -1;
 		bool isCube = false;

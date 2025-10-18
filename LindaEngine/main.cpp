@@ -16,6 +16,7 @@
 #include "Material.h"
 #include "MaterialPass.h"
 #include "Texture.h"
+#include "Path.h"
 
 using namespace LindaEngine;
 
@@ -80,7 +81,7 @@ int main()
 	//tex2d->warpV = TextureWrapMode::Repeat;
 	//tex2d->warpW = TextureWrapMode::Repeat;
 	//Texture::overrideTexture = tex2d;
-	YamlSerializer::DeSerializeTexture("Assets/Maps/Yamls/go.texture");
+	//YamlSerializer::DeSerializeTexture("Assets/Maps/Yamls/go.texture");
 
 	//Ref<Cubemap> cubemap = CreateRef<Cubemap>();
 	//cubemap->isDataSRGB = false;
@@ -97,8 +98,28 @@ int main()
 	//cubemap->back = "back";
 	//cubemap->srcType = CubemapSrcType::SixTexture;
 	//Texture::overrideTexture = cubemap;
-	YamlSerializer::DeSerializeTexture("Assets/Maps/Yamls/testCube.texture");
+	//YamlSerializer::DeSerializeTexture("Assets/Maps/Yamls/testCube.texture");
 
+	Ref<Scene> scene = CreateRef<Scene>();
+	Path::overridePath = "Assets/Scenes/NewScene.scene";
+
+	Entity* entity = scene->CreateEntity("test1");
+	//entity->GetTransform()->SetLocalPosition(glm::vec3(12, 13, 14.6f));
+	//entity->GetTransform()->SetLocalScale(glm::vec3(2, 6, 8));
+	entity->GetTransform()->Tick();
+
+	Entity* entity2 = scene->CreateEntity("test2");
+	entity2->GetTransform()->SetParent(entity->GetTransform());
+	//entity2->GetTransform()->SetLocalPosition(glm::vec3(1, 3, 66.8f));
+	//entity2->GetTransform()->SetLocalScale(glm::vec3(1, 2, 1));
+	entity2->GetTransform()->SetLocalEulerAngles(glm::vec3(10, 10, 10));
+	entity2->GetTransform()->Tick();
+	entity2->SetActive(false);
+
+	scene->Serialize();
+
+	//Path::overridePath = "Assets/Scenes/NewScene.scene";
+	//scene->Deserialize();
 	return 0;
 	//Scene scene;
 	//Entity* e1 = scene.CreateEntity("test1");

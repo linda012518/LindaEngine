@@ -1,0 +1,29 @@
+Scene:
+  FileName: Assets/Scenes/NewScene.scene
+  Entitys:
+    - Name: test1
+      ID: 3ed2adf5-4535-ac6f-0000-000000000001
+      Active: true
+      Components:
+        - localPosition: [0, 0, 0]
+          localEulerAngles: [0, 0, 0]
+          localScale: [1, 1, 1]
+          localRotation: [0, 0, 0, 1]
+          worldPosition: [0, 0, 0]
+          worldEulerAngles: [0, 0, 0]
+          worldScale: [1, 1, 1]
+          worldRotation: [0, 0, 0, 1]
+          parent: ""
+    - Name: test2
+      ID: f94db566-ed81-cbe9-0000-000000000002
+      Active: false
+      Components:
+        - localPosition: [0, 0, 0]
+          localEulerAngles: [10, 10, 10]
+          localScale: [1, 1, 1]
+          localRotation: [0.0789264739, 0.0940609127, 0.0789264739, 0.989289582]
+          worldPosition: [0, 0, 0]
+          worldEulerAngles: [10, 10, 10.000001]
+          worldScale: [1, 1, 1]
+          worldRotation: [0.0789264813, 0.0940609276, 0.0789264888, 0.989289522]
+          parent: 3ed2adf5-4535-ac6f-0000-000000000001

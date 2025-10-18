@@ -32,6 +32,7 @@ namespace LindaEngine
 		void SetShader(const char* path); //动态添加的要设置shader，然后设置所有需要的属性，再调用CompileShader
 
 	private:
+		//这几个pass哪个是nullptr并且_hasFallback=true，就用defaultPass
 		Ref<MaterialPass> _depthPass = nullptr;
 		Ref<MaterialPass> _shadowCasterPass = nullptr;
 		Ref<MaterialPass> _depthNormalPass = nullptr;

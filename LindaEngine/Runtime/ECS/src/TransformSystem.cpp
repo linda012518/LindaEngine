@@ -13,6 +13,13 @@ void TransformSystem::Tick()
 	}
 }
 
+void TransformSystem::OnDeserializeFinish()
+{
+	for (auto& com : _components) {
+		com->SetParent(Get(com->GetParentID()));
+	}
+}
+
 void TransformSystem::Add(Transform* trans)
 {
 	_components.push_back(trans);
@@ -31,5 +38,15 @@ void TransformSystem::Clear()
 		static_assert(true, "TransformSystem is not empty, Check destruction process.");
 
 	_components.clear();
+}
+
+Transform* TransformSystem::Get(std::string& uuid)
+{
+	for (auto& com : _components) {
+		if (com->GetEntity().GetUUID() != uuid)
+			continue;
+		return com;
+	}
+	return nullptr;
 }
 

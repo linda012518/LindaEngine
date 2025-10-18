@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 namespace LindaEngine
 {
@@ -11,10 +12,12 @@ namespace LindaEngine
 	{
 	public:
 		static void Tick();
+		static void OnDeserializeFinish();
 
 		static void Add(Transform* trans);
 		static void Remove(Transform* trans);
 		static void Clear();
+		static Transform* Get(std::string& uuid);
 
 	private:
 		static std::vector<Transform*> _components;
