@@ -93,7 +93,10 @@ void Entity::OnComponentAdded(Component* com)
 
 	Camera* camera = dynamic_cast<Camera*>(com);
 	if (nullptr != camera)
+	{
 		CameraSystem::Add(camera);
+		_transform->OnCameraAdded();
+	}
 }
 
 void Entity::OnComponentRemoved(Component* com)
@@ -104,7 +107,10 @@ void Entity::OnComponentRemoved(Component* com)
 
 	Camera* camera = dynamic_cast<Camera*>(com);
 	if (nullptr != camera)
+	{
 		CameraSystem::Remove(camera);
+		_transform->OnCameraRemoved();
+	}
 }
 
 bool Entity::Serialize()
@@ -140,14 +146,6 @@ bool Entity::Deserialize(YAML::Node& node)
 		
 		if (comName == "Transform")
 		{
-			//glm::vec3 pos = com["worldPosition"].as<glm::vec3>();
-			//glm::vec3 scale = com["worldScale"].as<glm::vec3>();
-			//glm::quat rotation = com["worldRotation"].as<glm::quat>();
-			//std::string parent = com["parent"].as<std::string>();
-			//_transform->SetWorldPosition(pos);
-			//_transform->SetWorldScale(scale);
-			//_transform->SetWorldRotation(rotation);
-			//_transform->SetParentID(parent);
 			_transform->Deserialize(com);
 		}
 		else

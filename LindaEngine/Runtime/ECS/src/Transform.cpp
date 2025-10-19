@@ -323,6 +323,9 @@ void Transform::UpdateWhenWorldChange()
 
 void Transform::UpdateViewMatrix()
 {
+	if (false == _hasCamear)
+		return;
+
 	_viewMatrix = glm::mat4_cast(_worldRotation);
 
 	_viewMatrix[3][0] = _worldPosition.x;
@@ -414,6 +417,5 @@ bool Transform::Deserialize(YAML::Node& node)
 	SetWorldRotation(rotation);
 	SetParentID(parent);
 	return true;
-
 }
 

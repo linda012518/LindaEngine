@@ -16,6 +16,9 @@ namespace LindaEngine
 		Renderer(Entity& entity, bool enable = true);
 		virtual ~Renderer();
 
+		bool Serialize();
+		bool Deserialize(YAML::Node& node);
+
 	protected:
 		std::vector<Ref<Material>> _materialList;
 		Ref<Mesh> _mesh;

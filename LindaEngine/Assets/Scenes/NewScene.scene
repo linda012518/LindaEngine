@@ -2,7 +2,7 @@ Scene:
   FileName: Assets/Scenes/NewScene.scene
   Entitys:
     - Name: test1
-      ID: ae7281a0-7b31-ab1e-0000-000000000001
+      ID: 57320881-7f1e-05c6-0000-000000000001
       Active: true
       Components:
         - Name: Transform
@@ -11,19 +11,18 @@ Scene:
           worldRotation: [0, 0, 0, 1]
           parent: ""
     - Name: test2
-      ID: 1b362860-fd83-a285-0000-000000000002
+      ID: de0d85a3-c8b1-0893-0000-000000000002
       Active: false
       Components:
         - Name: Transform
           worldPosition: [0, 0, 0]
           worldScale: [1, 1, 1]
           worldRotation: [0.0789264813, 0.0940609276, 0.0789264888, 0.989289522]
-          parent: ae7281a0-7b31-ab1e-0000-000000000001
-        - Name: PerspectiveCamera
-          enable: true
-          fov: 60
+          parent: 57320881-7f1e-05c6-0000-000000000001
+        - enable: true
           zNear: 0.100000001
           zFar: 1000
           depth: -1
-          cameraType: 1
           clearType: 0
+          Name: PerspectiveCamera
+          fov: 60

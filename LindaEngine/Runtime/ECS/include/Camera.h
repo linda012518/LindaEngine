@@ -52,6 +52,9 @@ namespace LindaEngine
 		void SetDepth(int depth) { _depth = depth; }
 		void SetNearFar(float near, float far, float dontCare = -1.0f);
 
+		bool Serialize();
+		bool Deserialize(YAML::Node& node);
+
 	protected:
 		glm::mat4 _viewMatrix;
 		glm::mat4 _projectMatrix;

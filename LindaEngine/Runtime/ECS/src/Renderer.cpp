@@ -14,6 +14,25 @@ Renderer::~Renderer()
 {
 }
 
+bool Renderer::Serialize()
+{
+	YAML::Emitter& out = *YamlSerializer::out;
+
+	out << YAML::Value << YAML::BeginMap;
+
+	out << YAML::Key << "enable" << YAML::Value << _enable;
+
+	return true;
+}
+
+bool Renderer::Deserialize(YAML::Node& node)
+{
+	_enable = node["enable"].as<bool>();
+	return true;
+}
+
+/////////////////////////////////////////////////////////////////////
+
 MeshRenderer::MeshRenderer(Entity& entity, bool enable) : Renderer(entity, enable)
 {
 }
@@ -25,12 +44,10 @@ MeshRenderer::~MeshRenderer()
 
 bool MeshRenderer::Serialize()
 {
+	Renderer::Serialize();
+
 	YAML::Emitter& out = *YamlSerializer::out;
 
-	out << YAML::Value << YAML::BeginMap;
-	//out << YAML::Key << "UniformName" << YAML::Value << pointer->name;
-	//out << YAML::Key << "Value" << YAML::Value << pointer->value;
-	//out << YAML::Key << pointer->name << YAML::Value << static_cast<int>(pointer->dataType);
 	out << YAML::EndMap;
 
 	return true;
@@ -38,8 +55,11 @@ bool MeshRenderer::Serialize()
 
 bool MeshRenderer::Deserialize(YAML::Node& node)
 {
+	Renderer::Deserialize(node);
 	return true;
 }
+
+/////////////////////////////////////////////////////////////////////
 
 SkinMeshRenderer::SkinMeshRenderer(Entity& entity, bool enable) : Renderer(entity, enable)
 {
@@ -52,12 +72,10 @@ SkinMeshRenderer::~SkinMeshRenderer()
 
 bool SkinMeshRenderer::Serialize()
 {
+	Renderer::Serialize();
+
 	YAML::Emitter& out = *YamlSerializer::out;
 
-	out << YAML::Value << YAML::BeginMap;
-	//out << YAML::Key << "UniformName" << YAML::Value << pointer->name;
-	//out << YAML::Key << "Value" << YAML::Value << pointer->value;
-	//out << YAML::Key << pointer->name << YAML::Value << static_cast<int>(pointer->dataType);
 	out << YAML::EndMap;
 
 	return true;
@@ -65,6 +83,7 @@ bool SkinMeshRenderer::Serialize()
 
 bool SkinMeshRenderer::Deserialize(YAML::Node& node)
 {
+	Renderer::Deserialize(node);
 	return true;
 }
 
