@@ -2,6 +2,7 @@
 #include "TextLoader.h"
 #include "ShaderManager.h"
 #include "ShaderAttribute.h"
+#include "Path.h"
 
 #include <sstream>
 #include <iostream>
@@ -15,8 +16,7 @@ Ref<ShaderSource> ShaderLoader::Load(const char* url)
 {
 	std::string tex = TextLoader::Load(url);
 
-	std::vector<std::string> paths;
-	GetFilePaths(url, paths);
+	std::vector<std::string> paths = Path::GetFileDirtcorys(url);
 
 	DeleteShaderFrame(tex);
 
@@ -28,18 +28,6 @@ Ref<ShaderSource> ShaderLoader::Load(const char* url)
 	GetPasses(url, tex);
 	curSS = nullptr;
 	return ss;
-}
-
-void ShaderLoader::GetFilePaths(const char* path, std::vector<std::string>& paths)
-{
-	std::stringstream ss(path);
-	std::string token;
-	char delimiter = '/';
-
-	while (getline(ss, token, delimiter)) {
-		paths.push_back(token);
-	}
-	paths.pop_back();
 }
 
 void ShaderLoader::ProcessInclude(std::string& tex, std::vector<std::string>& paths)

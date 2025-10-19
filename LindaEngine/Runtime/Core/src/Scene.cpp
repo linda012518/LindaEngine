@@ -10,8 +10,6 @@
 
 using namespace LindaEngine;
 
-Ref<Scene> Scene::overrideScene = nullptr;
-
 Entity* Scene::CreateEntity(const char* name, bool active)
 {
 	Ref<Entity> e = CreateRef<Entity>(name, active);
@@ -55,14 +53,27 @@ void Scene::DestroyEntityIncludeChild(Entity* entity)
 	}
 }
 
-void Scene::Serialize()
+void Scene::Destroy()
+{
+	for (auto& entity : _entitys)
+	{
+		entity->Destroy();
+	}
+	_entitys.clear();
+	_index = -1;
+	_path = "";
+
+	//TODO 每个组件系统也要清空
+}
+
+bool Scene::Serialize()
 {
 	YAML::Emitter out;
 	YamlSerializer::out = &out;
 	out << YAML::BeginMap;
 	out << YAML::Key << "Scene";
 	out << YAML::Value << YAML::BeginMap;
-	if (_path == nullptr)
+	if (_path == "")
 		_path = Path::overridePath;
 	out << YAML::Key << "FileName" << YAML::Value << _path;
 	out << YAML::Key << "Entitys";
@@ -79,40 +90,32 @@ void Scene::Serialize()
 	{
 		std::ofstream fout(_path);
 		fout << out.c_str();
+		YamlSerializer::out = nullptr;
+		return true;
 	}
 	catch (const std::exception&)
 	{
+		YamlSerializer::out = nullptr;
 		std::cout << "Scene::Serialize Error" << _path << "\n" << std::endl;
-	}
-
-	YamlSerializer::out = nullptr;
-}
-
-bool Scene::Deserialize()
-{
-	YAML::Node data;
-	try
-	{
-		data = YAML::LoadFile(Path::overridePath);
-	}
-	catch (const std::exception&)
-	{
 		return false;
 	}
+}
 
-	auto scene = data["Scene"];
+bool Scene::Deserialize(YAML::Node& node)
+{
+	auto scene = node["Scene"];
 	if (!scene)
 		return false;
 
-	std::string path = scene["FileName"].as<std::string>();
-	_path = path.c_str();
+	_path = scene["FileName"].as<std::string>();
 
 	auto entitys = scene["Entitys"];
 	for (auto entity : entitys)
 	{
 		std::string entityName = entity["Name"].as<std::string>();
 		Ref<Entity> e = CreateRef<Entity>(entityName.c_str(), entity["Active"].as<bool>());
-		
+		e->Deserialize(entity);
+		_entitys.push_back(e);
 	}
 
 	return true;

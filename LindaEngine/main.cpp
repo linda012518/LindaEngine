@@ -17,8 +17,13 @@
 #include "MaterialPass.h"
 #include "Texture.h"
 #include "Path.h"
+#include "SceneManagerEditor.h"
+#include "NodeEditor.h"
+#include <typeinfo>
+#include "SceneManager.h"
 
 using namespace LindaEngine;
+using namespace LindaEditor;
 
 int main()
 {
@@ -100,26 +105,53 @@ int main()
 	//Texture::overrideTexture = cubemap;
 	//YamlSerializer::DeSerializeTexture("Assets/Maps/Yamls/testCube.texture");
 
-	Ref<Scene> scene = CreateRef<Scene>();
-	Path::overridePath = "Assets/Scenes/NewScene.scene";
-
-	Entity* entity = scene->CreateEntity("test1");
-	//entity->GetTransform()->SetLocalPosition(glm::vec3(12, 13, 14.6f));
-	//entity->GetTransform()->SetLocalScale(glm::vec3(2, 6, 8));
-	entity->GetTransform()->Tick();
-
-	Entity* entity2 = scene->CreateEntity("test2");
-	entity2->GetTransform()->SetParent(entity->GetTransform());
-	//entity2->GetTransform()->SetLocalPosition(glm::vec3(1, 3, 66.8f));
-	//entity2->GetTransform()->SetLocalScale(glm::vec3(1, 2, 1));
-	entity2->GetTransform()->SetLocalEulerAngles(glm::vec3(10, 10, 10));
-	entity2->GetTransform()->Tick();
-	entity2->SetActive(false);
-
-	scene->Serialize();
-
+	//Ref<Scene> scene = CreateRef<Scene>();
 	//Path::overridePath = "Assets/Scenes/NewScene.scene";
-	//scene->Deserialize();
+
+	//Entity* entity = scene->CreateEntity("test1");
+	////entity->GetTransform()->SetLocalPosition(glm::vec3(12, 13, 14.6f));
+	////entity->GetTransform()->SetLocalScale(glm::vec3(2, 6, 8));
+	//entity->GetTransform()->Tick();
+
+	//Entity* entity2 = scene->CreateEntity("test2");
+	//entity2->GetTransform()->SetParent(entity->GetTransform());
+	////entity2->GetTransform()->SetLocalPosition(glm::vec3(1, 3, 66.8f));
+	////entity2->GetTransform()->SetLocalScale(glm::vec3(1, 2, 1));
+	//entity2->GetTransform()->SetLocalEulerAngles(glm::vec3(10, 10, 10));
+	//entity2->GetTransform()->Tick();
+	//entity2->SetActive(false);
+
+	//PerspectiveCamera* camera = entity2->AddComponent<PerspectiveCamera>();
+
+	//scene->Serialize();
+
+
+
+	//Ref<SceneNodeEditor> sne0 = CreateRef<SceneNodeEditor>();
+	//sne0->name = "test0.scene"; 
+	//sne0->path = "go/go/test0.scene";
+
+	//Ref<SceneNodeEditor> sne1 = CreateRef<SceneNodeEditor>();
+	//sne1->name = "test1.scene";
+	//sne1->path = "go/go/test1.scene";
+
+	//SceneManagerEditor::AddToBuild(0, sne1);
+	//SceneManagerEditor::AddToBuild(1, sne0);
+	//SceneManagerEditor::Build("Assets/Config/SceneConfig");
+
+	////std::string go1 = "go/go1/test0.scene";
+	////std::string go2 = "go/g2o2/test0.scene";
+	////go1 = Path::GetFilePath(go1);
+	////go2 = Path::GetFileName(go2);
+
+	SceneManager::Initialize();
+	Ref<Scene> scene = SceneManager::LoadScene(0);
+
+	TransformSystem::OnDeserializeFinish();
+	TransformSystem::Tick();
+
+	//std::string go = typeid(Entity).name();
+	int a = 0;
 	return 0;
 	//Scene scene;
 	//Entity* e1 = scene.CreateEntity("test1");

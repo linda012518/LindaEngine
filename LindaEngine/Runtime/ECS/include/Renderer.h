@@ -24,20 +24,22 @@ namespace LindaEngine
 	class MeshRenderer : public Renderer
 	{
 	public:
+		DECLARE_DYNAMIC_CREATE(MeshRenderer)
 		MeshRenderer(Entity& entity, bool enable = true);
 		virtual ~MeshRenderer();
 
-		void Serialize();
-		bool Deserialize();
+		bool Serialize();
+		bool Deserialize(YAML::Node& node);
 	};
 
 	class SkinMeshRenderer : public Renderer
 	{
 	public:
+		DECLARE_DYNAMIC_CREATE(SkinMeshRenderer)
 		SkinMeshRenderer(Entity& entity, bool enable = true);
 		virtual ~SkinMeshRenderer();
 
-		void Serialize();
-		bool Deserialize();
+		bool Serialize();
+		bool Deserialize(YAML::Node& node);
 	};
 }

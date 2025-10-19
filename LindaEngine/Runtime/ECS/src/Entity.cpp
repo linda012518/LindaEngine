@@ -1,11 +1,12 @@
 #include "Entity.h"
-#include "LifeCycleFuncSystem.h"
 #include "Transform.h"
 #include "TransformSystem.h"
 #include "Camera.h"
 #include "CameraSystem.h"
 #include "YamlSerializer.h"
+#include "YamlCustomType.h"
 #include "UUID.h"
+#include "ComponentFactory.h"
 
 #include <fstream>
 #include <iostream>
@@ -106,7 +107,7 @@ void Entity::OnComponentRemoved(Component* com)
 		CameraSystem::Remove(camera);
 }
 
-void Entity::Serialize()
+bool Entity::Serialize()
 {
 	YAML::Emitter& out = *YamlSerializer::out;
 	out << YAML::Value << YAML::BeginMap;
@@ -121,9 +122,39 @@ void Entity::Serialize()
 	}
 	out << YAML::EndSeq;
 	out << YAML::EndMap;
+
+	return true;
 }
 
-bool Entity::Deserialize()
+bool Entity::Deserialize(YAML::Node& node)
 {
+	auto components = node["Components"];
+	if (!components)
+		return false;
+
+	_uuid = node["ID"].as<std::string>();
+
+	for (auto com : components)
+	{
+		std::string comName = com["Name"].as<std::string>();
+		
+		if (comName == "Transform")
+		{
+			//glm::vec3 pos = com["worldPosition"].as<glm::vec3>();
+			//glm::vec3 scale = com["worldScale"].as<glm::vec3>();
+			//glm::quat rotation = com["worldRotation"].as<glm::quat>();
+			//std::string parent = com["parent"].as<std::string>();
+			//_transform->SetWorldPosition(pos);
+			//_transform->SetWorldScale(scale);
+			//_transform->SetWorldRotation(rotation);
+			//_transform->SetParentID(parent);
+			_transform->Deserialize(com);
+		}
+		else
+		{
+			ComponentFactory::CreateComponent(comName, *this, com["enable"].as<bool>())->Deserialize(com);
+		}
+	}
+
 	return true;
 }

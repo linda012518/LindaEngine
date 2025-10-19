@@ -100,14 +100,16 @@ const glm::quat& Transform::GetWorldRotation() const
 
 void Transform::SetParent(Transform* parent)
 {
+	if (_parent == parent)
+		return;
+
 	if (_localChange)
 		UpdateWhenLocalChange();
 	_worldChange = true;
 
 	if (_parent)
-	{
 		_parent->_children.remove(this);
-	}
+
 	_parent = parent;
 
 	if (nullptr != _parent)
@@ -212,6 +214,11 @@ const glm::mat4& Transform::LookAt(const glm::vec3& center, const glm::vec3& up)
 	return glm::lookAt(_worldPosition, _worldPosition + center, up);
 }
 
+void Transform::CalculateWordMatrix()
+{
+	UpdateWhenWorldChange();
+}
+
 void Transform::Tick()
 {
 	if (_entity.IsActive() == false)
@@ -267,7 +274,7 @@ void Transform::UpdateWhenLocalChange()
 
 	UpdateViewMatrix();
 	NotifyChange();
-	UpdateChildren();
+	UpdateChildren(_children);
 }
 
 void Transform::UpdateWhenWorldChange()
@@ -310,7 +317,7 @@ void Transform::UpdateWhenWorldChange()
 
 	UpdateViewMatrix();
 	NotifyChange();
-	UpdateChildren();
+	UpdateChildren(_children);
 
 }
 
@@ -327,16 +334,16 @@ void Transform::UpdateViewMatrix()
 
 }
 
-void Transform::UpdateChildren()
+void Transform::UpdateChildren(std::list<Transform*> children)
 {
-	if (_children.size() <= 0)
+	if (children.size() <= 0)
 		return;
 
 	glm::mat4& worldMat = _worldMatrix;
 	glm::vec3 skew;
 	glm::vec4 m;
 
-	for (auto& com : _children) {
+	for (auto& com : children) {
 		com->_worldMatrix = worldMat * com->_localMatrix;
 		glm::decompose(com->_worldMatrix, com->_worldScale, com->_worldRotation, com->_worldPosition, skew, m);
 		com->_worldEulerAngles = glm::eulerAngles(com->_worldRotation);
@@ -344,7 +351,7 @@ void Transform::UpdateChildren()
 
 		UpdateViewMatrix();
 		NotifyChange();
-		UpdateChildren();
+		UpdateChildren(com->_children);
 	}
 
 }
@@ -372,71 +379,40 @@ void Transform::GetDir(glm::quat& rotation, glm::vec3& forward, glm::vec3& up, g
 	forward.z = temp[2][2];
 }
 
-void Transform::Serialize()
+bool Transform::Serialize()
 {
 	YAML::Emitter& out = *YamlSerializer::out;
 
 	out << YAML::Value << YAML::BeginMap;
 
-	out << YAML::Key << "localPosition" << YAML::Value << _localPosition;
-	out << YAML::Key << "localEulerAngles" << YAML::Value << _localEulerAngles;
-	out << YAML::Key << "localScale" << YAML::Value << _localScale;
-	out << YAML::Key << "localRotation" << YAML::Value << _localRotation;
+	out << YAML::Key << "Name" << YAML::Value << "Transform";
+	//out << YAML::Key << "localPosition" << YAML::Value << _localPosition;
+	//out << YAML::Key << "localEulerAngles" << YAML::Value << _localEulerAngles;
+	//out << YAML::Key << "localScale" << YAML::Value << _localScale;
+	//out << YAML::Key << "localRotation" << YAML::Value << _localRotation;
 
 	out << YAML::Key << "worldPosition" << YAML::Value << _worldPosition;
-	out << YAML::Key << "worldEulerAngles" << YAML::Value << _worldEulerAngles;
+	//out << YAML::Key << "worldEulerAngles" << YAML::Value << _worldEulerAngles;
 	out << YAML::Key << "worldScale" << YAML::Value << _worldScale;
 	out << YAML::Key << "worldRotation" << YAML::Value << _worldRotation;
 
 	out << YAML::Key << "parent" << YAML::Value << _parentID;
 
 	out << YAML::EndMap;
+
+	return true;
 }
 
-bool Transform::Deserialize()
+bool Transform::Deserialize(YAML::Node& node)
 {
-	////¸²¸ÇMaterial::overrideMat£¬ÇëÌáÇ°±£´æ
-	//YAML::Node data;
-	//try
-	//{
-	//	data = YAML::LoadFile(path);
-	//}
-	//catch (const std::exception&)
-	//{
-	//	return false;
-	//}
-
-	//if (!data["Material"])
-	//	return false;
-
-	//Ref<Material> mat = CreateRef<Material>();
-	//Material::overrideMat = mat;
-	//auto material = data["Material"];
-
-	//mat->_fileName = material["FileName"].as<std::string>();
-	//mat->_shaderPath = material["ShaderPath"].as<std::string>();
-	//mat->_renderType = static_cast<RenderType>(material["RenderType"].as<int>());
-	//mat->_shadowCast = material["ShadowCast"].as<bool>();
-	//mat->_receiveShadow = material["ReceiveShadow"].as<bool>();
-
-	//Ref<MaterialPass> matPass = nullptr;
-	//auto passes = material["MaterialPasses"];
-	//for (auto pass : passes)
-	//{
-	//	std::string passName = pass["PassName"].as<std::string>();
-	//	matPass = CreateRef<MaterialPass>();
-	//	matPass->_lightMode = passName;
-	//	if (passName == "Depth")
-	//		mat->_depthPass = matPass;
-	//	else if (passName == "DepthNormal")
-	//		mat->_depthNormalPass = matPass;
-	//	else if (passName == "ShadowCaster")
-	//		mat->_shadowCasterPass = matPass;
-	//	else
-	//		mat->_colorPasses.push_back(matPass);
-
-	//}
-
+	glm::vec3 pos = node["worldPosition"].as<glm::vec3>();
+	glm::vec3 scale = node["worldScale"].as<glm::vec3>();
+	glm::quat rotation = node["worldRotation"].as<glm::quat>();
+	std::string parent = node["parent"].as<std::string>();
+	SetWorldPosition(pos);
+	SetWorldScale(scale);
+	SetWorldRotation(rotation);
+	SetParentID(parent);
 	return true;
 
 }

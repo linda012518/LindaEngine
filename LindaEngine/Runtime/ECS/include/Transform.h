@@ -42,6 +42,7 @@ namespace LindaEngine
 		virtual ~Transform();
 
 		std::string& GetParentID() { return _parentID; }
+		void SetParentID(std::string& id) { _parentID = id; }
 
 		const glm::mat4& GetLocalToWorldMat() const;
 		const glm::mat4& GetWorldToLocalMat() const;
@@ -74,18 +75,20 @@ namespace LindaEngine
 		void SetWorldScale(const glm::vec3& scale);
 
 		const glm::mat4& LookAt(const glm::vec3& center, const glm::vec3& up);
+		void CalculateWordMatrix();
 
 		void Tick();
 		void Destroy();
+		std::string GetClassName() const { return "Transform"; }
 
-		void Serialize();
-		bool Deserialize();
+		bool Serialize();
+		bool Deserialize(YAML::Node& node);
 
 	private:
 		void UpdateWhenLocalChange();
 		void UpdateWhenWorldChange();
 		void UpdateViewMatrix();
-		void UpdateChildren();
+		void UpdateChildren(std::list<Transform*> children);
 
 		void NotifyChange();
 

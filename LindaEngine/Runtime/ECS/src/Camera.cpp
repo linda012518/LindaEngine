@@ -5,6 +5,10 @@
 
 using namespace LindaEngine;
 
+DYNAMIC_CREATE(PerspectiveCamera)
+DYNAMIC_CREATE(OrthoCamera)
+DYNAMIC_CREATE(CubeCamera)
+
 Camera::Camera(Entity& entity, bool enable) : Component(entity, enable)
 {
 	_viewMatrix = glm::mat4(1.0);
@@ -108,19 +112,29 @@ void PerspectiveCamera::SetProjectionData(float fov, float ratio, float near, fl
 	SetNearFar(near, far, dontCare);
 }
 
-void PerspectiveCamera::Serialize()
+bool PerspectiveCamera::Serialize()
 {
 	YAML::Emitter& out = *YamlSerializer::out;
 
 	out << YAML::Value << YAML::BeginMap;
-	//out << YAML::Key << "UniformName" << YAML::Value << pointer->name;
-	//out << YAML::Key << "Value" << YAML::Value << pointer->value;
-	//out << YAML::Key << pointer->name << YAML::Value << static_cast<int>(pointer->dataType);
+
+	out << YAML::Key << "Name" << YAML::Value << "PerspectiveCamera";
+	out << YAML::Key << "enable" << YAML::Value << _enable;
+	out << YAML::Key << "fov" << YAML::Value << _fov;
+	out << YAML::Key << "zNear" << YAML::Value << _zNear;
+	out << YAML::Key << "zFar" << YAML::Value << _zFar;
+	out << YAML::Key << "depth" << YAML::Value << _depth;
+	out << YAML::Key << "cameraType" << YAML::Value << static_cast<int>(_cameraType);
+	out << YAML::Key << "clearType" << YAML::Value << static_cast<int>(_clearType);
+
 	out << YAML::EndMap;
+
+	return true;
 }
 
-bool PerspectiveCamera::Deserialize()
+bool PerspectiveCamera::Deserialize(YAML::Node& node)
 {
+	int a = 0;
 	return true;
 }
 
@@ -160,7 +174,7 @@ void OrthoCamera::SetProjectionData(float left, float right, float top, float bo
 	SetNearFar(near, far, dontCare);
 }
 
-void OrthoCamera::Serialize()
+bool OrthoCamera::Serialize()
 {
 	YAML::Emitter& out = *YamlSerializer::out;
 
@@ -169,9 +183,11 @@ void OrthoCamera::Serialize()
 	//out << YAML::Key << "Value" << YAML::Value << pointer->value;
 	//out << YAML::Key << pointer->name << YAML::Value << static_cast<int>(pointer->dataType);
 	out << YAML::EndMap;
+
+	return true;
 }
 
-bool OrthoCamera::Deserialize()
+bool OrthoCamera::Deserialize(YAML::Node& node)
 {
 	return true;
 }
@@ -231,7 +247,7 @@ void CubeCamera::SetProjectionData(float near, float far, float dontCare)
 	SetNearFar(near, far, dontCare);
 }
 
-void CubeCamera::Serialize()
+bool CubeCamera::Serialize()
 {
 	YAML::Emitter& out = *YamlSerializer::out;
 
@@ -240,9 +256,11 @@ void CubeCamera::Serialize()
 	//out << YAML::Key << "Value" << YAML::Value << pointer->value;
 	//out << YAML::Key << pointer->name << YAML::Value << static_cast<int>(pointer->dataType);
 	out << YAML::EndMap;
+
+	return true;
 }
 
-bool CubeCamera::Deserialize()
+bool CubeCamera::Deserialize(YAML::Node& node)
 {
 	return true;
 }

@@ -8,6 +8,8 @@
 #include "LObject.h"
 #include "ISerializable.h"
 
+namespace YAML { class Node; }
+
 namespace LindaEngine
 {
 	class Component;
@@ -42,8 +44,8 @@ namespace LindaEngine
 		template <typename TComponent>
 		void RemoveComponent();
 
-		void Serialize();
-		bool Deserialize();
+		bool Serialize();
+		bool Deserialize(YAML::Node& node);
 
 		friend std::ostream& operator<<(std::ostream& out, const Entity& entity)
 		{

@@ -82,6 +82,7 @@ namespace LindaEngine
 		friend class CubeCamera;
 
 	public:
+		DECLARE_DYNAMIC_CREATE(PerspectiveCamera)
 		PerspectiveCamera(Entity& entity, bool enable = true);
 		virtual ~PerspectiveCamera();
 
@@ -89,8 +90,8 @@ namespace LindaEngine
 
 		void SetProjectionData(float fov, float ratio, float near, float far, float dontCare = -1.0f);
 
-		void Serialize();
-		bool Deserialize();
+		bool Serialize();
+		bool Deserialize(YAML::Node& node);
 
 	private:
 		float _fov;
@@ -100,6 +101,7 @@ namespace LindaEngine
 	class OrthoCamera : public Camera
 	{
 	public:
+		DECLARE_DYNAMIC_CREATE(OrthoCamera)
 		OrthoCamera(Entity& entity, bool enable = true);
 		virtual ~OrthoCamera();
 
@@ -107,8 +109,8 @@ namespace LindaEngine
 
 		void SetProjectionData(float left, float right, float top, float bottom, float near, float far, float dontCare = -1.0f);
 
-		void Serialize();
-		bool Deserialize();
+		bool Serialize();
+		bool Deserialize(YAML::Node& node);
 
 	private:
 		float _left;
@@ -120,6 +122,7 @@ namespace LindaEngine
 	class CubeCamera : public Camera
 	{
 	public:
+		DECLARE_DYNAMIC_CREATE(CubeCamera)
 		CubeCamera(Entity& entity, bool enable = true);
 		virtual ~CubeCamera();
 
@@ -129,8 +132,8 @@ namespace LindaEngine
 
 		void SetProjectionData(float near, float far, float dontCare = -1.0f);
 
-		void Serialize();
-		bool Deserialize();
+		bool Serialize();
+		bool Deserialize(YAML::Node& node);
 
 	private:
 		PerspectiveCamera _right;

@@ -2,6 +2,10 @@
 
 #include "LObject.h"
 #include "ISerializable.h"
+#include "Component.inl"
+
+#include <typeinfo>
+#include <unordered_map>
 
 namespace LindaEngine
 {
@@ -21,8 +25,9 @@ namespace LindaEngine
 		virtual void Destroy() {}
 		virtual void TransformDirty() {}
 
-		virtual void Serialize() = 0;
-		virtual bool Deserialize() = 0;
+		virtual bool Serialize() = 0;
+		virtual bool Deserialize(YAML::Node& node) = 0;
+		virtual std::string GetClassName() const = 0;
 
 	protected:
 		bool _enable;

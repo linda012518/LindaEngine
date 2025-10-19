@@ -6,8 +6,6 @@
 
 #include <vector>
 
-namespace YAML { class Emitter; }
-
 namespace LindaEngine
 {
 	class Entity;
@@ -18,18 +16,18 @@ namespace LindaEngine
 		Entity* CreateEntity(const char* name, bool active = true);
 		void DestroyEntity(Entity* entity);
 		Entity* GetEntity(const char* name);
+		void SetIndex(int index) { _index = index; }
+		void Destroy();
 
-		void Serialize();
-		bool Deserialize();
+		bool Serialize();
+		bool Deserialize(YAML::Node& node);
 
 	private:
 		void DestroyEntityIncludeChild(Entity* entity);
 
 	private:
 		std::vector<Ref<Entity>> _entitys;
-		const char* _path = nullptr;
-
-	public:
-		static Ref<Scene> overrideScene;
+		std::string _path = "";
+		int _index = -1;
 	};
 }

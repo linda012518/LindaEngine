@@ -249,6 +249,18 @@
     <ClCompile Include="Runtime\Tools\src\UUID.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Core\src\SceneManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Core\src\SceneManagerEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Core\src\NodeEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\ECS\src\ComponentFactory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -1565,6 +1577,18 @@
     <ClInclude Include="Runtime\Tools\include\UUID.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Runtime\Core\include\SceneManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Core\include\SceneManagerEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Core\include\NodeEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\ECS\include\ComponentFactory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\glm\glm\detail\func_common.inl">
@@ -2006,6 +2030,9 @@
       <Filter>头文件</Filter>
     </None>
     <None Include="Runtime\IO\include\YamlCustomType.h">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="Runtime\ECS\include\Component.inl">
       <Filter>头文件</Filter>
     </None>
   </ItemGroup>

@@ -18,8 +18,6 @@ namespace LindaEngine
 		static Ref<ShaderSource> Load(const char* path);
 
 	private:
-		static void GetFilePaths(const char* path, std::vector<std::string>& paths);
-
 		static void ProcessInclude(std::string& tex, std::vector<std::string>& paths);
 
 		static void DeleteShaderFrame(std::string& tex);

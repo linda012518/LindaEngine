@@ -122,7 +122,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,6 +146,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\ECS\src\ComponentFactory.cpp" />
+    <ClCompile Include="Editor\Core\src\NodeEditor.cpp" />
     <ClCompile Include="Runtime\IO\src\Path.cpp" />
     <ClCompile Include="Runtime\IO\src\SerializeMaterial.cpp" />
     <ClCompile Include="Runtime\IO\src\SerializeTexture.cpp" />
@@ -198,6 +200,8 @@
     <ClCompile Include="Runtime\Render\Core\src\ShaderAttribute.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\Texture.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\TextureManager.cpp" />
+    <ClCompile Include="Runtime\Core\src\SceneManager.cpp" />
+    <ClCompile Include="Editor\Core\src\SceneManagerEditor.cpp" />
     <ClCompile Include="Temp\LifeCycleFuncSystem.cpp" />
     <ClCompile Include="Temp\Behavior.cpp" />
     <ClCompile Include="Temp\ComponentSystem.cpp" />
@@ -226,6 +230,7 @@
     <ClCompile Include="Runtime\Tools\src\UUID.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\ECS\include\ComponentFactory.h" />
     <ClInclude Include="External\assimp\assimp\ai_assert.h" />
     <ClInclude Include="External\assimp\assimp\anim.h" />
     <ClInclude Include="External\assimp\assimp\camera.h" />
@@ -262,6 +267,7 @@
     <ClInclude Include="External\assimp\assimp\vector2.h" />
     <ClInclude Include="External\assimp\assimp\vector3.h" />
     <ClInclude Include="External\assimp\assimp\version.h" />
+    <ClInclude Include="Editor\Core\include\NodeEditor.h" />
     <ClInclude Include="Runtime\IO\include\Path.h" />
     <ClInclude Include="Runtime\Render\Core\include\MeshManager.h" />
     <ClInclude Include="Runtime\IO\include\MeshLoader.h" />
@@ -343,6 +349,8 @@
     <ClInclude Include="Runtime\Render\Core\include\ShaderAttribute.h" />
     <ClInclude Include="Runtime\Render\Core\include\Texture.h" />
     <ClInclude Include="Runtime\Render\Core\include\TextureManager.h" />
+    <ClInclude Include="Runtime\Core\include\SceneManager.h" />
+    <ClInclude Include="Editor\Core\include\SceneManagerEditor.h" />
     <ClInclude Include="Temp\LifeCycleFuncSystem.h" />
     <ClInclude Include="Temp\Behavior.h" />
     <ClInclude Include="Temp\ComponentSystem.h" />
@@ -811,6 +819,7 @@
     <None Include="External\glm\glm\gtx\vector_angle.inl" />
     <None Include="External\glm\glm\gtx\vector_query.inl" />
     <None Include="External\glm\glm\gtx\wrap.inl" />
+    <None Include="Runtime\ECS\include\Component.inl" />
     <None Include="Runtime\ECS\include\Entity.inl" />
     <None Include="Runtime\IO\include\YamlCustomType.h" />
   </ItemGroup>

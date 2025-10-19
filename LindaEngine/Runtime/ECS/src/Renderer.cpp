@@ -3,6 +3,9 @@
 
 using namespace LindaEngine;
 
+DYNAMIC_CREATE(MeshRenderer)
+DYNAMIC_CREATE(SkinMeshRenderer)
+
 Renderer::Renderer(Entity& entity, bool enable) : Component(entity, enable)
 {
 }
@@ -20,7 +23,7 @@ MeshRenderer::~MeshRenderer()
 
 }
 
-void MeshRenderer::Serialize()
+bool MeshRenderer::Serialize()
 {
 	YAML::Emitter& out = *YamlSerializer::out;
 
@@ -29,9 +32,11 @@ void MeshRenderer::Serialize()
 	//out << YAML::Key << "Value" << YAML::Value << pointer->value;
 	//out << YAML::Key << pointer->name << YAML::Value << static_cast<int>(pointer->dataType);
 	out << YAML::EndMap;
+
+	return true;
 }
 
-bool MeshRenderer::Deserialize()
+bool MeshRenderer::Deserialize(YAML::Node& node)
 {
 	return true;
 }
@@ -45,7 +50,7 @@ SkinMeshRenderer::~SkinMeshRenderer()
 {
 }
 
-void SkinMeshRenderer::Serialize()
+bool SkinMeshRenderer::Serialize()
 {
 	YAML::Emitter& out = *YamlSerializer::out;
 
@@ -54,9 +59,12 @@ void SkinMeshRenderer::Serialize()
 	//out << YAML::Key << "Value" << YAML::Value << pointer->value;
 	//out << YAML::Key << pointer->name << YAML::Value << static_cast<int>(pointer->dataType);
 	out << YAML::EndMap;
+
+	return true;
 }
 
-bool SkinMeshRenderer::Deserialize()
+bool SkinMeshRenderer::Deserialize(YAML::Node& node)
 {
 	return true;
 }
+
