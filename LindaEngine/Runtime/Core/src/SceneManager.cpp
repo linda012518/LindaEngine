@@ -10,7 +10,7 @@ Ref<Scene> SceneManager::_currentScene = CreateRef<Scene>();
 std::unordered_map<int, std::string> SceneManager::_sceneIndexMap;
 std::unordered_map<std::string, std::string> SceneManager::_sceneNameMap;
 
-bool SceneManager::Initialize()
+int SceneManager::Initialize()
 {
 	YAML::Node data;
 	try
@@ -19,7 +19,7 @@ bool SceneManager::Initialize()
 
 		data = data["BuildScenes"];
 		if (!data)
-			return false;
+			return -1;
 
 		for (auto scene : data)
 		{
@@ -31,11 +31,11 @@ bool SceneManager::Initialize()
 			_sceneNameMap[name] = path;
 		}
 
-		return true;
+		return 0;
 	}
 	catch (const std::exception&)
 	{
-		return false;
+		return -1;
 	}
 }
 

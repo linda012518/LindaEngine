@@ -30,11 +30,11 @@ bool SceneManagerEditor::SaveScene(const char* path)
 		return false;
 	if (nullptr != _node)
 		return true;
-	Ref<SceneNodeEditor> node = CreateRef<SceneNodeEditor>();
-	node->path = path;
+	_node = CreateRef<SceneNodeEditor>();
+	_node->path = path;
 	std::string temp = path;
-	node->name = Path::GetFileName(temp).c_str();
-	_sceneNodes.push_back(node);
+	_node->name = Path::GetFileName(temp);
+	_sceneNodes.push_back(_node);
 	return true;
 }
 
@@ -97,12 +97,31 @@ bool SceneManagerEditor::LoadScene(const char* path)
 	{
 		data = YAML::LoadFile(path);
 		CreateScene()->Deserialize(data);
-		return true;
+
+		for (auto& node : _sceneNodes)
+		{
+			if (node->path != _scene->GetPath())
+				continue;
+
+			_node = node;
+			return true;
+		}
+		return false;
 	}
 	catch (const std::exception&)
 	{
 		return false;
 	}
+}
+
+Ref<SceneNodeEditor> SceneManagerEditor::GetCurrentNode()
+{
+	return _node;
+}
+
+Ref<Scene> SceneManagerEditor::GetCurrentScene()
+{
+	return _scene;
 }
 
 void SceneManagerEditor::Initialize()

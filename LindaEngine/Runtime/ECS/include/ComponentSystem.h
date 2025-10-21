@@ -7,6 +7,6 @@ namespace LindaEngine
 	public:
 		static void Tick();
 		static void OnDeserializeFinish();
-		static void Clear();
+		static void Finalize();
 	};
 }

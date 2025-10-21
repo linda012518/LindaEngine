@@ -12,7 +12,7 @@ namespace LindaEngine
 	class SceneManager
 	{
 	public:
-		static bool Initialize();
+		static int Initialize();
 		static void Finalize();
 		static void Tick();
 

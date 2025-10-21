@@ -19,7 +19,7 @@ void ComponentSystem::OnDeserializeFinish()
 	RendererSystem::OnDeserializeFinish();
 }
 
-void ComponentSystem::Clear()
+void ComponentSystem::Finalize()
 {
 	TransformSystem::Clear();
 	CameraSystem::Clear();

@@ -21,7 +21,7 @@ void YamlSerializer::SerializeMaterial(const char* path)
 	out << YAML::BeginMap;
 	out << YAML::Key << "Material";
 	out << YAML::Value << YAML::BeginMap;
-	out << YAML::Key << "FilePath" << YAML::Value << mat->_filePath;
+	//out << YAML::Key << "FilePath" << YAML::Value << mat->_filePath;
 	out << YAML::Key << "ShaderPath" << YAML::Value << mat->_shaderPath;
 	out << YAML::Key << "RenderType" << YAML::Value << static_cast<int>(mat->_renderType);
 	out << YAML::Key << "ShadowCast" << YAML::Value << mat->_shadowCast;
@@ -76,7 +76,7 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 	Ref<Material> mat = CreateRef<Material>();
 	auto material = data["Material"];
 
-	mat->_filePath = material["FilePath"].as<std::string>();
+	//mat->_filePath = material["FilePath"].as<std::string>();
 	mat->_shaderPath = material["ShaderPath"].as<std::string>();
 	mat->_renderType = static_cast<RenderType>(material["RenderType"].as<int>());
 	mat->_shadowCast = material["ShadowCast"].as<bool>();

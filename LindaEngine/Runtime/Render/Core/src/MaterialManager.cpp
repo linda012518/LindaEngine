@@ -1,6 +1,7 @@
 #include "MaterialManager.h"
 #include "MaterialLoader.h"
 #include "YamlSerializer.h"
+#include "Material.h"
 
 using namespace LindaEngine;
 
@@ -12,6 +13,7 @@ Ref<Material> MaterialManager::GetMaterial(const char* path)
     if (itr == _materialMap.end())
     {
         _materialMap[path] = YamlSerializer::DeSerializeMaterial(path);
+        _materialMap[path]->SetPath(path);
     }
 
     return _materialMap[path];

@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "YamlSerializer.h"
 #include "Path.h"
+#include "ComponentSystem.h"
 
 using namespace LindaEngine;
 
@@ -31,12 +32,16 @@ int Application::Initialize()
         return ret;
     }
 
+    SceneManager::LoadScene(0);
+    ComponentSystem::OnDeserializeFinish();
+
     return ret;
 }
 
 void Application::Finalize()
 {
     _graphicContext->Finalize();
+    ComponentSystem::Finalize();
     SceneManager::Finalize();
     _window->Finalize();
 }
@@ -47,6 +52,7 @@ void Application::Tick()
     {
         _window->Tick();
         SceneManager::Tick();
+        ComponentSystem::Tick();
         _graphicContext->Tick();
     }
 }

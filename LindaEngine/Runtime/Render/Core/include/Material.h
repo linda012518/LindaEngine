@@ -29,6 +29,8 @@ namespace LindaEngine
 		MaterialPass* GetShadowCasterPass() { return _shadowCasterPass.get(); }
 		std::vector<Ref<MaterialPass>>& GetColorPass() { return _colorPasses; }
 
+		void SetPath(const char* path) { _filePath = path; }
+
 		void CompileShader(); //序列化出来的直接编译
 		void SetShader(const char* path); //动态添加的要设置shader，然后设置所有需要的属性，再调用CompileShader
 

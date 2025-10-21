@@ -57,13 +57,13 @@ namespace LindaEngine
 	public:
 		struct Data
 		{
-			unsigned int VAO = -1;
-			unsigned int VBO = -1;
-			unsigned int IBO = -1;
+			int VAO = -1;
+			int VBO = -1;
+			int IBO = -1;
 
 			std::vector<float> vertexData;
 			std::vector<unsigned int> indexData;
-			size_t indexSize = -1;
+			size_t indexSize = 0;
 			int attributeIndex = 0;
 			int attributeOffset = 0;
 			std::vector<VertexAttribute> attributes;
@@ -76,6 +76,7 @@ namespace LindaEngine
 	public:
 		Mesh::Data& AddMeshData(Mesh::Data data);
 		const int GetMeshCount() { return _meshCount; }
+		void SetPath(const char* path) { _path = path; }
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);

@@ -1,7 +1,4 @@
 BuildScenes:
   - index: 0
-    name: NewScene.scene
-    path: Assets/Scenes/NewScene.scene
-  - index: 1
-    name: NewScene.scene
-    path: Assets/Scenes/NewScene.scene
+    name: All0.scene
+    path: Assets/Scenes/All0.scene

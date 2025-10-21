@@ -20,6 +20,8 @@ namespace LindaEditor
 		static void RemoveToBuild(Ref<SceneNodeEditor> scene);
 		static bool Build(const char* path);
 		static bool LoadScene(const char* path);
+		static Ref<SceneNodeEditor> GetCurrentNode();
+		static Ref<LindaEngine::Scene> GetCurrentScene();
 
 		static void Initialize();
 

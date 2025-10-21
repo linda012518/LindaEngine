@@ -1,5 +1,4 @@
 Material:
-  FilePath: Material
   ShaderPath: Assets/Shaders/Unlit.shader
   RenderType: 2
   ShadowCast: true
@@ -18,7 +17,6 @@ Material:
       ShaderUniforms:
         - UniformName: MainTex
           Value: texturl/aa/bb
-          OffsetScale: [1, 2.5999999, 0, 0]
           MainTex: 1
         - UniformName: Vector
           Value: [0, 0, 8, 0]

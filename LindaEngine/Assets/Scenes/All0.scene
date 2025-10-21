@@ -1,0 +1,43 @@
+Scene:
+  FileName: Assets/Scenes/All0.scene
+  Entitys:
+    - Name: test1
+      ID: 0617baa2-a444-1829-0000-000000000001
+      Active: true
+      Components:
+        - Name: Transform
+          worldPosition: [0, 0, 0]
+          worldScale: [1, 1, 1]
+          worldRotation: [0, 0, 0, 1]
+          parent: ""
+    - Name: test2
+      ID: bf0c1a8b-30ec-38d7-0000-000000000002
+      Active: false
+      Components:
+        - Name: Transform
+          worldPosition: [0, 0, 0]
+          worldScale: [1, 1, 1]
+          worldRotation: [0.0789264813, 0.0940609276, 0.0789264888, 0.989289522]
+          parent: 0617baa2-a444-1829-0000-000000000001
+        - enable: true
+          zNear: 0.100000001
+          zFar: 1000
+          depth: -1
+          clearType: 0
+          Name: PerspectiveCamera
+          fov: 60
+    - Name: test3
+      ID: 14970d88-1d04-46ed-0000-000000000003
+      Active: true
+      Components:
+        - Name: Transform
+          worldPosition: [0, 0, 0]
+          worldScale: [1, 1, 1]
+          worldRotation: [0, 0, 0, 1]
+          parent: ""
+        - enable: true
+          Mesh:
+            FilePath: Assets/Meshs/rock.obj
+          Material:
+            - FilePath: Assets/Materials/test.mat
+          Name: MeshRenderer

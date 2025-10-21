@@ -19,6 +19,9 @@ namespace LindaEngine
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
+		void SetMesh(Ref<Mesh> mesh);
+		void AddMaterial(int index, Ref<Material> mat);
+
 	protected:
 		std::vector<Ref<Material>> _materialList;
 		Ref<Mesh> _mesh;

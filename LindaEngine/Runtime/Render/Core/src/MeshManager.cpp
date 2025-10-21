@@ -11,6 +11,7 @@ Ref<Mesh> MeshManager::GetMesh(const char* path)
     if (itr == _meshMap.end())
     {
         _meshMap[path] = MeshLoader::Load(path);
+        _meshMap[path]->SetPath(path);
     }
 
     return _meshMap[path];

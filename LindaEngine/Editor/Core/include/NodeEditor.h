@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace LindaEditor
 {
 	struct NodeEditor
@@ -10,7 +12,7 @@ namespace LindaEditor
 	struct SceneNodeEditor : public NodeEditor
 	{
 		int index = -1;
-		const char* path = nullptr;
-		const char* name = nullptr;
+		std::string path;
+		std::string name;
 	};
 }

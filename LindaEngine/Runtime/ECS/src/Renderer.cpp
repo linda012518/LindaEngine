@@ -26,16 +26,14 @@ bool Renderer::Serialize()
 
 	out << YAML::Key << "enable" << YAML::Value << _enable;
 	out << YAML::Key << "Mesh";
-	out << YAML::Value << YAML::BeginSeq;
 	_mesh->Serialize();
-	out << YAML::EndSeq;
 	out << YAML::Key << "Material";
 	out << YAML::Value << YAML::BeginSeq;
 	for (auto& mat : _materialList)
 	{
 		mat->Serialize();
 	}
-
+	out << YAML::EndSeq;
 	return true;
 }
 
@@ -47,7 +45,7 @@ bool Renderer::Deserialize(YAML::Node& node)
 	auto materials = node["Material"];
 	
 	_mesh = MeshManager::GetMesh(mesh["FilePath"].as<std::string>().c_str());
-	_mesh->Deserialize(node);
+	_mesh->Deserialize(mesh);
 
 	for (auto mat : materials)
 	{
@@ -56,6 +54,16 @@ bool Renderer::Deserialize(YAML::Node& node)
 		pointer->Deserialize(mat);
 	}
 	return true;
+}
+
+void Renderer::SetMesh(Ref<Mesh> mesh)
+{
+	_mesh = mesh;
+}
+
+void Renderer::AddMaterial(int index, Ref<Material> mat)
+{
+	_materialList.insert(_materialList.begin() + index, mat);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -74,7 +82,7 @@ bool MeshRenderer::Serialize()
 	Renderer::Serialize();
 
 	YAML::Emitter& out = *YamlSerializer::out;
-
+	out << YAML::Key << "Name" << YAML::Value << "MeshRenderer";
 	out << YAML::EndMap;
 
 	return true;
@@ -102,7 +110,7 @@ bool SkinMeshRenderer::Serialize()
 	Renderer::Serialize();
 
 	YAML::Emitter& out = *YamlSerializer::out;
-
+	out << YAML::Key << "Name" << YAML::Value << "SkinMeshRenderer";
 	out << YAML::EndMap;
 
 	return true;
