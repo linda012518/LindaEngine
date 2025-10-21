@@ -12,7 +12,7 @@ namespace LindaEngine
 	class MeshLoader
 	{
 	public:
-		static Ref<Mesh> Load(const char* path);
+		static Ref<Mesh> Load(std::string path);
 
 		static Ref<Mesh> LoadSphereMesh();
 		static Ref<Mesh> LoadCube();

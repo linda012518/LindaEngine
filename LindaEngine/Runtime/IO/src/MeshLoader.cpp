@@ -22,7 +22,7 @@ glm::vec3 CalculateTangent(glm::vec3& pos0, glm::vec3& pos1, glm::vec3& pos2, gl
 	return (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
 }
 
-Ref<Mesh> MeshLoader::Load(const char* path)
+Ref<Mesh> MeshLoader::Load(std::string path)
 {
 	if (path == "Sphere") return LoadSphereMesh();
 	else if (path == "Cube") return LoadCube();
@@ -332,7 +332,6 @@ void MeshLoader::ParseAssimpNode(aiNode* node, const aiScene* scene, Ref<Mesh> m
 	{
 		//每个节点的网格索引，对应 场景的mMeshes数组的网格
 		aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
-		mesh->AddMeshData(Mesh::Data());
 		ParseAssimpMesh(aiMesh, scene, mesh->AddMeshData(Mesh::Data()));
 	}
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -357,12 +356,12 @@ void MeshLoader::ParseAssimpMesh(aiMesh* aiMesh, const aiScene* scene, Mesh::Dat
 	{
 		if (NULL == aiMesh->mTextureCoords[i])
 			break;
-		meshData.AddAttribute(("aUV" + std::to_string(i)).c_str());
+		meshData.AddAttribute("aUV" + std::to_string(i));
 	}
 	if (NULL != aiMesh->mColors[0])
 		meshData.AddAttribute(VertexAttributeType::Color);
 
-	meshData.vertexData.resize(((size_t)meshData.attributeOffset) * ((size_t)aiMesh->mNumVertices));
+	meshData.vertexData.resize(((size_t)meshData.attributeOffset / 4) * ((size_t)aiMesh->mNumVertices));
 
 	for (unsigned int i = 0; i < aiMesh->mNumVertices; i++)
 	{

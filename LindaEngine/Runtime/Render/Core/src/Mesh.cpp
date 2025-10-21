@@ -86,7 +86,7 @@ uint32_t VertexAttribute::GetAttributeDataSize(VertexAttributeType attrType)
 	return 0;
 }
 
-VertexAttributeType VertexAttribute::GetAttributeType(const char* name)
+VertexAttributeType VertexAttribute::GetAttributeType(std::string& name)
 {
 	if (name == "aPosition")			return VertexAttributeType::Position;
 	else if (name == "aNormal")			return VertexAttributeType::Normal;
@@ -122,7 +122,7 @@ void Mesh::Data::AddAttribute(VertexAttributeType attrType)
 	attributeIndex++;
 }
 
-void Mesh::Data::AddAttribute(const char* name)
+void Mesh::Data::AddAttribute(std::string name)
 {
 	VertexAttributeType attrType = VertexAttribute::GetAttributeType(name);
 	attributes.push_back(VertexAttribute(attrType, attributeOffset, attributeIndex));

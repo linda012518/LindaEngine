@@ -47,7 +47,7 @@ namespace LindaEngine
 		static const char* GetAttributeName(VertexAttributeType attrType);
 		static VertexDataType GetAttributeDataType(VertexAttributeType attrType);
 		static uint32_t GetAttributeDataSize(VertexAttributeType attrType);
-		static VertexAttributeType GetAttributeType(const char* name);
+		static VertexAttributeType GetAttributeType(std::string& name);
 	};
 
 	class VertexArray;
@@ -69,7 +69,7 @@ namespace LindaEngine
 			std::vector<VertexAttribute> attributes;
 
 			void AddAttribute(VertexAttributeType attrType);
-			void AddAttribute(const char* name);
+			void AddAttribute(std::string name);
 			VertexAttribute* GetAttribute(const char* name);
 			VertexAttribute* GetAttribute(VertexAttributeType attrType);
 		};

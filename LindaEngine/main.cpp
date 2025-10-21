@@ -89,6 +89,7 @@ void SerializeScene0()
 
 	Entity* entity3 = scene->CreateEntity("test3");
 	MeshRenderer* renderer = entity3->AddComponent<MeshRenderer>();
+	renderer->SetMesh(MeshManager::GetMesh("Sphere"));
 	renderer->SetMesh(MeshManager::GetMesh("Assets/Meshs/rock.obj"));
 	renderer->AddMaterial(0, MaterialManager::GetMaterial("Assets/Materials/test.mat"));
 
