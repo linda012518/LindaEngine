@@ -105,25 +105,25 @@ int main()
 	//Texture::overrideTexture = cubemap;
 	//YamlSerializer::DeSerializeTexture("Assets/Maps/Yamls/testCube.texture");
 
-	Ref<Scene> scene = CreateRef<Scene>();
-	Path::overridePath = "Assets/Scenes/NewScene.scene";
+	//Ref<Scene> scene = CreateRef<Scene>();
+	//Path::overridePath = "Assets/Scenes/NewScene.scene";
 
-	Entity* entity = scene->CreateEntity("test1");
-	//entity->GetTransform()->SetLocalPosition(glm::vec3(12, 13, 14.6f));
-	//entity->GetTransform()->SetLocalScale(glm::vec3(2, 6, 8));
-	entity->GetTransform()->Tick();
+	//Entity* entity = scene->CreateEntity("test1");
+	////entity->GetTransform()->SetLocalPosition(glm::vec3(12, 13, 14.6f));
+	////entity->GetTransform()->SetLocalScale(glm::vec3(2, 6, 8));
+	//entity->GetTransform()->Tick();
 
-	Entity* entity2 = scene->CreateEntity("test2");
-	entity2->GetTransform()->SetParent(entity->GetTransform());
-	//entity2->GetTransform()->SetLocalPosition(glm::vec3(1, 3, 66.8f));
-	//entity2->GetTransform()->SetLocalScale(glm::vec3(1, 2, 1));
-	entity2->GetTransform()->SetLocalEulerAngles(glm::vec3(10, 10, 10));
-	entity2->GetTransform()->Tick();
-	entity2->SetActive(false);
+	//Entity* entity2 = scene->CreateEntity("test2");
+	//entity2->GetTransform()->SetParent(entity->GetTransform());
+	////entity2->GetTransform()->SetLocalPosition(glm::vec3(1, 3, 66.8f));
+	////entity2->GetTransform()->SetLocalScale(glm::vec3(1, 2, 1));
+	//entity2->GetTransform()->SetLocalEulerAngles(glm::vec3(10, 10, 10));
+	//entity2->GetTransform()->Tick();
+	//entity2->SetActive(false);
 
-	PerspectiveCamera* camera = entity2->AddComponent<PerspectiveCamera>();
+	//PerspectiveCamera* camera = entity2->AddComponent<PerspectiveCamera>();
 
-	scene->Serialize();
+	//scene->Serialize();
 
 
 
@@ -144,8 +144,8 @@ int main()
 	////go1 = Path::GetFilePath(go1);
 	////go2 = Path::GetFileName(go2);
 
-	//SceneManager::Initialize();
-	//Ref<Scene> scene = SceneManager::LoadScene(0);
+	SceneManager::Initialize();
+	Ref<Scene> scene = SceneManager::LoadScene(0);
 
 	//TransformSystem::OnDeserializeFinish();
 	//TransformSystem::Tick();

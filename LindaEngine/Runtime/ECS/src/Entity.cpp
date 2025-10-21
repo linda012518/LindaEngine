@@ -7,10 +7,32 @@
 #include "YamlCustomType.h"
 #include "UUID.h"
 #include "ComponentFactory.h"
+#include "Renderer.h"
+#include "RendererSystem.h"
+
+#include "ComponentSystem2.h"
 
 #include <fstream>
 #include <iostream>
 #include <string>
+
+#define COMPONENTADDED(className, pointerSrc, comSystem, pointer, otherCode) \
+className* pointer = dynamic_cast<className*>(pointerSrc); \
+if (nullptr != pointer) \
+{ \
+	comSystem::Add(pointer); \
+	otherCode \
+	return; \
+} 
+
+#define COMPONENTREMOVED(className, pointerSrc, comSystem, pointer, otherCode) \
+className* pointer = dynamic_cast<className*>(pointerSrc); \
+if (nullptr != pointer) \
+{ \
+	comSystem::Remove(pointer); \
+	otherCode \
+	return; \
+} 
 
 using namespace LindaEngine;
 
@@ -84,33 +106,59 @@ Transform* Entity::GetTransform()
 
 void Entity::OnComponentAdded(Component* com)
 {
-	//LifeCycleFuncSystem::AddComponentAwake(com);
-	//LifeCycleFuncSystem::AddComponentStart(com);
+	//Transform* trans = dynamic_cast<Transform*>(com);
+	//if (nullptr != trans)
+	//{
+	//	TransformSystem::Add(trans);
+	//	return;
+	//}
 
-	Transform* trans = dynamic_cast<Transform*>(com);
-	if (nullptr != trans)
-		TransformSystem::Add(trans);
+	//Camera* camera = dynamic_cast<Camera*>(com);
+	//if (nullptr != camera)
+	//{
+	//	CameraSystem::Add(camera);
+	//	_transform->OnCameraAdded();
+	//	return;
+	//}
 
-	Camera* camera = dynamic_cast<Camera*>(com);
-	if (nullptr != camera)
-	{
-		CameraSystem::Add(camera);
-		_transform->OnCameraAdded();
-	}
+	//Renderer* renderer = dynamic_cast<Renderer*>(com);
+	//if (nullptr != renderer)
+	//{
+	//	RendererSystem::Add(renderer);
+	//	return;
+	//}
+
+	COMPONENTADDED(Transform, com, TransformSystem, trans, ;)
+	COMPONENTADDED(Camera, com, CameraSystem, camera, _transform->OnCameraAdded();)
+	COMPONENTADDED(Renderer, com, RendererSystem, renderer, ;)
 }
 
 void Entity::OnComponentRemoved(Component* com)
 {
-	Transform* trans = dynamic_cast<Transform*>(com);
-	if (nullptr != trans)
-		TransformSystem::Remove(trans);
+	COMPONENTREMOVED(Transform, com, TransformSystem, trans, ;)
+	COMPONENTREMOVED(Camera, com, CameraSystem, camera, _transform->OnCameraRemoved();)
+	COMPONENTREMOVED(Renderer, com, RendererSystem, renderer, ;)
+	//Transform* trans = dynamic_cast<Transform*>(com);
+	//if (nullptr != trans)
+	//{
+	//	TransformSystem::Remove(trans);
+	//	return;
+	//}
 
-	Camera* camera = dynamic_cast<Camera*>(com);
-	if (nullptr != camera)
-	{
-		CameraSystem::Remove(camera);
-		_transform->OnCameraRemoved();
-	}
+	//Camera* camera = dynamic_cast<Camera*>(com);
+	//if (nullptr != camera)
+	//{
+	//	CameraSystem::Remove(camera);
+	//	_transform->OnCameraRemoved();
+	//	return;
+	//}
+
+	//Renderer* renderer = dynamic_cast<Renderer*>(com);
+	//if (nullptr != renderer)
+	//{
+	//	RendererSystem::Remove(renderer);
+	//	return;
+	//}
 }
 
 bool Entity::Serialize()
@@ -150,7 +198,10 @@ bool Entity::Deserialize(YAML::Node& node)
 		}
 		else
 		{
-			ComponentFactory::CreateComponent(comName, *this, com["enable"].as<bool>())->Deserialize(com);
+			Ref<Component> pointer = ComponentFactory::CreateComponent(comName, *this, com["enable"].as<bool>());
+			pointer->Deserialize(com);
+			_components.push_back(pointer);
+			OnComponentAdded(pointer.get());
 		}
 	}
 

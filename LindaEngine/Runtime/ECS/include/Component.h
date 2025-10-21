@@ -31,7 +31,6 @@ namespace LindaEngine
 
 	protected:
 		bool _enable;
-		bool _dirty;
 		Entity& _entity;
 	};
 }

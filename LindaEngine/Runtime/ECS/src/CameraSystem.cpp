@@ -13,6 +13,13 @@ void CameraSystem::Tick()
 	}
 }
 
+void CameraSystem::OnDeserializeFinish()
+{
+	for (auto& com : _components) {
+
+	}
+}
+
 void CameraSystem::Add(Camera* camera)
 {
 	_components.push_back(camera);
@@ -28,7 +35,7 @@ void CameraSystem::Remove(Camera* camera)
 void CameraSystem::Clear()
 {
 	if (false == _components.empty())
-		static_assert(true, "TransformSystem is not empty, Check destruction process.");
+		static_assert(true, "CameraSystem is not empty, Check destruction process.");
 
 	_components.clear();
 }

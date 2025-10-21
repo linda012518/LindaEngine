@@ -10,6 +10,7 @@ namespace LindaEngine
 	{
 	public:
 		static void Tick();
+		static void OnDeserializeFinish();
 
 		static void Add(Camera* camera);
 		static void Remove(Camera* camera);

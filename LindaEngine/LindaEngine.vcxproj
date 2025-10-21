@@ -146,6 +146,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\ECS\src\RendererSystem.cpp" />
+    <ClCompile Include="Runtime\ECS\src\ComponentSystem.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\MaterialManager.cpp" />
     <ClCompile Include="Runtime\ECS\src\ComponentFactory.cpp" />
     <ClCompile Include="Editor\Core\src\NodeEditor.cpp" />
@@ -205,7 +207,7 @@
     <ClCompile Include="Editor\Core\src\SceneManagerEditor.cpp" />
     <ClCompile Include="Temp\LifeCycleFuncSystem.cpp" />
     <ClCompile Include="Temp\Behavior.cpp" />
-    <ClCompile Include="Temp\ComponentSystem.cpp" />
+    <ClCompile Include="Temp\ComponentSystem2.cpp" />
     <ClCompile Include="Runtime\ECS\src\CameraSystem.cpp" />
     <ClCompile Include="Runtime\ECS\src\Camera.cpp" />
     <ClCompile Include="Runtime\Core\src\Application.cpp" />
@@ -231,6 +233,8 @@
     <ClCompile Include="Runtime\Tools\src\UUID.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\ECS\include\RendererSystem.h" />
+    <ClInclude Include="Runtime\ECS\include\ComponentSystem.h" />
     <ClInclude Include="Runtime\Render\Core\include\MaterialManager.h" />
     <ClInclude Include="Runtime\ECS\include\ComponentFactory.h" />
     <ClInclude Include="External\assimp\assimp\ai_assert.h" />
@@ -355,7 +359,7 @@
     <ClInclude Include="Editor\Core\include\SceneManagerEditor.h" />
     <ClInclude Include="Temp\LifeCycleFuncSystem.h" />
     <ClInclude Include="Temp\Behavior.h" />
-    <ClInclude Include="Temp\ComponentSystem.h" />
+    <ClInclude Include="Temp\ComponentSystem2.h" />
     <ClInclude Include="Runtime\ECS\include\CameraSystem.h" />
     <ClInclude Include="Runtime\ECS\include\Camera.h" />
     <ClInclude Include="Runtime\Core\include\Application.h" />

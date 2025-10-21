@@ -4,7 +4,7 @@
 using namespace LindaEngine;
 
 Component::Component(Entity& entity, bool enable) :
-	_enable(enable), _entity(entity), _dirty(false)
+	_enable(enable), _entity(entity)
 {
 
 }

@@ -75,7 +75,7 @@
     <ClCompile Include="Runtime\ECS\src\CameraSystem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Temp\ComponentSystem.cpp">
+    <ClCompile Include="Temp\ComponentSystem2.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Temp\Behavior.cpp">
@@ -262,6 +262,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Render\Core\src\MaterialManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\ECS\src\ComponentSystem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\ECS\src\RendererSystem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1211,7 +1217,7 @@
     <ClInclude Include="Runtime\ECS\include\CameraSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Temp\ComponentSystem.h">
+    <ClInclude Include="Temp\ComponentSystem2.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Temp\Behavior.h">
@@ -1593,6 +1599,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Render\Core\include\MaterialManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\ECS\include\ComponentSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\ECS\include\RendererSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
