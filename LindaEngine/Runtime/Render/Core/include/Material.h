@@ -2,6 +2,7 @@
 
 #include "AutoPtr.h"
 #include "LObject.h"
+#include "ISerializable.h"
 
 #include <vector>
 #include <string>
@@ -15,7 +16,7 @@ namespace LindaEngine
 		Opaque, Skybox, Transparent, Overlay
 	};
 
-	class Material : public LObject
+	class Material : public LObject, public ISerializable
 	{
 		friend class YamlSerializer;
 
@@ -31,6 +32,9 @@ namespace LindaEngine
 		void CompileShader(); //序列化出来的直接编译
 		void SetShader(const char* path); //动态添加的要设置shader，然后设置所有需要的属性，再调用CompileShader
 
+		bool Serialize();
+		bool Deserialize(YAML::Node& node);
+
 	private:
 		//这几个pass哪个是nullptr并且_hasFallback=true，就用defaultPass
 		Ref<MaterialPass> _depthPass = nullptr;
@@ -42,7 +46,7 @@ namespace LindaEngine
 		RenderType _renderType = RenderType::Opaque; //是否不透明物体
 		bool _shadowCast = true; //是否投射阴影
 		bool _receiveShadow = true; //是否接收阴影
-		std::string _fileName = "Material";
+		std::string _filePath = "Material";
 		std::string _shaderPath = "Assets/Shaders/Unlit.shader";
 
 		bool _hasFallback = false; //如果有fallback，指针为空用默认的，没有fallback不渲染

@@ -2,6 +2,7 @@
 
 #include "LObject.h"
 #include "glm/glm.hpp"
+#include "ISerializable.h"
 
 #include <unordered_map>
 #include <string>
@@ -51,7 +52,7 @@ namespace LindaEngine
 
 	class VertexArray;
 
-	class Mesh : public LObject
+	class Mesh : public LObject, public ISerializable
 	{
 	public:
 		struct Data
@@ -76,8 +77,12 @@ namespace LindaEngine
 		Mesh::Data& AddMeshData(Mesh::Data data);
 		const int GetMeshCount() { return _meshCount; }
 
+		bool Serialize();
+		bool Deserialize(YAML::Node& node);
+
 	private:
 		int _meshCount = 0;
 		std::vector<Mesh::Data> _data;
+		std::string _path;
 	};
 }

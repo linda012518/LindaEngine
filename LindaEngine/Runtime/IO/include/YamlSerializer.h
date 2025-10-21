@@ -1,14 +1,16 @@
 #pragma once
 
 #include <yaml-cpp/yaml.h>
+#include "AutoPtr.h"
 
 namespace LindaEngine
 {
+	class Material;
 	class YamlSerializer
 	{
 	public:
 		static void SerializeMaterial(const char* path);
-		static bool DeSerializeMaterial(const char* path);
+		static Ref<Material> DeSerializeMaterial(const char* path);
 
 		static void SerializeTexture(const char* path);
 		static bool DeSerializeTexture(const char* path);

@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "YamlSerializer.h"
 
 using namespace LindaEngine;
 
@@ -150,3 +151,19 @@ VertexAttribute* Mesh::Data::GetAttribute(VertexAttributeType attrType)
 	return nullptr;
 }
 
+bool Mesh::Serialize()
+{
+	YAML::Emitter& out = *YamlSerializer::out;
+
+	out << YAML::Value << YAML::BeginMap;
+	out << YAML::Key << "FilePath" << YAML::Value << _path;
+	out << YAML::EndMap;
+
+	return true;
+}
+
+bool Mesh::Deserialize(YAML::Node& node)
+{
+	_path = node["FilePath"].as<std::string>();
+	return true;
+}

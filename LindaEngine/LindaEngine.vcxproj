@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\Render\Core\src\MaterialManager.cpp" />
     <ClCompile Include="Runtime\ECS\src\ComponentFactory.cpp" />
     <ClCompile Include="Editor\Core\src\NodeEditor.cpp" />
     <ClCompile Include="Runtime\IO\src\Path.cpp" />
@@ -184,7 +185,7 @@
     <ClCompile Include="External\yaml-cpp\src\singledocparser.cpp" />
     <ClCompile Include="External\yaml-cpp\src\stream.cpp" />
     <ClCompile Include="External\yaml-cpp\src\tag.cpp" />
-    <ClCompile Include="Runtime\IO\src\MaterialLoader.cpp" />
+    <ClCompile Include="Temp\MaterialLoader.cpp" />
     <ClCompile Include="Runtime\ECS\src\Renderer.cpp" />
     <ClCompile Include="Runtime\IO\src\ShaderLoader.cpp" />
     <ClCompile Include="Runtime\IO\src\TextLoader.cpp" />
@@ -230,6 +231,7 @@
     <ClCompile Include="Runtime\Tools\src\UUID.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Render\Core\include\MaterialManager.h" />
     <ClInclude Include="Runtime\ECS\include\ComponentFactory.h" />
     <ClInclude Include="External\assimp\assimp\ai_assert.h" />
     <ClInclude Include="External\assimp\assimp\anim.h" />
@@ -330,7 +332,7 @@
     <ClInclude Include="External\yaml-cpp\src\stringsource.h" />
     <ClInclude Include="External\yaml-cpp\src\tag.h" />
     <ClInclude Include="External\yaml-cpp\src\token.h" />
-    <ClInclude Include="Runtime\IO\include\MaterialLoader.h" />
+    <ClInclude Include="Temp\MaterialLoader.h" />
     <ClInclude Include="Runtime\ECS\include\Renderer.h" />
     <ClInclude Include="Runtime\IO\include\ShaderLoader.h" />
     <ClInclude Include="Runtime\IO\include\TextLoader.h" />

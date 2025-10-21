@@ -1,5 +1,9 @@
 #include "Renderer.h"
 #include "YamlSerializer.h"
+#include "Mesh.h"
+#include "Material.h"
+#include "MeshManager.h"
+#include "MaterialManager.h"
 
 using namespace LindaEngine;
 
@@ -21,6 +25,16 @@ bool Renderer::Serialize()
 	out << YAML::Value << YAML::BeginMap;
 
 	out << YAML::Key << "enable" << YAML::Value << _enable;
+	out << YAML::Key << "Mesh";
+	out << YAML::Value << YAML::BeginSeq;
+	_mesh->Serialize();
+	out << YAML::EndSeq;
+	out << YAML::Key << "Material";
+	out << YAML::Value << YAML::BeginSeq;
+	for (auto& mat : _materialList)
+	{
+		mat->Serialize();
+	}
 
 	return true;
 }
@@ -28,6 +42,19 @@ bool Renderer::Serialize()
 bool Renderer::Deserialize(YAML::Node& node)
 {
 	_enable = node["enable"].as<bool>();
+
+	auto mesh = node["Mesh"];
+	auto materials = node["Material"];
+	
+	_mesh = MeshManager::GetMesh(mesh["FilePath"].as<std::string>().c_str());
+	_mesh->Deserialize(node);
+
+	for (auto mat : materials)
+	{
+		Ref<Material> pointer = MaterialManager::GetMaterial(mat["FilePath"].as<std::string>().c_str());
+		_materialList.push_back(pointer);
+		pointer->Deserialize(mat);
+	}
 	return true;
 }
 

@@ -1,5 +1,5 @@
 Material:
-  FileName: Material
+  FilePath: Material
   ShaderPath: Assets/Shaders/Unlit.shader
   RenderType: 2
   ShadowCast: true

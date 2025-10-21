@@ -204,7 +204,7 @@
     <ClCompile Include="External\yaml-cpp\src\tag.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime\IO\src\MaterialLoader.cpp">
+    <ClCompile Include="Temp\MaterialLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\IO\src\ShaderLoader.cpp">
@@ -259,6 +259,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\ECS\src\ComponentFactory.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Render\Core\src\MaterialManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1427,7 +1430,7 @@
     <ClInclude Include="External\yaml-cpp\src\token.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\IO\include\MaterialLoader.h">
+    <ClInclude Include="Temp\MaterialLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\IO\include\ShaderLoader.h">
@@ -1587,6 +1590,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\ECS\include\ComponentFactory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\Core\include\MaterialManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

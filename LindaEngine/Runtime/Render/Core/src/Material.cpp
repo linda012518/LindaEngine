@@ -1,6 +1,7 @@
 #include "Material.h"
 #include "ShaderManager.h"
 #include "MaterialPass.h"
+#include "YamlSerializer.h"
 
 using namespace LindaEngine;
 
@@ -69,4 +70,21 @@ void Material::SetShader(const char* path)
 	_shadowCasterPass = nullptr;
 	_depthNormalPass = nullptr;
 	_colorPasses.clear();
+}
+
+bool Material::Serialize()
+{
+	YAML::Emitter& out = *YamlSerializer::out;
+
+	out << YAML::Value << YAML::BeginMap;
+	out << YAML::Key << "FilePath" << YAML::Value << _filePath;
+	out << YAML::EndMap;
+
+	return true;
+}
+
+bool Material::Deserialize(YAML::Node& node)
+{
+	_filePath = node["FilePath"].as<std::string>();
+	return true;
 }
