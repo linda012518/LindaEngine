@@ -22,6 +22,9 @@ namespace LindaEngine
 		void SetMesh(Ref<Mesh> mesh);
 		void AddMaterial(int index, Ref<Material> mat);
 
+		Mesh* GetMesh() { return _mesh.get(); }
+		std::vector<Ref<Material>>& GetMaterials() { return _materialList; }
+
 	protected:
 		std::vector<Ref<Material>> _materialList;
 		Ref<Mesh> _mesh;

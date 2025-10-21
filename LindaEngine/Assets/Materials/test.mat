@@ -3,6 +3,7 @@ Material:
   RenderType: 2
   ShadowCast: true
   ReceiveShadow: true
+  HasFallback: true
   MaterialPasses:
     - PassName: Color
       RenderQueue: 2000

@@ -26,6 +26,7 @@ void YamlSerializer::SerializeMaterial(const char* path)
 	out << YAML::Key << "RenderType" << YAML::Value << static_cast<int>(mat->_renderType);
 	out << YAML::Key << "ShadowCast" << YAML::Value << mat->_shadowCast;
 	out << YAML::Key << "ReceiveShadow" << YAML::Value << mat->_receiveShadow;
+	out << YAML::Key << "HasFallback" << YAML::Value << mat->_hasFallback;
 
 	out << YAML::Key << "MaterialPasses";
 	out << YAML::Value << YAML::BeginSeq;
@@ -81,6 +82,7 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 	mat->_renderType = static_cast<RenderType>(material["RenderType"].as<int>());
 	mat->_shadowCast = material["ShadowCast"].as<bool>();
 	mat->_receiveShadow = material["ReceiveShadow"].as<bool>();
+	mat->_hasFallback = material["HasFallback"].as<bool>();
 
 	Ref<MaterialPass> matPass = nullptr;
 	auto passes = material["MaterialPasses"];

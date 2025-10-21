@@ -145,8 +145,8 @@ int main()
 	//SerializeMaterial();
 	//return 0;
 
-	SerializeScene0();
-	SceneManagerEditor::Build("Assets/Config/SceneConfig");
+	//SerializeScene0();
+	//SceneManagerEditor::Build("Assets/Config/SceneConfig");
 
 	SceneManager::Initialize();
 	Ref<Scene> scene = SceneManager::LoadScene(0);
