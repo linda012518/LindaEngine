@@ -45,6 +45,7 @@ namespace LindaEngine
 
 		std::vector<Ref<MaterialPass>> _colorPasses;
 
+		int _renderQueue = 2000; //渲染队列
 		RenderType _renderType = RenderType::Opaque; //是否不透明物体
 		bool _shadowCast = true; //是否投射阴影
 		bool _receiveShadow = true; //是否接收阴影

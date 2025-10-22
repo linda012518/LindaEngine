@@ -33,6 +33,7 @@ void SerializeMaterial()
 {
 	//Ref<Material> mat = CreateRef<Material>();
 	//mat->_renderType = RenderType::Transparent;
+	//mat->_renderQueue = 3000;
 
 	//mat->_depthPass = CreateRef<MaterialPass>();
 	//mat->_depthPass->_lightMode = "Depth";
@@ -43,7 +44,6 @@ void SerializeMaterial()
 	//mat->_colorPasses.push_back(CreateRef<MaterialPass>());
 	//mat->_colorPasses.push_back(CreateRef<MaterialPass>());
 
-	//mat->_colorPasses[1]->_renderQueue = 3000;
 	//mat->_colorPasses[1]->_lightMode = "customLightMode";
 	//mat->_colorPasses[1]->_keywords.push_back("NORMAL_MAP");
 	//mat->_colorPasses[1]->_keywords.push_back("LogDepth");

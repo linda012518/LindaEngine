@@ -14,9 +14,9 @@ void RendererSystem::Tick()
 
 void RendererSystem::OnDeserializeFinish()
 {
-	for (auto& com : _components) {
+	//for (auto& com : _components) {
 
-	}
+	//}
 }
 
 void RendererSystem::Add(Renderer* renerer)

@@ -15,9 +15,9 @@ void CameraSystem::Tick()
 
 void CameraSystem::OnDeserializeFinish()
 {
-	for (auto& com : _components) {
+	//for (auto& com : _components) {
 
-	}
+	//}
 }
 
 void CameraSystem::Add(Camera* camera)

@@ -3,10 +3,10 @@ Material:
   RenderType: 2
   ShadowCast: true
   ReceiveShadow: true
-  HasFallback: true
+  HasFallback: false
+  RenderQueue: 3000
   MaterialPasses:
     - PassName: Color
-      RenderQueue: 2000
       ShaderUniforms:
         []
       Keywords:
@@ -14,7 +14,6 @@ Material:
       RenderState:
         {}
     - PassName: customLightMode
-      RenderQueue: 3000
       ShaderUniforms:
         - UniformName: MainTex
           Value: texturl/aa/bb
@@ -46,7 +45,6 @@ Material:
           BlendSrc: 773
           BlendDis: 771
     - PassName: ShadowCaster
-      RenderQueue: 2000
       ShaderUniforms:
         []
       Keywords:
@@ -54,7 +52,6 @@ Material:
       RenderState:
         {}
     - PassName: Depth
-      RenderQueue: 2000
       ShaderUniforms:
         []
       Keywords:
@@ -62,7 +59,6 @@ Material:
       RenderState:
         {}
     - PassName: DepthNormal
-      RenderQueue: 2000
       ShaderUniforms:
         []
       Keywords:

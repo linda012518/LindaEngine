@@ -33,7 +33,6 @@ namespace LindaEngine
 		std::unordered_map<std::string, Ref<ShaderUniform>> _uniformNameMap;
 		std::vector<std::string> _keywords; //关键字宏定义，全局的从其它配置添加，不记录
 		std::string _lightMode = "Color";
-		int _renderQueue = 2000; //渲染队列
 		Ref<Shader> _shader = nullptr;
 		RenderState _renderState; //材质需要的状态
 		static Ref<MaterialPass> overrideMatPass;
