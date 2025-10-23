@@ -6,7 +6,6 @@
 namespace LindaEngine
 {
 	class MaterialPass;
-	class Renderer;
 
 	struct Drawable
 	{
@@ -15,6 +14,5 @@ namespace LindaEngine
 		const glm::mat4* localToWorld;
 		const glm::mat4* worldToLocal;
 		int renderQueue;
-		Renderer* renderer;
 	};
 }

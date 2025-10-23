@@ -187,6 +187,7 @@
     <ClCompile Include="External\yaml-cpp\src\singledocparser.cpp" />
     <ClCompile Include="External\yaml-cpp\src\stream.cpp" />
     <ClCompile Include="External\yaml-cpp\src\tag.cpp" />
+    <ClCompile Include="Runtime\Render\Core\src\Settings.cpp" />
     <ClCompile Include="Temp\MaterialLoader.cpp" />
     <ClCompile Include="Runtime\ECS\src\Renderer.cpp" />
     <ClCompile Include="Runtime\IO\src\ShaderLoader.cpp" />

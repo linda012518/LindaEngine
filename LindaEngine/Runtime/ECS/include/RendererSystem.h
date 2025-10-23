@@ -4,13 +4,13 @@
 
 #include <vector>
 #include <string>
-#include <unordered_map>
 
 namespace LindaEngine
 {
 	class Renderer;
 	class MaterialPass;
 	struct Drawable;
+	struct DrawingSettings;
 
 	class RendererSystem
 	{
@@ -22,16 +22,17 @@ namespace LindaEngine
 		static void Remove(Renderer* renderer);
 		static void Clear();
 
-		static void DrawRenderers();
+		static void DrawRenderers(Ref<DrawingSettings> settings);
+		static void Cull();
 
 	private:
-		static void AddDrawable(std::string lightMode, Ref<Drawable> da);
-		static void RemoveDrawable(Renderer* renderer);
-		static void CreateDrawable(Renderer* renderer, int materialIndex, std::string lightMode, MaterialPass* pass, int queue);
+		static void FillDrawables(Ref<DrawingSettings> settings);
+		static void SortDrawables(Ref<DrawingSettings> settings);
 
 	private:
 		static std::vector<Renderer*> _components;
-		static std::unordered_map<std::string, std::vector<Ref<Drawable>>> _lightModeToDrawables;
+		static std::vector<Renderer*> _culledRenderers;
+		static std::vector<Ref<Drawable>> _drawables;
 	};
 }
 

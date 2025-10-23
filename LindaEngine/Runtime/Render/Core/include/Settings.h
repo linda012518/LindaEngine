@@ -28,17 +28,27 @@ namespace LindaEngine
         SortingCriteria criteria;
 	};
 
+	struct RenderQueueRange
+	{
+		int minQueue;
+		int maxQueue;
+
+		const int minQueueBound = 0;
+		const int maxQueueBound = 5000;
+
+		static RenderQueueRange all;
+		static RenderQueueRange opaque;
+		static RenderQueueRange transparent;
+	};
+
 	struct DrawingSettings
 	{
+		int layerMask;
+		RenderQueueRange renderQueueRange;
 		SortingSettings sortSettings;
 		std::vector<std::string> lightModes;
 	};
 
-	struct FilteringSettings
-	{
-		int layerMask;
-		int minQueue;
-		int maxQueue;
-	};
+
 }
 
