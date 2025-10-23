@@ -19,19 +19,20 @@ namespace LindaEngine
 	class Material : public LObject, public ISerializable
 	{
 		friend class YamlSerializer;
+		friend class RendererSystem;
 
 	public:
 		Material();
 		virtual ~Material();
 
-		MaterialPass* GetDepthPass() { return _depthPass.get(); }
-		MaterialPass* GetDepthNormalPass() { return _depthNormalPass.get(); }
-		MaterialPass* GetShadowCasterPass() { return _shadowCasterPass.get(); }
+		Ref<MaterialPass> GetDepthPass() { return _depthPass; }
+		Ref<MaterialPass> GetDepthNormalPass() { return _depthNormalPass; }
+		Ref<MaterialPass> GetShadowCasterPass() { return _shadowCasterPass; }
 		std::vector<Ref<MaterialPass>>& GetColorPass() { return _colorPasses; }
 
 		void SetPath(const char* path) { _filePath = path; }
 
-		void CompileShader(); //序列化出来的直接编译
+		void CompileShader();
 		void SetShader(const char* path); //动态添加的要设置shader，然后设置所有需要的属性，再调用CompileShader
 
 		bool Serialize();

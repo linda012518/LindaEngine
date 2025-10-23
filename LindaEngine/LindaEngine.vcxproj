@@ -236,6 +236,7 @@
     <ClInclude Include="Runtime\ECS\include\RendererSystem.h" />
     <ClInclude Include="Runtime\ECS\include\ComponentSystem.h" />
     <ClInclude Include="Runtime\Render\Core\include\Drawable.h" />
+    <ClInclude Include="Runtime\Render\Core\include\Settings.h" />
     <ClInclude Include="Runtime\Render\Core\include\MaterialManager.h" />
     <ClInclude Include="Runtime\ECS\include\ComponentFactory.h" />
     <ClInclude Include="External\assimp\assimp\ai_assert.h" />

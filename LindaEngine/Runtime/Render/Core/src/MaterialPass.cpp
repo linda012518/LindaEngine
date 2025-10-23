@@ -39,6 +39,14 @@ void MaterialPass::CompileShader(Ref<ShaderSourceCode> sss)
 	_shader = CreateRef<Shader>(tempVertex.c_str(), tempFragment.c_str());
 }
 
+void MaterialPass::Bind(const glm::mat4& localToWorld)
+{
+	_shader->Begin();
+	//UpdateUniforms();
+	//_shader->SetMat4("worldToProjection", CameraSystem::currentCamear->GetViewProjectMatrix());
+	//_shader->SetMat4("localToWorld", localToWorld);
+}
+
 void MaterialPass::UpdateUniforms()
 {
 	_acitveChannel = 0;

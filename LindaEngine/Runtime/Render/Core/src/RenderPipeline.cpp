@@ -1,5 +1,6 @@
 #include "RenderPipeline.h"
 #include "GraphicsContext.h"
+#include "RendererSystem.h"
 
 
 #include "glad/glad.h"
@@ -34,71 +35,6 @@ void RenderPipeline::Finalize()
 
 void RenderPipeline::Tick()
 {
-	//ComponentSystem::Instance().Tick();
-
-	//std::map<int, std::vector<Ref<Drawable>>, std::less<int>> opaque;
-	//std::map<int, std::vector<Ref<Drawable>>, std::greater<int>> transparent;
-
-	//std::vector<Ref<Entity>>& entitys = _scene->GetEntitys();
-	//for (auto& entity : entitys) {
-	//	Ref<Transform> t = entity->GetComponent<Transform>();
-	//	Ref<MeshRenderer> r = entity->GetComponent<MeshRenderer>();
-	//	if (r->materialList.size() <= 0)
-	//		continue; //可以给error材质
-
-	//	for (auto& mat : r->materialList) {
-	//		RenderType& type = mat->GetRenderType();
-	//		switch (type)
-	//		{
-	//		case RenderType::Opaque:
-	//			{
-	//				for (auto& matPass : mat->GetColorPass())
-	//				{
-	//					Ref<Drawable> d = CreateRef<Drawable>();
-	//					d->mesh = r->mesh.get();
-	//					d->pass = matPass.get();
-	//					d->visible = true;
-	//					d->modelMat = t->worldMatrix;
-	//					if (opaque.find(mat->GetRenderQueue()) != opaque.end())
-	//					{
-	//						std::vector<Ref<Drawable>>& list = opaque[mat->GetRenderQueue()];
-	//						list.push_back(d);
-	//					}
-	//					else
-	//					{
-	//						opaque[mat->GetRenderQueue()] = {d};
-	//					}
-	//				}
-	//			}
-	//			break;
-	//		case RenderType::Transparent:
-	//			{
-	//				for (auto& matPass : mat->GetColorPass())
-	//				{
-	//					Ref<Drawable> d = CreateRef<Drawable>();
-	//					d->mesh = r->mesh.get();
-	//					d->pass = matPass.get();
-	//					d->visible = true;
-	//					d->modelMat = t->worldMatrix;
-	//					if (transparent.find(mat->GetRenderQueue()) != transparent.end())
-	//					{
-	//						std::vector<Ref<Drawable>>& list = transparent[mat->GetRenderQueue()];
-	//						list.push_back(d);
-	//					}
-	//					else
-	//					{
-	//						transparent[mat->GetRenderQueue()] = { d };
-	//					}
-	//				}
-	//			}
-	//			break;
-	//		}
-
-	//	}
-	//}
-
- //   CheckLightList();
- //   CheckCameraList();
     Render();
 }
 
@@ -141,8 +77,8 @@ void RenderPipeline::Render()
     _renderContext->SetViewport(0, 0, config.screenWidth, config.screenHeight);
     _renderContext->SetClearColor(0, 0.3, 0, 0);
     _renderContext->Clear(true, true, true);
-
-	test();
+	RendererSystem::DrawRenders();
+	//test();
 }
 
 void RenderPipeline::test()

@@ -18,6 +18,9 @@ namespace LindaEngine
 
 		static const std::vector<Camera*> GetActiveCameraList();
 
+	public:
+		static Camera* currentCamear;
+
 	private:
 		static std::vector<Camera*> _components;
 	};

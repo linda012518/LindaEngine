@@ -1,15 +1,20 @@
 #pragma once
 
+#include "glm/glm.hpp"
+#include "Mesh.h"
+
 namespace LindaEngine
 {
-	class Mesh { public: struct Data; };
 	class MaterialPass;
-	class Transform;
+	class Renderer;
 
 	struct Drawable
 	{
 		Mesh::Data* mesh;
 		MaterialPass* material;
-		Transform* transform;
+		const glm::mat4* localToWorld;
+		const glm::mat4* worldToLocal;
+		int renderQueue;
+		Renderer* renderer;
 	};
 }

@@ -72,9 +72,12 @@ namespace LindaEngine
 			void AddAttribute(std::string name);
 			VertexAttribute* GetAttribute(const char* name);
 			VertexAttribute* GetAttribute(VertexAttributeType attrType);
+
+			void Bind();
 		};
 	public:
 		Mesh::Data& AddMeshData(Mesh::Data data);
+		Mesh::Data* GetMeshData(int index) { return &_data[index]; }
 		const int GetMeshCount() { return _meshCount; }
 		void SetPath(const char* path) { _path = path; }
 

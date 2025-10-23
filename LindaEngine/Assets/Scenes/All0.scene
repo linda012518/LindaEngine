@@ -37,7 +37,7 @@ Scene:
           parent: ""
         - enable: true
           Mesh:
-            FilePath: Assets/Meshs/rock.obj
+            FilePath: Cube
           Material:
             - FilePath: Assets/Materials/test.mat
           Name: MeshRenderer

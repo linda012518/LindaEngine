@@ -151,6 +151,11 @@ VertexAttribute* Mesh::Data::GetAttribute(VertexAttributeType attrType)
 	return nullptr;
 }
 
+void Mesh::Data::Bind()
+{
+
+}
+
 bool Mesh::Serialize()
 {
 	YAML::Emitter& out = *YamlSerializer::out;

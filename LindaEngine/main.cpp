@@ -148,13 +148,13 @@ int main()
 	//SerializeScene0();
 	//SceneManagerEditor::Build("Assets/Config/SceneConfig");
 
-	SceneManager::Initialize();
-	Ref<Scene> scene = SceneManager::LoadScene(0);
-	ComponentSystem::OnDeserializeFinish();
-	ComponentSystem::Tick();
+	//SceneManager::Initialize();
+	//Ref<Scene> scene = SceneManager::LoadScene(0);
+	//ComponentSystem::OnDeserializeFinish();
+	//ComponentSystem::Tick();
 
-	int a = 0;
-	return 0;
+	//int a = 0;
+	//return 0;
 
 
 
