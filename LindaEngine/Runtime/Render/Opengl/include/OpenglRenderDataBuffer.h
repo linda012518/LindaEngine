@@ -48,12 +48,12 @@ namespace LindaEngine
 		virtual void AddVertexBuffer(const Ref<VertexBuffer>& buffer) override;
 		virtual void SetIndexBuffer(const Ref<IndexBuffer>& buffer) override;
 
-		virtual const Ref<VertexBuffer>& GetVertexBuffer() const { return _vertexBuffers; }
+		virtual const Ref<VertexBuffer>& GetVertexBuffer() const { return _vertexBuffer; }
 		virtual const Ref<IndexBuffer>& GetIndexBuffer() const { return _indexBuffer; }
 
 	private:
 		int _rendererID;
-		Ref<VertexBuffer> _vertexBuffers;
+		Ref<VertexBuffer> _vertexBuffer;
 		Ref<IndexBuffer> _indexBuffer;
 	};
 }

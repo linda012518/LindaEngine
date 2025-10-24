@@ -89,9 +89,15 @@ void OpenGLVertexArray::Unbind() const
 
 void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& buffer)
 {
+	Bind();
+	buffer->Bind();
+
+	_vertexBuffer = buffer;
 }
 
 void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& buffer)
 {
 	Bind();
+	buffer->Bind();
+	_indexBuffer = buffer;
 }

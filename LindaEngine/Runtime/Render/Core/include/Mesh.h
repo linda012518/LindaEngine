@@ -1,8 +1,9 @@
 #pragma once
 
+#include "AutoPtr.h"
 #include "LObject.h"
-#include "glm/glm.hpp"
 #include "ISerializable.h"
+#include "glm/glm.hpp"
 
 #include <unordered_map>
 #include <string>
@@ -50,6 +51,8 @@ namespace LindaEngine
 		static VertexAttributeType GetAttributeType(std::string& name);
 	};
 
+	class VertexBuffer;
+	class IndexBuffer;
 	class VertexArray;
 
 	class Mesh : public LObject, public ISerializable
@@ -57,9 +60,9 @@ namespace LindaEngine
 	public:
 		struct Data
 		{
-			int VAO = -1;
-			int VBO = -1;
-			int IBO = -1;
+			Ref<VertexBuffer> vertexBuffer;
+			Ref<IndexBuffer> indexBuffer;
+			Ref<VertexArray> vertexArray;
 
 			std::vector<float> vertexData;
 			std::vector<unsigned int> indexData;
