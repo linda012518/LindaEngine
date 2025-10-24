@@ -151,9 +151,14 @@ VertexAttribute* Mesh::Data::GetAttribute(VertexAttributeType attrType)
 	return nullptr;
 }
 
-void Mesh::Data::Bind()
+void Mesh::Data::Draw()
 {
 
+}
+
+void Mesh::Draw(int index)
+{
+	_data[index].Draw();
 }
 
 bool Mesh::Serialize()

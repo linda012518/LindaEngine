@@ -72,6 +72,15 @@ void Material::SetShader(const char* path)
 	_colorPasses.clear();
 }
 
+bool Material::Bind(std::string& lightMode)
+{
+	if (_passes.find(lightMode) == _passes.end())
+		return false;
+
+	_passes[lightMode]->Bind();
+	return true;
+}
+
 bool Material::Serialize()
 {
 	YAML::Emitter& out = *YamlSerializer::out;

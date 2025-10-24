@@ -22,7 +22,7 @@ namespace LindaEngine
 	public:
 		void AddKeyword(std::string& key);
 		void CompileShader(Ref<ShaderSourceCode> sss);
-		void Bind(const glm::mat4& localToWorld);
+		void Bind();
 
 		void UpdateUniforms();
 		const std::string& GetLightMode() const { return _lightMode; }

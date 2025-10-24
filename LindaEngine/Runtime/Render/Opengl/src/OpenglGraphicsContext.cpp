@@ -229,7 +229,6 @@ void OpenglGraphicsContext::Tick()
 void OpenglGraphicsContext::CreateRenderPipeline()
 {
 	_renderPipeline = RenderPipeline::Create();
-	_renderPipeline->SetRenderAPIContext(RenderAPIContext::Create(graphicsConfig.graphicsAPI));
 	_renderPipeline->Initialize();
 }
 

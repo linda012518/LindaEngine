@@ -1,17 +1,12 @@
 #include "RendererSystem.h"
 #include "Renderer.h"
-#include "Material.h"
-#include "MaterialPass.h"
-#include "Drawable.h"
-#include "Mesh.h"
-#include "Entity.h"
-#include "Transform.h"
+#include "Settings.h"
 
 using namespace LindaEngine;
 
 std::vector<Renderer*> RendererSystem::_components;
 std::vector<Renderer*> RendererSystem::_culledRenderers;
-std::vector<Ref<Drawable>> RendererSystem::_drawables;
+std::vector<Renderer*> RendererSystem::_renderables;
 
 void RendererSystem::Tick()
 {
@@ -46,34 +41,35 @@ void RendererSystem::Clear()
 
 	_components.clear();
 	_culledRenderers.clear();
-	_drawables.clear();
+	_renderables.clear();
 }
 
 void RendererSystem::DrawRenderers(Ref<DrawingSettings> settings)
 {
 	FillDrawables(settings);
 	SortDrawables(settings);
-	for (auto& drawable : _drawables) {
-		//Ref<Material> material = com->GetMaterials()[0];
-		//material->CompileShader();
-		//Ref<MaterialPass> pass = material->GetColorPass()[0];
-		//pass->Bind(com->GetEntity().GetTransform()->GetLocalToWorldMat());
-		//com->GetMesh()[0];
-		//glBindVertexArray(VAO);
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	std::vector<std::string>& lightModes = settings->lightModes;
+
+	for (auto& renderer : _renderables)
+	{
+		for (auto& lightMode : lightModes)
+		{
+			renderer->Render(lightMode);
+		}
 	}
 }
 
 void RendererSystem::Cull()
 {
 	_culledRenderers.clear();
-	_drawables.clear();
+	_renderables.clear();
 	//TODO 视锥裁剪 遮挡剔除 可见灯光 可见反射Cubemap 可见SH
 }
 
 void RendererSystem::FillDrawables(Ref<DrawingSettings> settings)
 {
-	//TODO 
+	//TODO Check Layer、Queue、LightMode
 }
 
 void RendererSystem::SortDrawables(Ref<DrawingSettings> settings)

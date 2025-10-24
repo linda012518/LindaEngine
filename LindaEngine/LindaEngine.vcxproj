@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\Render\Core\src\Graphic.cpp" />
     <ClCompile Include="Runtime\ECS\src\RendererSystem.cpp" />
     <ClCompile Include="Runtime\ECS\src\ComponentSystem.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\MaterialManager.cpp" />
@@ -187,7 +188,9 @@
     <ClCompile Include="External\yaml-cpp\src\singledocparser.cpp" />
     <ClCompile Include="External\yaml-cpp\src\stream.cpp" />
     <ClCompile Include="External\yaml-cpp\src\tag.cpp" />
+    <ClCompile Include="Runtime\Render\Core\src\RenderDataBuffer.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\Settings.cpp" />
+    <ClCompile Include="Runtime\Render\Opengl\src\OpenglRenderDataBuffer.cpp" />
     <ClCompile Include="Temp\MaterialLoader.cpp" />
     <ClCompile Include="Runtime\ECS\src\Renderer.cpp" />
     <ClCompile Include="Runtime\IO\src\ShaderLoader.cpp" />
@@ -234,9 +237,10 @@
     <ClCompile Include="Runtime\Tools\src\UUID.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Render\Core\include\Graphic.h" />
     <ClInclude Include="Runtime\ECS\include\RendererSystem.h" />
     <ClInclude Include="Runtime\ECS\include\ComponentSystem.h" />
-    <ClInclude Include="Runtime\Render\Core\include\Drawable.h" />
+    <ClInclude Include="Runtime\Render\Core\include\RenderDataBuffer.h" />
     <ClInclude Include="Runtime\Render\Core\include\Settings.h" />
     <ClInclude Include="Runtime\Render\Core\include\MaterialManager.h" />
     <ClInclude Include="Runtime\ECS\include\ComponentFactory.h" />
@@ -339,6 +343,7 @@
     <ClInclude Include="External\yaml-cpp\src\stringsource.h" />
     <ClInclude Include="External\yaml-cpp\src\tag.h" />
     <ClInclude Include="External\yaml-cpp\src\token.h" />
+    <ClInclude Include="Runtime\Render\Opengl\include\OpenglRenderDataBuffer.h" />
     <ClInclude Include="Temp\MaterialLoader.h" />
     <ClInclude Include="Runtime\ECS\include\Renderer.h" />
     <ClInclude Include="Runtime\IO\include\ShaderLoader.h" />

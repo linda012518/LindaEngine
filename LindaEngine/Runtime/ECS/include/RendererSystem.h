@@ -8,8 +8,6 @@
 namespace LindaEngine
 {
 	class Renderer;
-	class MaterialPass;
-	struct Drawable;
 	struct DrawingSettings;
 
 	class RendererSystem
@@ -32,7 +30,7 @@ namespace LindaEngine
 	private:
 		static std::vector<Renderer*> _components;
 		static std::vector<Renderer*> _culledRenderers;
-		static std::vector<Ref<Drawable>> _drawables;
+		static std::vector<Renderer*> _renderables;
 	};
 }
 

@@ -273,6 +273,15 @@
     <ClCompile Include="Runtime\Render\Core\src\Settings.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Render\Core\src\RenderDataBuffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Render\Opengl\src\OpenglRenderDataBuffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Render\Core\src\Graphic.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -1610,10 +1619,16 @@
     <ClInclude Include="Runtime\ECS\include\RendererSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\Render\Core\include\Drawable.h">
+    <ClInclude Include="Runtime\Render\Core\include\Settings.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\Render\Core\include\Settings.h">
+    <ClInclude Include="Runtime\Render\Core\include\RenderDataBuffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\Opengl\include\OpenglRenderDataBuffer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\Core\include\Graphic.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

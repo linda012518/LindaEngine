@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 namespace LindaEngine
 {
@@ -34,6 +35,7 @@ namespace LindaEngine
 
 		void CompileShader();
 		void SetShader(const char* path); //动态添加的要设置shader，然后设置所有需要的属性，再调用CompileShader
+		bool Bind(std::string& lightMode);
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
@@ -54,6 +56,7 @@ namespace LindaEngine
 		std::string _shaderPath = "Assets/Shaders/Unlit.shader";
 
 		bool _hasFallback = false; //如果有fallback，指针为空用默认的，没有fallback不渲染
+		std::unordered_map<std::string, Ref<MaterialPass>> _passes;
 
 	public:
 		static Ref<Material> overrideMat;

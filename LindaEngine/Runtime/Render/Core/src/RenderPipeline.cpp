@@ -1,6 +1,8 @@
 #include "RenderPipeline.h"
 #include "GraphicsContext.h"
 #include "RendererSystem.h"
+#include "Settings.h"
+#include "Graphic.h"
 
 
 #include "glad/glad.h"
@@ -38,11 +40,6 @@ void RenderPipeline::Tick()
     Render();
 }
 
-void RenderPipeline::SetRenderAPIContext(Ref<RenderAPIContext> rc)
-{
-    _renderContext = rc;
-}
-
 Scope<RenderPipeline> RenderPipeline::Create()
 {
     return CreateScope<RenderPipeline>();
@@ -74,11 +71,12 @@ void RenderPipeline::Render()
     //8 äÖÈ¾Í¸Ã÷ÎïÌå
 
 	GraphicsConfig& config = GraphicsContext::graphicsConfig;
-    _renderContext->SetViewport(0, 0, config.screenWidth, config.screenHeight);
-    _renderContext->SetClearColor(0, 0.3, 0, 0);
-    _renderContext->Clear(true, true, true);
-	RendererSystem::DrawRenders();
-	//test();
+    Graphic::SetViewport(0, 0, config.screenWidth, config.screenHeight);
+    Graphic::SetClearColor(0, 0.3, 0, 0);
+    Graphic::Clear(true, true, true);
+	Ref<DrawingSettings> settings = CreateRef<DrawingSettings>();
+	RendererSystem::DrawRenderers(settings);
+
 }
 
 void RenderPipeline::test()

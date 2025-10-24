@@ -1,16 +1,16 @@
 #include "RenderAPIContext.h"
-
+#include "GraphicsContext.h"
 #include "OpenglAPIContext.h"
 
 using namespace LindaEngine;
 
 //实现后期用宏定义割开
-Ref<RenderAPIContext> RenderAPIContext::Create(GraphicsDriverAPI api)
+Scope<RenderAPIContext> RenderAPIContext::Create()
 {
-    switch (api)
+    switch (GraphicsContext::graphicsConfig.graphicsAPI)
     {
     case GraphicsDriverAPI::OpenGL:
-        return CreateRef<OpenglAPIContext>();
+        return CreateScope<OpenglAPIContext>();
     case GraphicsDriverAPI::OpenGLES:
         break;
     case GraphicsDriverAPI::DX11:

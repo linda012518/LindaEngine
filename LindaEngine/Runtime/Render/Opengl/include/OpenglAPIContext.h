@@ -1,7 +1,6 @@
 #pragma once
 
 #include "RenderAPIContext.h"
-#include "RenderState.h"
 
 namespace LindaEngine
 {
@@ -11,6 +10,17 @@ namespace LindaEngine
 		void SetViewport(int xStart, int yStart, int width, int height);
 		void SetClearColor(float r, float g, float b, float a);
 		void Clear(bool color, bool depth, bool stencil);
+
+		void CreateVertexArrays(int count, unsigned int VAO);
+		void DeleteVertexArrays(int count, unsigned int VAO);
+		void BindVertexArray(unsigned int VAO);
+
+		void CreateIndexBuffer(unsigned int IBO, int count, void* data, bool is32Bit, bool isStatic);
+		void CreateVertexBuffer(unsigned int VBO, int size, void* data, bool isStatic);
+		void UpdateVertexData(int offset, int size, void* data);
+		void BindBuffer(unsigned int target, unsigned int buffer);
+		void UnBindBuffer(unsigned int target);
+		void DeleteBuffers(int count, unsigned int buffer);
 
 		void CheckRenderState(RenderState& state, RenderState& materialState);
 

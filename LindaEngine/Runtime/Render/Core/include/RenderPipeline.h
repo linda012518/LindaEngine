@@ -14,8 +14,6 @@ namespace LindaEngine
 		virtual void Finalize();
 		virtual void Tick();
 
-		void SetRenderAPIContext(Ref<RenderAPIContext> rc);
-
 		static Scope<RenderPipeline> Create();
 
 	private:
@@ -24,9 +22,5 @@ namespace LindaEngine
 		void Render();
 
 		void test();
-
-	private:
-		Ref<RenderAPIContext> _renderContext = nullptr;
-		//Ref<Scene> _scene = nullptr;
 	};
 }

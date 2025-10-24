@@ -4,7 +4,6 @@
 
 namespace LindaEngine
 {
-	class BufferLayout;
 	class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
@@ -15,14 +14,10 @@ namespace LindaEngine
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 
-		virtual void SetData(const void* data, uint32_t size) override;
-
-		virtual const BufferLayout& GetLayout() const override { return _layout; };
-		virtual void SetLayout(const BufferLayout& layout) override { _layout = layout; };
+		virtual void SetData(void* data, uint32_t size) override;
 
 	private:
-		uint32_t _rendererID;
-		BufferLayout _layout;
+		int _rendererID;
 	};
 
 	class OpenGLIndexBuffer : public IndexBuffer
@@ -37,7 +32,28 @@ namespace LindaEngine
 		virtual uint32_t GetCount() const override { return _count; }
 
 	private:
-		uint32_t _rendererID;
+		int _rendererID;
 		uint32_t _count;
+	};
+
+	class OpenGLVertexArray : public VertexArray
+	{
+	public:
+		OpenGLVertexArray();
+		~OpenGLVertexArray();
+
+		virtual void Bind() const override;
+		virtual void Unbind() const override;
+
+		virtual void AddVertexBuffer(const Ref<VertexBuffer>& buffer) override;
+		virtual void SetIndexBuffer(const Ref<IndexBuffer>& buffer) override;
+
+		virtual const Ref<VertexBuffer>& GetVertexBuffer() const { return _vertexBuffers; }
+		virtual const Ref<IndexBuffer>& GetIndexBuffer() const { return _indexBuffer; }
+
+	private:
+		int _rendererID;
+		Ref<VertexBuffer> _vertexBuffers;
+		Ref<IndexBuffer> _indexBuffer;
 	};
 }

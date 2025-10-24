@@ -66,6 +66,18 @@ void Renderer::AddMaterial(int index, Ref<Material> mat)
 	_materialList.insert(_materialList.begin() + index, mat);
 }
 
+void Renderer::Render(std::string& lightMode)
+{
+	int index = 0;
+	for (auto& material : _materialList)
+	{
+		index++;
+		if (material->Bind(lightMode) == false)
+			continue;
+		_mesh->Draw(index - 1);
+	}
+}
+
 /////////////////////////////////////////////////////////////////////
 
 MeshRenderer::MeshRenderer(Entity& entity, bool enable) : Renderer(entity, enable)
