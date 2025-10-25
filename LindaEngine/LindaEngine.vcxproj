@@ -233,7 +233,6 @@
     <ClCompile Include="Runtime\ECS\src\TransformSystem.cpp" />
     <ClCompile Include="Runtime\Core\src\Scene.cpp" />
     <ClCompile Include="Runtime\IO\src\YamlSerializer.cpp" />
-    <ClCompile Include="Runtime\Render\Core\src\VertexArray.cpp" />
     <ClCompile Include="Runtime\Tools\src\UUID.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -684,7 +683,6 @@
     <ClInclude Include="Runtime\ECS\include\TransformSystem.h" />
     <ClInclude Include="Runtime\Core\include\Scene.h" />
     <ClInclude Include="Runtime\IO\include\YamlSerializer.h" />
-    <ClInclude Include="Runtime\Render\Core\include\VertexArray.h" />
     <ClInclude Include="Runtime\Tools\include\UUID.h" />
   </ItemGroup>
   <ItemGroup>

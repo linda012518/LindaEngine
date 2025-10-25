@@ -35,7 +35,7 @@ namespace LindaEngine
 
 	struct VertexAttribute
 	{
-		VertexAttribute(VertexAttributeType attrType, uint32_t offset_, uint32_t index_);
+		VertexAttribute(VertexAttributeType attrType);
 
 		std::string attributeName;
 		VertexAttributeType attributeType;
@@ -51,8 +51,6 @@ namespace LindaEngine
 		static VertexAttributeType GetAttributeType(std::string& name);
 	};
 
-	class VertexBuffer;
-	class IndexBuffer;
 	class VertexArray;
 
 	class Mesh : public LObject, public ISerializable
@@ -60,23 +58,20 @@ namespace LindaEngine
 	public:
 		struct Data
 		{
-			Ref<VertexBuffer> vertexBuffer;
-			Ref<IndexBuffer> indexBuffer;
 			Ref<VertexArray> vertexArray;
 
 			std::vector<float> vertexData;
 			std::vector<unsigned int> indexData;
-			size_t indexSize = 0;
-			int attributeIndex = 0;
-			int attributeOffset = 0;
 			std::vector<VertexAttribute> attributes;
+
+			int vertexStride = 0;
 
 			void AddAttribute(VertexAttributeType attrType);
 			void AddAttribute(std::string name);
-			VertexAttribute* GetAttribute(const char* name);
-			VertexAttribute* GetAttribute(VertexAttributeType attrType);
-
 			void Draw();
+
+		private:
+			void CalculateStride();
 		};
 	public:
 		Mesh::Data& AddMeshData(Mesh::Data data);

@@ -7,23 +7,27 @@ namespace LindaEngine
 	class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
-		OpenGLVertexBuffer(uint32_t size);
-		OpenGLVertexBuffer(float* vertices, uint32_t size);
+		OpenGLVertexBuffer(uint32_t size, bool isStatic = true);
+		OpenGLVertexBuffer(float* vertices, uint32_t size, bool isStatic = true);
 		~OpenGLVertexBuffer();
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
-
+		virtual void SetVertexAttribute(std::vector<VertexAttribute>* attrs) override;
+		virtual const std::vector<VertexAttribute>* GetAttributes() const override;
+		virtual uint32_t GetCount() const override { return _count; };
 		virtual void SetData(void* data, uint32_t size) override;
 
 	private:
-		int _rendererID;
+		unsigned int _rendererID;
+		uint32_t _count;
+		std::vector<VertexAttribute>* attributes;
 	};
 
 	class OpenGLIndexBuffer : public IndexBuffer
 	{
 	public:
-		OpenGLIndexBuffer(uint32_t* indices, uint32_t count);
+		OpenGLIndexBuffer(uint32_t* indices, uint32_t count, bool is32Bit = true, bool isStatic = true);
 		~OpenGLIndexBuffer();
 
 		virtual void Bind() const override;
@@ -32,7 +36,7 @@ namespace LindaEngine
 		virtual uint32_t GetCount() const override { return _count; }
 
 	private:
-		int _rendererID;
+		unsigned int _rendererID;
 		uint32_t _count;
 	};
 
@@ -45,14 +49,16 @@ namespace LindaEngine
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 
-		virtual void AddVertexBuffer(const Ref<VertexBuffer>& buffer) override;
+		virtual void AddVertexBuffer(const Ref<VertexBuffer>& buffer, int vertexStride) override;
 		virtual void SetIndexBuffer(const Ref<IndexBuffer>& buffer) override;
 
 		virtual const Ref<VertexBuffer>& GetVertexBuffer() const { return _vertexBuffer; }
 		virtual const Ref<IndexBuffer>& GetIndexBuffer() const { return _indexBuffer; }
 
+		virtual void Draw() override;
+
 	private:
-		int _rendererID;
+		unsigned int _rendererID;
 		Ref<VertexBuffer> _vertexBuffer;
 		Ref<IndexBuffer> _indexBuffer;
 	};

@@ -1,16 +1,17 @@
 #include "Mesh.h"
 #include "YamlSerializer.h"
+#include "RenderDataBuffer.h"
 
 using namespace LindaEngine;
 
-VertexAttribute::VertexAttribute(VertexAttributeType attrType, uint32_t offset_, uint32_t index_)
+VertexAttribute::VertexAttribute(VertexAttributeType attrType)
 {
 	attributeName = GetAttributeName(attrType);
 	attributeType = attrType;
 	dateType = GetAttributeDataType(attrType);
 	size = GetAttributeDataSize(attrType);
-	offset = offset_;
-	index = index_;
+	offset = 0;
+	index = 0;
 	normalized = false;
 }
 
@@ -66,22 +67,22 @@ uint32_t VertexAttribute::GetAttributeDataSize(VertexAttributeType attrType)
 {
 	switch (attrType)
 	{
-	case VertexAttributeType::Position:		return 4 * 3;
-	case VertexAttributeType::Normal:		return 4 * 3;
-	case VertexAttributeType::Tangent:		return 4 * 3;
-	case VertexAttributeType::UV0:			return 4 * 2;
-	case VertexAttributeType::UV1:			return 4 * 2;
-	case VertexAttributeType::UV2:			return 4 * 2;
-	case VertexAttributeType::UV3:			return 4 * 2;
-	case VertexAttributeType::UV4:			return 4 * 2;
-	case VertexAttributeType::UV5:			return 4 * 2;
-	case VertexAttributeType::UV6:			return 4 * 2;
-	case VertexAttributeType::UV7:			return 4 * 2;
-	case VertexAttributeType::Color:		return 4 * 4;
-	case VertexAttributeType::BoneID1:		return 4 * 4;
-	case VertexAttributeType::BoneID2:		return 4 * 4;
-	case VertexAttributeType::BoneWeights1: return 4 * 4;
-	case VertexAttributeType::BoneWeights2: return 4 * 4;
+	case VertexAttributeType::Position:		return 3;
+	case VertexAttributeType::Normal:		return 3;
+	case VertexAttributeType::Tangent:		return 3;
+	case VertexAttributeType::UV0:			return 2;
+	case VertexAttributeType::UV1:			return 2;
+	case VertexAttributeType::UV2:			return 2;
+	case VertexAttributeType::UV3:			return 2;
+	case VertexAttributeType::UV4:			return 2;
+	case VertexAttributeType::UV5:			return 2;
+	case VertexAttributeType::UV6:			return 2;
+	case VertexAttributeType::UV7:			return 2;
+	case VertexAttributeType::Color:		return 4;
+	case VertexAttributeType::BoneID1:		return 4;
+	case VertexAttributeType::BoneID2:		return 4;
+	case VertexAttributeType::BoneWeights1: return 4;
+	case VertexAttributeType::BoneWeights2: return 4;
 	}
 	return 0;
 }
@@ -116,44 +117,42 @@ Mesh::Data& Mesh::AddMeshData(Mesh::Data data)
 
 void Mesh::Data::AddAttribute(VertexAttributeType attrType)
 {
-	attributes.push_back(VertexAttribute(attrType, attributeOffset, attributeIndex));
-	VertexAttribute* attr = GetAttribute(attrType);
-	attributeOffset += attr->size;
-	attributeIndex++;
+	attributes.push_back(VertexAttribute(attrType));
+	CalculateStride();
 }
 
 void Mesh::Data::AddAttribute(std::string name)
 {
-	VertexAttributeType attrType = VertexAttribute::GetAttributeType(name);
-	attributes.push_back(VertexAttribute(attrType, attributeOffset, attributeIndex));
-	VertexAttribute* attr = GetAttribute(attrType);
-	attributeOffset += attr->size;
-	attributeIndex++;
+	attributes.push_back(VertexAttribute(VertexAttribute::GetAttributeType(name)));
+	CalculateStride();
 }
 
-VertexAttribute* Mesh::Data::GetAttribute(const char* name)
+void Mesh::Data::CalculateStride()
 {
-	for (auto& attr : attributes) {
-		if (attr.attributeName != name)
-			continue;
-		return &attr;
+	int index = 0;
+	for (auto& attr : attributes)
+	{
+		attr.index = index++;
+		attr.offset = vertexStride;
+		vertexStride += attr.size * 4;
 	}
-	return nullptr;
-}
-
-VertexAttribute* Mesh::Data::GetAttribute(VertexAttributeType attrType)
-{
-	for (auto& attr : attributes) {
-		if (attr.attributeType != attrType)
-			continue;
-		return &attr;
-	}
-	return nullptr;
 }
 
 void Mesh::Data::Draw()
 {
-
+	if (nullptr == vertexArray)
+	{
+		vertexArray = VertexArray::Create();
+		Ref<VertexBuffer> vertexBuffer = VertexBuffer::Create(&vertexData[0], (uint32_t)vertexData.size());
+		vertexBuffer->SetVertexAttribute(&attributes);
+		vertexArray->AddVertexBuffer(vertexBuffer, vertexStride);
+		if (indexData.size() > 3)
+			vertexArray->SetIndexBuffer(IndexBuffer::Create(&indexData[0], (uint32_t)indexData.size()));
+	}
+	else
+	{
+		vertexArray->Draw();
+	}
 }
 
 void Mesh::Draw(int index)

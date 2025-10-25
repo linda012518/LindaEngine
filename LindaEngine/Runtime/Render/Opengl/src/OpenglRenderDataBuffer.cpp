@@ -1,97 +1,122 @@
 #include "OpenglRenderDataBuffer.h"
 #include "Graphic.h"
+#include "Mesh.h"
+#include "glad/glad.h"
 
 using namespace LindaEngine;
 
-#define GL_ARRAY_BUFFER 0x8892
-#define GL_ELEMENT_ARRAY_BUFFER 0x8893
-
-OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count) : _count(count)
+OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count, bool is32Bit, bool isStatic) : _count(count)
 {
-	_rendererID = -1;
-	Graphic::CreateIndexBuffer(_rendererID, _count, indices, true);
+	_rendererID = 0;
+
+	glGenBuffers(1, &_rendererID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _rendererID);
+	uint32_t size = is32Bit ? sizeof(unsigned int) : sizeof(unsigned short);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * size, indices, isStatic ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
 }
 
 OpenGLIndexBuffer::~OpenGLIndexBuffer()
 {
-	if (_rendererID != -1)
-		Graphic::DeleteBuffers(1, _rendererID);
+	if (_rendererID != 0)
+		glDeleteBuffers(1, &_rendererID);
 }
 
 void OpenGLIndexBuffer::Bind() const
 {
-	Graphic::BindBuffer(GL_ELEMENT_ARRAY_BUFFER, _rendererID);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _rendererID);
 }
 
 void OpenGLIndexBuffer::Unbind() const
 {
-	Graphic::UnBindBuffer(GL_ELEMENT_ARRAY_BUFFER);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size)
+OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size, bool isStatic)
 {
-	_rendererID = -1;
-	Graphic::CreateVertexBuffer(_rendererID, 0, nullptr);
+	_count = size;
+	_rendererID = 0;
+	glGenBuffers(1, &_rendererID);
+	glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
+	glBufferData(GL_ARRAY_BUFFER, size, nullptr, isStatic ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
 }
 
-OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
+OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size, bool isStatic)
 {
-	_rendererID = -1;
-	Graphic::CreateVertexBuffer(_rendererID, size, vertices);
+	_count = size;
+	_rendererID = 0;
+	glGenBuffers(1, &_rendererID);
+	glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
+	glBufferData(GL_ARRAY_BUFFER, size, vertices, isStatic ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
 }
 
 OpenGLVertexBuffer::~OpenGLVertexBuffer()
 {
-	if (_rendererID != -1)
-		Graphic::DeleteBuffers(1, _rendererID);
+	if (_rendererID != 0)
+		glDeleteBuffers(1, &_rendererID);
 }
 
 void OpenGLVertexBuffer::Bind() const
 {
-	Graphic::BindBuffer(GL_ARRAY_BUFFER, _rendererID);
+	glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
 }
 
 void OpenGLVertexBuffer::Unbind() const
 {
-	Graphic::UnBindBuffer(GL_ARRAY_BUFFER);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void OpenGLVertexBuffer::SetVertexAttribute(std::vector<VertexAttribute>* attrs)
+{
+	attributes = attrs;
+}
+
+const std::vector<VertexAttribute>* LindaEngine::OpenGLVertexBuffer::GetAttributes() const
+{
+	return attributes;
 }
 
 void OpenGLVertexBuffer::SetData(void* data, uint32_t size)
 {
+	_count = size;
 	Bind();
-	Graphic::UpdateVertexData(0, size, data);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
 OpenGLVertexArray::OpenGLVertexArray()
 {
-	_rendererID = -1;
-	Graphic::CreateVertexArrays(1, _rendererID);
+	_rendererID = 0;
+	glGenVertexArrays(1, &_rendererID);
+	glBindVertexArray(_rendererID);
 }
 
 OpenGLVertexArray::~OpenGLVertexArray()
 {
-	Graphic::DeleteVertexArrays(1, _rendererID);
+	glDeleteVertexArrays(1, &_rendererID);
 }
 
 void OpenGLVertexArray::Bind() const
 {
-	Graphic::BindVertexArray(_rendererID);
+	glBindVertexArray(_rendererID);
 }
 
 void OpenGLVertexArray::Unbind() const
 {
-	Graphic::BindVertexArray(0);
+	glBindVertexArray(0);
 }
 
-void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& buffer)
+void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& buffer, int vertexStride)
 {
 	Bind();
 	buffer->Bind();
-
+	for (auto& attr : *buffer->GetAttributes())
+	{
+		glEnableVertexAttribArray(attr.index);
+		glVertexAttribPointer(attr.index, attr.size, GL_FLOAT, attr.normalized ? GL_TRUE : GL_FALSE, vertexStride, (const void*)(intptr_t)attr.offset);
+	}
 	_vertexBuffer = buffer;
 }
 
@@ -100,4 +125,17 @@ void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& buffer)
 	Bind();
 	buffer->Bind();
 	_indexBuffer = buffer;
+}
+
+void OpenGLVertexArray::Draw()
+{
+	Bind();
+	if (nullptr != _indexBuffer)
+	{
+		glDrawElements(GL_TRIANGLES, _indexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
+	}
+	else
+	{
+		glDrawArrays(GL_TRIANGLES, 0, _vertexBuffer->GetCount());
+	}
 }

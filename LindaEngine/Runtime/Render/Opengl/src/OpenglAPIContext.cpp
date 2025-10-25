@@ -24,56 +24,6 @@ void OpenglAPIContext::Clear(bool color, bool depth, bool stencil)
 	glClear(ret);
 }
 
-void OpenglAPIContext::CreateVertexArrays(int count, unsigned int VAO)
-{
-	glGenVertexArrays(1, &VAO);
-}
-
-void OpenglAPIContext::DeleteVertexArrays(int count, unsigned int VAO)
-{
-	glDeleteVertexArrays(count, &VAO);
-}
-
-void OpenglAPIContext::BindVertexArray(unsigned int VAO)
-{
-	glBindVertexArray(VAO);
-}
-
-void OpenglAPIContext::CreateIndexBuffer(unsigned int IBO, int count, void* data, bool is32Bit, bool isStatic)
-{
-	glGenBuffers(1, &IBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-	uint32_t size = is32Bit ? sizeof(unsigned int) : sizeof(unsigned short);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * size, data, isStatic ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
-}
-
-void OpenglAPIContext::CreateVertexBuffer(unsigned int VBO, int size, void* data, bool isStatic)
-{
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, size, data, isStatic ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
-}
-
-void OpenglAPIContext::UpdateVertexData(int offset, int size, void* data)
-{
-	glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
-}
-
-void OpenglAPIContext::BindBuffer(unsigned int target, unsigned int buffer)
-{
-	glBindBuffer(target, buffer);
-}
-
-void OpenglAPIContext::UnBindBuffer(unsigned int target)
-{
-	glBindBuffer(target, 0);
-}
-
-void OpenglAPIContext::DeleteBuffers(int count, unsigned int buffer)
-{
-	glDeleteBuffers(count, &buffer);
-}
-
 void OpenglAPIContext::CheckRenderState(RenderState& state, RenderState& materialState)
 {
 	CheckColorMask(state, materialState);
