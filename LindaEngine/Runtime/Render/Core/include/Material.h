@@ -26,11 +26,6 @@ namespace LindaEngine
 		Material();
 		virtual ~Material();
 
-		Ref<MaterialPass> GetDepthPass() { return _depthPass; }
-		Ref<MaterialPass> GetDepthNormalPass() { return _depthNormalPass; }
-		Ref<MaterialPass> GetShadowCasterPass() { return _shadowCasterPass; }
-		std::vector<Ref<MaterialPass>>& GetColorPass() { return _colorPasses; }
-
 		void SetPath(const char* path) { _filePath = path; }
 
 		void CompileShader();
@@ -41,13 +36,6 @@ namespace LindaEngine
 		bool Deserialize(YAML::Node& node);
 
 	private:
-		//这几个pass哪个是nullptr并且_hasFallback=true，就用defaultPass
-		Ref<MaterialPass> _depthPass = nullptr;
-		Ref<MaterialPass> _shadowCasterPass = nullptr;
-		Ref<MaterialPass> _depthNormalPass = nullptr;
-
-		std::vector<Ref<MaterialPass>> _colorPasses;
-
 		int _renderQueue = 2000; //渲染队列
 		RenderType _renderType = RenderType::Opaque; //是否不透明物体
 		bool _shadowCast = true; //是否投射阴影
@@ -60,8 +48,5 @@ namespace LindaEngine
 
 	public:
 		static Ref<Material> overrideMat;
-		static Ref<MaterialPass> defaultDepthPass;
-		static Ref<MaterialPass> defaultDepthNormalPass;
-		static Ref<MaterialPass> defaultShadowCasterPass;
 	};
 }
