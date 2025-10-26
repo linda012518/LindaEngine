@@ -2,16 +2,17 @@ Shader
 {
 	Pass
 	{
+		LightMode "customLightMode"
 		Vertex
 		{
 			AttributeNameArray { aPosition, aColor, aUV0 }
 			
 			uniform mat4 localToWorld;
-			uniform mat4 worldToProjection;
+			uniform mat4 lindaMatrixVP;
 
 			void main()
 			{
-				gl_Position = worldToProjection * localToWorld * vec4(aPosition, 1.0);
+				gl_Position = lindaMatrixVP * localToWorld * vec4(aPosition, 1.0);
 			}
 		}
 		

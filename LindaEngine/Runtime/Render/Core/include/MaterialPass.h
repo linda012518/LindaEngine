@@ -22,6 +22,7 @@ namespace LindaEngine
 	public:
 		void AddKeyword(std::string& key);
 		void CompileShader(Ref<ShaderSourceCode> sss);
+		bool IsCompiled() { return nullptr != _shader; }
 		void Bind();
 
 		void UpdateUniforms();

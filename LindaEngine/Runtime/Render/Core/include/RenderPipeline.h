@@ -2,7 +2,6 @@
 
 #include "AutoPtr.h"
 #include "IRuntimeModule.hpp"
-#include "RenderAPIContext.h"
 
 namespace LindaEngine
 {

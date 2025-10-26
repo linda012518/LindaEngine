@@ -26,7 +26,7 @@ using namespace LindaEngine;
 
 int RenderPipeline::Initialize()
 {
-	//_scene = CreateRef<Scene>();
+	Graphic::Initialize();
     return 0;
 }
 
@@ -75,6 +75,7 @@ void RenderPipeline::Render()
     Graphic::SetClearColor(0, 0.3, 0, 0);
     Graphic::Clear(true, true, true);
 	Ref<DrawingSettings> settings = CreateRef<DrawingSettings>();
+	settings->lightModes.push_back("customLightMode");
 	RendererSystem::DrawRenderers(settings);
 
 }

@@ -149,10 +149,8 @@ void Mesh::Data::Draw()
 		if (indexData.size() > 3)
 			vertexArray->SetIndexBuffer(IndexBuffer::Create(&indexData[0], (uint32_t)indexData.size()));
 	}
-	else
-	{
-		vertexArray->Draw();
-	}
+
+	vertexArray->Draw();
 }
 
 void Mesh::Draw(int index)

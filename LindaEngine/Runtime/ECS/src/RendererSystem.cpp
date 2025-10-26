@@ -1,6 +1,7 @@
 #include "RendererSystem.h"
 #include "Renderer.h"
 #include "Settings.h"
+#include "Material.h"
 
 using namespace LindaEngine;
 
@@ -51,11 +52,12 @@ void RendererSystem::DrawRenderers(Ref<DrawingSettings> settings)
 
 	std::vector<std::string>& lightModes = settings->lightModes;
 
-	for (auto& renderer : _renderables)
+	for (auto& renderer : _components)
 	{
 		for (auto& lightMode : lightModes)
 		{
-			renderer->Render(lightMode);
+			Material::overrideLightMode = lightMode;
+			renderer->Render();
 		}
 	}
 }

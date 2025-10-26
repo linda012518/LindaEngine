@@ -28,9 +28,9 @@ namespace LindaEngine
 
 		void SetPath(const char* path) { _filePath = path; }
 
-		void CompileShader();
+		void CompileShader(Ref<MaterialPass> pass);
 		void SetShader(const char* path); //动态添加的要设置shader，然后设置所有需要的属性，再调用CompileShader
-		bool Bind(std::string& lightMode);
+		bool Bind();
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
@@ -48,5 +48,6 @@ namespace LindaEngine
 
 	public:
 		static Ref<Material> overrideMat;
+		static std::string overrideLightMode;
 	};
 }

@@ -3,7 +3,12 @@
 
 using namespace LindaEngine;
 
-Scope<RenderAPIContext> Graphic::_renderContext = RenderAPIContext::Create();
+Scope<RenderAPIContext> Graphic::_renderContext = nullptr;
+
+void Graphic::Initialize()
+{
+	_renderContext = RenderAPIContext::Create();
+}
 
 void Graphic::SetViewport(int xStart, int yStart, int width, int height)
 {

@@ -7,6 +7,7 @@
 using namespace LindaEngine;
 
 Ref<Material> Material::overrideMat = nullptr;
+std::string Material::overrideLightMode;
 
 Material::Material()
 {
@@ -16,15 +17,17 @@ Material::~Material()
 {
 }
 
-void Material::CompileShader()
+void Material::CompileShader(Ref<MaterialPass> pass)
 {
+	if (pass->IsCompiled())
+		return;
+
 	Ref<ShaderSource> ssVector = ShaderManager::GetShaderSource(_shaderPath.c_str());
-	_hasFallback = ssVector->hasFallback;
 
 	for (auto& ss : ssVector->shaderSrcCode) {
-		//Ref<MaterialPass> pass = CreateRef<MaterialPass>();
-		//pass->CompileShader(ss);
-		//_colorPasses.push_back(pass);
+		if (ss->name != overrideLightMode)
+			continue;
+		pass->CompileShader(ss);
 	}
 }
 
@@ -34,22 +37,28 @@ void Material::SetShader(const char* path)
 	_passes.clear();
 }
 
-bool Material::Bind(std::string& lightMode)
+bool Material::Bind()
 {
-	if (_passes.find(lightMode) == _passes.end())
+	Ref<MaterialPass> pass = nullptr;
+
+	if (_passes.find(overrideLightMode) == _passes.end())
 	{
 		if (_hasFallback)
 		{
-			Ref<MaterialPass> pass = MaterialManager::GetDefaultMaterialPass(lightMode.c_str());
+			pass = MaterialManager::GetDefaultMaterialPass(overrideLightMode.c_str());
 			if (nullptr == pass)
 				return false;
+
+			CompileShader(pass);
 			pass->Bind();
 			return true;
 		}
 		return false;
 	}
 
-	_passes[lightMode]->Bind();
+	pass = _passes[overrideLightMode];
+	CompileShader(pass);
+	pass->Bind();
 	return true;
 }
 

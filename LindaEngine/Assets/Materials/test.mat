@@ -1,5 +1,5 @@
 Material:
-  ShaderPath: Assets/Shaders/Unlit.shader
+  ShaderPath: Assets/Shaders/test.shader
   RenderType: 2
   ShadowCast: true
   ReceiveShadow: true

@@ -10,6 +10,8 @@ namespace LindaEngine
 	class Graphic
 	{
 	public:
+		static void Initialize();
+
 		static void SetViewport(int xStart, int yStart, int width, int height);
 		static void SetClearColor(float r, float g, float b, float a);
 		static void Clear(bool color, bool depth, bool stencil);

@@ -21,7 +21,7 @@ namespace LindaEngine
 
 		void SetMesh(Ref<Mesh> mesh);
 		void AddMaterial(int index, Ref<Material> mat);
-		void Render(std::string& lightMode);
+		void Render();
 
 		Mesh* GetMesh() { return _mesh.get(); }
 		std::vector<Ref<Material>>& GetMaterials() { return _materialList; }

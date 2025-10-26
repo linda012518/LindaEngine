@@ -42,7 +42,7 @@ void MaterialPass::CompileShader(Ref<ShaderSourceCode> sss)
 void MaterialPass::Bind()
 {
 	_shader->Begin();
-	UpdateUniforms();
+	//UpdateUniforms();
 }
 
 void MaterialPass::UpdateUniforms()

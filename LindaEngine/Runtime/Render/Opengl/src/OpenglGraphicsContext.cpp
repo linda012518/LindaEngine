@@ -2,7 +2,6 @@
 #include "WinWindow.h"
 #include "glad/glad_wgl.h"
 #include "RenderPipeline.h"
-#include "RenderAPIContext.h"
 
 #include <iostream>
 #include <tchar.h>
@@ -190,14 +189,6 @@ int OpenglGraphicsContext::Initialize()
 		return result;
 	}
 
-	//if (!gladLoadWGL(_hDc)) {
-	//	printf("WGL initialize failed!\n");
-	//	result = -1;
-	//}
-	//else {
-	//	result = 0;
-	//	printf("WGL initialize finished!\n");
-	//}
 	result = gladLoadGL();
 
 	if (result != 1) {
