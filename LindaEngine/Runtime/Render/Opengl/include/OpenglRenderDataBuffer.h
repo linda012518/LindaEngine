@@ -7,8 +7,8 @@ namespace LindaEngine
 	class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
-		OpenGLVertexBuffer(uint32_t size, bool isStatic = true);
-		OpenGLVertexBuffer(float* vertices, uint32_t size, bool isStatic = true);
+		OpenGLVertexBuffer(uint32_t size, int vertexStride, bool isStatic = true);
+		OpenGLVertexBuffer(float* vertices, uint32_t size, int vertexStride, bool isStatic = true);
 		~OpenGLVertexBuffer();
 
 		virtual void Bind() const override;

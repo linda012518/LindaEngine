@@ -33,18 +33,18 @@ void OpenGLIndexBuffer::Unbind() const
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size, bool isStatic)
+OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size, int vertexStride, bool isStatic)
 {
-	_count = size;
+	_count = 4 * size / vertexStride;
 	_rendererID = 0;
 	glGenBuffers(1, &_rendererID);
 	glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
 	glBufferData(GL_ARRAY_BUFFER, size, nullptr, isStatic ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
 }
 
-OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size, bool isStatic)
+OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size, int vertexStride, bool isStatic)
 {
-	_count = size;
+	_count = 4 * size / vertexStride;
 	_rendererID = 0;
 	glGenBuffers(1, &_rendererID);
 	glBindBuffer(GL_ARRAY_BUFFER, _rendererID);

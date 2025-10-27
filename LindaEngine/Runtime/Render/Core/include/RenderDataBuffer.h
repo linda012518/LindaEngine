@@ -19,8 +19,8 @@ namespace LindaEngine
 		virtual uint32_t GetCount() const = 0;
 		virtual void SetData(void* data, uint32_t size) = 0;
 
-		static Ref<VertexBuffer> Create(uint32_t size);
-		static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
+		static Ref<VertexBuffer> Create(uint32_t size, int vertexStride);
+		static Ref<VertexBuffer> Create(float* vertices, uint32_t size, int vertexStride);
 	};
 
 	class IndexBuffer

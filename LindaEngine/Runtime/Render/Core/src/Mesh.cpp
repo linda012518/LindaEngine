@@ -159,7 +159,7 @@ void Mesh::Data::Draw()
 	if (nullptr == vertexArray)
 	{
 		vertexArray = VertexArray::Create();
-		Ref<VertexBuffer> vertexBuffer = VertexBuffer::Create(&vertexData[0], 4 * (uint32_t)vertexData.size() / vertexStride);
+		Ref<VertexBuffer> vertexBuffer = VertexBuffer::Create(&vertexData[0], (uint32_t)vertexData.size(), vertexStride);
 		vertexBuffer->SetVertexAttribute(&attributes);
 		vertexArray->AddVertexBuffer(vertexBuffer, vertexStride);
 		if (indexData.size() > 3)

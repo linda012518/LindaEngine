@@ -4,12 +4,12 @@
 
 using namespace LindaEngine;
 
-Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
+Ref<VertexBuffer> VertexBuffer::Create(uint32_t size, int vertexStride)
 {
     switch (GraphicsContext::graphicsConfig.graphicsAPI)
     {
     case GraphicsDriverAPI::OpenGL:
-        return CreateRef<OpenGLVertexBuffer>(size);
+        return CreateRef<OpenGLVertexBuffer>(size, vertexStride);
     case GraphicsDriverAPI::OpenGLES:
         break;
     case GraphicsDriverAPI::DX11:
@@ -24,12 +24,12 @@ Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
     return nullptr;
 }
 
-Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
+Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size, int vertexStride)
 {
     switch (GraphicsContext::graphicsConfig.graphicsAPI)
     {
     case GraphicsDriverAPI::OpenGL:
-        return CreateRef<OpenGLVertexBuffer>(vertices, size);
+        return CreateRef<OpenGLVertexBuffer>(vertices, size, vertexStride);
     case GraphicsDriverAPI::OpenGLES:
         break;
     case GraphicsDriverAPI::DX11:
