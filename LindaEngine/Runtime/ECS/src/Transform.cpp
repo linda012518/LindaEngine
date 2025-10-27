@@ -323,7 +323,7 @@ void Transform::UpdateWhenWorldChange()
 
 void Transform::UpdateViewMatrix()
 {
-	if (false == _hasCamear)
+	if (false == _hasCamera)
 		return;
 
 	_viewMatrix = glm::mat4_cast(_worldRotation);

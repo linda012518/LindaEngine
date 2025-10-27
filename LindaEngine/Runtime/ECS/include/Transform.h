@@ -37,14 +37,14 @@ namespace LindaEngine
 		Transform* _parent = nullptr;
 		std::list<Transform*> _children;
 
-		bool _hasCamear = false;
+		bool _hasCamera = false;
 
 	public:
 		Transform(Entity& entity);
 		virtual ~Transform();
 
-		void OnCameraAdded() { _hasCamear = true; }
-		void OnCameraRemoved() { _hasCamear = false; }
+		void OnCameraAdded() { _hasCamera = true; }
+		void OnCameraRemoved() { _hasCamera = false; }
 		std::string& GetParentID() { return _parentID; }
 		void SetParentID(std::string& id) { _parentID = id; }
 

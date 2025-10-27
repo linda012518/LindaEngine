@@ -42,7 +42,7 @@ void Camera::MakeViewMatrix()
 	Transform* t = _entity.GetComponent<Transform>();
 	if (nullptr != t)
 	{
-		_viewMatrix = _viewMatrix;
+		_viewMatrix = t->GetViewMat();
 		_viewInverseMatrix = glm::inverse(_viewMatrix);
 	}
 }

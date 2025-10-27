@@ -35,7 +35,7 @@ void OpenGLIndexBuffer::Unbind() const
 
 OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size, int vertexStride, bool isStatic)
 {
-	_count = 4 * size / vertexStride;
+	_count = size / vertexStride;
 	_rendererID = 0;
 	glGenBuffers(1, &_rendererID);
 	glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
@@ -44,7 +44,7 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size, int vertexStride, bool isS
 
 OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size, int vertexStride, bool isStatic)
 {
-	_count = 4 * size / vertexStride;
+	_count = size / vertexStride;
 	_rendererID = 0;
 	glGenBuffers(1, &_rendererID);
 	glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
