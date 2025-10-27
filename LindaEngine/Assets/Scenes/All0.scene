@@ -12,12 +12,12 @@ Scene:
           parent: ""
     - Name: test2
       ID: bf0c1a8b-30ec-38d7-0000-000000000002
-      Active: false
+      Active: true
       Components:
         - Name: Transform
-          worldPosition: [0, 0, 0]
+          worldPosition: [0, 0, 3.0]
           worldScale: [1, 1, 1]
-          worldRotation: [0.0789264813, 0.0940609276, 0.0789264888, 0.989289522]
+          worldRotation: [0, 0, 0, 1]
           parent: 0617baa2-a444-1829-0000-000000000001
         - enable: true
           zNear: 0.100000001
@@ -36,6 +36,8 @@ Scene:
           worldRotation: [0, 0, 0, 1]
           parent: ""
         - enable: true
+          ShadowCast: true
+          ReceiveShadow: true
           Mesh:
             FilePath: Cube
           Material:

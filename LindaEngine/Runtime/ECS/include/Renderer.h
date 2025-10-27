@@ -9,6 +9,7 @@ namespace LindaEngine
 {
 	class Material;
 	class Mesh;
+	class Transform;
 
 	class Renderer : public Component
 	{
@@ -21,7 +22,7 @@ namespace LindaEngine
 
 		void SetMesh(Ref<Mesh> mesh);
 		void AddMaterial(int index, Ref<Material> mat);
-		void Render();
+		void Render(Transform* transform);
 
 		Mesh* GetMesh() { return _mesh.get(); }
 		std::vector<Ref<Material>>& GetMaterials() { return _materialList; }
@@ -29,6 +30,8 @@ namespace LindaEngine
 	protected:
 		std::vector<Ref<Material>> _materialList;
 		Ref<Mesh> _mesh;
+		bool _shadowCast = true; //是否投射阴影
+		bool _receiveShadow = true; //是否接收阴影
 	};
 
 	class MeshRenderer : public Renderer

@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "Settings.h"
 #include "Material.h"
+#include "Entity.h"
 
 using namespace LindaEngine;
 
@@ -57,7 +58,7 @@ void RendererSystem::DrawRenderers(Ref<DrawingSettings> settings)
 		for (auto& lightMode : lightModes)
 		{
 			Material::overrideLightMode = lightMode;
-			renderer->Render();
+			renderer->Render(renderer->GetEntity().GetTransform());
 		}
 	}
 }

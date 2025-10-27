@@ -1,8 +1,13 @@
 #include "MaterialPass.h"
+#include "Transform.h"
 #include "Shader.h"
 #include "TextureManager.h"
 #include "ShaderManager.h"
 #include "Texture.h"
+#include "Mesh.h"
+
+#include "Camera.h"
+#include "CameraSystem.h"
 
 #define IMPLEMENT_SETUNIFORM(dataType, UniformClass) \
 template<> \
@@ -27,21 +32,28 @@ void MaterialPass::AddKeyword(std::string& key)
 		_keywords.push_back(key);
 }
 
-void MaterialPass::CompileShader(Ref<ShaderSourceCode> sss)
+void MaterialPass::CompileShader(std::string shaderPath, const std::vector<VertexAttribute>& attributes)
 {
-	std::string kw;
-	for (auto& keyword : _keywords)
-	{
-		kw += "#define " + keyword + " \n";
+	if (nullptr != _shader)
+		return;
+
+	Ref<ShaderSource> ssVector = ShaderManager::GetShaderSource(shaderPath.c_str());
+
+	for (auto& ss : ssVector->shaderSrcCode) {
+		if (ss->name != Material::overrideLightMode)
+			continue;
+
+		_shader = ShaderManager::CompileShader(ss, _keywords, attributes);
+		break;
 	}
-	std::string tempVertex = ShaderManager::defaultShaderVersion + ShaderManager::defaultShaderUniformBlack + kw + sss->vertex;
-	std::string tempFragment = ShaderManager::defaultShaderVersion + ShaderManager::defaultShaderUniformBlack + kw + sss->fragment;
-	_shader = CreateRef<Shader>(tempVertex.c_str(), tempFragment.c_str());
 }
 
-void MaterialPass::Bind()
+void MaterialPass::Bind(Transform* transform)
 {
 	_shader->Begin();
+	_shader->SetMat4("_localToWorld", transform->GetLocalToWorldMat());
+	const std::vector<Camera*> list = CameraSystem::GetActiveCameraList();
+	_shader->SetMat4("_linda_Matrix_VP", list[0]->GetViewProjectMatrix());
 	//UpdateUniforms();
 }
 

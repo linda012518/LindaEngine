@@ -39,6 +39,21 @@ const char* VertexAttribute::GetAttributeName(VertexAttributeType attrType)
 	return "aNone";
 }
 
+const char* VertexAttribute::GetVertexDataTypeName(VertexDataType type)
+{
+	switch (type)
+	{
+	case VertexDataType::Float2:	return "vec2 ";
+	case VertexDataType::Float3:	return "vec3 ";
+	case VertexDataType::Float4:	return "vec4 ";
+	case VertexDataType::Int:		return "int ";
+	case VertexDataType::Int2:		return "ivec2 ";
+	case VertexDataType::Int3:		return "ivec3 ";
+	case VertexDataType::Int4:		return "ivec4 ";
+	}
+	return "";
+}
+
 VertexDataType VertexAttribute::GetAttributeDataType(VertexAttributeType attrType)
 {
 	switch (attrType)
@@ -130,6 +145,7 @@ void Mesh::Data::AddAttribute(std::string name)
 void Mesh::Data::CalculateStride()
 {
 	int index = 0;
+	vertexStride = 0;
 	for (auto& attr : attributes)
 	{
 		attr.index = index++;
@@ -143,7 +159,7 @@ void Mesh::Data::Draw()
 	if (nullptr == vertexArray)
 	{
 		vertexArray = VertexArray::Create();
-		Ref<VertexBuffer> vertexBuffer = VertexBuffer::Create(&vertexData[0], (uint32_t)vertexData.size());
+		Ref<VertexBuffer> vertexBuffer = VertexBuffer::Create(&vertexData[0], 4 * (uint32_t)vertexData.size() / vertexStride);
 		vertexBuffer->SetVertexAttribute(&attributes);
 		vertexArray->AddVertexBuffer(vertexBuffer, vertexStride);
 		if (indexData.size() > 3)

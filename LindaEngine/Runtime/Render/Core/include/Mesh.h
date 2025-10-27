@@ -46,6 +46,7 @@ namespace LindaEngine
 		bool normalized;
 
 		static const char* GetAttributeName(VertexAttributeType attrType);
+		static const char* GetVertexDataTypeName(VertexDataType type);
 		static VertexDataType GetAttributeDataType(VertexAttributeType attrType);
 		static uint32_t GetAttributeDataSize(VertexAttributeType attrType);
 		static VertexAttributeType GetAttributeType(std::string& name);
@@ -75,7 +76,8 @@ namespace LindaEngine
 		};
 	public:
 		Mesh::Data& AddMeshData(Mesh::Data data);
-		Mesh::Data* GetMeshData(int index) { return &_data[index]; }
+		Mesh::Data* GetMeshData(int index = 0) { return &_data[index]; }
+		const std::vector<VertexAttribute>& GetMeshAttributes(int index = 0) { return _data[index].attributes; }
 		const int GetMeshCount() { return _meshCount; }
 		void SetPath(const char* path) { _path = path; }
 		void Draw(int index);

@@ -11,8 +11,10 @@
 
 namespace LindaEngine
 {
+	class Transform;
 	class Shader;
 	struct ShaderSourceCode;
+	struct VertexAttribute;
 
 	class MaterialPass : public LObject
 	{
@@ -21,9 +23,9 @@ namespace LindaEngine
 
 	public:
 		void AddKeyword(std::string& key);
-		void CompileShader(Ref<ShaderSourceCode> sss);
+		void CompileShader(std::string shaderPath, const std::vector<VertexAttribute>& attributes);
 		bool IsCompiled() { return nullptr != _shader; }
-		void Bind();
+		void Bind(Transform* transform);
 
 		void UpdateUniforms();
 		const std::string& GetLightMode() const { return _lightMode; }

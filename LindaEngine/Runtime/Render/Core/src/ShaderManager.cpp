@@ -2,6 +2,7 @@
 #include "ShaderLoader.h"
 #include "TextLoader.h"
 #include "Shader.h"
+#include "Mesh.h"
 
 using namespace LindaEngine;
 
@@ -45,4 +46,26 @@ void ShaderManager::Clear()
 {
     _shaderSrcMap.clear();
     _includes.clear();
+}
+
+Ref<Shader> ShaderManager::CompileShader(Ref<ShaderSourceCode> sss, std::vector<std::string> &keywords, const std::vector<VertexAttribute>& attributes)
+{
+    std::string kw;
+    for (auto& keyword : keywords)
+    {
+        kw += "#define " + keyword + " \n";
+    }
+
+    std::string layout;
+    int index = 0;
+    for (auto& attr : attributes)
+    {
+        std::string type = VertexAttribute::GetVertexDataTypeName(attr.dateType);
+        layout += "layout (location = " + std::to_string(index) + ") in " + type + attr.attributeName + ";\n";
+        index++;
+    }
+
+    std::string tempVertex = ShaderManager::defaultShaderVersion + ShaderManager::defaultShaderUniformBlack + kw + layout + sss->vertex;
+    std::string tempFragment = ShaderManager::defaultShaderVersion + ShaderManager::defaultShaderUniformBlack + kw + sss->fragment;
+    return CreateRef<Shader>(tempVertex.c_str(), tempFragment.c_str());
 }

@@ -3,6 +3,7 @@
 #include "MaterialPass.h"
 #include "YamlSerializer.h"
 #include "MaterialManager.h"
+#include "Mesh.h"
 
 using namespace LindaEngine;
 
@@ -17,27 +18,13 @@ Material::~Material()
 {
 }
 
-void Material::CompileShader(Ref<MaterialPass> pass)
-{
-	if (pass->IsCompiled())
-		return;
-
-	Ref<ShaderSource> ssVector = ShaderManager::GetShaderSource(_shaderPath.c_str());
-
-	for (auto& ss : ssVector->shaderSrcCode) {
-		if (ss->name != overrideLightMode)
-			continue;
-		pass->CompileShader(ss);
-	}
-}
-
 void Material::SetShader(const char* path)
 {
 	_shaderPath = path;
 	_passes.clear();
 }
 
-bool Material::Bind()
+bool Material::Bind(Transform* transform, const std::vector<VertexAttribute>& attrubites)
 {
 	Ref<MaterialPass> pass = nullptr;
 
@@ -48,17 +35,16 @@ bool Material::Bind()
 			pass = MaterialManager::GetDefaultMaterialPass(overrideLightMode.c_str());
 			if (nullptr == pass)
 				return false;
-
-			CompileShader(pass);
-			pass->Bind();
+			pass->CompileShader(_shaderPath, attrubites);
+			pass->Bind(transform);
 			return true;
 		}
 		return false;
 	}
 
 	pass = _passes[overrideLightMode];
-	CompileShader(pass);
-	pass->Bind();
+	pass->CompileShader(_shaderPath, attrubites);
+	pass->Bind(transform);
 	return true;
 }
 

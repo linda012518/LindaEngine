@@ -21,6 +21,7 @@ Ref<ShaderSource> ShaderLoader::Load(const char* url)
 	DeleteShaderFrame(tex);
 
 	ProcessInclude(tex, paths);
+	DeleteAnnotation(tex);
 
 	Ref<ShaderSource> ss = CreateRef<ShaderSource>();
 	ss->hasFallback = HasFallback(tex);
@@ -102,6 +103,10 @@ void ShaderLoader::DeleteShaderFrame(std::string& tex)
 	size_t lastPos = tex.rfind('}');
 
 	tex = tex.substr(firstPos + 1, lastPos - firstPos - 1);
+}
+
+void ShaderLoader::DeleteAnnotation(std::string& tex)
+{
 }
 
 bool ShaderLoader::HasFallback(std::string& tex)
@@ -213,33 +218,32 @@ void ShaderLoader::CollectAttributes(Ref<ShaderSourceCode> ss)
 	std::string attributes = tex.substr(one + 1, two - one - 1);
 	attributes.erase(std::remove_if(attributes.begin(), attributes.end(), isspace), attributes.end());
 
-	std::vector<std::string> tokens;
+	//std::vector<std::string> tokens;
 	std::string token;
 	std::istringstream tokenStream(attributes);
 	while (std::getline(tokenStream, token, ',')) {
-		tokens.push_back(token);
+		ss->attributeNames.push_back(token);
 	}
 
-	std::string layout;
-	int index = 0;
+	//std::string layout;
+	//int index = 0;
 
-	std::vector<std::string>& def = ShaderManager::defaultAttributeNames;
-	for (int i = 0; i < def.size(); i++)
-	{
-		if (tokens.size() <= 0)
-			break;
-		auto itr = std::find(tokens.begin(), tokens.end(), def[i]);
-		if (itr == tokens.end())
-			continue;
+	//std::vector<std::string>& def = ShaderManager::defaultAttributeNames;
+	//for (int i = 0; i < def.size(); i++)
+	//{
+	//	if (tokens.size() <= 0)
+	//		break;
+	//	auto itr = std::find(tokens.begin(), tokens.end(), def[i]);
+	//	if (itr == tokens.end())
+	//		continue;
 
-		ss->attributeNames.push_back(def[i]);
-		tokens.erase(std::remove(tokens.begin(), tokens.end(), def[i]), tokens.end());
+	//	ss->attributeNames.push_back(def[i]);
+	//	tokens.erase(std::remove(tokens.begin(), tokens.end(), def[i]), tokens.end());
 
-		std::string type = GetAttrDataTypeByName(def[i], index);
-		layout += "layout (location = " + std::to_string(index) + ") in " + type + def[i] + ";\n";
-	}
-
-	tex.replace(firstPos, two - firstPos + 1, layout);
+	//	std::string type = GetAttrDataTypeByName(def[i], index);
+	//	layout += "layout (location = " + std::to_string(index) + ") in " + type + def[i] + ";\n";
+	//}
+	tex.replace(firstPos, two - firstPos + 1, "");
 }
 
 void ShaderLoader::CollectUniforms(Ref<ShaderSourceCode> ss, std::string& tex)

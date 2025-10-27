@@ -113,7 +113,7 @@ PerspectiveCamera::PerspectiveCamera(Entity& entity, bool enable) : Camera(entit
 {
 	_cameraType = CameraType::PerspectiveCamera;
 	_fov = 60.0f;
-	_aspectRatio = 1.777778f;
+	_aspectRatio = 1.333333f;
 }
 
 PerspectiveCamera::~PerspectiveCamera()
@@ -123,6 +123,9 @@ PerspectiveCamera::~PerspectiveCamera()
 
 void PerspectiveCamera::MakeProjectionMatrix()
 {
+	if (false == _projectDirty)
+		return;
+
 	_projectMatrix = glm::perspective(glm::radians(_fov), _aspectRatio, _zNear, _zFar);
 	_projectInverseMatrix = glm::inverse(_projectMatrix);
 }
@@ -175,6 +178,9 @@ OrthoCamera::~OrthoCamera()
 
 void OrthoCamera::MakeProjectionMatrix()
 {
+	if (false == _projectDirty)
+		return;
+
 	_projectMatrix = glm::ortho(_left, _right, _bottom, _top, _zNear, _zFar);
 	_projectInverseMatrix = glm::inverse(_projectMatrix);
 }

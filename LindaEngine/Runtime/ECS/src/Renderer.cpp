@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "Transform.h"
 #include "YamlSerializer.h"
 #include "Mesh.h"
 #include "Material.h"
@@ -25,6 +26,8 @@ bool Renderer::Serialize()
 	out << YAML::Value << YAML::BeginMap;
 
 	out << YAML::Key << "enable" << YAML::Value << _enable;
+	out << YAML::Key << "ShadowCast" << YAML::Value << _shadowCast;
+	out << YAML::Key << "ReceiveShadow" << YAML::Value << _receiveShadow;
 	out << YAML::Key << "Mesh";
 	_mesh->Serialize();
 	out << YAML::Key << "Material";
@@ -40,6 +43,8 @@ bool Renderer::Serialize()
 bool Renderer::Deserialize(YAML::Node& node)
 {
 	_enable = node["enable"].as<bool>();
+	_shadowCast = node["ShadowCast"].as<bool>();
+	_receiveShadow = node["ReceiveShadow"].as<bool>();
 
 	auto mesh = node["Mesh"];
 	auto materials = node["Material"];
@@ -66,13 +71,13 @@ void Renderer::AddMaterial(int index, Ref<Material> mat)
 	_materialList.insert(_materialList.begin() + index, mat);
 }
 
-void Renderer::Render()
+void Renderer::Render(Transform* transform)
 {
 	int index = 0;
 	for (auto& material : _materialList)
 	{
 		index++;
-		if (material->Bind() == false)
+		if (material->Bind(transform, _mesh->GetMeshAttributes(index - 1)) == false)
 			continue;
 		_mesh->Draw(index - 1);
 	}
