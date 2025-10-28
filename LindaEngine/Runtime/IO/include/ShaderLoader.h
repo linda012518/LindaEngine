@@ -16,12 +16,11 @@ namespace LindaEngine
 	{
 	public:
 		static Ref<ShaderSource> Load(const char* path);
+		static void DeleteShaderFrame(std::string& tex);
 
 	private:
 		static void ProcessInclude(std::string& tex, std::vector<std::string>& paths);
 
-		static void DeleteShaderFrame(std::string& tex);
-		static void DeleteAnnotation(std::string& tex);
 
 		static bool HasFallback(std::string& tex);
 		static std::string GetPassName(std::string& tex);

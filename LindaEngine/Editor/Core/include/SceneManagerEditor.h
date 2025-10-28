@@ -14,12 +14,11 @@ namespace LindaEditor
 	class SceneManagerEditor
 	{
 	public:
-		static Ref<LindaEngine::Scene> CreateScene();
-		static bool SaveScene(const char* path);
+		static bool SaveScene();
 		static void AddToBuild(int index, Ref<SceneNodeEditor> scene);
 		static void RemoveToBuild(Ref<SceneNodeEditor> scene);
 		static bool Build(const char* path);
-		static bool LoadScene(const char* path);
+		static bool LoadScene();
 		static Ref<SceneNodeEditor> GetCurrentNode();
 		static Ref<LindaEngine::Scene> GetCurrentScene();
 

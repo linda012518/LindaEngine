@@ -285,7 +285,7 @@
     <ClCompile Include="Runtime\Render\Core\src\UniformDataGlobal.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Editor\Core\src\ShaderLoaderEditor.cpp">
+    <ClCompile Include="Editor\Core\src\MaterialManagerEditor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1640,10 +1640,13 @@
     <ClInclude Include="Runtime\Render\Core\include\UniformDataGlobal.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Editor\Core\include\ShaderLoaderEditor.h">
+    <ClInclude Include="Editor\Core\include\MaterialStateEditor.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Render\Core\include\RenderEnumData.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Core\include\MaterialManagerEditor.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

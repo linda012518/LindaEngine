@@ -32,3 +32,19 @@ std::string TextLoader::Load(const char* path)
 	}
 
 }
+
+
+void TextLoader::DeleteAnnotation(std::string& tex)
+{
+	while (true)
+	{
+		size_t attrPos = tex.find("//");
+		if (attrPos == std::string::npos)
+			return;
+		size_t pos = tex.find('\n', attrPos);
+		if (pos == std::string::npos)
+			tex.erase(attrPos);
+		else
+			tex.erase(attrPos, pos - attrPos);
+	}
+}

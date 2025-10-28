@@ -11,6 +11,7 @@ namespace LindaEngine
 		static std::vector<std::string> GetFileDirtcorys(const char* path);
 		static std::string GetFilePath(std::string& path);
 		static std::string GetFileName(std::string& path);
+		static std::string GetFileNameNoExtension(std::string& path);
 
 		static const char* overridePath;
 		static const char* graphicsConfig;

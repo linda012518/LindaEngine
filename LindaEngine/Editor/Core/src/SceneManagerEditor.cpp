@@ -15,27 +15,33 @@ Ref<SceneNodeEditor> SceneManagerEditor::_node = nullptr;
 std::vector<Ref<SceneNodeEditor>> SceneManagerEditor::_buildScenes;
 std::vector<Ref<SceneNodeEditor>> SceneManagerEditor::_sceneNodes;
 
-Ref<Scene> SceneManagerEditor::CreateScene()
+bool SceneManagerEditor::SaveScene()
 {
-	_scene->Destroy();
-	_node = nullptr;
-	return _scene;
-}
+	try
+	{
+		std::string path = "Assets/Scenes/All0.scene";
+		if (nullptr != _node)
+		{
+			Path::overridePath = _node->path.c_str();
+			return _scene->Serialize();
+		}
 
-bool SceneManagerEditor::SaveScene(const char* path)
-{
-	Path::overridePath = path;
-	bool ret = _scene->Serialize();
-	if (false == ret)
-		return false;
-	if (nullptr != _node)
+		//TODO 打开保存对话框选择路径
+		Path::overridePath = path.c_str();
+		bool ret = _scene->Serialize();
+		if (ret == false)
+			return false;
+
+		_node = CreateRef<SceneNodeEditor>();
+		_node->path = path;
+		_node->name = Path::GetFileName(path);
+		_sceneNodes.push_back(_node);
 		return true;
-	_node = CreateRef<SceneNodeEditor>();
-	_node->path = path;
-	std::string temp = path;
-	_node->name = Path::GetFileName(temp);
-	_sceneNodes.push_back(_node);
-	return true;
+	}
+	catch (const std::exception&)
+	{
+		return false;
+	}
 }
 
 void SceneManagerEditor::AddToBuild(int index, Ref<SceneNodeEditor> scene)
@@ -90,23 +96,23 @@ bool SceneManagerEditor::Build(const char* path)
 	}
 }
 
-bool SceneManagerEditor::LoadScene(const char* path)
+bool SceneManagerEditor::LoadScene()
 {
 	YAML::Node data;
 	try
 	{
-		data = YAML::LoadFile(path);
-		CreateScene()->Deserialize(data);
+		_scene->Destroy();
 
-		for (auto& node : _sceneNodes)
+		if (nullptr == _node)
 		{
-			if (node->path != _scene->GetPath())
-				continue;
-
-			_node = node;
-			return true;
+			//TODO 加载默认场景
 		}
-		return false;
+		else
+		{
+			data = YAML::LoadFile(_node->path);
+			_scene->Deserialize(data);
+		}
+		return true;
 	}
 	catch (const std::exception&)
 	{

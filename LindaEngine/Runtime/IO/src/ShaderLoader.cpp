@@ -18,7 +18,7 @@ Ref<ShaderSource> ShaderLoader::Load(const char* url)
 
 	std::vector<std::string> paths = Path::GetFileDirtcorys(url);
 
-	DeleteAnnotation(tex);
+	TextLoader::DeleteAnnotation(tex);
 	DeleteShaderFrame(tex);
 	ProcessInclude(tex, paths);
 
@@ -102,21 +102,6 @@ void ShaderLoader::DeleteShaderFrame(std::string& tex)
 	size_t lastPos = tex.rfind('}');
 
 	tex = tex.substr(firstPos + 1, lastPos - firstPos - 1);
-}
-
-void ShaderLoader::DeleteAnnotation(std::string& tex)
-{
-	while (true)
-	{
-		size_t attrPos = tex.find("//");
-		if (attrPos == std::string::npos)
-			return;
-		size_t pos = tex.find('\n', attrPos);
-		if (pos == std::string::npos)
-			tex.erase(attrPos);
-		else
-			tex.erase(attrPos, pos - attrPos);
-	}
 }
 
 bool ShaderLoader::HasFallback(std::string& tex)

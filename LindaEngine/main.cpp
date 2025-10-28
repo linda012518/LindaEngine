@@ -25,6 +25,7 @@
 #include "Renderer.h"
 #include "MeshManager.h"
 #include "MaterialManager.h"
+#include "MaterialManagerEditor.h"
 
 using namespace LindaEngine;
 using namespace LindaEditor;
@@ -76,7 +77,6 @@ void SerializeMaterial()
 
 void SerializeScene0()
 {
-	SceneManagerEditor::CreateScene();
 	Ref<Scene> scene = SceneManagerEditor::GetCurrentScene();
 
 	Entity* entity = scene->CreateEntity("test1");
@@ -95,7 +95,7 @@ void SerializeScene0()
 	renderer->SetMesh(MeshManager::GetMesh("Assets/Meshs/rock.obj"));
 	renderer->AddMaterial(0, MaterialManager::GetMaterial("Assets/Materials/test.mat"));
 
-	SceneManagerEditor::SaveScene("Assets/Scenes/All0.scene");
+	SceneManagerEditor::SaveScene();//"Assets/Scenes/All0.scene"
 	SceneManagerEditor::AddToBuild(0, SceneManagerEditor::GetCurrentNode());
 }
 
@@ -158,6 +158,10 @@ int main()
 	//int a = 0;
 	//return 0;
 
+	Ref<ShaderNodeEditor> node = MaterialManagerEditor::GetCurrentShaderNode();
+	node->name = "test.shader";
+	node->path = "Assets/Shaders/test.shader";
+	MaterialManagerEditor::CreateMaterial("");
 
 
 	Application app;

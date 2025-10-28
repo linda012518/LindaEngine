@@ -44,3 +44,12 @@ std::string Path::GetFileName(std::string& path)
 
 	return path.substr(pos + 1);
 }
+
+std::string Path::GetFileNameNoExtension(std::string& path)
+{
+	std::string name = GetFileName(path);
+	size_t pos = name.rfind('.');
+	if (pos == std::string::npos)
+		return "";
+	return name.substr(0, pos);
+}
