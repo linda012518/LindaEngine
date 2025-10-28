@@ -6,9 +6,6 @@
 #include "Texture.h"
 #include "Mesh.h"
 
-#include "Camera.h"
-#include "CameraSystem.h"
-
 #define IMPLEMENT_SETUNIFORM(dataType, UniformClass) \
 template<> \
 void MaterialPass::SetUniformValue<dataType>(const char* name, dataType val) \
@@ -52,8 +49,7 @@ void MaterialPass::Bind(Transform* transform)
 {
 	_shader->Begin();
 	_shader->SetMat4("_localToWorld", transform->GetLocalToWorldMat());
-	const std::vector<Camera*> list = CameraSystem::GetActiveCameraList();
-	_shader->SetMat4("_linda_Matrix_VP", list[0]->GetViewProjectMatrix());
+	_shader->SetMat4("_worldToLocal", transform->GetWorldToLocalMat());
 	//UpdateUniforms();
 }
 

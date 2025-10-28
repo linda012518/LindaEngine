@@ -1,0 +1,1 @@
+aPosition, aNormal, aTangent, aUV0, aUV1, aUV2, aUV3, aUV4, aUV5, aUV6, aUV7, aColor, aBoneID1, aBoneID2, aBoneWeights1, aBoneWeights2

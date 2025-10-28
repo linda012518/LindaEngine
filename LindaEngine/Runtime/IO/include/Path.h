@@ -15,5 +15,6 @@ namespace LindaEngine
 		static const char* overridePath;
 		static const char* graphicsConfig;
 		static const char* sceneConfig;
+		static const char* shaderConfig;
 	};
 }

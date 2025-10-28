@@ -3,14 +3,17 @@
 #include "TextLoader.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "Path.h"
+#include "yaml-cpp/yaml.h"
 
 using namespace LindaEngine;
 
 std::unordered_map<std::string, Ref<ShaderSource>> ShaderManager::_shaderSrcMap;
 std::unordered_map<std::string, std::string> ShaderManager::_includes;
-std::vector<std::string> ShaderManager::defaultAttributeNames = { "aPosition", "aNormal", "aTangent", "aUV0", "aUV1", "aUV2", "aUV3", "aUV4", "aUV5", "aUV6", "aUV7", "aColor", "aBoneID1", "aBoneID2", "aBoneWeights1", "aBoneWeights2" };
+std::vector<std::string> ShaderManager::defaultAttributeNames;
 std::string ShaderManager::defaultShaderUniformBlack;
-std::string ShaderManager::defaultShaderVersion = "#version 330 core\n";
+std::string ShaderManager::defaultShaderUniform;
+std::string ShaderManager::defaultShaderVersion;
 
 bool _isLoadDefault = false;
 
@@ -18,7 +21,7 @@ Ref<ShaderSource>& ShaderManager::GetShaderSource(const char* path)
 {
     if (false == _isLoadDefault)
     {
-        //TODO º”‘ÿƒ¨»œshader
+        Initialize();
         _isLoadDefault = true;
     }
 
@@ -65,7 +68,38 @@ Ref<Shader> ShaderManager::CompileShader(Ref<ShaderSourceCode> sss, std::vector<
         index++;
     }
 
-    std::string tempVertex = ShaderManager::defaultShaderVersion + ShaderManager::defaultShaderUniformBlack + kw + layout + sss->vertex;
-    std::string tempFragment = ShaderManager::defaultShaderVersion + ShaderManager::defaultShaderUniformBlack + kw + sss->fragment;
+    std::string tempVertex = defaultShaderVersion + defaultShaderUniformBlack + kw + layout + defaultShaderUniform + sss->vertex;
+    std::string tempFragment = defaultShaderVersion + defaultShaderUniformBlack + kw + defaultShaderUniform + sss->fragment;
     return CreateRef<Shader>(tempVertex.c_str(), tempFragment.c_str());
+}
+
+bool ShaderManager::Initialize()
+{
+    YAML::Node data;
+    try
+    {
+        data = YAML::LoadFile(Path::shaderConfig);
+
+        data = data["ShaderConfig"];
+        if (!data)
+            return false;
+
+        defaultShaderUniform = TextLoader::Load(data["BuiltInUniform"].as<std::string>().c_str());
+        defaultShaderUniformBlack = TextLoader::Load(data["GlobalUniformBlock"].as<std::string>().c_str());
+        defaultShaderVersion = TextLoader::Load(data["ShaderVersion"].as<std::string>().c_str());
+        std::string names = TextLoader::Load(data["AttributeNames"].as<std::string>().c_str());
+
+        names.erase(std::remove_if(names.begin(), names.end(), isspace), names.end());
+        std::string token;
+        std::istringstream tokenStream(names);
+        while (std::getline(tokenStream, token, ',')) {
+            defaultAttributeNames.push_back(token);
+        }
+
+        return true;
+    }
+    catch (const std::exception&)
+    {
+        return false;
+    }
 }

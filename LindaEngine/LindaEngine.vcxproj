@@ -146,6 +146,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\Render\Core\src\UniformDataGlobal.cpp" />
+    <ClCompile Include="Runtime\Render\Opengl\src\OpenGLUniformBuffer.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\Graphic.cpp" />
     <ClCompile Include="Runtime\ECS\src\RendererSystem.cpp" />
     <ClCompile Include="Runtime\ECS\src\ComponentSystem.cpp" />
@@ -234,8 +236,11 @@
     <ClCompile Include="Runtime\Core\src\Scene.cpp" />
     <ClCompile Include="Runtime\IO\src\YamlSerializer.cpp" />
     <ClCompile Include="Runtime\Tools\src\UUID.cpp" />
+    <ClCompile Include="Runtime\Render\Core\src\UniformBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Render\Core\include\UniformDataGlobal.h" />
+    <ClInclude Include="Runtime\Render\Opengl\include\OpenGLUniformBuffer.h" />
     <ClInclude Include="Runtime\Render\Core\include\Graphic.h" />
     <ClInclude Include="Runtime\ECS\include\RendererSystem.h" />
     <ClInclude Include="Runtime\ECS\include\ComponentSystem.h" />
@@ -684,6 +689,7 @@
     <ClInclude Include="Runtime\Core\include\Scene.h" />
     <ClInclude Include="Runtime\IO\include\YamlSerializer.h" />
     <ClInclude Include="Runtime\Tools\include\UUID.h" />
+    <ClInclude Include="Runtime\Render\Core\include\UniformBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External\assimp\assimp\color4.inl" />

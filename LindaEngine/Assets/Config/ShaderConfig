@@ -1,0 +1,5 @@
+ShaderConfig:
+  AttributeNames: Assets/Shaders/ShaderLibrary/AttributeNames.glsl
+  BuiltInUniform: Assets/Shaders/ShaderLibrary/BuiltInUniform.glsl
+  GlobalUniformBlock: Assets/Shaders/ShaderLibrary/GlobalUniformBlock.glsl
+  ShaderVersion: Assets/Shaders/ShaderLibrary/ShaderVersion.glsl

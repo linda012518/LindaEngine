@@ -9,6 +9,7 @@ using namespace LindaEngine;
 const char* Path::overridePath;
 const char* Path::graphicsConfig = "Assets/Config/GraphicsConfig";
 const char* Path::sceneConfig = "Assets/Config/SceneConfig";
+const char* Path::shaderConfig = "Assets/Config/ShaderConfig";
 
 std::vector<std::string> Path::GetFileDirtcorys(const char* path)
 {

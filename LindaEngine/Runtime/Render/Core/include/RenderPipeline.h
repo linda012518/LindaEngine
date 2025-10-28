@@ -3,9 +3,13 @@
 #include "AutoPtr.h"
 #include "IRuntimeModule.hpp"
 
+#include <vector>
+
 namespace LindaEngine
 {
-	class Scene;
+	struct UniformDataGlobal;
+	class Camera;
+
 	class RenderPipeline : public IRuntimeModule
 	{
 	public:
@@ -16,10 +20,11 @@ namespace LindaEngine
 		static Scope<RenderPipeline> Create();
 
 	private:
-		void CheckCameraList();
+		const std::vector<Camera*> CheckCameraList();
 		void CheckLightList();
 		void Render();
 
-		void test();
+	private:
+		Ref<UniformDataGlobal> _uniformGlobal;
 	};
 }

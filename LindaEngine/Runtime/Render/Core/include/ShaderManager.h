@@ -39,11 +39,15 @@ namespace LindaEngine
 		static std::string& GetInclude(const char* path);
 		static void Clear();
 		static Ref<Shader> CompileShader(Ref<ShaderSourceCode> sss, std::vector<std::string>& keywords, const std::vector<VertexAttribute>& attributes);
+	
+	private:
+		static bool Initialize();
 
 	public:
 		static std::vector<std::string> defaultAttributeNames;
 		static std::string defaultShaderUniformBlack;
 		static std::string defaultShaderVersion;
+		static std::string defaultShaderUniform;
 		
 	private:
 		static std::unordered_map<std::string, Ref<ShaderSource>> _shaderSrcMap;
