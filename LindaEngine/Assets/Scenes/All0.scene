@@ -39,7 +39,7 @@ Scene:
           ShadowCast: true
           ReceiveShadow: true
           Mesh:
-            FilePath: Sphere
+            FilePath: Assets/Meshs/rock.obj
           Material:
             - FilePath: Assets/Materials/test.mat
           Name: MeshRenderer

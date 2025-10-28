@@ -358,23 +358,24 @@ void MeshLoader::ParseAssimpMesh(aiMesh* aiMesh, const aiScene* scene, Mesh::Dat
 	if (NULL != aiMesh->mColors[0])
 		meshData.AddAttribute(VertexAttributeType::Color);
 
+	int index = 0;
 	meshData.vertexData.resize(((size_t)meshData.vertexStride / 4) * ((size_t)aiMesh->mNumVertices));
 
 	for (unsigned int i = 0; i < aiMesh->mNumVertices; i++)
 	{
-		meshData.vertexData.push_back(aiMesh->mVertices[i].x);
-		meshData.vertexData.push_back(aiMesh->mVertices[i].y);
-		meshData.vertexData.push_back(aiMesh->mVertices[i].z);
+		meshData.vertexData[index++] = (aiMesh->mVertices[i].x);
+		meshData.vertexData[index++] = (aiMesh->mVertices[i].y);
+		meshData.vertexData[index++] = (aiMesh->mVertices[i].z);
 
 		if (NULL != aiMesh->mNormals)
 		{
-			meshData.vertexData.push_back(aiMesh->mNormals[i].x);
-			meshData.vertexData.push_back(aiMesh->mNormals[i].y);
-			meshData.vertexData.push_back(aiMesh->mNormals[i].z);
+			meshData.vertexData[index++] = (aiMesh->mNormals[i].x);
+			meshData.vertexData[index++] = (aiMesh->mNormals[i].y);
+			meshData.vertexData[index++] = (aiMesh->mNormals[i].z);
 
-			meshData.vertexData.push_back(aiMesh->mTangents[i].x);
-			meshData.vertexData.push_back(aiMesh->mTangents[i].y);
-			meshData.vertexData.push_back(aiMesh->mTangents[i].z);
+			meshData.vertexData[index++] = (aiMesh->mTangents[i].x);
+			meshData.vertexData[index++] = (aiMesh->mTangents[i].y);
+			meshData.vertexData[index++] = (aiMesh->mTangents[i].z);
 		}
 
 		for (int n = 0; n < 8; n++)
@@ -382,16 +383,16 @@ void MeshLoader::ParseAssimpMesh(aiMesh* aiMesh, const aiScene* scene, Mesh::Dat
 			if (NULL == aiMesh->mTextureCoords[n])
 				break;
 
-			meshData.vertexData.push_back(aiMesh->mTextureCoords[n][i].x);
-			meshData.vertexData.push_back(aiMesh->mTextureCoords[n][i].y);
+			meshData.vertexData[index++] = (aiMesh->mTextureCoords[n][i].x);
+			meshData.vertexData[index++] = (aiMesh->mTextureCoords[n][i].y);
 		}
 
 		if (NULL != aiMesh->mColors[0])
 		{
-			meshData.vertexData.push_back(aiMesh->mColors[0][i].r);
-			meshData.vertexData.push_back(aiMesh->mColors[0][i].g);
-			meshData.vertexData.push_back(aiMesh->mColors[0][i].b);
-			meshData.vertexData.push_back(aiMesh->mColors[0][i].a);
+			meshData.vertexData[index++] = (aiMesh->mColors[0][i].r);
+			meshData.vertexData[index++] = (aiMesh->mColors[0][i].g);
+			meshData.vertexData[index++] = (aiMesh->mColors[0][i].b);
+			meshData.vertexData[index++] = (aiMesh->mColors[0][i].a);
 		}
 	}
 
