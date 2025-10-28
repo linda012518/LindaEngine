@@ -39,7 +39,7 @@ Scene:
           ShadowCast: true
           ReceiveShadow: true
           Mesh:
-            FilePath: Cube
+            FilePath: Sphere
           Material:
             - FilePath: Assets/Materials/test.mat
           Name: MeshRenderer

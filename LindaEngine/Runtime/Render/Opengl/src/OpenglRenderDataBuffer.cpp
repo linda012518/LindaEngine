@@ -132,7 +132,7 @@ void OpenGLVertexArray::Draw()
 	Bind();
 	if (nullptr != _indexBuffer)
 	{
-		glDrawElements(GL_TRIANGLES, _indexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLE_STRIP, _indexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
 	}
 	else
 	{
