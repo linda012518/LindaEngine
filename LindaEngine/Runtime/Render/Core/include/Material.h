@@ -3,6 +3,7 @@
 #include "AutoPtr.h"
 #include "LObject.h"
 #include "ISerializable.h"
+#include "RenderEnumData.h"
 
 #include <vector>
 #include <string>
@@ -13,11 +14,6 @@ namespace LindaEngine
 	class Transform;
 	class MaterialPass;
 	struct VertexAttribute;
-
-	enum class RenderType
-	{
-		Opaque, Skybox, Transparent, Overlay
-	};
 
 	class Material : public LObject, public ISerializable
 	{

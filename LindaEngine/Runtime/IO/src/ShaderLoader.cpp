@@ -1,7 +1,7 @@
 #include "ShaderLoader.h"
 #include "TextLoader.h"
 #include "ShaderManager.h"
-#include "ShaderAttribute.h"
+#include "ShaderUniform.h"
 #include "Path.h"
 
 #include <sstream>
@@ -18,10 +18,9 @@ Ref<ShaderSource> ShaderLoader::Load(const char* url)
 
 	std::vector<std::string> paths = Path::GetFileDirtcorys(url);
 
-	DeleteShaderFrame(tex);
-
-	ProcessInclude(tex, paths);
 	DeleteAnnotation(tex);
+	DeleteShaderFrame(tex);
+	ProcessInclude(tex, paths);
 
 	Ref<ShaderSource> ss = CreateRef<ShaderSource>();
 	ss->hasFallback = HasFallback(tex);
@@ -184,6 +183,7 @@ void ShaderLoader::GetPasses(std::string url, std::string& tex)
 		Ref<ShaderSourceCode> ss = CreateRef<ShaderSourceCode>();
 
 		ss->name = GetPassName(pass);
+		CollectUniforms(pass);
 
 		size_t vertexPos = pass.find("Vertex");
 		size_t fragPos = pass.find("Fragment");
@@ -202,8 +202,6 @@ void ShaderLoader::GetPasses(std::string url, std::string& tex)
 		ss->fragment = fragment;
 
 		CollectAttributes(ss);
-		CollectUniforms(ss, ss->vertex);
-		CollectUniforms(ss, ss->fragment);
 
 		shaders.push_back(ss);
 	}
@@ -257,33 +255,42 @@ void ShaderLoader::CollectAttributes(Ref<ShaderSourceCode> ss)
 	tex.replace(firstPos, two - firstPos + 1, "");
 }
 
-void ShaderLoader::CollectUniforms(Ref<ShaderSourceCode> ss, std::string& tex)
+void ShaderLoader::CollectUniforms(std::string& tex)
 {
-	//删除Uniforms包装
-	//提取uniform名字和类型留给Material自动传数据
-	std::string uniformTitle = "UniformArray";
+	std::string properties = "Properties";
 
-	size_t uniformPos = tex.find(uniformTitle);
+	size_t uniformPos = tex.find(properties);
 	if (uniformPos == std::string::npos)
-	{
 		return;
-	}
 
 	size_t firstPos = tex.find('{', uniformPos + 1);
 	size_t lastPos = tex.find('}', firstPos + 1);
 
 	std::string uniforms = tex.substr(firstPos + 1, lastPos - firstPos - 1);
+	tex.replace(uniformPos, lastPos - uniformPos + 1, "");
 
-	tex.replace(uniformPos, lastPos - uniformPos + 1, uniforms);
-
-	std::regex uniform_pattern(R"(\buniform\s+(\w+)\s+(\w+)\s*;)");
+	std::regex uniform_pattern(R"(\buniform\s+(\w+)\s+(\w+)\s*(?:=\s*([^;]+))?\s*;)");
 	std::smatch matches;
 	std::string::const_iterator searchStart = uniforms.cbegin();
 
+	std::string uniformCode;
 	while (std::regex_search(searchStart, uniforms.cend(), matches, uniform_pattern)) {
-		if (matches.size() == 3) {
+		if (matches.size() >= 3) { // 完整匹配 + 至少2个捕获组
+
 			std::string type = matches[1].str();
-			ss->uniformsNameMapType[matches[2].str()] = GetUniformDataTypeByName(type);
+			std::string name = matches[2].str();
+			std::string value = matches[3].str();
+
+			uniformCode += "uniform";
+			uniformCode += " " + type;
+			uniformCode += " " + name + ";\n";
+
+#ifdef LindaEditor
+
+#endif // LindaEditor
+
+
+			std::string go = matches[1].str();
 		}
 		searchStart = matches.suffix().first;
 	}

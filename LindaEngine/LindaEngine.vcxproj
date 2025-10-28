@@ -193,6 +193,7 @@
     <ClCompile Include="Runtime\Render\Core\src\RenderDataBuffer.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\Settings.cpp" />
     <ClCompile Include="Runtime\Render\Opengl\src\OpenglRenderDataBuffer.cpp" />
+    <ClCompile Include="Editor\Core\src\ShaderLoaderEditor.cpp" />
     <ClCompile Include="Temp\MaterialLoader.cpp" />
     <ClCompile Include="Runtime\ECS\src\Renderer.cpp" />
     <ClCompile Include="Runtime\IO\src\ShaderLoader.cpp" />
@@ -206,7 +207,6 @@
     <ClCompile Include="Runtime\Render\Core\src\Mesh.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\Shader.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\ShaderManager.cpp" />
-    <ClCompile Include="Runtime\Render\Core\src\ShaderAttribute.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\Texture.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\TextureManager.cpp" />
     <ClCompile Include="Runtime\Core\src\SceneManager.cpp" />
@@ -239,6 +239,7 @@
     <ClCompile Include="Runtime\Render\Core\src\UniformBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Render\Core\include\RenderEnumData.h" />
     <ClInclude Include="Runtime\Render\Core\include\UniformDataGlobal.h" />
     <ClInclude Include="Runtime\Render\Opengl\include\OpenGLUniformBuffer.h" />
     <ClInclude Include="Runtime\Render\Core\include\Graphic.h" />
@@ -348,6 +349,7 @@
     <ClInclude Include="External\yaml-cpp\src\tag.h" />
     <ClInclude Include="External\yaml-cpp\src\token.h" />
     <ClInclude Include="Runtime\Render\Opengl\include\OpenglRenderDataBuffer.h" />
+    <ClInclude Include="Editor\Core\include\ShaderLoaderEditor.h" />
     <ClInclude Include="Temp\MaterialLoader.h" />
     <ClInclude Include="Runtime\ECS\include\Renderer.h" />
     <ClInclude Include="Runtime\IO\include\ShaderLoader.h" />
@@ -364,7 +366,6 @@
     <ClInclude Include="Runtime\Render\Core\include\Shader.h" />
     <ClInclude Include="Runtime\Render\Core\include\ShaderManager.h" />
     <ClInclude Include="Runtime\Render\Core\include\ShaderUniform.h" />
-    <ClInclude Include="Runtime\Render\Core\include\ShaderAttribute.h" />
     <ClInclude Include="Runtime\Render\Core\include\Texture.h" />
     <ClInclude Include="Runtime\Render\Core\include\TextureManager.h" />
     <ClInclude Include="Runtime\Core\include\SceneManager.h" />

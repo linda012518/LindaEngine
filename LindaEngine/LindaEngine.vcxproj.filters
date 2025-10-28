@@ -216,9 +216,6 @@
     <ClCompile Include="Runtime\IO\src\TextureLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime\Render\Core\src\ShaderAttribute.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Runtime\IO\src\YamlSerializer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -286,6 +283,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Render\Core\src\UniformDataGlobal.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Core\src\ShaderLoaderEditor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1469,9 +1469,6 @@
     <ClInclude Include="Runtime\Render\Core\include\RenderPipeline.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\Render\Core\include\ShaderAttribute.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Runtime\IO\include\YamlSerializer.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -1641,6 +1638,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Render\Core\include\UniformDataGlobal.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Core\include\ShaderLoaderEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\Core\include\RenderEnumData.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

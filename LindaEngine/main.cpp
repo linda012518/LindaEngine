@@ -29,6 +29,8 @@
 using namespace LindaEngine;
 using namespace LindaEditor;
 
+#define LindaEditor
+
 void SerializeMaterial()
 {
 	//Ref<Material> mat = CreateRef<Material>();

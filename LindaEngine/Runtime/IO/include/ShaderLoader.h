@@ -24,13 +24,12 @@ namespace LindaEngine
 		static void DeleteAnnotation(std::string& tex);
 
 		static bool HasFallback(std::string& tex);
-
 		static std::string GetPassName(std::string& tex);
+		static void CollectUniforms(std::string& tex);
 
 		static void GetPasses(std::string url, std::string& tex);
 
 		static void CollectAttributes(Ref<ShaderSourceCode> ss);
-		static void CollectUniforms(Ref<ShaderSourceCode> ss, std::string& tex);
 		static std::string GetAttrDataTypeByName(std::string& name, int& index);
 		static UniformType GetUniformDataTypeByName(std::string& name);
 	};

@@ -2,7 +2,7 @@ Shader
 {
 	RenderQueue "2000"
 	RenderType "Opaque"
-	//FallbackPass
+	FallbackPass
 
 	Pass
 	{
@@ -10,17 +10,35 @@ Shader
 
 		Properties
 		{
-		
-		}
+			uniform int testInt = 1;
+			uniform ivec2 testVec2 = (2, 3);
+			uniform ivec3 testVec3 = (4, 5, 6);
+			uniform ivec4 testVec4 = (7, 8, 9, 0);
 
+			uniform float testFloat = 0.1;
+			uniform vec2 testVec2 = (0.2, 0.3);
+			uniform vec3 testVec3 = (0.4, 0.5, 0.6);
+			uniform vec4 testVec4 = (0.7, 0.8, 0.9, 0.0);
+
+			uniform sampler2D maskTexture = "white";
+			uniform samplerCube skybox = "white";
+
+			uniform mat4 testMat4;
+		}
+		
 		RenderState
 		{
-		
+			ColorMask {RGBA}
+			DepthState {depthTest=true, depthWrite=false, depthFunc= LESS}
+			CullFaceFunc{cullFaceFunc =BACK}
+			StencilState{stencilTest=true}
+			BlendState{enableBlend=true,blendSrc=SRC_ALPHA,blendDis=ONE_MINUS_SRC_ALPHA}
+			PolygonModeState{polygonMode=LINE}
 		}
 
 		Keywords
 		{
-		
+			NORMAL_MAP, TESTKEYWORDS
 		}
 
 		Vertex
