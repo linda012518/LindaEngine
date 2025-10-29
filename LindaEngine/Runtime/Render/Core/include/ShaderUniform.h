@@ -24,7 +24,7 @@ namespace LindaEngine
 		TextureUniformData() { dataType = UniformType::TEXTURE; }
 		int ID = 0; //纹理ID
 		int acitveChannel = 0; //在激活的哪个通道
-		const char* value = nullptr;
+		std::string value;
 	};
 
 	struct FloatUniformData : public ShaderUniform

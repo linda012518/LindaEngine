@@ -64,7 +64,7 @@ void MaterialPass::UpdateUniforms()
 		case UniformType::TEXTURE:
 		{
 			Ref<TextureUniformData> tud = DynamicCastRef(TextureUniformData, pair.second);
-			tud->ID = TextureManager::GetTexture(tud->value)->nativeColorID;
+			tud->ID = TextureManager::GetTexture(tud->value.c_str())->nativeColorID;
 			//TODO 需要Texture类 纹理过滤等等信息
 			tud->acitveChannel = _acitveChannel++;
 			_shader->SetInt(pair.first, tud->ID);

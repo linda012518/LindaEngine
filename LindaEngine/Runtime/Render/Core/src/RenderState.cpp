@@ -42,3 +42,33 @@ std::unordered_map<std::string, BlendFunc> RenderStateEnumMap::blendFuncMap = {
 	{ "CONSTANT_ALPHA", BlendFunc::CONSTANT_ALPHA },
 	{ "ONE_MINUS_CONSTANT_ALPHA", BlendFunc::ONE_MINUS_CONSTANT_ALPHA }
 };
+
+std::unordered_map<std::string, BlendEquation> RenderStateEnumMap::blendEquationMap = {
+	{ "FUNC_ADD", BlendEquation::FUNC_ADD },
+	{ "FUNC_SUBTRACT", BlendEquation::FUNC_SUBTRACT },
+	{ "FUNC_REVERSE_SUBTRACT", BlendEquation::FUNC_REVERSE_SUBTRACT },
+	{ "MIN", BlendEquation::MIN },
+	{ "MAX", BlendEquation::MAX }
+};
+
+std::unordered_map<std::string, StencilOp> RenderStateEnumMap::stencilOpMap = {
+	{ "KEEP", StencilOp::KEEP },
+	{ "ZERO", StencilOp::ZERO },
+	{ "REPLACE", StencilOp::REPLACE },
+	{ "INCR", StencilOp::INCR },
+	{ "DECR", StencilOp::DECR },
+	{ "DECR_WRAP", StencilOp::DECR_WRAP },
+	{ "INVERT", StencilOp::INVERT },
+	{ "INCR_WRAP", StencilOp::INCR_WRAP }
+};
+
+std::unordered_map<std::string, StencilFunc> RenderStateEnumMap::stencilFuncMap = {
+	{ "NEVER", StencilFunc::NEVER },
+	{ "LESS", StencilFunc::LESS },
+	{ "LEQUAL", StencilFunc::LEQUAL },
+	{ "GREATER", StencilFunc::GREATER },
+	{ "GEQUAL", StencilFunc::GEQUAL },
+	{ "EQUAL", StencilFunc::EQUAL },
+	{ "NOTEQUAL", StencilFunc::NOTEQUAL },
+	{ "ALWAYS", StencilFunc::ALWAYS }
+};

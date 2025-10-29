@@ -179,5 +179,8 @@ namespace LindaEngine
 		static std::unordered_map<std::string, CullFaceFunc> cullFaceFuncMap;
 		static std::unordered_map<std::string, PolygonMode> polygonModeMap;
 		static std::unordered_map<std::string, BlendFunc> blendFuncMap;
+		static std::unordered_map<std::string, BlendEquation> blendEquationMap;
+		static std::unordered_map<std::string, StencilOp> stencilOpMap;
+		static std::unordered_map<std::string, StencilFunc> stencilFuncMap;
 	};
 }

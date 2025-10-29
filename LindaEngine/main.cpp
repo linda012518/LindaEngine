@@ -158,11 +158,11 @@ int main()
 	//int a = 0;
 	//return 0;
 
-	Ref<ShaderNodeEditor> node = MaterialManagerEditor::GetCurrentShaderNode();
-	node->name = "test.shader";
-	node->path = "Assets/Shaders/test.shader";
-	MaterialManagerEditor::CreateMaterial("");
-
+	//Ref<ShaderNodeEditor> node = MaterialManagerEditor::GetCurrentShaderNode();
+	//node->name = "test.shader";
+	//node->path = "Assets/Shaders/test.shader";
+	//MaterialManagerEditor::CreateMaterial("");
+	//return 0;
 
 	Application app;
 	app.Initialize();

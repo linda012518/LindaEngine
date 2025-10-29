@@ -1,5 +1,7 @@
 #pragma once
 
+#include "MaterialStateEditor.h"
+
 #include <string>
 
 namespace LindaEditor
@@ -23,6 +25,6 @@ namespace LindaEditor
 
 	struct MaterialNodeEditor : public NodeEditor
 	{
-
+		MaterialStateEditor materialState;
 	};
 }

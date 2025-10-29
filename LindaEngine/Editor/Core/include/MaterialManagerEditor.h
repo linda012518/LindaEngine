@@ -2,6 +2,7 @@
 
 #include "AutoPtr.h"
 #include "RenderEnumData.h"
+#include "yaml-cpp/yaml.h"
 
 #include <vector>
 #include <string>
@@ -21,7 +22,6 @@ namespace LindaEditor
 		static void CreateMaterial(const char* path);
 		static void SaveMaterial();
 		static Ref<MaterialNodeEditor> GetCurrentMaterialNode() { return _materialNode; }
-		static Ref<LindaEngine::Material> GetCurrentMaterial() { return _material; }
 		static Ref<ShaderNodeEditor> GetCurrentShaderNode() { return _shaderNode; }
 
 		static void Initialize();
@@ -44,9 +44,11 @@ namespace LindaEditor
 		static void ParseBlendState(std::string& tex, Ref<MaterialPassStateEditor> passState);
 		static void ParsePolygonModeState(std::string& tex, Ref<MaterialPassStateEditor> passState);
 
+		static void SerializeMaterialPass(YAML::Emitter& out, Ref<MaterialPassStateEditor> pass);
+		static void SerializeMaterialUniform(YAML::Emitter& out, void* uniform);
+
 	private:
 		static Ref<MaterialNodeEditor> _materialNode;
-		static Ref<LindaEngine::Material> _material;
 		static std::vector<Ref<MaterialNodeEditor>> _materialNodes;
 		static Ref<ShaderNodeEditor> _shaderNode;
 		static std::vector<Ref<ShaderNodeEditor>> _shaderNodes;
