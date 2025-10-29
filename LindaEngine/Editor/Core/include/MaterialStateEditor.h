@@ -21,6 +21,7 @@ namespace LindaEditor
 
 	struct MaterialStateEditor
 	{
+		bool isError;
 		bool hasFallback;
 		int renderQueue;
 		LindaEngine::RenderType renderType;

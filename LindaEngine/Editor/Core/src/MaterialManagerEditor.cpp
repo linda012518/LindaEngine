@@ -4,6 +4,8 @@
 #include "MaterialStateEditor.h"
 #include "Path.h"
 #include "ShaderLoader.h"
+#include "ShaderUniform.h"
+#include "RenderState.h"
 
 #include <sstream>
 #include <iostream>
@@ -19,6 +21,7 @@ std::vector<Ref<ShaderNodeEditor>> MaterialManagerEditor::_shaderNodes;
 
 void MaterialManagerEditor::CreateMaterial(const char* path)
 {
+	MaterialStateEditor state;
 	try
 	{
 		if (nullptr == _shaderNode)
@@ -31,7 +34,6 @@ void MaterialManagerEditor::CreateMaterial(const char* path)
 		TextLoader::DeleteAnnotation(tex);
 		ShaderLoader::DeleteShaderFrame(tex);
 
-		MaterialStateEditor state;
 		state.hasFallback = HasFallback(tex);
 		state.renderQueue = GetRenderQueue(tex);
 		state.renderType = static_cast<RenderType>(GetRenderType(tex));
@@ -42,8 +44,10 @@ void MaterialManagerEditor::CreateMaterial(const char* path)
 	}
 	catch (const std::exception&)
 	{
-
+		state.isError = true;
+		//TODO 写入文件
 	}
+	
 }
 
 void MaterialManagerEditor::SaveMaterial()
@@ -58,14 +62,10 @@ void MaterialManagerEditor::Initialize()
 
 RenderType MaterialManagerEditor::GetRenderType(std::string& tex)
 {
-	size_t firstPos = tex.find("RenderType");
-	if (firstPos == std::string::npos)
+	std::string type = ExtractContent(tex, "RenderType", '"', '"', true);
+	if (type == "") 
 		return RenderType::Opaque;
 
-	size_t one = tex.find('"', firstPos + 1);
-	size_t two = tex.find('"', one + 1);
-	std::string type = tex.substr(one + 1, two - one - 1);
-	tex.replace(firstPos, two - firstPos + 1, "");
 	if (type == "Opaque") return RenderType::Opaque;
 	else if (type == "Skybox") return RenderType::Skybox;
 	else if (type == "Transparent") return RenderType::Transparent;
@@ -75,14 +75,10 @@ RenderType MaterialManagerEditor::GetRenderType(std::string& tex)
 
 int MaterialManagerEditor::GetRenderQueue(std::string& tex)
 {
-	size_t firstPos = tex.find("RenderQueue");
-	if (firstPos == std::string::npos)
+	std::string queue = ExtractContent(tex, "RenderQueue", '"', '"', true);
+	if (queue == "") 
 		return 2000;
 
-	size_t one = tex.find('"', firstPos + 1);
-	size_t two = tex.find('"', one + 1);
-	std::string queue = tex.substr(one + 1, two - one - 1);
-	tex.replace(firstPos, two - firstPos + 1, "");
 	return std::stoi(queue);
 }
 
@@ -137,31 +133,15 @@ void MaterialManagerEditor::GetPasses(std::string& tex, MaterialStateEditor& sta
 
 void MaterialManagerEditor::GetPassName(std::string& tex, Ref<MaterialPassStateEditor> passState)
 {
-	size_t firstPos = tex.find("LightMode");
-	if (firstPos == std::string::npos)
-	{
-		passState->lightMode = "Color";
-		return;
-	}
-
-	size_t one = tex.find('"', firstPos + 1);
-	size_t two = tex.find('"', one + 1);
-
-	passState->lightMode = tex.substr(one + 1, two - one - 1);
-	tex = tex.substr(two + 1);
+	std::string lightMode = ExtractContent(tex, "LightMode", '"', '"', true);
+	passState->lightMode = lightMode == "" ? "Color" : lightMode;
 }
 
 void MaterialManagerEditor::CollectProperties(std::string& tex, Ref<MaterialPassStateEditor> passState)
 {
-	size_t uniformPos = tex.find("Properties");
-	if (uniformPos == std::string::npos)
+	std::string uniforms = ExtractContent(tex, "Properties", '{', '}', true);
+	if (uniforms == "")
 		return;
-
-	size_t firstPos = tex.find('{', uniformPos + 1);
-	size_t lastPos = tex.find('}', firstPos + 1);
-
-	std::string uniforms = tex.substr(firstPos + 1, lastPos - firstPos - 1);
-	tex.replace(uniformPos, lastPos - uniformPos + 1, "");
 
 	std::regex uniform_pattern(R"(\buniform\s+(\w+)\s+(\w+)\s*(?:=\s*([^;]+))?\s*;)");
 	std::smatch matches;
@@ -170,15 +150,48 @@ void MaterialManagerEditor::CollectProperties(std::string& tex, Ref<MaterialPass
 	std::string uniformCode;
 	while (std::regex_search(searchStart, uniforms.cend(), matches, uniform_pattern)) {
 		if (matches.size() >= 3) { // 完整匹配 + 至少2个捕获组
-
 			std::string type = matches[1].str();
 			std::string name = matches[2].str();
-			std::string value = matches[3].str();
-
-
-
-
-
+			//std::string value = matches[3].str();
+			if (type == "int")
+			{
+				Ref<IntUniformData> uniform = CreateRef<IntUniformData>();
+				uniform->name = name;
+				uniform->value = 0;
+				passState->uniformNameMap[name] = uniform;
+			}
+			else if (type == "ivec2" || type == "ivec3" || type == "ivec4")
+			{
+				Ref<Int4UniformData> uniform = CreateRef<Int4UniformData>();
+				uniform->name = name;
+				uniform->value = glm::ivec4();
+				passState->uniformNameMap[name] = uniform;
+			}
+			else if (type == "float")
+			{
+				Ref<FloatUniformData> uniform = CreateRef<FloatUniformData>();
+				uniform->name = name;
+				uniform->value = 0;
+				passState->uniformNameMap[name] = uniform;
+			}
+			else if (type == "vec2" || type == "vec3" || type == "vec4")
+			{
+				Ref<Float4UniformData> uniform = CreateRef<Float4UniformData>();
+				uniform->name = name;
+				uniform->value = glm::vec4();
+				passState->uniformNameMap[name] = uniform;
+			}
+			else if (type == "sampler2D" || type == "samplerCube")
+			{
+				Ref<TextureUniformData> uniform = CreateRef<TextureUniformData>();
+				uniform->name = name;
+				uniform->value = "";
+				passState->uniformNameMap[name] = uniform;
+			}
+			else
+			{
+				std::cout << "MaterialManagerEditor::CollectProperties Not supported <" << type << "> yet \n" << std::endl;
+			}
 		}
 		searchStart = matches.suffix().first;
 	}
@@ -186,24 +199,140 @@ void MaterialManagerEditor::CollectProperties(std::string& tex, Ref<MaterialPass
 
 void MaterialManagerEditor::CollectKeywords(std::string& tex, Ref<MaterialPassStateEditor> passState)
 {
-	size_t keywordsPos = tex.find("Keywords");
-	if (keywordsPos == std::string::npos)
+	std::string keywords = ExtractContent(tex, "Keywords", '{', '}', true);
+	if (keywords == "")
 		return;
 
-	size_t firstPos = tex.find('{', keywordsPos + 1);
-	size_t lastPos = tex.find('}', firstPos + 1);
-
-	std::string keywords = tex.substr(firstPos + 1, lastPos - firstPos - 1);
-	keywords.erase(std::remove_if(keywords.begin(), keywords.end(), isspace), keywords.end());
-
-	std::string token;
-	std::istringstream tokenStream(keywords);
-	while (std::getline(tokenStream, token, ',')) {
-		passState->keywords.push_back(token);
-	}
-	tex.replace(keywordsPos, lastPos - keywordsPos + 1, "");
+	passState->keywords = TextLoader::SplitString(keywords, ',');
 }
 
 void MaterialManagerEditor::CollectRenderState(std::string& tex, Ref<MaterialPassStateEditor> passState)
 {
+	std::string allStates = ExtractContent(tex, "RenderState", '{', '}', true);
+	if (allStates == "")
+		return;
+	passState->renderState = CreateRef<RenderState>();
+	ParseColorMask(allStates, passState);
+	ParseDepthState(allStates, passState);
+	ParseCullFaceFunc(allStates, passState);
+	ParseStencilState(allStates, passState);
+	ParseBlendState(allStates, passState);
+	ParsePolygonModeState(allStates, passState);
+}
+
+std::string MaterialManagerEditor::ExtractContent(std::string& tex, std::string mark, char front, char back, bool deleteContent)
+{
+	size_t markPos = tex.find(mark);
+	if (markPos == std::string::npos)
+		return "";
+
+	size_t firstPos = tex.find(front, markPos + 1);
+	size_t lastPos = tex.find(back, firstPos + 1);
+	std::string content = tex.substr(firstPos + 1, lastPos - firstPos - 1);
+	if (deleteContent)
+		tex.replace(markPos, lastPos - markPos + 1, "");
+	return content;
+}
+
+void MaterialManagerEditor::ParseColorMask(std::string& tex, Ref<MaterialPassStateEditor> passState)
+{
+	std::string content = ExtractContent(tex, "ColorMask", '(', ')', true);
+	if (content == "")
+		return;
+	if (content.find('A') == std::string::npos)
+		passState->renderState->colorMask.A = false;
+	if (content.find('R') == std::string::npos)
+		passState->renderState->colorMask.R = false;
+	if (content.find('G') == std::string::npos)
+		passState->renderState->colorMask.G = false;
+	if (content.find('B') == std::string::npos)
+		passState->renderState->colorMask.B = false;
+}
+
+void MaterialManagerEditor::ParseDepthState(std::string& tex, Ref<MaterialPassStateEditor> passState)
+{
+	std::string content = ExtractContent(tex, "DepthState", '(', ')', true);
+	if (content == "")
+		return;
+
+	std::vector<std::string> go = TextLoader::SplitString(content, ',');
+	for (auto& str : go)
+	{
+		std::vector<std::string> temp = TextLoader::SplitString(str, '=');
+		if (temp[0] == "depthTest")
+		{
+			passState->renderState->depthState.depthTest = temp[1] == "true" ? true : false;
+		}
+		else if (temp[0] == "depthWrite")
+		{
+			passState->renderState->depthState.depthWrite = temp[1] == "true" ? true : false;
+		}
+		else if (temp[0] == "depthFunc")
+		{
+			passState->renderState->depthState.depthFunc = RenderStateEnumMap::depthFuncMap[temp[1]];
+		}
+		else
+		{
+			std::cout << "MaterialManagerEditor::ParseDepthState Not supported <" << temp[0] << "> yet \n" << std::endl;
+		}
+	}
+}
+
+void MaterialManagerEditor::ParseCullFaceFunc(std::string& tex, Ref<MaterialPassStateEditor> passState)
+{
+	std::string content = ExtractContent(tex, "CullFaceFunc", '(', ')', true);
+	if (content == "")
+		return;
+	auto& go = RenderStateEnumMap::cullFaceFuncMap;
+	if (RenderStateEnumMap::cullFaceFuncMap.find(content) != RenderStateEnumMap::cullFaceFuncMap.end())
+	{
+		int a = 0;
+	}
+	passState->renderState->cullFaceFunc = RenderStateEnumMap::cullFaceFuncMap[content];
+}
+
+void MaterialManagerEditor::ParseStencilState(std::string& tex, Ref<MaterialPassStateEditor> passState)
+{
+	std::string content = ExtractContent(tex, "StencilState", '(', ')', true);
+	if (content == "")
+		return;
+	//TODO 待解析
+}
+
+void MaterialManagerEditor::ParseBlendState(std::string& tex, Ref<MaterialPassStateEditor> passState)
+{
+	std::string content = ExtractContent(tex, "BlendState", '(', ')', true);
+	if (content == "")
+		return;
+
+	std::vector<std::string> go = TextLoader::SplitString(content, ',');
+	for (auto& str : go)
+	{
+		std::vector<std::string> go = TextLoader::SplitString(str, '=');
+		if (go[0] == "enableBlend")
+		{
+			passState->renderState->blendState.enableBlend = go[1] == "true" ? true : false;
+		}
+		else if (go[0] == "blendSrc")
+		{
+			passState->renderState->blendState.blendSrc = RenderStateEnumMap::blendFuncMap[go[1]];
+		}
+		else if (go[0] == "blendDis")
+		{
+			passState->renderState->blendState.blendDis = RenderStateEnumMap::blendFuncMap[go[1]];
+		}
+		else
+		{
+			std::cout << "MaterialManagerEditor::ParseBlendState Not supported <" << go[0] << "> yet \n" << std::endl;
+		}
+	}
+
+}
+
+void MaterialManagerEditor::ParsePolygonModeState(std::string& tex, Ref<MaterialPassStateEditor> passState)
+{
+	std::string content = ExtractContent(tex, "PolygonModeState", '(', ')', true);
+	if (content == "")
+		return;
+	passState->renderState->polygonModeState.polygonMode = RenderStateEnumMap::polygonModeMap[content];
 }

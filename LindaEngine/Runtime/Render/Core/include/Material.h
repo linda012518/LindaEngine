@@ -37,7 +37,7 @@ namespace LindaEngine
 		RenderType _renderType = RenderType::Opaque; //是否不透明物体
 		std::string _filePath = "Material";
 		std::string _shaderPath = "Assets/Shaders/Unlit.shader";
-
+		bool _isError = false;
 		bool _hasFallback = false; //如果有fallback，指针为空用默认的，没有fallback不渲染
 		std::unordered_map<std::string, Ref<MaterialPass>> _passes;
 

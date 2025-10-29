@@ -1,5 +1,8 @@
 #pragma once
 
+#include <unordered_map>
+#include <string>
+
 namespace LindaEngine
 {
 	enum class DepthFunc
@@ -168,5 +171,13 @@ namespace LindaEngine
 		StencilState stencilState;
 
 		BlendState blendState;
+	};
+
+	struct RenderStateEnumMap
+	{
+		static std::unordered_map<std::string, DepthFunc> depthFuncMap;
+		static std::unordered_map<std::string, CullFaceFunc> cullFaceFuncMap;
+		static std::unordered_map<std::string, PolygonMode> polygonModeMap;
+		static std::unordered_map<std::string, BlendFunc> blendFuncMap;
 	};
 }

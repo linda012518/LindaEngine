@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Editor\Core\src\MaterialManagerEditor.cpp" />
+    <ClCompile Include="Runtime\Render\Core\src\RenderState.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\UniformDataGlobal.cpp" />
     <ClCompile Include="Runtime\Render\Opengl\src\OpenGLUniformBuffer.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\Graphic.cpp" />

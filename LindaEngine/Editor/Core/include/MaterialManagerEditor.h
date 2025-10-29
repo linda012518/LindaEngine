@@ -36,6 +36,14 @@ namespace LindaEditor
 		static void CollectKeywords(std::string& tex, Ref<MaterialPassStateEditor> passState);
 		static void CollectRenderState(std::string& tex, Ref<MaterialPassStateEditor> passState);
 
+		static std::string ExtractContent(std::string& tex, std::string mark, char front, char back, bool deleteContent = true);
+		static void ParseColorMask(std::string& tex, Ref<MaterialPassStateEditor> passState);
+		static void ParseDepthState(std::string& tex, Ref<MaterialPassStateEditor> passState);
+		static void ParseCullFaceFunc(std::string& tex, Ref<MaterialPassStateEditor> passState);
+		static void ParseStencilState(std::string& tex, Ref<MaterialPassStateEditor> passState);
+		static void ParseBlendState(std::string& tex, Ref<MaterialPassStateEditor> passState);
+		static void ParsePolygonModeState(std::string& tex, Ref<MaterialPassStateEditor> passState);
+
 	private:
 		static Ref<MaterialNodeEditor> _materialNode;
 		static Ref<LindaEngine::Material> _material;

@@ -48,3 +48,17 @@ void TextLoader::DeleteAnnotation(std::string& tex)
 			tex.erase(attrPos, pos - attrPos);
 	}
 }
+
+std::vector<std::string> TextLoader::SplitString(std::string& tex, char sign)
+{
+	tex.erase(std::remove_if(tex.begin(), tex.end(), isspace), tex.end());
+
+	std::vector<std::string> go;
+
+	std::string token;
+	std::istringstream tokenStream(tex);
+	while (std::getline(tokenStream, token, sign)) {
+		go.push_back(token);
+	}
+	return go;
+}

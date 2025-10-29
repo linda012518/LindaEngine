@@ -288,6 +288,9 @@
     <ClCompile Include="Editor\Core\src\MaterialManagerEditor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Render\Core\src\RenderState.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
