@@ -77,7 +77,7 @@ void SerializeMaterial()
 
 void SerializeScene0()
 {
-	Ref<Scene> scene = SceneManagerEditor::GetCurrentScene();
+	Ref<Scene> scene = SceneManagerEditor::GetCurrentNode()->scene;
 
 	Entity* entity = scene->CreateEntity("test1");
 	entity->GetTransform()->Tick();

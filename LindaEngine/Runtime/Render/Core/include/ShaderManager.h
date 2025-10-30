@@ -5,27 +5,21 @@
 #include <vector>
 
 #include "AutoPtr.h"
-#include "ShaderUniform.h"
-#include "Material.h"
+#include "MaterialState.h"
 
 namespace LindaEngine
 {
 	struct ShaderSourceCode
 	{
-		std::string name;
-		std::unordered_map<std::string, UniformType> uniformsNameMapType;
-		//RenderState
-		std::vector<std::string> keywords;
+		std::string properties;
 		std::string vertex;
 		std::string fragment;
-		std::vector<std::string> attributeNames;
+		MaterialPassState passState;
 	};
 
 	struct ShaderSource
 	{
-		bool hasFallback = false;
-		int renderQueue = 2000;
-		RenderType renderType = RenderType::Opaque;
+		MaterialState state;
 		std::vector<Ref<ShaderSourceCode>> shaderSrcCode;
 	};
 

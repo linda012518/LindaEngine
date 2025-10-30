@@ -4,6 +4,8 @@
 
 #include <string>
 
+namespace LindaEngine { class Scene; }
+
 namespace LindaEditor
 {
 	struct NodeEditor
@@ -16,6 +18,7 @@ namespace LindaEditor
 	struct SceneNodeEditor : public NodeEditor
 	{
 		int index = -1;
+		Ref<LindaEngine::Scene> scene;
 	};
 
 	struct ShaderNodeEditor : public NodeEditor
@@ -25,6 +28,6 @@ namespace LindaEditor
 
 	struct MaterialNodeEditor : public NodeEditor
 	{
-		MaterialStateEditor materialState;
+
 	};
 }

@@ -1652,6 +1652,9 @@
     <ClInclude Include="Editor\Core\include\MaterialManagerEditor.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Runtime\Render\Core\include\MaterialState.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\glm\glm\detail\func_common.inl">

@@ -2,6 +2,8 @@
 #include "MaterialLoader.h"
 #include "YamlSerializer.h"
 #include "Material.h"
+#include "MaterialPass.h"
+#include "ShaderManager.h"
 
 using namespace LindaEngine;
 
@@ -20,6 +22,20 @@ Ref<Material> MaterialManager::GetMaterial(const char* path)
     }
 
     return _materialMap[path];
+}
+
+Ref<Material> MaterialManager::GetMaterialByShader(const char* path)
+{
+    Ref<ShaderSource>& ss = ShaderManager::GetShaderSource(path);
+    Ref<Material> material = CreateRef<Material>();
+    material->_state = ss->state;
+    for (auto& pass : ss->shaderSrcCode)
+    {
+        Ref<MaterialPass> matPass = CreateRef<MaterialPass>();
+        matPass->_state = pass->passState;
+        material->_passes[matPass->_state.lightMode] = matPass;
+    }
+    return material;
 }
 
 void MaterialManager::Clear()

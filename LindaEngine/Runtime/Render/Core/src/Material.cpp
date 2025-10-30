@@ -18,24 +18,18 @@ Material::~Material()
 {
 }
 
-void Material::SetShader(const char* path)
-{
-	_shaderPath = path;
-	_passes.clear();
-}
-
 bool Material::Bind(Transform* transform, const std::vector<VertexAttribute>& attrubites)
 {
 	Ref<MaterialPass> pass = nullptr;
 
 	if (_passes.find(overrideLightMode) == _passes.end())
 	{
-		if (_hasFallback)
+		if (_state.hasFallback)
 		{
 			pass = MaterialManager::GetDefaultMaterialPass(overrideLightMode.c_str());
 			if (nullptr == pass)
 				return false;
-			pass->CompileShader(_shaderPath, attrubites);
+			pass->CompileShader(_state.shaderPath, attrubites);
 			pass->Bind(transform);
 			return true;
 		}
@@ -43,7 +37,7 @@ bool Material::Bind(Transform* transform, const std::vector<VertexAttribute>& at
 	}
 
 	pass = _passes[overrideLightMode];
-	pass->CompileShader(_shaderPath, attrubites);
+	pass->CompileShader(_state.shaderPath, attrubites);
 	pass->Bind(transform);
 	return true;
 }
@@ -53,7 +47,7 @@ bool Material::Serialize()
 	YAML::Emitter& out = *YamlSerializer::out;
 
 	out << YAML::Value << YAML::BeginMap;
-	out << YAML::Key << "FilePath" << YAML::Value << _filePath;
+	out << YAML::Key << "FilePath" << YAML::Value << _state.materialPath;
 	out << YAML::EndMap;
 
 	return true;
@@ -61,6 +55,6 @@ bool Material::Serialize()
 
 bool Material::Deserialize(YAML::Node& node)
 {
-	_filePath = node["FilePath"].as<std::string>();
+	_state.materialPath = node["FilePath"].as<std::string>();
 	return true;
 }

@@ -21,11 +21,12 @@ void YamlSerializer::SerializeMaterial(const char* path)
 	out << YAML::BeginMap;
 	out << YAML::Key << "Material";
 	out << YAML::Value << YAML::BeginMap;
-	//out << YAML::Key << "FilePath" << YAML::Value << mat->_filePath;
-	out << YAML::Key << "ShaderPath" << YAML::Value << mat->_shaderPath;
-	out << YAML::Key << "RenderType" << YAML::Value << static_cast<int>(mat->_renderType);
-	out << YAML::Key << "HasFallback" << YAML::Value << mat->_hasFallback;
-	out << YAML::Key << "RenderQueue" << YAML::Value << mat->_renderQueue;
+	out << YAML::Key << "HasFallback" << YAML::Value << mat->_state.hasFallback;
+	out << YAML::Key << "IsError" << YAML::Value << mat->_state.isError;
+	out << YAML::Key << "MaterialPath" << YAML::Value << mat->_state.materialPath;
+	out << YAML::Key << "RenderQueue" << YAML::Value << mat->_state.renderQueue;
+	out << YAML::Key << "RenderType" << YAML::Value << static_cast<int>(mat->_state.renderType);
+	out << YAML::Key << "ShaderPath" << YAML::Value << mat->_state.shaderPath;
 
 	out << YAML::Key << "MaterialPasses";
 	out << YAML::Value << YAML::BeginSeq;
@@ -70,11 +71,12 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 	Ref<Material> mat = CreateRef<Material>();
 	auto material = data["Material"];
 
-	//mat->_filePath = material["FilePath"].as<std::string>();
-	mat->_shaderPath = material["ShaderPath"].as<std::string>();
-	mat->_renderType = static_cast<RenderType>(material["RenderType"].as<int>());
-	mat->_hasFallback = material["HasFallback"].as<bool>();
-	mat->_renderQueue = material["RenderQueue"].as<int>();
+	mat->_state.hasFallback = material["HasFallback"].as<bool>();
+	mat->_state.isError = material["IsError"].as<bool>();
+	mat->_state.materialPath = material["MaterialPath"].as<std::string>();
+	mat->_state.renderQueue = material["RenderQueue"].as<int>();
+	mat->_state.renderType = static_cast<RenderType>(material["RenderType"].as<int>());
+	mat->_state.shaderPath = material["ShaderPath"].as<std::string>();
 
 	Ref<MaterialPass> matPass = nullptr;
 	auto passes = material["MaterialPasses"];
@@ -82,7 +84,7 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 	{
 		std::string passName = pass["PassName"].as<std::string>();
 		matPass = CreateRef<MaterialPass>();
-		matPass->_lightMode = passName;
+		matPass->_state.lightMode = passName;
 		mat->_passes[passName] = matPass;
 
 		auto uniforms = pass["ShaderUniforms"];
@@ -99,7 +101,7 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 				std::string tempStr = unif["Value"].as<std::string>();
 				pointer->name = uniformName;
 				pointer->value = tempStr.c_str();
-				matPass->_uniformNameMap[uniformName] = pointer;
+				matPass->_state.uniformNameMap[uniformName] = pointer;
 				break;
 			}
 			case UniformType::INT:
@@ -107,7 +109,7 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 				Ref<IntUniformData> pointer = CreateRef<IntUniformData>();
 				pointer->name = uniformName;
 				pointer->value = unif["Value"].as<int>();
-				matPass->_uniformNameMap[uniformName] = pointer;
+				matPass->_state.uniformNameMap[uniformName] = pointer;
 				break;
 			}
 			case UniformType::INT4:
@@ -115,7 +117,7 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 				Ref<Int4UniformData> pointer = CreateRef<Int4UniformData>();
 				pointer->name = uniformName;
 				pointer->value = unif["Value"].as<glm::ivec4>();
-				matPass->_uniformNameMap[uniformName] = pointer;
+				matPass->_state.uniformNameMap[uniformName] = pointer;
 				break;
 			}
 			case UniformType::FLOAT:
@@ -123,7 +125,7 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 				Ref<FloatUniformData> pointer = CreateRef<FloatUniformData>();
 				pointer->name = uniformName;
 				pointer->value = unif["Value"].as<float>();
-				matPass->_uniformNameMap[uniformName] = pointer;
+				matPass->_state.uniformNameMap[uniformName] = pointer;
 				break;
 			}
 			case UniformType::FLOAT4:
@@ -131,7 +133,7 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 				Ref<Float4UniformData> pointer = CreateRef<Float4UniformData>();
 				pointer->name = uniformName;
 				pointer->value = unif["Value"].as<glm::vec4>();
-				matPass->_uniformNameMap[uniformName] = pointer;
+				matPass->_state.uniformNameMap[uniformName] = pointer;
 				break;
 			}
 			}
@@ -139,10 +141,11 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 
 		auto Keywords = pass["Keywords"];
 		for (std::size_t i = 0; i < Keywords.size(); i++) {
-			matPass->_keywords.push_back(Keywords[i].as<std::string>());
+			matPass->_state.keywords.push_back(Keywords[i].as<std::string>());
 		}
 
-		RenderState& state = matPass->_renderState;
+		matPass->_state.renderState = CreateRef<RenderState>();
+		RenderState& state = *matPass->_state.renderState.get();
 		auto renderState = pass["RenderState"];
 		for (auto partial : renderState)
 		{
@@ -239,18 +242,18 @@ void YamlSerializer::SerializeMaterialPass(YAML::Emitter& out)
 	if (nullptr == pass)
 		return;
 	out << YAML::Value << YAML::BeginMap;
-	out << YAML::Key << "PassName" << YAML::Value << pass->_lightMode;
+	out << YAML::Key << "PassName" << YAML::Value << pass->_state.lightMode;
 
 	out << YAML::Key << "ShaderUniforms";
 	out << YAML::Value << YAML::BeginSeq;
-	for (auto& uniform : pass->_uniformNameMap) {
+	for (auto& uniform : pass->_state.uniformNameMap) {
 		SerializeMaterialUniform(out, uniform.second.get());
 	}
 	out << YAML::EndSeq;
 
 	out << YAML::Key << "Keywords";
 	out << YAML::Value << YAML::BeginSeq;
-	for (auto& key : pass->_keywords) {
+	for (auto& key : pass->_state.keywords) {
 		out << key;
 	}
 	out << YAML::EndSeq;
@@ -258,7 +261,7 @@ void YamlSerializer::SerializeMaterialPass(YAML::Emitter& out)
 	out << YAML::Key << "RenderState";
 	out << YAML::Value << YAML::BeginMap;
 
-	RenderState& curState = pass->_renderState;
+	RenderState& curState = *pass->_state.renderState.get();
 	RenderState& defaultState = MaterialPass::_defualtState;
 
 	if (curState.colorMask != defaultState.colorMask)

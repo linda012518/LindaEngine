@@ -1,28 +1,28 @@
 Material:
   HasFallback: true
-  IsError: false
-  MaterialPath: Assets/Shaders/test.mat
+  IsError: true
+  MaterialPath: Assets/Materials/test.mat
   RenderQueue: 2000
   RenderType: 0
   ShaderPath: Assets/Shaders/test.shader
   MaterialPasses:
     - PassName: customLightMode
       ShaderUniforms:
-        - UniformName: testInt
-          Value: 1
-          testInt: 2
         - UniformName: testIVec4
           Value: [7, 8, 9, 0]
           testIVec4: 4
+        - UniformName: testInt
+          Value: 1
+          testInt: 2
         - UniformName: testFloat
           Value: 0.100000001
           testFloat: 6
-        - UniformName: testVec4
-          Value: [0.699999988, 0.800000012, 0.899999976, 0]
-          testVec4: 8
         - UniformName: skybox
           Value: white
           skybox: 1
+        - UniformName: testVec4
+          Value: [0.699999988, 0.800000012, 0.899999976, 0]
+          testVec4: 8
         - UniformName: maskTexture
           Value: white
           maskTexture: 1
@@ -31,11 +31,7 @@ Material:
         - TESTKEYWORDS
       RenderState:
         ColorMask: [true, true, true, false]
-        PolygonModeState:
-          PolygonMode: 6913
-          LineWidth: 1
         StencilState:
           StencilTest: true
         BlendState:
           EnableBlend: true
-          ConstantColor: [1, 0.200000003, 0, 1]

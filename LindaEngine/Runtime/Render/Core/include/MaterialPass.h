@@ -4,6 +4,7 @@
 #include "LObject.h"
 #include "RenderState.h"
 #include "ShaderUniform.h"
+#include "MaterialState.h"
 
 #include <vector>
 #include <string>
@@ -13,13 +14,13 @@ namespace LindaEngine
 {
 	class Transform;
 	class Shader;
-	struct ShaderSourceCode;
 	struct VertexAttribute;
 
 	class MaterialPass : public LObject
 	{
 		friend class YamlSerializer;
 		friend class Material;
+		friend class MaterialManager;
 
 	public:
 		void AddKeyword(std::string& key);
@@ -28,18 +29,14 @@ namespace LindaEngine
 		void Bind(Transform* transform);
 
 		void UpdateUniforms();
-		const std::string& GetLightMode() const { return _lightMode; }
+		const std::string& GetLightMode() const { return _state.lightMode; }
 
 		template <typename T>
 		void SetUniformValue(const char* name, T val);
 
 	private:
-		//Editor可以从shader文件解析，Runtime只从材质获取，动态创建材质用户需要知道有哪些uniform
-		std::unordered_map<std::string, Ref<ShaderUniform>> _uniformNameMap;
-		std::vector<std::string> _keywords; //关键字宏定义，全局的从其它配置添加，不记录
-		std::string _lightMode = "Color";
+		MaterialPassState _state;
 		Ref<Shader> _shader = nullptr;
-		RenderState _renderState; //材质需要的状态
 		static Ref<MaterialPass> overrideMatPass;
 
 		int _acitveChannel = 0;

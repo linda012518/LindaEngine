@@ -10,8 +10,7 @@
 using namespace LindaEditor;
 using namespace LindaEngine;
 
-Ref<Scene> SceneManagerEditor::_scene = CreateRef<Scene>();
-Ref<SceneNodeEditor> SceneManagerEditor::_node = nullptr;
+Ref<SceneNodeEditor> SceneManagerEditor::_node = CreateRef<SceneNodeEditor>();
 std::vector<Ref<SceneNodeEditor>> SceneManagerEditor::_buildScenes;
 std::vector<Ref<SceneNodeEditor>> SceneManagerEditor::_sceneNodes;
 
@@ -20,15 +19,15 @@ bool SceneManagerEditor::SaveScene()
 	try
 	{
 		std::string path = "Assets/Scenes/All0.scene";
-		if (nullptr != _node)
+		if (false == _node->path.empty())
 		{
 			Path::overridePath = _node->path.c_str();
-			return _scene->Serialize();
+			return _node->scene->Serialize();
 		}
 
 		//TODO 打开保存对话框选择路径
 		Path::overridePath = path.c_str();
-		bool ret = _scene->Serialize();
+		bool ret = _node->scene->Serialize();
 		if (ret == false)
 			return false;
 
@@ -101,16 +100,15 @@ bool SceneManagerEditor::LoadScene()
 	YAML::Node data;
 	try
 	{
-		_scene->Destroy();
-
-		if (nullptr == _node)
+		if (nullptr == _node->scene)
 		{
 			//TODO 加载默认场景
 		}
 		else
 		{
+			_node->scene->Destroy();
 			data = YAML::LoadFile(_node->path);
-			_scene->Deserialize(data);
+			_node->scene->Deserialize(data);
 		}
 		return true;
 	}
@@ -123,11 +121,6 @@ bool SceneManagerEditor::LoadScene()
 Ref<SceneNodeEditor> SceneManagerEditor::GetCurrentNode()
 {
 	return _node;
-}
-
-Ref<Scene> SceneManagerEditor::GetCurrentScene()
-{
-	return _scene;
 }
 
 void SceneManagerEditor::Initialize()

@@ -5,15 +5,17 @@
 #include "ShaderManager.h"
 #include "Texture.h"
 #include "Mesh.h"
+#include "Material.h"
+#include "Texture.h"
 
 #define IMPLEMENT_SETUNIFORM(dataType, UniformClass) \
 template<> \
 void MaterialPass::SetUniformValue<dataType>(const char* name, dataType val) \
 { \
-	if (_uniformNameMap.find(name) == _uniformNameMap.end()) \
+	if (_state.uniformNameMap.find(name) == _state.uniformNameMap.end()) \
 		return; \
  \
-	DynamicCastRef(UniformClass, _uniformNameMap[name])->value = val; \
+	DynamicCastRef(UniformClass, _state.uniformNameMap[name])->value = val; \
 }
 
 using namespace LindaEngine;
@@ -24,9 +26,9 @@ Ref<MaterialPass> MaterialPass::overrideMatPass = nullptr;
 
 void MaterialPass::AddKeyword(std::string& key)
 {
-	auto itr = std::find(_keywords.begin(), _keywords.end(), key);
-	if (itr == _keywords.end())
-		_keywords.push_back(key);
+	auto itr = std::find(_state.keywords.begin(), _state.keywords.end(), key);
+	if (itr == _state.keywords.end())
+		_state.keywords.push_back(key);
 }
 
 void MaterialPass::CompileShader(std::string shaderPath, const std::vector<VertexAttribute>& attributes)
@@ -37,10 +39,10 @@ void MaterialPass::CompileShader(std::string shaderPath, const std::vector<Verte
 	Ref<ShaderSource> ssVector = ShaderManager::GetShaderSource(shaderPath.c_str());
 
 	for (auto& ss : ssVector->shaderSrcCode) {
-		if (ss->name != Material::overrideLightMode)
+		if (ss->passState.lightMode != Material::overrideLightMode)
 			continue;
 
-		_shader = ShaderManager::CompileShader(ss, _keywords, attributes);
+		_shader = ShaderManager::CompileShader(ss, _state.keywords, attributes);
 		break;
 	}
 }
@@ -50,24 +52,28 @@ void MaterialPass::Bind(Transform* transform)
 	_shader->Begin();
 	_shader->SetMat4("_localToWorld", transform->GetLocalToWorldMat());
 	_shader->SetMat4("_worldToLocal", transform->GetWorldToLocalMat());
-	//UpdateUniforms();
+	UpdateUniforms();
 }
 
 void MaterialPass::UpdateUniforms()
 {
 	_acitveChannel = 0;
 
-	for (const auto& pair : _uniformNameMap) {
+	for (const auto& pair : _state.uniformNameMap) {
 
 		switch (pair.second->dataType)
 		{
 		case UniformType::TEXTURE:
 		{
 			Ref<TextureUniformData> tud = DynamicCastRef(TextureUniformData, pair.second);
-			tud->ID = TextureManager::GetTexture(tud->value.c_str())->nativeColorID;
-			//TODO 需要Texture类 纹理过滤等等信息
-			tud->acitveChannel = _acitveChannel++;
-			_shader->SetInt(pair.first, tud->ID);
+			Ref<Texture2D> texture = TextureManager::GetTexture(tud->value.c_str());
+			if (nullptr != texture)
+			{
+				tud->ID = texture->nativeColorID;
+				//TODO 需要Texture类 纹理过滤等等信息
+				tud->acitveChannel = _acitveChannel++;
+				_shader->SetInt(pair.first, tud->ID);
+			}
 			break;
 		}
 		case UniformType::INT:

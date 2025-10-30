@@ -5,8 +5,6 @@
 #include <vector>
 #include <string>
 
-namespace LindaEngine { class Scene; }
-
 namespace LindaEditor
 {
 	struct SceneNodeEditor;
@@ -20,12 +18,10 @@ namespace LindaEditor
 		static bool Build(const char* path);
 		static bool LoadScene();
 		static Ref<SceneNodeEditor> GetCurrentNode();
-		static Ref<LindaEngine::Scene> GetCurrentScene();
 
 		static void Initialize();
 
 	private:
-		static Ref<LindaEngine::Scene> _scene;
 		static Ref<SceneNodeEditor> _node;
 		static std::vector<Ref<SceneNodeEditor>> _buildScenes;
 		static std::vector<Ref<SceneNodeEditor>> _sceneNodes;

@@ -241,6 +241,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Editor\Core\include\MaterialManagerEditor.h" />
+    <ClInclude Include="Runtime\Render\Core\include\MaterialState.h" />
     <ClInclude Include="Runtime\Render\Core\include\RenderEnumData.h" />
     <ClInclude Include="Runtime\Render\Core\include\UniformDataGlobal.h" />
     <ClInclude Include="Runtime\Render\Opengl\include\OpenGLUniformBuffer.h" />

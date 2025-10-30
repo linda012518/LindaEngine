@@ -11,10 +11,10 @@ Shader
 		Properties
 		{
 			uniform int testInt = 1;
-			uniform ivec4 testIVec4 = (7, 8, 9, 0);
+			uniform ivec4 testIVec4 = [7, 8, 9, 0];
 
 			uniform float testFloat = 0.1;
-			uniform vec4 testVec4 = (0.7, 0.8, 0.9, 0.0);
+			uniform vec4 testVec4 = [0.7, 0.8, 0.9, 0.0];
 
 			uniform sampler2D maskTexture = white;
 			uniform samplerCube skybox = white;
@@ -28,7 +28,7 @@ Shader
 			DepthState (depthTest=true; depthWrite=false; depthFunc= LESS)
 			CullFaceFunc(BACK)
 			StencilState(stencilTest=true)
-			BlendState(enableBlend=true;blendSrc=SRC_ALPHA;blendDis=ONE_MINUS_SRC_ALPHA;constantColor=(1,0.2, 0, 1.0))
+			BlendState(enableBlend=true;blendSrc=SRC_ALPHA;blendDis=ONE_MINUS_SRC_ALPHA;constantColor=[1,0.2, 0, 1.0])
 			PolygonModeState(LINE)
 		}
 
@@ -55,6 +55,7 @@ Shader
 			{
 				FragColor.rgb = vec3(0.3, 0.0, 0.0);
 				FragColor.a = 1.0;
+				FragColor = testVec4;
 			}
 		}
 	}
