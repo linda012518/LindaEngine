@@ -147,6 +147,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Editor\Core\src\MaterialManagerEditor.cpp" />
+    <ClCompile Include="Runtime\Render\Core\src\TextureContext.cpp" />
+    <ClCompile Include="Runtime\Render\Core\src\TextureDriver.cpp" />
+    <ClCompile Include="Runtime\Render\Opengl\src\OpenglTexture.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\RenderState.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\UniformDataGlobal.cpp" />
     <ClCompile Include="Runtime\Render\Opengl\src\OpenGLUniformBuffer.cpp" />
@@ -241,6 +244,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Editor\Core\include\MaterialManagerEditor.h" />
+    <ClInclude Include="Runtime\Render\Core\include\TextureContext.h" />
+    <ClInclude Include="Runtime\Render\Core\include\TextureDriver.h" />
+    <ClInclude Include="Runtime\Render\Opengl\include\OpenglTexture.h" />
     <ClInclude Include="Runtime\Render\Core\include\MaterialState.h" />
     <ClInclude Include="Runtime\Render\Core\include\RenderEnumData.h" />
     <ClInclude Include="Runtime\Render\Core\include\UniformDataGlobal.h" />

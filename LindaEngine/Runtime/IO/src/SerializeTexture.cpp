@@ -51,7 +51,7 @@ void YamlSerializer::SerializeTexture(const char* path)
 
 }
 
-bool YamlSerializer::DeSerializeTexture(const char* path)
+Ref<Texture> YamlSerializer::DeSerializeTexture(const char* path)
 {
 	YAML::Node data;
 	try
@@ -60,12 +60,12 @@ bool YamlSerializer::DeSerializeTexture(const char* path)
 	}
 	catch (const std::exception&)
 	{
-		return false;
+		return nullptr;
 	}
 
 	data = data["Texture"];
 	if (!data)
-		return false;
+		return nullptr;
 
 	TextureType type = static_cast<TextureType>(data["type"].as<int>());
 
@@ -105,8 +105,6 @@ bool YamlSerializer::DeSerializeTexture(const char* path)
 	texture->warpV = static_cast<TextureWrapMode>(data["warpV"].as<int>());
 	texture->warpW = static_cast<TextureWrapMode>(data["warpW"].as<int>());
 
-	Texture::overrideTexture = texture;
-
-	return true;
+	return texture;
 
 }

@@ -1,24 +1,47 @@
 #include "TextureManager.h"
+#include "YamlSerializer.h"
 #include "TextureLoader.h"
 #include "Texture.h"
+#include "TextureDriver.h"
 
 using namespace LindaEngine;
 
-std::unordered_map<std::string, Ref<Texture2D>> TextureManager::_textureMap;
+std::unordered_map<std::string, Ref<Texture>> TextureManager::_textureMap;
 std::vector<Ref<RenderTexture>> RenderTextureManager::_renderTextures;
 
-Ref<Texture2D> TextureManager::GetTexture(const char* path)
+Ref<Texture> TextureManager::GetTexture(const char* path)
 {
-    auto itr = _textureMap.find(path);
-    if (itr == _textureMap.end())
+    try
     {
-        _textureMap[path] = TextureLoader::Load(path);
-    }
+        auto itr = _textureMap.find(path);
+        if (itr == _textureMap.end())
+        {
+            Ref<Texture> texture = YamlSerializer::DeSerializeTexture(path);
+            TextureLoader::Load(texture);
+            _textureMap[path] = texture;
+        }
 
-    return _textureMap[path];
+        return _textureMap[path];
+    }
+    catch (const std::exception&)
+    {
+        return nullptr;
+    }
 }
 
-void TextureManager::Clear() { _textureMap.clear(); }
+void TextureManager::Clear() 
+{ 
+    for (auto& tex : _textureMap)
+    {
+        TextureLoader::Delete(tex.second);
+    }
+    _textureMap.clear(); 
+}
+
+void TextureManager::Bind(Ref<Texture> texture, int channel)
+{
+    TextureDriver::Bind(texture, channel);
+}
 
 Ref<RenderTexture> RenderTextureManager::Get(int width, int height, TextureFormat colorFormat, bool sRGB, int msaa, int mipCount, TextureFormat depthFormat, TextureFormat stencilFormat)
 {

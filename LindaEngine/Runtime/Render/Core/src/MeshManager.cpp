@@ -7,14 +7,21 @@ std::unordered_map<std::string, Ref<Mesh>> MeshManager::_meshMap;
 
 Ref<Mesh> MeshManager::GetMesh(const char* path)
 {
-    auto itr = _meshMap.find(path);
-    if (itr == _meshMap.end())
+    try
     {
-        _meshMap[path] = MeshLoader::Load(path);
-        _meshMap[path]->SetPath(path);
-    }
+        auto itr = _meshMap.find(path);
+        if (itr == _meshMap.end())
+        {
+            _meshMap[path] = MeshLoader::Load(path);
+            _meshMap[path]->SetPath(path);
+        }
 
-    return _meshMap[path];
+        return _meshMap[path];
+    }
+    catch (const std::exception&)
+    {
+        return nullptr;
+    }
 }
 
 Ref<Mesh> MeshManager::GetSphereMesh()

@@ -1,44 +1,22 @@
 #pragma once
 
 #include "AutoPtr.h"
+#include "RenderEnumData.h"
 
 namespace LindaEngine
 {
-	enum class TextureType
-	{
-		None, Tex2D, Cube, RenderTexture
-	};
-
-	enum class CubemapSrcType
-	{
-		EquireCtangular, SixTexture
-	};
-
-	enum class TextureFormat
-	{
-		None, R8, R16, R32, RG8, RG16, RG32, RGB8, RGB16, RGB32, RGBA8, RGBA16, RGBA32, Depth16, Depth24, Depth32
-	};
-
-    enum class TextureWrapMode
-    {
-        Repeat, Clamp, Mirror
-    };
-
-    enum class FilterMode
-    {
-        Point, Bilinear, Trilinear
-    };
-
 	struct Texture
 	{
 		int width = -1;
 		int height = -1;
         TextureFormat colorFormat = TextureFormat::None;
-		int nativeColorID = -1;
+		unsigned int nativeColorID = 0;
+		bool isLoad = false;
 
 		TextureType type;
 		bool isDataSRGB = true;
         int mipmapCount = -1;
+		int anisotropy = 0;
         FilterMode filter = FilterMode::Bilinear;
         TextureWrapMode warpU = TextureWrapMode::Clamp;
         TextureWrapMode warpV = TextureWrapMode::Clamp;

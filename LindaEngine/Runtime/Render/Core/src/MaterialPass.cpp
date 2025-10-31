@@ -57,7 +57,7 @@ void MaterialPass::Bind(Transform* transform)
 
 void MaterialPass::UpdateUniforms()
 {
-	_acitveChannel = 0;
+	int acitveChannel = 0;
 
 	for (const auto& pair : _state.uniformNameMap) {
 
@@ -66,13 +66,11 @@ void MaterialPass::UpdateUniforms()
 		case UniformType::TEXTURE:
 		{
 			Ref<TextureUniformData> tud = DynamicCastRef(TextureUniformData, pair.second);
-			Ref<Texture2D> texture = TextureManager::GetTexture(tud->value.c_str());
+			Ref<Texture> texture = TextureManager::GetTexture(tud->value.c_str());
 			if (nullptr != texture)
 			{
-				tud->ID = texture->nativeColorID;
-				//TODO 需要Texture类 纹理过滤等等信息
-				tud->acitveChannel = _acitveChannel++;
-				_shader->SetInt(pair.first, tud->ID);
+				TextureManager::Bind(texture, acitveChannel);
+				_shader->SetInt(pair.first, acitveChannel++);
 			}
 			break;
 		}

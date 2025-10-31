@@ -39,7 +39,6 @@ namespace LindaEngine
 		Ref<Shader> _shader = nullptr;
 		static Ref<MaterialPass> overrideMatPass;
 
-		int _acitveChannel = 0;
 	private:
 		static RenderState _currentState; //当前渲染正在用的状态
 		static RenderState _defualtState;

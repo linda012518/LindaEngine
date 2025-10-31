@@ -29,7 +29,7 @@ namespace LindaEngine
 	class ShaderManager
 	{
 	public:
-		static Ref<ShaderSource>& GetShaderSource(const char* path);
+		static Ref<ShaderSource> GetShaderSource(const char* path);
 		static std::string& GetInclude(const char* path);
 		static void Clear();
 		static Ref<Shader> CompileShader(Ref<ShaderSourceCode> sss, std::vector<std::string>& keywords, const std::vector<VertexAttribute>& attributes);

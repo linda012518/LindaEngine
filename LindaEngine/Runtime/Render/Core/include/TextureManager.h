@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AutoPtr.h"
-#include "Texture.h"
+#include "RenderEnumData.h"
 
 #include <unordered_map>
 #include <vector>
@@ -9,14 +9,18 @@
 
 namespace LindaEngine
 {
+	struct Texture;
+	struct RenderTexture;
+
 	class TextureManager
 	{
 	public:
-		static Ref<Texture2D> GetTexture(const char* path);
+		static Ref<Texture> GetTexture(const char* path);
 		static void Clear();
+		static void Bind(Ref<Texture> texture, int channel);
 
 	private:
-		static std::unordered_map<std::string, Ref<Texture2D>> _textureMap;
+		static std::unordered_map<std::string, Ref<Texture>> _textureMap;
 	};
 
 	class RenderTextureManager

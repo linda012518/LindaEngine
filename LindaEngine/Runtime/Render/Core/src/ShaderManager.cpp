@@ -17,21 +17,28 @@ std::string ShaderManager::defaultShaderVersion;
 
 bool _isLoadDefault = false;
 
-Ref<ShaderSource>& ShaderManager::GetShaderSource(const char* path)
+Ref<ShaderSource> ShaderManager::GetShaderSource(const char* path)
 {
-    if (false == _isLoadDefault)
+    try
     {
-        Initialize();
-        _isLoadDefault = true;
-    }
+        if (false == _isLoadDefault)
+        {
+            Initialize();
+            _isLoadDefault = true;
+        }
 
-    auto itr = _shaderSrcMap.find(path);
-    if (itr == _shaderSrcMap.end())
+        auto itr = _shaderSrcMap.find(path);
+        if (itr == _shaderSrcMap.end())
+        {
+            _shaderSrcMap[path] = ShaderLoader::Load(path);
+        }
+
+        return _shaderSrcMap[path];
+    }
+    catch (const std::exception&)
     {
-        _shaderSrcMap[path] = ShaderLoader::Load(path);
+        return nullptr;
     }
-
-    return _shaderSrcMap[path];
 }
 
 std::string& ShaderManager::GetInclude(const char* path)

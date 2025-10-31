@@ -4,11 +4,29 @@
 
 namespace LindaEngine
 {
-	struct Texture2D;
+	struct Texture;
 
 	class TextureLoader
 	{
 	public:
-		static Ref<Texture2D> Load(const char* path, bool gammaCorrection = false);
+		static void Load(Ref<Texture> texture);
+		static void Delete(Ref<Texture> texture);
+
+	private:
+		struct TextureTempData
+		{
+			void* data = nullptr;
+			int width = 0;
+			int height = 0;
+			int channels = 0;
+			int bitCount = 0;
+		};
+
+	private:
+		static TextureTempData LoadToMemory(const char* path);
+		static void LoadTexture2D(Ref<Texture> texture);
+		static void LoadCubemap(Ref<Texture> texture);
+		
+
 	};
 }

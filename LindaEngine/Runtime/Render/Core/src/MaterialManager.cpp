@@ -14,19 +14,26 @@ bool MaterialManager::_isLoadDefault = false;
 
 Ref<Material> MaterialManager::GetMaterial(const char* path)
 {
-    auto itr = _materialMap.find(path);
-    if (itr == _materialMap.end())
+    try
     {
-        _materialMap[path] = YamlSerializer::DeSerializeMaterial(path);
-        _materialMap[path]->SetPath(path);
-    }
+        auto itr = _materialMap.find(path);
+        if (itr == _materialMap.end())
+        {
+            _materialMap[path] = YamlSerializer::DeSerializeMaterial(path);
+            _materialMap[path]->SetPath(path);
+        }
 
-    return _materialMap[path];
+        return _materialMap[path];
+    }
+    catch (const std::exception&)
+    {
+        return nullptr;
+    }
 }
 
 Ref<Material> MaterialManager::GetMaterialByShader(const char* path)
 {
-    Ref<ShaderSource>& ss = ShaderManager::GetShaderSource(path);
+    Ref<ShaderSource> ss = ShaderManager::GetShaderSource(path);
     Ref<Material> material = CreateRef<Material>();
     material->_state = ss->state;
     for (auto& pass : ss->shaderSrcCode)
