@@ -21,7 +21,10 @@ namespace LindaEngine
 		static Ref<Component> CreateComponent(const std::string& className, Entity& entity, bool enable = true);
 
 	private:
-		static std::unordered_map<std::string, std::function<Ref<Component>(Entity&, bool)>> _componentMap;
+		static std::unordered_map<std::string, std::function<Ref<Component>(Entity&, bool)>>& GetMap();
+
+	//private:
+	//	static std::unordered_map<std::string, std::function<Ref<Component>(Entity&, bool)>> _componentMap;
 
 
 	};
