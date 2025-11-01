@@ -1,6 +1,8 @@
 #pragma once
 
 #include "AutoPtr.h"
+#include "RenderEnumData.h"
+
 #include <vector>
 
 namespace LindaEngine
@@ -50,7 +52,7 @@ namespace LindaEngine
 		virtual const Ref<VertexBuffer>& GetVertexBuffer() const = 0;
 		virtual const Ref<IndexBuffer>& GetIndexBuffer() const = 0;
 
-		virtual void Draw() = 0;
+		virtual void Draw(DrawType drawType) = 0;
 
 		static Ref<VertexArray> Create();
 	};

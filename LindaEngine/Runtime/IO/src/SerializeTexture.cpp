@@ -30,7 +30,7 @@ void YamlSerializer::SerializeTexture(const char* path)
 		out << YAML::Key << "FilePath" << YAML::Value << texture->path;
 	}
 	out << YAML::Key << "type" << YAML::Value << static_cast<int>(texture->type);
-	out << YAML::Key << "isDataSRGB" << YAML::Value << texture->isDataSRGB;
+	out << YAML::Key << "isGammaCorrection" << YAML::Value << texture->isGammaCorrection;
 	out << YAML::Key << "mipmapCount" << YAML::Value << texture->mipmapCount;
 	out << YAML::Key << "filter" << YAML::Value << static_cast<int>(texture->filter);
 	out << YAML::Key << "warpU" << YAML::Value << static_cast<int>(texture->warpU);
@@ -98,7 +98,7 @@ Ref<Texture> YamlSerializer::DeSerializeTexture(const char* path)
 		}
 	}
 
-	texture->isDataSRGB = data["isDataSRGB"].as<bool>();
+	texture->isGammaCorrection = data["isGammaCorrection"].as<bool>();
 	texture->mipmapCount = data["mipmapCount"].as<int>();
 	texture->filter = static_cast<FilterMode>(data["filter"].as<int>());
 	texture->warpU = static_cast<TextureWrapMode>(data["warpU"].as<int>());

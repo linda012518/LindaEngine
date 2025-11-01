@@ -17,6 +17,8 @@ Ref<Texture> TextureManager::GetTexture(const char* path)
         if (itr == _textureMap.end())
         {
             Ref<Texture> texture = YamlSerializer::DeSerializeTexture(path);
+            if (nullptr == texture)
+                return nullptr;
             TextureLoader::Load(texture);
             _textureMap[path] = texture;
         }
@@ -47,14 +49,14 @@ Ref<RenderTexture> RenderTextureManager::Get(int width, int height, TextureForma
 {
     for (auto& rt : _renderTextures)
     {
-        if (rt->width != width || rt->height != height || rt->colorFormat != colorFormat || rt->isDataSRGB != sRGB || 
+        if (rt->width != width || rt->height != height || rt->colorFormat != colorFormat || rt->isGammaCorrection != sRGB ||
             rt->msaa != msaa || rt->mipmapCount != mipCount || rt->depthFormat != depthFormat || rt->stencilFormat != stencilFormat)
         {
             Ref<RenderTexture> newRT = CreateRef<RenderTexture>();
             newRT->width = width;
             newRT->height = height;
             newRT->colorFormat = colorFormat;
-            newRT->isDataSRGB = sRGB;
+            newRT->isGammaCorrection = sRGB;
             newRT->msaa = msaa;
             newRT->mipmapCount = mipCount;
             newRT->depthFormat = depthFormat;

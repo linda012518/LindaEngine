@@ -4,6 +4,31 @@
 
 using namespace LindaEngine;
 
+void OpenglAPIContext::Initialize()
+{
+	glColorMask(true, true, true, true);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(true);
+	glDepthFunc(GL_LESS);
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	glDisable(GL_STENCIL_TEST);
+	glStencilMask(0xFF);
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+	glDisable(GL_BLEND);
+	glBlendColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendEquation(GL_FUNC_ADD);
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
 void OpenglAPIContext::SetViewport(int xStart, int yStart, int width, int height)
 {
 	glViewport(xStart, yStart, width, height);

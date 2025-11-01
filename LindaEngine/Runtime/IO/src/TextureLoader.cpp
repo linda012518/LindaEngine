@@ -49,7 +49,7 @@ TextureLoader::TextureTempData TextureLoader::LoadToMemory(const char* path)
 
 void TextureLoader::LoadTexture2D(Ref<Texture> texture)
 {
-    TextureLoader::TextureTempData ttd = LoadToMemory(texture->path);
+    TextureLoader::TextureTempData ttd = LoadToMemory(texture->path.c_str());
 
     texture->width = ttd.width;
     texture->height = ttd.height;
@@ -63,12 +63,12 @@ void TextureLoader::LoadTexture2D(Ref<Texture> texture)
 void TextureLoader::LoadCubemap(Ref<Texture> texture)
 {
     Ref<Cubemap> cubemap = DynamicCastRef(Cubemap, texture);
-    TextureLoader::TextureTempData right = LoadToMemory(cubemap->right);
-    TextureLoader::TextureTempData left = LoadToMemory(cubemap->left);
-    TextureLoader::TextureTempData top = LoadToMemory(cubemap->top);
-    TextureLoader::TextureTempData bottom = LoadToMemory(cubemap->bottom);
-    TextureLoader::TextureTempData front = LoadToMemory(cubemap->front);
-    TextureLoader::TextureTempData back = LoadToMemory(cubemap->back);
+    TextureLoader::TextureTempData right = LoadToMemory(cubemap->right.c_str());
+    TextureLoader::TextureTempData left = LoadToMemory(cubemap->left.c_str());
+    TextureLoader::TextureTempData top = LoadToMemory(cubemap->top.c_str());
+    TextureLoader::TextureTempData bottom = LoadToMemory(cubemap->bottom.c_str());
+    TextureLoader::TextureTempData front = LoadToMemory(cubemap->front.c_str());
+    TextureLoader::TextureTempData back = LoadToMemory(cubemap->back.c_str());
 
     texture->width = right.width;
     texture->height = right.height;

@@ -24,7 +24,7 @@ Material:
           Value: white
           skybox: 1
         - UniformName: maskTexture
-          Value: white
+          Value: Assets/Maps/Yamls/go.texture
           maskTexture: 1
       Keywords:
         - NORMAL_MAP
@@ -32,7 +32,7 @@ Material:
       RenderState:
         ColorMask: [true, true, true, false]
         PolygonModeState:
-          PolygonMode: 6913
+          PolygonMode: 6914
           LineWidth: 1
         StencilState:
           StencilTest: true

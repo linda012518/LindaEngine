@@ -1,7 +1,7 @@
 Texture:
-  FilePath: Assets/Maps/wall.jpg
+  FilePath: Assets/Maps/Rock.jpg
   type: 1
-  isDataSRGB: true
+  isGammaCorrection: false
   mipmapCount: 6
   filter: 0
   warpU: 0

@@ -3,6 +3,8 @@
 #include "AutoPtr.h"
 #include "RenderEnumData.h"
 
+#include <string>
+
 namespace LindaEngine
 {
 	struct Texture
@@ -14,14 +16,14 @@ namespace LindaEngine
 		bool isLoad = false;
 
 		TextureType type;
-		bool isDataSRGB = true;
+		bool isGammaCorrection = false;
         int mipmapCount = -1;
 		int anisotropy = 0;
         FilterMode filter = FilterMode::Bilinear;
         TextureWrapMode warpU = TextureWrapMode::Clamp;
         TextureWrapMode warpV = TextureWrapMode::Clamp;
         TextureWrapMode warpW = TextureWrapMode::Clamp;
-		const char* path = nullptr;
+		std::string path;
 
 		static Ref<Texture> overrideTexture;
 
@@ -39,12 +41,12 @@ namespace LindaEngine
 
 		CubemapSrcType srcType = CubemapSrcType::EquireCtangular;
 
-		const char* left = nullptr;
-		const char* right = nullptr;
-		const char* top = nullptr;
-		const char* bottom = nullptr;
-		const char* front = nullptr;
-		const char* back = nullptr;
+		std::string left;
+		std::string right;
+		std::string top;
+		std::string bottom;
+		std::string front;
+		std::string back;
 	};
 
 	struct RenderTexture : public Texture

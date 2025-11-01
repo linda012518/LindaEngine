@@ -55,7 +55,7 @@ namespace LindaEngine
 		virtual const Ref<VertexBuffer>& GetVertexBuffer() const { return _vertexBuffer; }
 		virtual const Ref<IndexBuffer>& GetIndexBuffer() const { return _indexBuffer; }
 
-		virtual void Draw() override;
+		virtual void Draw(DrawType drawType) override;
 
 	private:
 		unsigned int _rendererID;

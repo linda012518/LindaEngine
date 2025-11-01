@@ -1,5 +1,6 @@
 #include "TextureContext.h"
 #include "GraphicsContext.h"
+#include "OpenglTexture.h"
 
 using namespace LindaEngine;
 
@@ -8,7 +9,7 @@ Ref<TextureContext> TextureContext::Create()
     switch (GraphicsContext::graphicsConfig.graphicsAPI)
     {
     case GraphicsDriverAPI::OpenGL:
-        //return CreateRef<OpenGLVertexBuffer>(size, vertexStride);
+        return CreateRef<OpenglTexture>();
     case GraphicsDriverAPI::OpenGLES:
         break;
     case GraphicsDriverAPI::DX11:

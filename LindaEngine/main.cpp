@@ -103,7 +103,7 @@ void SerializeTexture()
 {
 	Ref<Texture2D> tex2d = CreateRef<Texture2D>();
 	tex2d->path = "Assets/Maps/wall.jpg";
-	tex2d->isDataSRGB = true;
+	tex2d->isGammaCorrection = true;
 	tex2d->mipmapCount = 6;
 	tex2d->filter = FilterMode::Point;
 	tex2d->warpU = TextureWrapMode::Repeat;
@@ -113,7 +113,7 @@ void SerializeTexture()
 	YamlSerializer::DeSerializeTexture("Assets/Maps/Yamls/go.texture");
 
 	Ref<Cubemap> cubemap = CreateRef<Cubemap>();
-	cubemap->isDataSRGB = false;
+	cubemap->isGammaCorrection = false;
 	cubemap->mipmapCount = 6;
 	cubemap->filter = FilterMode::Point;
 	cubemap->warpU = TextureWrapMode::Repeat;

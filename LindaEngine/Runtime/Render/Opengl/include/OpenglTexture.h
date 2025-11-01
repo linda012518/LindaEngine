@@ -21,7 +21,7 @@ namespace LindaEngine
 		int GetWrapMode(TextureWrapMode& mode);
 		int GetFilterMode(FilterMode& mode, int mipCount);
 		unsigned int GetDataFormat(int channels);
-		unsigned int GetInternalFormat(int channels, int bitCount, bool isDataSRGB);
+		unsigned int GetInternalFormat(int channels, int bitCount, bool isGammaCorrection);
 		unsigned int GetDataType(int bitCount);
 		void GetTextureFormat(Ref<Texture> texture, unsigned int internalFormat);
 

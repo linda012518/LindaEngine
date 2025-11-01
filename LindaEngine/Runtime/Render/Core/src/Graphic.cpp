@@ -8,6 +8,7 @@ Scope<RenderAPIContext> Graphic::_renderContext = nullptr;
 void Graphic::Initialize()
 {
 	_renderContext = RenderAPIContext::Create();
+	_renderContext->Initialize();
 }
 
 void Graphic::SetViewport(int xStart, int yStart, int width, int height)

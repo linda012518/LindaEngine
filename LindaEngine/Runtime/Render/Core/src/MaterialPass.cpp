@@ -6,7 +6,7 @@
 #include "Texture.h"
 #include "Mesh.h"
 #include "Material.h"
-#include "Texture.h"
+#include "Graphic.h"
 
 #define IMPLEMENT_SETUNIFORM(dataType, UniformClass) \
 template<> \
@@ -49,6 +49,7 @@ void MaterialPass::CompileShader(std::string shaderPath, const std::vector<Verte
 
 void MaterialPass::Bind(Transform* transform)
 {
+	Graphic::CheckRenderState(_currentState, *_state.renderState.get());
 	_shader->Begin();
 	_shader->SetMat4("_localToWorld", transform->GetLocalToWorldMat());
 	_shader->SetMat4("_worldToLocal", transform->GetWorldToLocalMat());

@@ -57,6 +57,7 @@ Ref<Mesh> MeshLoader::LoadSphereMesh()
 	Ref<Mesh> mesh = CreateRef<Mesh>();
 
 	Mesh::Data& data = mesh->AddMeshData(Mesh::Data());
+	data.drawType = DrawType::TRIANGLE_STRIP;
 
 	data.AddAttribute(VertexAttributeType::Position);
 	data.AddAttribute(VertexAttributeType::Normal);
@@ -190,6 +191,7 @@ Ref<Mesh> MeshLoader::LoadCapsule()
 	Ref<Mesh> mesh = CreateRef<Mesh>();
 
 	Mesh::Data& data = mesh->AddMeshData(Mesh::Data());
+	data.drawType = DrawType::TRIANGLE_STRIP;
 
 	data.AddAttribute(VertexAttributeType::Position);
 	data.AddAttribute(VertexAttributeType::Normal);

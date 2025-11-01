@@ -3,6 +3,7 @@
 #include "AutoPtr.h"
 #include "LObject.h"
 #include "ISerializable.h"
+#include "RenderEnumData.h"
 #include "glm/glm.hpp"
 
 #include <unordered_map>
@@ -11,18 +12,6 @@
 
 namespace LindaEngine
 {
-	enum class DrawType
-	{
-		POINTS			= 0x0000,
-		LINES			= 0x0001,
-		LINE_LOOP		= 0x0002,
-		LINE_STRIP		= 0x0003,
-		TRIANGLES		= 0x0004,
-		TRIANGLE_STRIP	= 0x0005,
-		TRIANGLE_FAN	= 0x0006,
-		QUADS			= 0x0007
-	};
-
 	enum class VertexDataType
 	{
 		None, Float, Float2, Float3, Float4, Int, Int2, Int3, Int4, Mat2, Mat3, Mat4, Bool, Bool2, Bool3, Bool4
@@ -66,6 +55,7 @@ namespace LindaEngine
 			std::vector<VertexAttribute> attributes;
 
 			int vertexStride = 0;
+			DrawType drawType = DrawType::TRIANGLES;
 
 			void AddAttribute(VertexAttributeType attrType);
 			void AddAttribute(std::string name);

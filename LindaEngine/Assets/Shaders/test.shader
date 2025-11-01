@@ -41,8 +41,11 @@ Shader
 		{
 			AttributeNameArray { aPosition, aColor, aUV0 }
 
+			out vec2 uv;
+
 			void main()
 			{
+				uv = aUV0;
 				gl_Position = _linda_Matrix_VP * _localToWorld * vec4(aPosition, 1.0);
 			}
 		}
@@ -51,11 +54,14 @@ Shader
 		{
 			out vec4 FragColor;
 
+			in vec2 uv;
+
 			void main()
 			{
 				FragColor.rgb = vec3(0.3, 0.0, 0.0);
 				FragColor.a = 1.0;
 				FragColor = testVec4;
+				FragColor = texture(maskTexture, uv);
 			}
 		}
 	}

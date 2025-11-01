@@ -127,15 +127,29 @@ void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& buffer)
 	_indexBuffer = buffer;
 }
 
-void OpenGLVertexArray::Draw()
+void OpenGLVertexArray::Draw(DrawType drawType)
 {
 	Bind();
+
+	unsigned int dt = 0;
+	switch (drawType)
+	{
+	case DrawType::POINTS: dt = GL_POINTS; break;
+	case DrawType::LINES: dt = GL_LINES; break;
+	case DrawType::LINE_LOOP: dt = GL_LINE_LOOP; break;
+	case DrawType::LINE_STRIP: dt = GL_LINE_STRIP; break;
+	case DrawType::TRIANGLES: dt = GL_TRIANGLES; break;
+	case DrawType::TRIANGLE_STRIP: dt = GL_TRIANGLE_STRIP; break;
+	case DrawType::TRIANGLE_FAN: dt = GL_TRIANGLE_FAN; break;
+	case DrawType::QUADS: dt = GL_QUADS; break;
+	}
+
 	if (nullptr != _indexBuffer)
 	{
-		glDrawElements(GL_TRIANGLE_STRIP, _indexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
+		glDrawElements(dt, _indexBuffer->GetCount(), GL_UNSIGNED_INT, 0);
 	}
 	else
 	{
-		glDrawArrays(GL_TRIANGLES, 0, _vertexBuffer->GetCount());
+		glDrawArrays(dt, 0, _vertexBuffer->GetCount());
 	}
 }

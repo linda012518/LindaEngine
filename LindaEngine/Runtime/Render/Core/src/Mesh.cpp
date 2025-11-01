@@ -166,7 +166,7 @@ void Mesh::Data::Draw()
 			vertexArray->SetIndexBuffer(IndexBuffer::Create(&indexData[0], (uint32_t)indexData.size()));
 	}
 
-	vertexArray->Draw();
+	vertexArray->Draw(drawType);
 }
 
 void Mesh::Draw(int index)

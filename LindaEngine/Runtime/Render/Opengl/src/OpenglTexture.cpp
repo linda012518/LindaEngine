@@ -12,7 +12,7 @@ void OpenglTexture::CreateTexture2D(Ref<Texture> texture, void* data, int channe
 	Ref<Texture2D> tex2D = DynamicCastRef(Texture2D, texture);
 
 	GLenum dataFormat = GetDataFormat(channels);
-	GLenum internalFormat = GetInternalFormat(channels, bitCount, tex2D->isDataSRGB);
+	GLenum internalFormat = GetInternalFormat(channels, bitCount, tex2D->isGammaCorrection);
 	GLenum dataType = GetDataType(bitCount);
 
 	GetTextureFormat(tex2D, internalFormat);
@@ -42,7 +42,7 @@ void OpenglTexture::CreateCube(Ref<Texture> texture, void* right, void* left, vo
 	Ref<Cubemap> cubemap = DynamicCastRef(Cubemap, texture);
 
 	GLenum dataFormat = GetDataFormat(channels);
-	GLenum internalFormat = GetInternalFormat(channels, bitCount, cubemap->isDataSRGB);
+	GLenum internalFormat = GetInternalFormat(channels, bitCount, cubemap->isGammaCorrection);
 	GLenum dataType = GetDataType(bitCount);
 
 	GetTextureFormat(cubemap, internalFormat);
@@ -130,7 +130,7 @@ unsigned int OpenglTexture::GetDataFormat(int channels)
 	return GL_RGBA;
 }
 
-unsigned int OpenglTexture::GetInternalFormat(int channels, int bitCount, bool isDataSRGB)
+unsigned int OpenglTexture::GetInternalFormat(int channels, int bitCount, bool isGammaCorrection)
 {
 	unsigned int internalFormat = 0;
 	if (16 == bitCount)
@@ -156,8 +156,8 @@ unsigned int OpenglTexture::GetInternalFormat(int channels, int bitCount, bool i
 		switch (channels) {
 		case 1: internalFormat = GL_R8; break;
 		case 2: internalFormat = GL_RG8; break;
-		case 3: internalFormat = isDataSRGB ? GL_SRGB8 : GL_RGB8; break;
-		case 4: internalFormat = isDataSRGB ? GL_SRGB8_ALPHA8 : GL_RGBA8; break;
+		case 3: internalFormat = isGammaCorrection ? GL_SRGB8 : GL_RGB8; break;
+		case 4: internalFormat = isGammaCorrection ? GL_SRGB8_ALPHA8 : GL_RGBA8; break;
 		}
 	}
 	return internalFormat;
