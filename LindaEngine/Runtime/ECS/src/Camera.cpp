@@ -2,6 +2,9 @@
 #include "Entity.h"
 #include "Transform.h"
 #include "YamlSerializer.h"
+#include "EventCode.h"
+#include "Event.h"
+#include "GraphicsContext.h"
 
 using namespace LindaEngine;
 
@@ -28,6 +31,8 @@ Camera::Camera(Entity& entity, bool enable) : Component(entity, enable)
 	_cameraType = CameraType::None;
 	_clearType = CameraClearType::Skybox;
 	_depth = -1;
+
+	Bind(EventCode::WindowResize);
 }
 
 Camera::~Camera()
@@ -113,7 +118,7 @@ PerspectiveCamera::PerspectiveCamera(Entity& entity, bool enable) : Camera(entit
 {
 	_cameraType = CameraType::PerspectiveCamera;
 	_fov = 60.0f;
-	_aspectRatio = 1.333333f;
+	_aspectRatio = (float)GraphicsContext::graphicsConfig.screenNewWidth / (float)GraphicsContext::graphicsConfig.screenNewHeight;
 }
 
 PerspectiveCamera::~PerspectiveCamera()
@@ -158,6 +163,12 @@ bool PerspectiveCamera::Deserialize(YAML::Node& node)
 	Camera::Deserialize(node);
 	_fov = node["fov"].as<float>();
 	return true;
+}
+
+void PerspectiveCamera::OnEvent(LObject* sender, Event& eventData)
+{
+	WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
+	_aspectRatio = (float)wre.width / (float)wre.height;
 }
 
 /////////////////////////////////////////////////////////////////////

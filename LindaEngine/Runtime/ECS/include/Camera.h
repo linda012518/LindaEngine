@@ -94,6 +94,8 @@ namespace LindaEngine
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
+		void OnEvent(LObject* sender, Event& eventData);
+
 	private:
 		float _fov;
 		float _aspectRatio;

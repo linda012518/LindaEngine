@@ -53,7 +53,7 @@ void Application::Tick()
 {
     while (false == _isQuit)
     {
-        //BehaviorSystem::Awake();
+        BehaviorSystem::DoAwake();
         //BehaviorSystem::OnEnable();
         //BehaviorSystem::Start();
 
@@ -65,7 +65,7 @@ void Application::Tick()
         //BehaviorSystem::OnMouseEvent();
         SceneManager::Tick();
         ComponentSystem::Tick();
-        //BehaviorSystem::Update();
+        BehaviorSystem::DoUpdate();
         //BehaviorSystem::LateUpdate();
 
         //BehaviorSystem::OnPreCull();

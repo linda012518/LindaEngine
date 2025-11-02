@@ -146,6 +146,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\Core\src\EventSystem.cpp" />
+    <ClCompile Include="Runtime\Core\src\Input.cpp" />
     <ClCompile Include="Runtime\ECS\src\Light.cpp" />
     <ClCompile Include="Runtime\ECS\src\CameraController.cpp" />
     <ClCompile Include="Runtime\ECS\src\BehaviorSystem.cpp" />
@@ -245,6 +247,11 @@
     <ClCompile Include="Runtime\Render\Core\src\UniformBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Core\include\Event.h" />
+    <ClInclude Include="Runtime\Core\include\EventCode.h" />
+    <ClInclude Include="Runtime\Core\include\EventSystem.h" />
+    <ClInclude Include="Runtime\Core\include\InputCodes.h" />
+    <ClInclude Include="Runtime\Core\include\Input.h" />
     <ClInclude Include="Runtime\ECS\include\Light.h" />
     <ClInclude Include="Runtime\ECS\include\CameraController.h" />
     <ClInclude Include="Runtime\ECS\include\BehaviorSystem.h" />

@@ -1,6 +1,9 @@
 #include "WinWindow.h"
 #include "Application.h"
 #include "GraphicsContext.h"
+#include "EventSystem.h"
+#include "EventCode.h"
+#include "Event.h"
 #include <tchar.h>
 
 using namespace LindaEngine;
@@ -112,82 +115,127 @@ LRESULT WinWindow::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
     else
     {
         pThis = reinterpret_cast<WinWindow*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+        return pThis->OnEvent(hWnd, message, wParam, lParam);
     }
 
-    switch (message)
+    return DefWindowProc(hWnd, message, wParam, lParam);
+
+}
+
+LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+
+#ifndef GET_X_LPARAM
+#define GET_X_LPARAM(lp)                        ((int)(short)LOWORD(lp))
+#endif
+
+#ifndef GET_Y_LPARAM
+#define GET_Y_LPARAM(lp)                        ((int)(short)HIWORD(lp))
+#endif
+
+#ifndef GET_WHEEL_DELTA_WPARAM
+#define GET_WHEEL_DELTA_WPARAM(wParam)          (int)((short)HIWORD(wParam))
+#endif
+
+    switch (msg)
     {
+    case WM_SIZE:
+    {
+        RECT    rt;
+        GetClientRect(_hWnd, &rt);
+        int width = rt.right - rt.left;
+        int height = rt.bottom - rt.top;
+
+        GraphicsContext::graphicsConfig.screenNewWidth = width;
+        GraphicsContext::graphicsConfig.screenNewHeight = height;
+        WindowResizeEvent event;
+        event.width = width;
+        event.height = height;
+        EventSystem::Dispatch(nullptr, EventCode::WindowResize, event);
+    }
+    break;
     case WM_CHAR:
     {
-
+        CharEvent event;
+        event.key = (int)wParam;
+        EventSystem::Dispatch(nullptr, EventCode::CharInput, event);
     }
     break;
     case WM_KEYUP:
     {
-        switch (wParam)
-        {
-        case VK_LEFT:
-
-            break;
-        case VK_RIGHT:
-
-            break;
-        case VK_UP:
-
-            break;
-        case VK_DOWN:
-
-            break;
-
-        default:
-            break;
-        }
+        KeyEvent event;
+        event.key = (int)wParam;
+        EventSystem::Dispatch(nullptr, EventCode::KeyUp, event);
     }
     break;
     case WM_KEYDOWN:
     {
-        switch (wParam)
-        {
-        case VK_LEFT:
-
-            break;
-        case VK_RIGHT:
-
-            break;
-        case VK_UP:
-
-            break;
-        case VK_DOWN:
-
-            break;
-
-        default:
-            break;
-        }
+        KeyEvent event;
+        event.key = (int)wParam;
+        EventSystem::Dispatch(nullptr, EventCode::KeyDown, event);
     }
     break;
     case WM_LBUTTONDOWN:
     {
-
+        MouseEvent event;
+        event.x = GET_X_LPARAM(lParam);
+        event.y = GET_Y_LPARAM(lParam);
+        EventSystem::Dispatch(nullptr, EventCode::LeftMouseButtonDown, event);
     }
     break;
     case WM_LBUTTONUP:
     {
-
+        MouseEvent event;
+        event.x = GET_X_LPARAM(lParam);
+        event.y = GET_Y_LPARAM(lParam);
+        EventSystem::Dispatch(nullptr, EventCode::LeftMouseButtonUp, event);
+    }
+    break;
+    case WM_RBUTTONDOWN:
+    {
+        MouseEvent event;
+        event.x = GET_X_LPARAM(lParam);
+        event.y = GET_Y_LPARAM(lParam);
+        EventSystem::Dispatch(nullptr, EventCode::RightMouseButtonDown, event);
+    }
+    break;
+    case WM_RBUTTONUP:
+    {
+        MouseEvent event;
+        event.x = GET_X_LPARAM(lParam);
+        event.y = GET_Y_LPARAM(lParam);
+        EventSystem::Dispatch(nullptr, EventCode::RightMouseButtonUp, event);
     }
     break;
     case WM_MOUSEMOVE:
+    {
+        MouseEvent event;
+        event.x = GET_X_LPARAM(lParam);
+        event.y = GET_Y_LPARAM(lParam);
+        EventSystem::Dispatch(nullptr, EventCode::MouseMove, event);
+    }
+    break;
+    case WM_MOUSEWHEEL:
+    {
+        MouseEvent event;
+        event.x = GET_X_LPARAM(lParam);
+        event.y = GET_Y_LPARAM(lParam);
+        event.wheel = GET_WHEEL_DELTA_WPARAM(wParam);
+        EventSystem::Dispatch(nullptr, EventCode::MouseWheel, event);
+    }
+    break;
 
-        break;
-
+    case WM_CLOSE:
     case WM_DESTROY:
     {
         PostQuitMessage(0);
         Application::Quit();
     }
     break;
+    default:
+        return DefWindowProc(hWnd, msg, wParam, lParam);
     }
 
-    return DefWindowProc(hWnd, message, wParam, lParam);
-
+    return S_OK;
 }
 

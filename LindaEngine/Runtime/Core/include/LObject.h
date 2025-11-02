@@ -4,6 +4,7 @@
 
 namespace LindaEngine
 {
+	struct Event;
 	class LObject
 	{
 	public:
@@ -11,6 +12,10 @@ namespace LindaEngine
 		virtual ~LObject();
 
 		int GetID() const;
+
+		void Bind(int eventCode);
+		void Dispatch(LObject* sender, int eventCode, Event& eventData);
+		virtual void OnEvent(LObject* sender, Event& eventData) { }
 
 	protected:
 		static int _id;
