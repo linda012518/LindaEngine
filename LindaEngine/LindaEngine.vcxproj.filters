@@ -78,7 +78,7 @@
     <ClCompile Include="Temp\ComponentSystem2.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Temp\Behavior.cpp">
+    <ClCompile Include="Runtime\ECS\src\Behavior.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Temp\LifeCycleFuncSystem.cpp">
@@ -204,9 +204,6 @@
     <ClCompile Include="External\yaml-cpp\src\tag.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Temp\MaterialLoader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Runtime\IO\src\ShaderLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -298,6 +295,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Render\Core\src\TextureContext.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\ECS\src\BehaviorSystem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\ECS\src\CameraController.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\ECS\src\Light.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1250,7 +1256,7 @@
     <ClInclude Include="Temp\ComponentSystem2.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Temp\Behavior.h">
+    <ClInclude Include="Runtime\ECS\include\Behavior.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Temp\LifeCycleFuncSystem.h">
@@ -1466,9 +1472,6 @@
     <ClInclude Include="External\yaml-cpp\src\token.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Temp\MaterialLoader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Runtime\IO\include\ShaderLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -1671,6 +1674,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Render\Core\include\TextureContext.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\ECS\include\BehaviorSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\ECS\include\CameraController.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\ECS\include\Light.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2117,6 +2129,12 @@
       <Filter>头文件</Filter>
     </None>
     <None Include="Runtime\ECS\include\Component.inl">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="Runtime\ECS\include\BehaviorDeclare.inl">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="Runtime\ECS\include\BehaviorImplement.inl">
       <Filter>头文件</Filter>
     </None>
   </ItemGroup>

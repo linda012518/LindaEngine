@@ -26,6 +26,8 @@ namespace LindaEngine
 
 		void SetActive(bool active);
 		bool IsActive();
+		bool IsDirty();
+		void ClearDirty();
 
 		void SetUUID(std::string& uuid) { _uuid = uuid; }
 		std::string& GetUUID() { return _uuid; }
@@ -56,10 +58,12 @@ namespace LindaEngine
 	private:
 		void OnComponentAdded(Component* com);
 		void OnComponentRemoved(Component* com);
+		void UpdateChildrenDirty(Transform* parent);
 
 	private:
 		std::string _name;
 		bool _active;
+		bool _activeDirty;
 		std::string _uuid;
 		Transform* _transform;
 		std::vector<Ref<Component>> _components;

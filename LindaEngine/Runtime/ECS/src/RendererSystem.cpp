@@ -13,6 +13,8 @@ std::vector<Renderer*> RendererSystem::_renderables;
 void RendererSystem::Tick()
 {
 	for (auto& com : _components) {
+		if (false == com->IsEnable())
+			continue;
 		com->Tick();
 	}
 }

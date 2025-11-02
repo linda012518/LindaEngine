@@ -2,6 +2,7 @@
 #include "YamlSerializer.h"
 #include "Path.h"
 #include "ComponentSystem.h"
+#include "BehaviorSystem.h"
 
 using namespace LindaEngine;
 
@@ -34,6 +35,7 @@ int Application::Initialize()
 
     SceneManager::LoadScene(0);
     ComponentSystem::OnDeserializeFinish();
+    BehaviorSystem::OnDeserializeFinish();
 
     return ret;
 }
@@ -42,6 +44,7 @@ void Application::Finalize()
 {
     _graphicContext->Finalize();
     ComponentSystem::Finalize();
+    BehaviorSystem::Finalize();
     SceneManager::Finalize();
     _window->Finalize();
 }
@@ -50,10 +53,31 @@ void Application::Tick()
 {
     while (false == _isQuit)
     {
+        //BehaviorSystem::Awake();
+        //BehaviorSystem::OnEnable();
+        //BehaviorSystem::Start();
+
+        //BehaviorSystem::FixUpdate();
+        //BehaviorSystem::OnTriggerEvent();
+        //BehaviorSystem::OnCollisionEvent();
+
         _window->Tick();
+        //BehaviorSystem::OnMouseEvent();
         SceneManager::Tick();
         ComponentSystem::Tick();
+        //BehaviorSystem::Update();
+        //BehaviorSystem::LateUpdate();
+
+        //BehaviorSystem::OnPreCull();
+        //BehaviorSystem::OnPreRender();
+        //BehaviorSystem::OnRenderObject();
         _graphicContext->Tick();
+        //BehaviorSystem::OnPostRender();
+        //BehaviorSystem::OnApplicationPause();
+        //BehaviorSystem::OnApplicationQuit();
+        //BehaviorSystem::OnDisable();
+        //BehaviorSystem::OnDestroy();
+        BehaviorSystem::Tick();
     }
 }
 

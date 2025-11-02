@@ -26,6 +26,7 @@
 #include "MeshManager.h"
 #include "MaterialManager.h"
 #include "MaterialManagerEditor.h"
+#include "CameraController.h"
 
 using namespace LindaEngine;
 using namespace LindaEditor;
@@ -163,6 +164,12 @@ int main()
 	//node->path = "Assets/Shaders/test.shader";
 	//MaterialManagerEditor::CreateMaterial("");
 	//return 0;
+
+	//Entity entity("111", true);
+	//entity.AddComponent<CameraController>();
+	////	;	CameraController cc(entity, true);
+	////cc.Initialize();
+	//return 1;
 
 	Application app;
 	app.Initialize();

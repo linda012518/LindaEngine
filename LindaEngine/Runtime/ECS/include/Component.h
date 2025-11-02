@@ -18,7 +18,11 @@ namespace LindaEngine
 		virtual ~Component();
 
 		Entity& GetEntity() const;
+		bool IsActive() const;
+		bool IsDirty();
+		void ClearDirty();
 		bool IsEnable() const;
+		bool LastEnbale();
 		void SetEnable(bool enable);
 
 		virtual void Tick() {}
@@ -32,5 +36,9 @@ namespace LindaEngine
 	protected:
 		bool _enable;
 		Entity& _entity;
+
+	private:
+		bool _enableDirty;
+		bool _enableLast;
 	};
 }

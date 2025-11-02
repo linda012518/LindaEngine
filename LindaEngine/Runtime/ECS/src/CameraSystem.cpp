@@ -10,6 +10,8 @@ Camera* CameraSystem::currentCamear;
 void CameraSystem::Tick()
 {
 	for (auto& com : _components) {
+		if (false == com->IsEnable())
+			continue;
 		com->Tick();
 	}
 }

@@ -9,8 +9,8 @@
 #include "ComponentFactory.h"
 #include "Renderer.h"
 #include "RendererSystem.h"
-
-#include "ComponentSystem2.h"
+#include "Behavior.h"
+#include "BehaviorSystem.h"
 
 #include <fstream>
 #include <iostream>
@@ -42,6 +42,7 @@ Entity::Entity(const char* name, bool active)
 {
 	_name = name;
 	_active = active;
+	_activeDirty = false;
 	_uuid = UUID::Get();
 
 	Ref<Transform> c = CreateRef<Transform>(*this);
@@ -73,6 +74,8 @@ void Entity::SetActive(bool active)
 	if (_active == active)
 		return;
 	_active = active;
+	_activeDirty = true;
+	UpdateChildrenDirty(_transform);
 }
 
 bool Entity::IsActive()
@@ -131,6 +134,7 @@ void Entity::OnComponentAdded(Component* com)
 	COMPONENTADDED(Transform, com, TransformSystem, trans, ;)
 	COMPONENTADDED(Camera, com, CameraSystem, camera, _transform->OnCameraAdded();)
 	COMPONENTADDED(Renderer, com, RendererSystem, renderer, ;)
+	COMPONENTADDED(Behavior, com, BehaviorSystem, behavior, ;)
 }
 
 void Entity::OnComponentRemoved(Component* com)
@@ -138,6 +142,7 @@ void Entity::OnComponentRemoved(Component* com)
 	COMPONENTREMOVED(Transform, com, TransformSystem, trans, ;)
 	COMPONENTREMOVED(Camera, com, CameraSystem, camera, _transform->OnCameraRemoved();)
 	COMPONENTREMOVED(Renderer, com, RendererSystem, renderer, ;)
+	COMPONENTREMOVED(Behavior, com, BehaviorSystem, behavior, ;)
 	//Transform* trans = dynamic_cast<Transform*>(com);
 	//if (nullptr != trans)
 	//{
@@ -159,6 +164,25 @@ void Entity::OnComponentRemoved(Component* com)
 	//	RendererSystem::Remove(renderer);
 	//	return;
 	//}
+}
+
+void Entity::UpdateChildrenDirty(Transform* parent)
+{
+	for (auto& child : parent->GetChildren())
+	{
+		child->GetEntity()._activeDirty = true;
+		UpdateChildrenDirty(child);
+	}
+}
+
+bool Entity::IsDirty()
+{
+	return _activeDirty;
+}
+
+void Entity::ClearDirty()
+{
+	_activeDirty = false;
 }
 
 bool Entity::Serialize()

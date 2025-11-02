@@ -1,5 +1,4 @@
 #include "MaterialManager.h"
-#include "MaterialLoader.h"
 #include "YamlSerializer.h"
 #include "Material.h"
 #include "MaterialPass.h"

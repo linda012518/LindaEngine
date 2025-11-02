@@ -8,8 +8,6 @@
 
 namespace LindaEngine
 {
-	class Entity;
-
 	enum class CameraType
 	{
 		None, PerspectiveCamera, OrthoCamera, CubeCamera, DirectionalCamera, SpotCamera, PointCamera
