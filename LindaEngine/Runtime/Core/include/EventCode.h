@@ -19,5 +19,8 @@ namespace LindaEngine
 		const static int KeyUp = BasicCount + 11;
 		const static int Key = BasicCount + 12;
 		const static int CharInput = BasicCount + 13;
+		const static int LeftMouseButtonClick = BasicCount + 14;
+		const static int RightMouseButtonClick = BasicCount + 15;
+		const static int KeyClick = BasicCount + 16;
 	};
 }

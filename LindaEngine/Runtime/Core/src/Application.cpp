@@ -3,6 +3,7 @@
 #include "Path.h"
 #include "ComponentSystem.h"
 #include "BehaviorSystem.h"
+#include "Timestamp.h"
 
 using namespace LindaEngine;
 
@@ -16,6 +17,8 @@ int Application::Initialize()
     _graphicContext = GraphicsContext::Create(_window.get());
 
     int ret = 0;
+
+    Timestamp::Initialize();
 
     if ((ret = _window->Initialize()) != 0) {
         printf("Window Initialize Failed...");
@@ -60,7 +63,7 @@ void Application::Tick()
         //BehaviorSystem::FixUpdate();
         //BehaviorSystem::OnTriggerEvent();
         //BehaviorSystem::OnCollisionEvent();
-
+        Timestamp::Tick();
         _window->Tick();
         //BehaviorSystem::OnMouseEvent();
         SceneManager::Tick();

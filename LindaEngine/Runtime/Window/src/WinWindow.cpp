@@ -6,6 +6,18 @@
 #include "Event.h"
 #include <tchar.h>
 
+#ifndef GET_X_LPARAM
+#define GET_X_LPARAM(lp)                        ((int)(short)LOWORD(lp))
+#endif
+
+#ifndef GET_Y_LPARAM
+#define GET_Y_LPARAM(lp)                        ((int)(short)HIWORD(lp))
+#endif
+
+#ifndef GET_WHEEL_DELTA_WPARAM
+#define GET_WHEEL_DELTA_WPARAM(wParam)          (int)((short)HIWORD(wParam))
+#endif
+
 using namespace LindaEngine;
 
 WinWindow::WinWindow()
@@ -103,6 +115,7 @@ LRESULT WinWindow::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
     WinWindow* pThis;
     if (message == WM_NCCREATE)
     {
+        SetTimer(hWnd, 1, 100, NULL);
         pThis = static_cast<WinWindow*>(reinterpret_cast<CREATESTRUCT*>(lParam)->lpCreateParams);
 
         SetLastError(0);
@@ -124,19 +137,6 @@ LRESULT WinWindow::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
 LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-
-#ifndef GET_X_LPARAM
-#define GET_X_LPARAM(lp)                        ((int)(short)LOWORD(lp))
-#endif
-
-#ifndef GET_Y_LPARAM
-#define GET_Y_LPARAM(lp)                        ((int)(short)HIWORD(lp))
-#endif
-
-#ifndef GET_WHEEL_DELTA_WPARAM
-#define GET_WHEEL_DELTA_WPARAM(wParam)          (int)((short)HIWORD(wParam))
-#endif
-
     switch (msg)
     {
     case WM_SIZE:
@@ -165,48 +165,32 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
         KeyEvent event;
         event.key = (int)wParam;
+
+        _keyHeld = false;
+        auto clickDuration = std::chrono::steady_clock::now() - _keyStartTime;
+        auto clickMillis = std::chrono::duration_cast<std::chrono::milliseconds>(clickDuration).count();
+
+        if (clickMillis < CLICK_TIME_THRESHOLD) {
+            EventSystem::Dispatch(nullptr, EventCode::KeyClick, event);
+        }
+
         EventSystem::Dispatch(nullptr, EventCode::KeyUp, event);
     }
     break;
     case WM_KEYDOWN:
     {
+        _keyStartTime = std::chrono::steady_clock::now();
+        _keyHeld = true;
+
         KeyEvent event;
         event.key = (int)wParam;
         EventSystem::Dispatch(nullptr, EventCode::KeyDown, event);
     }
     break;
-    case WM_LBUTTONDOWN:
-    {
-        MouseEvent event;
-        event.x = GET_X_LPARAM(lParam);
-        event.y = GET_Y_LPARAM(lParam);
-        EventSystem::Dispatch(nullptr, EventCode::LeftMouseButtonDown, event);
-    }
-    break;
-    case WM_LBUTTONUP:
-    {
-        MouseEvent event;
-        event.x = GET_X_LPARAM(lParam);
-        event.y = GET_Y_LPARAM(lParam);
-        EventSystem::Dispatch(nullptr, EventCode::LeftMouseButtonUp, event);
-    }
-    break;
-    case WM_RBUTTONDOWN:
-    {
-        MouseEvent event;
-        event.x = GET_X_LPARAM(lParam);
-        event.y = GET_Y_LPARAM(lParam);
-        EventSystem::Dispatch(nullptr, EventCode::RightMouseButtonDown, event);
-    }
-    break;
-    case WM_RBUTTONUP:
-    {
-        MouseEvent event;
-        event.x = GET_X_LPARAM(lParam);
-        event.y = GET_Y_LPARAM(lParam);
-        EventSystem::Dispatch(nullptr, EventCode::RightMouseButtonUp, event);
-    }
-    break;
+    case WM_LBUTTONDOWN: MouseButtonDown(lParam, true); break;
+    case WM_LBUTTONUP: MouseButtonUp(lParam, true); break;
+    case WM_RBUTTONDOWN: MouseButtonDown(lParam, false); break;
+    case WM_RBUTTONUP: MouseButtonUp(lParam, false); break;
     case WM_MOUSEMOVE:
     {
         MouseEvent event;
@@ -224,7 +208,9 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         EventSystem::Dispatch(nullptr, EventCode::MouseWheel, event);
     }
     break;
-
+    case WM_TIMER:
+        OnTimer(wParam, lParam);
+    break;
     case WM_CLOSE:
     case WM_DESTROY:
     {
@@ -237,5 +223,84 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     }
 
     return S_OK;
+}
+
+void WinWindow::OnTimer(WPARAM wParam, LPARAM lParam)
+{
+    if (wParam == 1)
+    {
+        auto holdDuration = std::chrono::steady_clock::now() - _buttonStartTime;
+        auto holdSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(holdDuration).count();
+        if (holdSeconds < 300)
+            return;
+        // 300毫秒以上认为是按住
+
+        MouseEvent event;
+        event.x = GET_X_LPARAM(lParam);
+        event.y = GET_Y_LPARAM(lParam);
+
+        if (_leftButtonHeld)
+            EventSystem::Dispatch(nullptr, EventCode::LeftMouseButton, event);
+        else if (_rightButtonHeld)
+            EventSystem::Dispatch(nullptr, EventCode::RightMouseButton, event);
+    }
+    else
+    {
+        auto holdDuration = std::chrono::steady_clock::now() - _keyStartTime;
+        auto holdSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(holdDuration).count();
+        if (holdSeconds < 300)
+            return;
+        // 300毫秒以上认为是按住
+
+        KeyEvent event;
+        event.key = (int)wParam;
+        if (_keyHeld)
+            EventSystem::Dispatch(nullptr, EventCode::Key, event);
+    }
+}
+
+void WinWindow::MouseButtonDown(LPARAM lParam, bool isLeft)
+{
+    int x = GET_X_LPARAM(lParam);
+    int y = GET_Y_LPARAM(lParam);
+
+    if (isLeft)
+        _leftButtonHeld = true;
+    else
+        _rightButtonHeld = true;
+
+    _buttonStartTime = std::chrono::steady_clock::now();
+    _downPoint.x = x;
+    _downPoint.y = y;
+
+    MouseEvent event;
+    event.x = x;
+    event.y = y;
+    EventSystem::Dispatch(nullptr, isLeft ? EventCode::LeftMouseButtonDown : EventCode::RightMouseButtonDown, event);
+}
+
+void WinWindow::MouseButtonUp(LPARAM lParam, bool isLeft)
+{
+    int x = GET_X_LPARAM(lParam);
+    int y = GET_Y_LPARAM(lParam);
+
+    if (isLeft)
+        _leftButtonHeld = false;
+    else
+        _rightButtonHeld = false;
+
+    MouseEvent event;
+    event.x = x;
+    event.y = y;
+
+    auto clickDuration = std::chrono::steady_clock::now() - _buttonStartTime;
+    auto clickMillis = std::chrono::duration_cast<std::chrono::milliseconds>(clickDuration).count();
+    int moveDistance = abs(_downPoint.x - x) + abs(_downPoint.y - y);
+
+    if (clickMillis < CLICK_TIME_THRESHOLD && moveDistance < CLICK_DISTANCE_THRESHOLD) {
+        EventSystem::Dispatch(nullptr, isLeft ? EventCode::LeftMouseButtonClick : EventCode::RightMouseButtonClick, event);
+    }
+
+    EventSystem::Dispatch(nullptr, isLeft ? EventCode::LeftMouseButtonUp : EventCode::RightMouseButtonUp, event);
 }
 

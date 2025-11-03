@@ -312,6 +312,9 @@
     <ClCompile Include="Runtime\Core\src\EventSystem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Core\src\Timestamp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -1704,6 +1707,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Core\include\Event.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Core\include\Timestamp.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
