@@ -24,7 +24,7 @@ namespace LindaEngine
 	struct SortingSettings
 	{
 		glm::vec3 cameraPosition;
-		glm::vec3 cameraForward; //点乘算观察方向的投影距离
+		glm::vec3 cameraForward; //点乘算观察方向的投影距离，(A·B)/|B|即A在B上的投影长度
         SortingCriteria criteria;
 	};
 
