@@ -52,6 +52,6 @@ void EventSystem::Dispatch(LObject* sender, int code, Event& eventData)
     for (auto it = go.begin(); it != go.end(); ++it) {
         LObject* temp = *it;
         if (nullptr != temp)
-            temp->OnEvent(sender, eventData);
+            temp->OnEvent(sender, code, eventData);
     }
 }

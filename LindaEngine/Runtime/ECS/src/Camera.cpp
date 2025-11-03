@@ -33,6 +33,9 @@ Camera::Camera(Entity& entity, bool enable) : Component(entity, enable)
 	_depth = -1;
 
 	Bind(EventCode::WindowResize);
+	Bind(EventCode::LeftMouseButtonDown);
+	Bind(EventCode::MouseWheel);
+	Bind(EventCode::KeyDown);
 }
 
 Camera::~Camera()
@@ -165,10 +168,29 @@ bool PerspectiveCamera::Deserialize(YAML::Node& node)
 	return true;
 }
 
-void PerspectiveCamera::OnEvent(LObject* sender, Event& eventData)
+void PerspectiveCamera::OnEvent(LObject* sender, int eventCode, Event& eventData)
 {
-	WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
-	_aspectRatio = (float)wre.width / (float)wre.height;
+	if (eventCode == EventCode::LeftMouseButtonDown)
+	{
+		std::cout << "	LeftMouseButtonDown \n" << std::endl;
+	}
+	else if (eventCode == EventCode::MouseWheel)
+	{
+		MouseEvent& me = dynamic_cast<MouseEvent&>(eventData);
+		std::cout << "	MouseWheel  " << me.wheel << "\n" << std::endl;
+	}
+	else if (eventCode == EventCode::KeyDown)
+	{
+		KeyEvent& me = dynamic_cast<KeyEvent&>(eventData);
+		std::cout << "	MouseWheel  " << me.key << "\n" << std::endl;
+	}
+	else
+	{
+		WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
+		_aspectRatio = (float)wre.width / (float)wre.height;
+	}
+
+
 }
 
 /////////////////////////////////////////////////////////////////////

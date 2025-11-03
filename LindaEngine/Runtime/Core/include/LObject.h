@@ -15,7 +15,7 @@ namespace LindaEngine
 
 		void Bind(int eventCode);
 		void Dispatch(LObject* sender, int eventCode, Event& eventData);
-		virtual void OnEvent(LObject* sender, Event& eventData) { }
+		virtual void OnEvent(LObject* sender, int eventCode, Event& eventData) { }
 
 	protected:
 		static int _id;
