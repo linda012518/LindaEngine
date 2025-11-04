@@ -17,10 +17,12 @@ namespace LindaEngine
 
 		static void Quit();
 
+		static Window& GetWindow() { return *_window; }
+
 	private:
 		static bool _isQuit;
 
-		Scope<Window> _window;
+		static Scope<Window> _window;
 		Scope<GraphicsContext> _graphicContext;
 		Scope<SceneManager> _sceneManager;
 	};

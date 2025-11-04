@@ -10,13 +10,11 @@ namespace LindaEngine
 	{
 	public:
 		static bool GetKeyDown(KeyCode key);
-		static bool GetKeyPressed(KeyCode key);
+		static bool GetKey(KeyCode key);
 		static bool GetKeyUp(KeyCode key);
 		static bool GetMouseButtonDown(MouseCode button);
-		static bool GetMouseButtonPressed(MouseCode button);
+		static bool GetMouseButton(MouseCode button);
 		static bool GetMouseButtonUp(MouseCode button);
-		static glm::vec2 GetMousePosition();
-		static float GetMouseX();
-		static float GetMouseY();
+		static glm::ivec2 GetMousePosition();
 	};
 }

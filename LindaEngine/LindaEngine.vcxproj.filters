@@ -300,7 +300,7 @@
     <ClCompile Include="Runtime\ECS\src\Light.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime\Core\src\Input.cpp">
+    <ClCompile Include="Runtime\Window\src\WindowsInput.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Core\src\EventSystem.cpp">
@@ -1685,13 +1685,13 @@
     <ClInclude Include="Runtime\ECS\include\Light.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\Core\include\Input.h">
+    <ClInclude Include="Runtime\Window\include\Input.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Core\include\EventSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\Core\include\InputCodes.h">
+    <ClInclude Include="Runtime\Window\include\InputCodes.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Core\include\EventCode.h">
@@ -1704,6 +1704,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Temp\TestECSEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Core\include\IEventHandler.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

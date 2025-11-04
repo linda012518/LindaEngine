@@ -147,7 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Runtime\Core\src\EventSystem.cpp" />
-    <ClCompile Include="Runtime\Core\src\Input.cpp" />
+    <ClCompile Include="Runtime\Window\src\WindowsInput.cpp" />
     <ClCompile Include="Runtime\Core\src\Timestamp.cpp" />
     <ClCompile Include="Runtime\ECS\src\Light.cpp" />
     <ClCompile Include="Runtime\ECS\src\CameraController.cpp" />
@@ -250,8 +250,9 @@
     <ClInclude Include="Runtime\Core\include\Event.h" />
     <ClInclude Include="Runtime\Core\include\EventCode.h" />
     <ClInclude Include="Runtime\Core\include\EventSystem.h" />
-    <ClInclude Include="Runtime\Core\include\InputCodes.h" />
-    <ClInclude Include="Runtime\Core\include\Input.h" />
+    <ClInclude Include="Runtime\Core\include\IEventHandler.h" />
+    <ClInclude Include="Runtime\Window\include\InputCodes.h" />
+    <ClInclude Include="Runtime\Window\include\Input.h" />
     <ClInclude Include="Runtime\Core\include\Timestamp.h" />
     <ClInclude Include="Runtime\ECS\include\Light.h" />
     <ClInclude Include="Runtime\ECS\include\CameraController.h" />

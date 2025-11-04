@@ -2,6 +2,7 @@
 #include "BehaviorImplement.inl"
 #include "EventCode.h"
 #include "Event.h"
+#include "Input.h"
 
 using namespace LindaEngine;
 
@@ -30,7 +31,45 @@ void TestECSEvent::Awake()
 
 void TestECSEvent::Update()
 {
-
+	if (Input::GetMouseButtonDown(0))
+	{
+		std::cout << "	GetMouseButtonDown  0 \n" << std::endl;
+	}
+	if (Input::GetMouseButtonDown(1))
+	{
+		std::cout << "	GetMouseButtonDown  1 \n" << std::endl;
+	}
+	if (Input::GetMouseButtonUp(0))
+	{
+		std::cout << "	GetMouseButtonUp  0 \n" << std::endl;
+	}
+	if (Input::GetMouseButtonUp(1))
+	{
+		std::cout << "	GetMouseButtonUp  1 \n" << std::endl;
+	}
+	if (Input::GetMouseButton(0))
+	{
+		std::cout << "	GetMouseButton  0 \n" << std::endl;
+	}
+	if (Input::GetMouseButton(1))
+	{
+		std::cout << "	GetMouseButton  1 \n" << std::endl;
+	}
+	if (Input::GetKeyDown(D))
+	{
+		std::cout << "	GetKeyDown  " << D << "   \n" << std::endl;
+	}
+	if (Input::GetKey(E))
+	{
+		std::cout << "	GetKey  " << E << "   \n" << std::endl;
+	}
+	if (Input::GetKeyUp(F))
+	{
+		std::cout << "	GetKeyUp  " << F << "   \n" << std::endl;
+	}
+	{
+		std::cout << "	GetMousePosition  " << Input::GetMousePosition().x << "  " << Input::GetMousePosition().y << std::endl;
+	}
 }
 
 void TestECSEvent::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
@@ -82,7 +121,7 @@ void TestECSEvent::OnEvent(IEventHandler* sender, int eventCode, Event& eventDat
 	else if (eventCode == EventCode::Key)
 	{
 		KeyEvent& me = dynamic_cast<KeyEvent&>(eventData);
-		std::cout << "	KeyUp  " << me.key << "\n" << std::endl;
+		std::cout << "	Key---  " << me.key << "\n" << std::endl;
 	}
 	else if (eventCode == EventCode::CharInput)
 	{

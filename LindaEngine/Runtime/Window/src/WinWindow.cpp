@@ -90,6 +90,13 @@ void WinWindow::Finalize()
 
 void WinWindow::Tick()
 {
+    _leftButtonDown = false;
+    _rightButtonDown = false;
+    _leftButtonUp = false;
+    _rightButtonUp = false;
+    _keyDwon = -1;
+    _keyUp = -1;
+
     // this struct holds Windows event messages
     MSG msg;
 
@@ -175,16 +182,24 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         }
 
         EventSystem::Dispatch(nullptr, EventCode::KeyUp, event);
+        _keyUp = event.key;
+        _key = -1;
     }
     break;
     case WM_KEYDOWN:
     {
+        int key = (int)wParam;
+        if (_key == key)
+            break;
+
         _keyStartTime = std::chrono::steady_clock::now();
         _keyHeld = true;
 
         KeyEvent event;
-        event.key = (int)wParam;
+        event.key = key;
         EventSystem::Dispatch(nullptr, EventCode::KeyDown, event);
+        _keyDwon = key;
+        _key = key;
     }
     break;
     case WM_LBUTTONDOWN: MouseButtonDown(lParam, true); break;
@@ -193,9 +208,13 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_RBUTTONUP: MouseButtonUp(lParam, false); break;
     case WM_MOUSEMOVE:
     {
+        int x = GET_X_LPARAM(lParam);
+        int y = GET_Y_LPARAM(lParam);
+        _mousePos.x = x;
+        _mousePos.y = y;
         MouseEvent event;
-        event.x = GET_X_LPARAM(lParam);
-        event.y = GET_Y_LPARAM(lParam);
+        event.x = x;
+        event.y = y;
         EventSystem::Dispatch(nullptr, EventCode::MouseMove, event);
     }
     break;
@@ -214,6 +233,7 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_CLOSE:
     case WM_DESTROY:
     {
+        KillTimer(hWnd, 1);
         PostQuitMessage(0);
         Application::Quit();
     }
@@ -227,36 +247,48 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 void WinWindow::OnTimer(WPARAM wParam, LPARAM lParam)
 {
-    if (wParam == 1)
+    if (wParam != 1)
+        return;
+
+    CheckMouseButton(lParam);
+
+    auto holdDuration = std::chrono::steady_clock::now() - _keyStartTime;
+    auto holdSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(holdDuration).count();
+    if (holdSeconds < 300)
+        return;
+    // 300毫秒以上认为是按住
+
+    KeyEvent event;
+    event.key = _key;
+    if (_keyHeld)
     {
-        auto holdDuration = std::chrono::steady_clock::now() - _buttonStartTime;
-        auto holdSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(holdDuration).count();
-        if (holdSeconds < 300)
-            return;
-        // 300毫秒以上认为是按住
-
-        MouseEvent event;
-        event.x = GET_X_LPARAM(lParam);
-        event.y = GET_Y_LPARAM(lParam);
-
-        if (_leftButtonHeld)
-            EventSystem::Dispatch(nullptr, EventCode::LeftMouseButton, event);
-        else if (_rightButtonHeld)
-            EventSystem::Dispatch(nullptr, EventCode::RightMouseButton, event);
+        EventSystem::Dispatch(nullptr, EventCode::Key, event);
     }
-    else
+}
+
+void WinWindow::CheckMouseButton(LPARAM lParam)
+{
+    auto holdDuration = std::chrono::steady_clock::now() - _buttonStartTime;
+    auto holdSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(holdDuration).count();
+    if (holdSeconds < 300)
+        return;
+    // 300毫秒以上认为是按住
+
+    MouseEvent event;
+    event.x = GET_X_LPARAM(lParam);
+    event.y = GET_Y_LPARAM(lParam);
+
+    if (_leftButtonHeld)
     {
-        auto holdDuration = std::chrono::steady_clock::now() - _keyStartTime;
-        auto holdSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(holdDuration).count();
-        if (holdSeconds < 300)
-            return;
-        // 300毫秒以上认为是按住
-
-        KeyEvent event;
-        event.key = (int)wParam;
-        if (_keyHeld)
-            EventSystem::Dispatch(nullptr, EventCode::Key, event);
+        _leftButton = true;
+        EventSystem::Dispatch(nullptr, EventCode::LeftMouseButton, event);
     }
+    else if (_rightButtonHeld)
+    {
+        _rightButton = true;
+        EventSystem::Dispatch(nullptr, EventCode::RightMouseButton, event);
+    }
+
 }
 
 void WinWindow::MouseButtonDown(LPARAM lParam, bool isLeft)
@@ -265,9 +297,15 @@ void WinWindow::MouseButtonDown(LPARAM lParam, bool isLeft)
     int y = GET_Y_LPARAM(lParam);
 
     if (isLeft)
+    {
+        _leftButtonDown = true;
         _leftButtonHeld = true;
+    }
     else
+    {
+        _rightButtonDown = true;
         _rightButtonHeld = true;
+    }
 
     _buttonStartTime = std::chrono::steady_clock::now();
     _downPoint.x = x;
@@ -285,9 +323,17 @@ void WinWindow::MouseButtonUp(LPARAM lParam, bool isLeft)
     int y = GET_Y_LPARAM(lParam);
 
     if (isLeft)
+    {
+        _leftButtonUp = true;
         _leftButtonHeld = false;
+        _leftButton = false;
+    }
     else
+    {
+        _rightButtonUp = true;
         _rightButtonHeld = false;
+        _rightButton = false;
+    }
 
     MouseEvent event;
     event.x = x;

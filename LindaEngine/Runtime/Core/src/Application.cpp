@@ -8,6 +8,7 @@
 using namespace LindaEngine;
 
 bool Application::_isQuit = false;
+Scope<Window> Application::_window;
 
 int Application::Initialize()
 {
