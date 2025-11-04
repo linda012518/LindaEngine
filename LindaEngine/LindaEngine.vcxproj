@@ -862,6 +862,7 @@
     <None Include="Runtime\ECS\include\BehaviorDeclare.inl" />
     <None Include="Runtime\ECS\include\BehaviorImplement.inl" />
     <None Include="Runtime\ECS\include\Component.inl" />
+    <None Include="Runtime\ECS\include\ComponentImplement.inl" />
     <None Include="Runtime\ECS\include\Entity.inl" />
     <None Include="Runtime\IO\include\YamlCustomType.h" />
   </ItemGroup>

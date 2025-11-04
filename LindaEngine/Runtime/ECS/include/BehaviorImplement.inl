@@ -3,10 +3,10 @@
 #include "YamlSerializer.h"
 #include "FunctionCheck.h"
 #include "BehaviorSystem.h"
+#include "ComponentImplement.inl"
 
-namespace LindaEngine
-{
 #define IMPLEMENT_BEHAVIOR(className) \
+	DYNAMIC_CREATE(className) \
 	className::className(Entity& entity, bool enable) : Behavior(entity, enable) \
 	{ \
 	} \
@@ -48,4 +48,3 @@ namespace LindaEngine
 		return true; \
 	} 
 
-}

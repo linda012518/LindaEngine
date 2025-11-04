@@ -83,7 +83,7 @@ namespace LindaEngine
 		friend class CubeCamera;
 
 	public:
-		DECLARE_DYNAMIC_CREATE(PerspectiveCamera)
+		DECLARE_DYNAMIC_CREATE()
 		PerspectiveCamera(Entity& entity, bool enable = true);
 		virtual ~PerspectiveCamera();
 
@@ -104,7 +104,7 @@ namespace LindaEngine
 	class OrthoCamera : public Camera
 	{
 	public:
-		DECLARE_DYNAMIC_CREATE(OrthoCamera)
+		DECLARE_DYNAMIC_CREATE()
 		OrthoCamera(Entity& entity, bool enable = true);
 		virtual ~OrthoCamera();
 
@@ -125,7 +125,7 @@ namespace LindaEngine
 	class CubeCamera : public Camera
 	{
 	public:
-		DECLARE_DYNAMIC_CREATE(CubeCamera)
+		DECLARE_DYNAMIC_CREATE()
 		CubeCamera(Entity& entity, bool enable = true);
 		virtual ~CubeCamera();
 

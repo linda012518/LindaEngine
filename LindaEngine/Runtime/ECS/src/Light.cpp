@@ -1,6 +1,7 @@
 #include "Light.h"
 #include "Entity.h"
 #include "YamlSerializer.h"
+#include "ComponentImplement.inl"
 
 using namespace LindaEngine;
 

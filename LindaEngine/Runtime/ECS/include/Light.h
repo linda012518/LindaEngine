@@ -17,7 +17,7 @@ namespace LindaEngine
 	class DirectionLight : public Light
 	{
 	public:
-		DECLARE_DYNAMIC_CREATE(DirectionLight)
+		DECLARE_DYNAMIC_CREATE()
 		DirectionLight(Entity& entity, bool enable = true);
 		virtual ~DirectionLight();
 
@@ -28,7 +28,7 @@ namespace LindaEngine
 	class SpotLight : public Light
 	{
 	public:
-		DECLARE_DYNAMIC_CREATE(SpotLight)
+		DECLARE_DYNAMIC_CREATE()
 		SpotLight(Entity& entity, bool enable = true);
 		virtual ~SpotLight();
 
@@ -39,7 +39,7 @@ namespace LindaEngine
 	class PointLight : public Light
 	{
 	public:
-		DECLARE_DYNAMIC_CREATE(PointLight)
+		DECLARE_DYNAMIC_CREATE()
 		PointLight(Entity& entity, bool enable = true);
 		virtual ~PointLight();
 

@@ -8,7 +8,6 @@ namespace LindaEngine
 	{
 	public:
 		DECLARE_BEHAVIOR(CameraController)
-		DECLARE_DYNAMIC_CREATE(CameraController)
 
 		void Awake();
 		void Update();

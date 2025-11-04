@@ -2161,5 +2161,8 @@
     <None Include="Runtime\ECS\include\BehaviorImplement.inl">
       <Filter>头文件</Filter>
     </None>
+    <None Include="Runtime\ECS\include\ComponentImplement.inl">
+      <Filter>头文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

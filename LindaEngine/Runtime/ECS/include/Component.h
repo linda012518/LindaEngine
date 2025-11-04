@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AutoPtr.h"
 #include "LObject.h"
 #include "ISerializable.h"
 #include "Component.inl"

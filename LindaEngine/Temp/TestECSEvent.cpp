@@ -6,7 +6,6 @@
 
 using namespace LindaEngine;
 
-DYNAMIC_CREATE(TestECSEvent)
 IMPLEMENT_BEHAVIOR(TestECSEvent)
 
 void TestECSEvent::Awake()

@@ -8,7 +8,6 @@ namespace LindaEngine
 	{
 	public:
 		DECLARE_BEHAVIOR(TestECSEvent)
-		DECLARE_DYNAMIC_CREATE(TestECSEvent)
 
 		void Awake();
 		void Update();

@@ -37,7 +37,7 @@ namespace LindaEngine
 	class MeshRenderer : public Renderer
 	{
 	public:
-		DECLARE_DYNAMIC_CREATE(MeshRenderer)
+		DECLARE_DYNAMIC_CREATE()
 		MeshRenderer(Entity& entity, bool enable = true);
 		virtual ~MeshRenderer();
 
@@ -48,7 +48,7 @@ namespace LindaEngine
 	class SkinMeshRenderer : public Renderer
 	{
 	public:
-		DECLARE_DYNAMIC_CREATE(SkinMeshRenderer)
+		DECLARE_DYNAMIC_CREATE()
 		SkinMeshRenderer(Entity& entity, bool enable = true);
 		virtual ~SkinMeshRenderer();
 

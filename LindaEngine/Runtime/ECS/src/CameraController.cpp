@@ -3,7 +3,6 @@
 
 using namespace LindaEngine;
 
-DYNAMIC_CREATE(CameraController)
 IMPLEMENT_BEHAVIOR(CameraController)
 
 void CameraController::Awake()

@@ -5,6 +5,7 @@
 #include "EventCode.h"
 #include "Event.h"
 #include "GraphicsContext.h"
+#include "ComponentImplement.inl"
 
 using namespace LindaEngine;
 

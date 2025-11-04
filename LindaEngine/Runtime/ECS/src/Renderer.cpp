@@ -5,6 +5,7 @@
 #include "Material.h"
 #include "MeshManager.h"
 #include "MaterialManager.h"
+#include "ComponentImplement.inl"
 
 using namespace LindaEngine;
 
