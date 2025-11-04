@@ -227,6 +227,37 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         EventSystem::Dispatch(nullptr, EventCode::MouseWheel, event);
     }
     break;
+    case WM_MBUTTONDOWN:
+    {
+        _buttonStartTime = std::chrono::steady_clock::now();
+        _wheelHeld = true;
+
+        MouseEvent event;
+        event.x = GET_X_LPARAM(lParam);
+        event.y = GET_Y_LPARAM(lParam);
+        event.wheel = GET_WHEEL_DELTA_WPARAM(wParam);
+        EventSystem::Dispatch(nullptr, EventCode::MouseWheelDown, event);
+    }
+    break;
+    case WM_MBUTTONUP:
+    {
+        _wheelHeld = false;
+
+        MouseEvent event;
+        event.x = GET_X_LPARAM(lParam);
+        event.y = GET_Y_LPARAM(lParam);
+        event.wheel = GET_WHEEL_DELTA_WPARAM(wParam);
+
+        auto clickDuration = std::chrono::steady_clock::now() - _buttonStartTime;
+        auto clickMillis = std::chrono::duration_cast<std::chrono::milliseconds>(clickDuration).count();
+
+        if (clickMillis < CLICK_TIME_THRESHOLD) {
+            EventSystem::Dispatch(nullptr, EventCode::MouseWheelClick, event);
+        }
+
+        EventSystem::Dispatch(nullptr, EventCode::MouseWheelUp, event);
+    }
+    break;
     case WM_TIMER:
         OnTimer(wParam, lParam);
     break;
@@ -251,6 +282,7 @@ void WinWindow::OnTimer(WPARAM wParam, LPARAM lParam)
         return;
 
     CheckMouseButton(lParam);
+    CheckMouseWheelPressed(lParam);
 
     auto holdDuration = std::chrono::steady_clock::now() - _keyStartTime;
     auto holdSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(holdDuration).count();
@@ -278,6 +310,24 @@ void WinWindow::CheckMouseButton(LPARAM lParam)
     event.x = GET_X_LPARAM(lParam);
     event.y = GET_Y_LPARAM(lParam);
 
+    if (_wheelHeld)
+    {
+        EventSystem::Dispatch(nullptr, EventCode::MouseWheelPressed, event);
+    }
+}
+
+void WinWindow::CheckMouseWheelPressed(LPARAM lParam)
+{
+    auto holdDuration = std::chrono::steady_clock::now() - _buttonStartTime;
+    auto holdSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(holdDuration).count();
+    if (holdSeconds < 300)
+        return;
+    // 300毫秒以上认为是按住
+
+    MouseEvent event;
+    event.x = GET_X_LPARAM(lParam);
+    event.y = GET_Y_LPARAM(lParam);
+
     if (_leftButtonHeld)
     {
         _leftButton = true;
@@ -288,7 +338,6 @@ void WinWindow::CheckMouseButton(LPARAM lParam)
         _rightButton = true;
         EventSystem::Dispatch(nullptr, EventCode::RightMouseButton, event);
     }
-
 }
 
 void WinWindow::MouseButtonDown(LPARAM lParam, bool isLeft)

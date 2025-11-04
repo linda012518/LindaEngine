@@ -27,6 +27,10 @@ void TestECSEvent::Awake()
 	Bind(EventCode::KeyClick);
 	Bind(EventCode::LeftMouseButtonClick);
 	Bind(EventCode::RightMouseButtonClick);
+	Bind(EventCode::MouseWheelClick);
+	Bind(EventCode::MouseWheelDown);
+	Bind(EventCode::MouseWheelUp);
+	Bind(EventCode::MouseWheelPressed);
 }
 
 void TestECSEvent::Update()
@@ -101,7 +105,7 @@ void TestECSEvent::OnEvent(IEventHandler* sender, int eventCode, Event& eventDat
 	else if (eventCode == EventCode::MouseMove)
 	{
 		MouseEvent& me = dynamic_cast<MouseEvent&>(eventData);
-		std::cout << "	MouseMove  " << me.x << "   " << me.y << "\n" << std::endl;
+		//std::cout << "	MouseMove  " << me.x << "   " << me.y << "\n" << std::endl;
 	}
 	else if (eventCode == EventCode::MouseWheel)
 	{
@@ -146,7 +150,25 @@ void TestECSEvent::OnEvent(IEventHandler* sender, int eventCode, Event& eventDat
 		WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
 		std::cout << "	WindowResize  " << wre.width << "   " << wre.height << "\n" << std::endl;
 	}
-
-
+	else if (eventCode == EventCode::MouseWheelClick)
+	{
+		MouseEvent& me = dynamic_cast<MouseEvent&>(eventData);
+		std::cout << "	MouseWheelClick  \n" << std::endl;
+	}
+	else if (eventCode == EventCode::MouseWheelDown)
+	{
+		MouseEvent& me = dynamic_cast<MouseEvent&>(eventData);
+		std::cout << "	MouseWheelDown  \n" << std::endl;
+	}
+	else if (eventCode == EventCode::MouseWheelUp)
+	{
+		MouseEvent& me = dynamic_cast<MouseEvent&>(eventData);
+		std::cout << "	MouseWheelUp  \n" << std::endl;
+	}
+	else if (eventCode == EventCode::MouseWheelPressed)
+	{
+		MouseEvent& me = dynamic_cast<MouseEvent&>(eventData);
+		std::cout << "	MouseWheelPressed  \n" << std::endl;
+	}
 }
 

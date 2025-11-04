@@ -30,6 +30,7 @@ namespace LindaEngine
 		LRESULT OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 		void OnTimer(WPARAM wParam, LPARAM lParam);
 		void CheckMouseButton(LPARAM lParam);
+		void CheckMouseWheelPressed(LPARAM lParam);
 		void MouseButtonDown(LPARAM lParam, bool isLeft);
 		void MouseButtonUp(LPARAM lParam, bool isLeft);
 
@@ -50,6 +51,7 @@ namespace LindaEngine
 
 		bool _leftButtonHeld = false;
 		bool _rightButtonHeld = false;
+		bool _wheelHeld = false;
 		bool _keyHeld = false;
 		const int CLICK_TIME_THRESHOLD = 500; // ∫¡√Î
 		const int CLICK_DISTANCE_THRESHOLD = 5; // œÒÀÿ

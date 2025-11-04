@@ -22,5 +22,9 @@ namespace LindaEngine
 		const static int LeftMouseButtonClick = BasicCount + 14;
 		const static int RightMouseButtonClick = BasicCount + 15;
 		const static int KeyClick = BasicCount + 16;
+		const static int MouseWheelClick = BasicCount + 17;
+		const static int MouseWheelDown = BasicCount + 18;
+		const static int MouseWheelUp = BasicCount + 19;
+		const static int MouseWheelPressed = BasicCount + 20;
 	};
 }
