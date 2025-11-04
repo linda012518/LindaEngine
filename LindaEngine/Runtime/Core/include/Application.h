@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IRuntimeModule.hpp"
+#include "IRuntimeModule.h"
 
 #include "Window.h"
 #include "GraphicsContext.h"

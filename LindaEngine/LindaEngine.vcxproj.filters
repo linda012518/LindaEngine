@@ -1199,7 +1199,7 @@
     <ClInclude Include="Runtime\Core\include\MacroDefined.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\Core\include\IRuntimeModule.hpp">
+    <ClInclude Include="Runtime\Core\include\IRuntimeModule.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Core\include\ISerializable.h">

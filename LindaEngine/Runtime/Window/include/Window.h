@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AutoPtr.h"
-#include "IRuntimeModule.hpp"
+#include "IRuntimeModule.h"
 
 namespace LindaEngine
 {
