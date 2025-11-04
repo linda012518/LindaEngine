@@ -7,6 +7,12 @@
 namespace LindaEngine
 {
 #define IMPLEMENT_BEHAVIOR(className) \
+	className::className(Entity& entity, bool enable) : Behavior(entity, enable) \
+	{ \
+	} \
+	className::~className() \
+	{ \
+	} \
 	void className::Initialize() \
 	{ \
 		BehaviorSystem::AddAwake(this, OVERRIDE(Behavior, className, Awake)); \

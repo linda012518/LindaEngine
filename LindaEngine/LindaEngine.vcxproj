@@ -220,9 +220,7 @@
     <ClCompile Include="Runtime\Render\Core\src\TextureManager.cpp" />
     <ClCompile Include="Runtime\Core\src\SceneManager.cpp" />
     <ClCompile Include="Editor\Core\src\SceneManagerEditor.cpp" />
-    <ClCompile Include="Temp\LifeCycleFuncSystem.cpp" />
     <ClCompile Include="Runtime\ECS\src\Behavior.cpp" />
-    <ClCompile Include="Temp\ComponentSystem2.cpp" />
     <ClCompile Include="Runtime\ECS\src\CameraSystem.cpp" />
     <ClCompile Include="Runtime\ECS\src\Camera.cpp" />
     <ClCompile Include="Runtime\Core\src\Application.cpp" />
@@ -246,6 +244,7 @@
     <ClCompile Include="Runtime\IO\src\YamlSerializer.cpp" />
     <ClCompile Include="Runtime\Tools\src\UUID.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\UniformBuffer.cpp" />
+    <ClCompile Include="Temp\TestECSEvent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Runtime\Core\include\Event.h" />
@@ -392,9 +391,7 @@
     <ClInclude Include="Runtime\Render\Core\include\TextureManager.h" />
     <ClInclude Include="Runtime\Core\include\SceneManager.h" />
     <ClInclude Include="Editor\Core\include\SceneManagerEditor.h" />
-    <ClInclude Include="Temp\LifeCycleFuncSystem.h" />
     <ClInclude Include="Runtime\ECS\include\Behavior.h" />
-    <ClInclude Include="Temp\ComponentSystem2.h" />
     <ClInclude Include="Runtime\ECS\include\CameraSystem.h" />
     <ClInclude Include="Runtime\ECS\include\Camera.h" />
     <ClInclude Include="Runtime\Core\include\Application.h" />
@@ -713,6 +710,7 @@
     <ClInclude Include="Runtime\IO\include\YamlSerializer.h" />
     <ClInclude Include="Runtime\Tools\include\UUID.h" />
     <ClInclude Include="Runtime\Render\Core\include\UniformBuffer.h" />
+    <ClInclude Include="Temp\TestECSEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External\assimp\assimp\color4.inl" />

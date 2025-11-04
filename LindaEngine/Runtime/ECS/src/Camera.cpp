@@ -33,21 +33,6 @@ Camera::Camera(Entity& entity, bool enable) : Component(entity, enable)
 	_depth = -1;
 
 	Bind(EventCode::WindowResize);
-	Bind(EventCode::LeftMouseButtonDown);
-	Bind(EventCode::LeftMouseButtonUp);
-	Bind(EventCode::LeftMouseButton);
-	Bind(EventCode::RightMouseButtonDown);
-	Bind(EventCode::RightMouseButtonUp);
-	Bind(EventCode::RightMouseButton);
-	Bind(EventCode::MouseMove);
-	Bind(EventCode::MouseWheel);
-	Bind(EventCode::KeyDown);
-	Bind(EventCode::KeyUp);
-	Bind(EventCode::Key);
-	Bind(EventCode::CharInput);
-	Bind(EventCode::KeyClick);
-	Bind(EventCode::LeftMouseButtonClick);
-	Bind(EventCode::RightMouseButtonClick);
 }
 
 Camera::~Camera()
@@ -182,80 +167,8 @@ bool PerspectiveCamera::Deserialize(YAML::Node& node)
 
 void PerspectiveCamera::OnEvent(LObject* sender, int eventCode, Event& eventData)
 {
-	if (eventCode == EventCode::LeftMouseButtonDown)
-	{
-		std::cout << "	LeftMouseButtonDown \n" << std::endl;
-	}
-	else if (eventCode == EventCode::LeftMouseButtonUp)
-	{
-		std::cout << "	LeftMouseButtonUp \n" << std::endl;
-	}
-	else if (eventCode == EventCode::LeftMouseButton)
-	{
-		std::cout << "	LeftMouseButton \n" << std::endl;
-	}
-	else if (eventCode == EventCode::RightMouseButtonDown)
-	{
-		std::cout << "	RightMouseButtonDown \n" << std::endl;
-	}
-	else if (eventCode == EventCode::RightMouseButtonUp)
-	{
-		std::cout << "	RightMouseButtonUp \n" << std::endl;
-	}
-	else if (eventCode == EventCode::RightMouseButton)
-	{
-		std::cout << "	RightMouseButton \n" << std::endl;
-	}
-	else if (eventCode == EventCode::MouseMove)
-	{
-		MouseEvent& me = dynamic_cast<MouseEvent&>(eventData);
-		std::cout << "	MouseMove  " << me.x << "   " << me.y << "\n" << std::endl;
-	}
-	else if (eventCode == EventCode::MouseWheel)
-	{
-		MouseEvent& me = dynamic_cast<MouseEvent&>(eventData);
-		std::cout << "	MouseWheel  " << me.wheel << "\n" << std::endl;
-	}
-	else if (eventCode == EventCode::KeyDown)
-	{
-		KeyEvent& me = dynamic_cast<KeyEvent&>(eventData);
-		std::cout << "	KeyDown  " << me.key << "\n" << std::endl;
-	}
-	else if (eventCode == EventCode::KeyUp)
-	{
-		KeyEvent& me = dynamic_cast<KeyEvent&>(eventData);
-		std::cout << "	KeyUp  " << me.key << "\n" << std::endl;
-	}
-	else if (eventCode == EventCode::Key)
-	{
-		KeyEvent& me = dynamic_cast<KeyEvent&>(eventData);
-		std::cout << "	KeyUp  " << me.key << "\n" << std::endl;
-	}
-	else if (eventCode == EventCode::CharInput)
-	{
-		CharEvent& me = dynamic_cast<CharEvent&>(eventData);
-		std::cout << "	CharInput  " << me.key << "   " << "\n" << std::endl;
-	}
-	else if (eventCode == EventCode::LeftMouseButtonClick)
-	{
-		std::cout << "	LeftMouseButtonClick \n" << std::endl;
-	}
-	else if (eventCode == EventCode::RightMouseButtonClick)
-	{
-		std::cout << "	RightMouseButtonClick \n" << std::endl;
-	}
-	else if (eventCode == EventCode::KeyClick)
-	{
-		KeyEvent& me = dynamic_cast<KeyEvent&>(eventData);
-		std::cout << "	KeyClick  " << me.key << "\n" << std::endl;
-	}
-	else if (eventCode == EventCode::WindowResize)
-	{
-		WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
-		_aspectRatio = (float)wre.width / (float)wre.height;
-	}
-
-
+	WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
+	_aspectRatio = (float)wre.width / (float)wre.height;
 }
 
 /////////////////////////////////////////////////////////////////////

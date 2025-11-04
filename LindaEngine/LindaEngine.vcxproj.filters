@@ -75,13 +75,7 @@
     <ClCompile Include="Runtime\ECS\src\CameraSystem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Temp\ComponentSystem2.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Runtime\ECS\src\Behavior.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Temp\LifeCycleFuncSystem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Math\src\Plane.cpp">
@@ -313,6 +307,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Core\src\Timestamp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Temp\TestECSEvent.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1262,13 +1259,7 @@
     <ClInclude Include="Runtime\ECS\include\CameraSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Temp\ComponentSystem2.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Runtime\ECS\include\Behavior.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Temp\LifeCycleFuncSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Math\include\Plane.h">
@@ -1710,6 +1701,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Core\include\Timestamp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Temp\TestECSEvent.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
