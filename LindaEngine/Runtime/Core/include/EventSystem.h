@@ -4,18 +4,18 @@
 
 namespace LindaEngine
 {
-	class LObject;
+	class IEventHandler;
 	struct Event;
 
 	class EventSystem
 	{
 	public:
-		static std::unordered_map<int, std::list<LObject*>> _eventMap;
+		static std::unordered_map<int, std::list<IEventHandler*>> _eventMap;
 
-		static void Bind(int code, LObject* obj);
+		static void Bind(int code, IEventHandler* obj);
 
-		static void Unbind(int code, LObject* obj);
+		static void Unbind(int code, IEventHandler* obj);
 
-		static void Dispatch(LObject* sender, int code, Event& eventData);
+		static void Dispatch(IEventHandler* sender, int code, Event& eventData);
 	};
 }

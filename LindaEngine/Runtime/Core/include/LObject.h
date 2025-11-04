@@ -1,11 +1,11 @@
 #pragma once
 
 #include <iostream>
+#include "IEventHandler.h"
 
 namespace LindaEngine
 {
-	struct Event;
-	class LObject
+	class LObject : public IEventHandler
 	{
 	public:
 		LObject();
@@ -14,8 +14,8 @@ namespace LindaEngine
 		int GetID() const;
 
 		void Bind(int eventCode);
-		void Dispatch(LObject* sender, int eventCode, Event& eventData);
-		virtual void OnEvent(LObject* sender, int eventCode, Event& eventData) { }
+		void Dispatch(IEventHandler* sender, int eventCode, Event& eventData);
+		virtual void OnEvent(IEventHandler* sender, int eventCode, Event& eventData) { }
 
 	protected:
 		static int _id;

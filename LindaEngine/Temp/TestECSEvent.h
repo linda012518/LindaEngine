@@ -13,7 +13,7 @@ namespace LindaEngine
 		void Awake();
 		void Update();
 
-		void OnEvent(LObject* sender, int eventCode, Event& eventData);
+		void OnEvent(IEventHandler* sender, int eventCode, Event& eventData);
 	};
 }
 

@@ -33,7 +33,7 @@ void TestECSEvent::Update()
 
 }
 
-void TestECSEvent::OnEvent(LObject* sender, int eventCode, Event& eventData)
+void TestECSEvent::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
 {
 	if (eventCode == EventCode::LeftMouseButtonDown)
 	{

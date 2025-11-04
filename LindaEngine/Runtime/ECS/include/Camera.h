@@ -94,7 +94,7 @@ namespace LindaEngine
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
-		void OnEvent(LObject* sender, int eventCode, Event& eventData);
+		void OnEvent(IEventHandler* sender, int eventCode, Event& eventData);
 
 	private:
 		float _fov;

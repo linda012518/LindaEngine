@@ -165,7 +165,7 @@ bool PerspectiveCamera::Deserialize(YAML::Node& node)
 	return true;
 }
 
-void PerspectiveCamera::OnEvent(LObject* sender, int eventCode, Event& eventData)
+void PerspectiveCamera::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
 {
 	WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
 	_aspectRatio = (float)wre.width / (float)wre.height;

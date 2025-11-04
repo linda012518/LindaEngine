@@ -29,7 +29,7 @@ void LObject::Bind(int eventCode)
 	EventSystem::Bind(eventCode, this);
 }
 
-void LObject::Dispatch(LObject* sender, int eventCode, Event& eventData)
+void LObject::Dispatch(IEventHandler* sender, int eventCode, Event& eventData)
 {
 	EventSystem::Dispatch(sender, eventCode, eventData);
 }

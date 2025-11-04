@@ -3,14 +3,14 @@
 
 using namespace LindaEngine;
 
-std::unordered_map<int, std::list<LObject*>> EventSystem::_eventMap;
+std::unordered_map<int, std::list<IEventHandler*>> EventSystem::_eventMap;
 
-void EventSystem::Bind(int code, LObject* obj)
+void EventSystem::Bind(int code, IEventHandler* obj)
 {
     auto it1 = _eventMap.find(code);
     if (it1 != _eventMap.end())
     {
-        std::list<LObject*>& go = _eventMap[code];
+        std::list<IEventHandler*>& go = _eventMap[code];
 
         auto it2 = std::find(go.begin(), go.end(), obj);
         if (it2 == go.end())
@@ -20,19 +20,19 @@ void EventSystem::Bind(int code, LObject* obj)
     }
     else
     {
-        std::list<LObject*> go;
+        std::list<IEventHandler*> go;
         go.push_back(obj);
         _eventMap[code] = go;
     }
 }
 
-void EventSystem::Unbind(int code, LObject* obj)
+void EventSystem::Unbind(int code, IEventHandler* obj)
 {
     auto it1 = _eventMap.find(code);
     if (it1 == _eventMap.end())
         return;
 
-    std::list<LObject*>& go = _eventMap[code];
+    std::list<IEventHandler*>& go = _eventMap[code];
 
     auto it2 = std::find(go.begin(), go.end(), obj);
     if (it2 != go.end())
@@ -41,16 +41,16 @@ void EventSystem::Unbind(int code, LObject* obj)
     }
 }
 
-void EventSystem::Dispatch(LObject* sender, int code, Event& eventData)
+void EventSystem::Dispatch(IEventHandler* sender, int code, Event& eventData)
 {
     auto itr = _eventMap.find(code);
     if (itr == _eventMap.end())
         return;
 
-    std::list<LObject*> go = _eventMap[code];
+    std::list<IEventHandler*> go = _eventMap[code];
 
     for (auto it = go.begin(); it != go.end(); ++it) {
-        LObject* temp = *it;
+        IEventHandler* temp = *it;
         if (nullptr != temp)
             temp->OnEvent(sender, code, eventData);
     }
