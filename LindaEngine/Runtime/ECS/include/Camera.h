@@ -53,6 +53,8 @@ namespace LindaEngine
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
+		glm::vec3 ScreenToWorldPosition(glm::vec3& screenPos);
+
 	protected:
 		glm::mat4 _viewMatrix;
 		glm::mat4 _projectMatrix;

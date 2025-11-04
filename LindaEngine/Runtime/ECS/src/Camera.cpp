@@ -6,6 +6,7 @@
 #include "Event.h"
 #include "GraphicsContext.h"
 #include "ComponentImplement.inl"
+#include "GraphicsContext.h"
 
 using namespace LindaEngine;
 
@@ -111,6 +112,27 @@ bool Camera::Deserialize(YAML::Node& node)
 	_depth = node["depth"].as<int>();
 	_clearType = static_cast<CameraClearType>(node["clearType"].as<int>());
 	return true;
+}
+
+glm::vec3 Camera::ScreenToWorldPosition(glm::vec3& screenPos)
+{
+	glm::vec4 v;
+	v.x = screenPos.x;
+	v.y = screenPos.y;
+	v.z = screenPos.z;
+	v.w = 1.0;
+
+	v.x = (v.x) / GraphicsContext::graphicsConfig.screenNewWidth;
+	v.y = (GraphicsContext::graphicsConfig.screenNewHeight - v.y) / GraphicsContext::graphicsConfig.screenNewHeight;
+
+	v.x = v.x * 2.0f - 1.0f;
+	v.y = v.y * 2.0f - 1.0f;
+	v.z = v.z * 2.0f - 1.0f;
+
+	v = _viewProjectInverseMatrix * v;
+	v = v / v.w;
+
+	return v;
 }
 
 /////////////////////////////////////////////////////////////////////

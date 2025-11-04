@@ -27,7 +27,7 @@ Scene:
           Name: PerspectiveCamera
           fov: 60
         - enable: true
-          Name: TestECSEvent
+          Name: CameraController
     - Name: test3
       ID: 14970d88-1d04-46ed-0000-000000000003
       Active: true

@@ -4,6 +4,8 @@
 
 namespace LindaEngine
 {
+	class Camera;
+
 	class CameraController : public Behavior
 	{
 	public:
@@ -11,6 +13,11 @@ namespace LindaEngine
 
 		void Awake();
 		void Update();
+
+		void OnEvent(IEventHandler* sender, int eventCode, Event& eventData);
+
+	private:
+		Camera* _camera = nullptr;
 
 	};
 

@@ -1709,6 +1709,9 @@
     <ClInclude Include="Runtime\Core\include\IEventHandler.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Runtime\Physics\include\Ray.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\glm\glm\detail\func_common.inl">
