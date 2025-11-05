@@ -64,7 +64,7 @@ void CameraController::ProcessMouseEvent(int eventCode, Event& eventData)
 	break;
 	case EventCode::LeftMouseButtonDown:
 	{
-		//TODO _lookRoundPos在这里初始化
+		//TODO _lookRoundPos 在这里初始化
 		_leftHeld = true;
 		_lastMousePos.x = event.x;
 		_lastMousePos.y = event.y;
@@ -115,9 +115,9 @@ void CameraController::ProcessKeyEvent(int eventCode, Event& eventData)
 	case EventCode::KeyDown:
 	{
 		std::cout << "	KeyDown  " << static_cast<int>(event.key) << "\n" << std::endl;
-		if (event.key == KeyCode::LeftControl)
+		if (event.key == KeyCode::CONTROL)
 		{
-			int a = 0;
+
 		}
 	}
 	break;

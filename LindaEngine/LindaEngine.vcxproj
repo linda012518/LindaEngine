@@ -122,7 +122,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,6 +146,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Editor\ImGui\src\ImGuiContext.cpp" />
+    <ClCompile Include="External\imgui\imgui\imgui.cpp" />
+    <ClCompile Include="External\imgui\imgui\imgui_demo.cpp" />
+    <ClCompile Include="External\imgui\imgui\imgui_draw.cpp" />
+    <ClCompile Include="External\imgui\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="External\imgui\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="External\imgui\imgui\imgui_tables.cpp" />
+    <ClCompile Include="External\imgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Runtime\Core\src\EventSystem.cpp" />
     <ClCompile Include="Runtime\Window\src\WindowsInput.cpp" />
     <ClCompile Include="Runtime\Core\src\Timestamp.cpp" />
@@ -247,6 +255,16 @@
     <ClCompile Include="Temp\TestECSEvent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Editor\ImGui\include\ImGuiContext.h" />
+    <ClInclude Include="External\imgui\imgui\imconfig.h" />
+    <ClInclude Include="External\imgui\imgui\imgui.h" />
+    <ClInclude Include="External\imgui\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="External\imgui\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="External\imgui\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="External\imgui\imgui\imgui_internal.h" />
+    <ClInclude Include="External\imgui\imgui\imstb_rectpack.h" />
+    <ClInclude Include="External\imgui\imgui\imstb_textedit.h" />
+    <ClInclude Include="External\imgui\imgui\imstb_truetype.h" />
     <ClInclude Include="Runtime\Core\include\Event.h" />
     <ClInclude Include="Runtime\Core\include\EventCode.h" />
     <ClInclude Include="Runtime\Core\include\EventSystem.h" />
@@ -860,6 +878,7 @@
     <None Include="External\glm\glm\gtx\vector_angle.inl" />
     <None Include="External\glm\glm\gtx\vector_query.inl" />
     <None Include="External\glm\glm\gtx\wrap.inl" />
+    <None Include="External\imgui\imgui\imgui.ini" />
     <None Include="Runtime\ECS\include\BehaviorDeclare.inl" />
     <None Include="Runtime\ECS\include\BehaviorImplement.inl" />
     <None Include="Runtime\ECS\include\Component.inl" />
