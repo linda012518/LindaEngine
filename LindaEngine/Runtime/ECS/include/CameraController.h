@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Behavior.h"
+#include "glm/glm.hpp"
 
 namespace LindaEngine
 {
 	class Camera;
+	struct MouseEvent;
 
 	class CameraController : public Behavior
 	{
@@ -17,7 +19,27 @@ namespace LindaEngine
 		void OnEvent(IEventHandler* sender, int eventCode, Event& eventData);
 
 	private:
+		void ProcessMouseEvent(int eventCode, Event& eventData);
+		void ProcessKeyEvent(int eventCode, Event& eventData);
+		void ScaleEvent(MouseEvent& event);
+		void PanningEvent(MouseEvent& event);
+		void RotateEvent(MouseEvent& event);
+		void LookRoundEvent(MouseEvent& event);
+
+	private:
 		Camera* _camera = nullptr;
+		float _mouseWheelSpeed = 0.001f;
+		float _stanardWheelDelta = 120.0f;
+
+		float _panSpeed = 0.002f;
+		bool _isPanning = false;
+
+		glm::vec2 _lastMousePos;
+		glm::vec3 _lookRoundPos;
+
+		bool _leftHeld = false;
+		bool _rightHeld = false;
+		float _rotateSpeed = 0.1f;
 
 	};
 

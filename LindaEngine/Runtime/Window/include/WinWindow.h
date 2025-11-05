@@ -38,6 +38,8 @@ namespace LindaEngine
 		HWND _hWnd;
 		HDC  _hDc;
 
+		bool _mouseTracking = false;
+
 		int _keyDwon = -1;
 		int _keyUp = -1;
 		int _key = -1;

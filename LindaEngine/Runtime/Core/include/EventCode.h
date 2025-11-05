@@ -26,5 +26,6 @@ namespace LindaEngine
 		const static int MouseWheelDown = BasicCount + 18;
 		const static int MouseWheelUp = BasicCount + 19;
 		const static int MouseWheelPressed = BasicCount + 20;
+		const static int MouseLeave = BasicCount + 21;
 	};
 }

@@ -11,6 +11,7 @@
 namespace LindaEngine
 {
 	class Entity;
+	class Transform;
 
 	class Component : public LObject, public ISerializable
 	{
@@ -37,6 +38,7 @@ namespace LindaEngine
 	protected:
 		bool _enable;
 		Entity& _entity;
+		Transform* _transform;
 
 	private:
 		bool _enableDirty;

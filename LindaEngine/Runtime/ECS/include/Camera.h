@@ -29,7 +29,7 @@ namespace LindaEngine
 		virtual void MakeViewProjectionMatrix();
 
 		void Tick();
-		void TransformChange();
+		void TransformDirty();
 
 		const glm::mat4& GetViewMatrix() { return _viewMatrix; }
 		const glm::mat4& GetProjectMatrix() { return _projectMatrix; }

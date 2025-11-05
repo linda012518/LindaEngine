@@ -8,6 +8,7 @@ Component::Component(Entity& entity, bool enable) :
 {
 	_enableDirty = false;
 	_enableLast = _enable;
+	_transform = _entity.GetTransform();
 }
 
 Component::~Component()

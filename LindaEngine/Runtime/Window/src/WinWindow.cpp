@@ -39,6 +39,7 @@ int WinWindow::Initialize()
 
     // fill in the struct with the needed information
     wc.cbSize = sizeof(WNDCLASSEX);
+    wc.hbrBackground = CreateSolidBrush(RGB(0, 0, 0));
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
@@ -103,7 +104,7 @@ void WinWindow::Tick()
     // we use PeekMessage instead of GetMessage here
     // because we should not block the thread at anywhere
     // except the engine execution driver module 
-    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
         // translate keystroke messages into the right format
         TranslateMessage(&msg);
 
@@ -146,6 +147,9 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
     {
+    case WM_ERASEBKGND:
+        // ¹Ø¼ü£º×èÖ¹Windows²Á³ý±³¾°£¬±£³ÖOpenGLÄÚÈÝ
+        break;
     case WM_SIZE:
     {
         RECT    rt;
@@ -208,21 +212,33 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_RBUTTONUP: MouseButtonUp(lParam, false); break;
     case WM_MOUSEMOVE:
     {
-        int x = GET_X_LPARAM(lParam);
-        int y = GET_Y_LPARAM(lParam);
-        _mousePos.x = x;
-        _mousePos.y = y;
+        if (false == _mouseTracking)
+        {
+            TRACKMOUSEEVENT tme;
+            tme.cbSize = sizeof(TRACKMOUSEEVENT);
+            tme.dwFlags = TME_LEAVE;
+            tme.hwndTrack = hWnd;
+            tme.dwHoverTime = 0;
+
+            if (TrackMouseEvent(&tme))
+            {
+                _mouseTracking = true;
+            }
+        }
+
+        _mousePos.x = GET_X_LPARAM(lParam);
+        _mousePos.y = GET_Y_LPARAM(lParam);
         MouseEvent event;
-        event.x = x;
-        event.y = y;
+        event.x = _mousePos.x;
+        event.y = _mousePos.y;
         EventSystem::Dispatch(nullptr, EventCode::MouseMove, event);
     }
     break;
     case WM_MOUSEWHEEL:
     {
         MouseEvent event;
-        event.x = GET_X_LPARAM(lParam);
-        event.y = GET_Y_LPARAM(lParam);
+        event.x = _mousePos.x;
+        event.y = _mousePos.y;
         event.wheel = GET_WHEEL_DELTA_WPARAM(wParam);
         EventSystem::Dispatch(nullptr, EventCode::MouseWheel, event);
     }
@@ -233,8 +249,8 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         _wheelHeld = true;
 
         MouseEvent event;
-        event.x = GET_X_LPARAM(lParam);
-        event.y = GET_Y_LPARAM(lParam);
+        event.x = _mousePos.x;
+        event.y = _mousePos.y;
         event.wheel = GET_WHEEL_DELTA_WPARAM(wParam);
         EventSystem::Dispatch(nullptr, EventCode::MouseWheelDown, event);
     }
@@ -244,8 +260,8 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         _wheelHeld = false;
 
         MouseEvent event;
-        event.x = GET_X_LPARAM(lParam);
-        event.y = GET_Y_LPARAM(lParam);
+        event.x = _mousePos.x;
+        event.y = _mousePos.y;
         event.wheel = GET_WHEEL_DELTA_WPARAM(wParam);
 
         auto clickDuration = std::chrono::steady_clock::now() - _buttonStartTime;
@@ -256,6 +272,13 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         }
 
         EventSystem::Dispatch(nullptr, EventCode::MouseWheelUp, event);
+    }
+    break;
+    case WM_MOUSELEAVE:
+    {
+        _mouseTracking = false;
+        MouseEvent event;
+        EventSystem::Dispatch(nullptr, EventCode::MouseLeave, event);
     }
     break;
     case WM_TIMER:

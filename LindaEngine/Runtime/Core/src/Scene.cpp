@@ -19,7 +19,7 @@ Entity* Scene::CreateEntity(const char* name, bool active)
 
 void Scene::DestroyEntity(Entity* entity)
 {
-	Transform* trans = entity->GetComponent<Transform>();
+	Transform* trans = entity->GetTransform();
 	trans->SetParent(nullptr);
 	DestroyEntityIncludeChild(entity);
 }
@@ -36,7 +36,7 @@ Entity* Scene::GetEntity(const char* name)
 
 void Scene::DestroyEntityIncludeChild(Entity* entity)
 {
-	Transform* trans = entity->GetComponent<Transform>();
+	Transform* trans = entity->GetTransform();
 	const std::list<Transform*>& children = trans->GetChildren();
 	for (auto& t : children)
 	{

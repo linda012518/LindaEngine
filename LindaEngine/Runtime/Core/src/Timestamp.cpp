@@ -32,17 +32,17 @@ long long Timestamp::GetElapsedMicroSecond()
 	return duration_cast<microseconds>(high_resolution_clock::now() - _beginTime).count();
 }
 
-double Timestamp::GetDetalSecond()
+double Timestamp::GetDeltaSecond()
 {
-	return GetDetalMilliSecond() * 0.000001;
+	return GetDeltaMilliSecond() * 0.000001;
 }
 
-double Timestamp::GetDetalMilliSecond()
+double Timestamp::GetDeltaMilliSecond()
 {
-	return GetDetalMicroSecond() * 0.001;
+	return GetDeltaMicroSecond() * 0.001;
 }
 
-long long Timestamp::GetDetalMicroSecond()
+long long Timestamp::GetDeltaMicroSecond()
 {
 	return duration_cast<microseconds>(high_resolution_clock::now() - _lastTime).count();
 }

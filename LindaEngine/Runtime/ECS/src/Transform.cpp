@@ -367,6 +367,8 @@ void Transform::NotifyChange()
 
 void Transform::GetDir(glm::quat& rotation, glm::vec3& forward, glm::vec3& up, glm::vec3& right)
 {
+	Tick();
+
 	glm::mat4 temp = glm::mat4_cast(rotation);
 
 	right.x = temp[0][0];

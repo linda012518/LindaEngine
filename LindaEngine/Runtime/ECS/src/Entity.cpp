@@ -80,7 +80,7 @@ void Entity::SetActive(bool active)
 
 bool Entity::IsActive()
 {
-	const Transform* parent = GetComponent<Transform>()->GetParent();
+	const Transform* parent = _transform->GetParent();
 	return _active && (parent != nullptr ? parent->GetEntity().IsActive() : true);
 }
 

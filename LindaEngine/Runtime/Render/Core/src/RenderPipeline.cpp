@@ -73,7 +73,7 @@ void RenderPipeline::Render()
         _uniformGlobal->SetUniformBufferData();
 
         GraphicsConfig& config = GraphicsContext::graphicsConfig;
-        Graphic::SetViewport(0, 0, config.screenWidth, config.screenHeight);
+        Graphic::SetViewport(0, 0, config.screenNewWidth, config.screenNewHeight);
         Graphic::SetClearColor(0, 0.3, 0, 0);
         Graphic::Clear(true, true, true);
         Ref<DrawingSettings> settings = CreateRef<DrawingSettings>();

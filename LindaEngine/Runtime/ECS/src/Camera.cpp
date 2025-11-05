@@ -6,7 +6,6 @@
 #include "Event.h"
 #include "GraphicsContext.h"
 #include "ComponentImplement.inl"
-#include "GraphicsContext.h"
 
 using namespace LindaEngine;
 
@@ -46,10 +45,9 @@ void Camera::MakeViewMatrix()
 	if (false == _viewDirty)
 		return;
 
-	Transform* t = _entity.GetComponent<Transform>();
-	if (nullptr != t)
+	if (nullptr != _transform)
 	{
-		_viewMatrix = t->GetViewMat();
+		_viewMatrix = _transform->GetViewMat();
 		_viewInverseMatrix = glm::inverse(_viewMatrix);
 	}
 }
@@ -75,7 +73,7 @@ void Camera::Tick()
 	MakeViewProjectionMatrix();
 }
 
-void Camera::TransformChange()
+void Camera::TransformDirty()
 {
 	_viewDirty = true;
 }
@@ -192,6 +190,7 @@ void PerspectiveCamera::OnEvent(IEventHandler* sender, int eventCode, Event& eve
 {
 	WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
 	_aspectRatio = (float)wre.width / (float)wre.height;
+	_projectDirty = true;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -278,14 +277,12 @@ void CubeCamera::MakeViewMatrix()
 	if (false == _viewDirty)
 		return;
 
-	Transform* t = _entity.GetComponent<Transform>();
-
-	_right._viewMatrix	= t->LookAt(glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
-	_left._viewMatrix	= t->LookAt(glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
-	_top._viewMatrix	= t->LookAt(glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f));
-	_bottom._viewMatrix = t->LookAt(glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f));
-	_back._viewMatrix	= t->LookAt(glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
-	_front._viewMatrix	= t->LookAt(glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+	_right._viewMatrix	= _transform->LookAt(glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+	_left._viewMatrix	= _transform->LookAt(glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+	_top._viewMatrix	= _transform->LookAt(glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f));
+	_bottom._viewMatrix = _transform->LookAt(glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f));
+	_back._viewMatrix	= _transform->LookAt(glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+	_front._viewMatrix	= _transform->LookAt(glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
 
 }
 
