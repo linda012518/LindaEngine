@@ -95,8 +95,8 @@ void WinWindow::Tick()
     _rightButtonDown = false;
     _leftButtonUp = false;
     _rightButtonUp = false;
-    _keyDwon = -1;
-    _keyUp = -1;
+    _keyDwon = KeyCode::None;
+    _keyUp = KeyCode::None;
 
     // this struct holds Windows event messages
     MSG msg;
@@ -175,7 +175,7 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_KEYUP:
     {
         KeyEvent event;
-        event.key = (int)wParam;
+        event.key = static_cast<KeyCode>((int)wParam);
 
         _keyHeld = false;
         auto clickDuration = std::chrono::steady_clock::now() - _keyStartTime;
@@ -187,12 +187,12 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
         EventSystem::Dispatch(nullptr, EventCode::KeyUp, event);
         _keyUp = event.key;
-        _key = -1;
+        _key = KeyCode::None;
     }
     break;
     case WM_KEYDOWN:
     {
-        int key = (int)wParam;
+        KeyCode key = static_cast<KeyCode>((int)wParam);
         if (_key == key)
             break;
 

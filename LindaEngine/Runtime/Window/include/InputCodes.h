@@ -2,11 +2,12 @@
 
 namespace LindaEngine
 {
-	using KeyCode = uint16_t;
-	using MouseCode = uint16_t;
+	//using KeyCode = uint16_t;
+	//using MouseCode = uint16_t;
 
-	enum : KeyCode
+	enum class KeyCode
 	{
+		None = -1,
 		// From glfw3.h
 		Space = 32,
 		Apostrophe = 39, /* ' */
@@ -140,7 +141,7 @@ namespace LindaEngine
 		Menu = 348
 	};
 
-	enum : MouseCode
+	enum class MouseCode
 	{
 		// From glfw3.h
 		Button0 = 0,

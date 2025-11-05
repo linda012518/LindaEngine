@@ -31,21 +31,21 @@ bool Input::GetMouseButtonDown(MouseCode button)
 {
 	Window& win = Application::GetWindow();
 	WinWindow& winWindow = dynamic_cast<WinWindow&>(win);
-	return winWindow.GetMouseButtonDown(button == ButtonLeft);
+	return winWindow.GetMouseButtonDown(button == MouseCode::ButtonLeft);
 }
 
 bool Input::GetMouseButton(MouseCode button)
 {
 	Window& win = Application::GetWindow();
 	WinWindow& winWindow = dynamic_cast<WinWindow&>(win);
-	return winWindow.GetMouseButton(button == ButtonLeft);
+	return winWindow.GetMouseButton(button == MouseCode::ButtonLeft);
 }
 
 bool Input::GetMouseButtonUp(MouseCode button)
 {
 	Window& win = Application::GetWindow();
 	WinWindow& winWindow = dynamic_cast<WinWindow&>(win);
-	return winWindow.GetMouseButtonUp(button == ButtonLeft);
+	return winWindow.GetMouseButtonUp(button == MouseCode::ButtonLeft);
 }
 
 glm::ivec2 Input::GetMousePosition()

@@ -3,6 +3,8 @@
 #include <Windows.h>
 #include <chrono>
 #include <glm/glm.hpp>
+
+#include "InputCodes.h"
 #include "Window.h"
 
 namespace LindaEngine
@@ -17,9 +19,9 @@ namespace LindaEngine
 
 		HDC GetWinDC();
 
-		int GetKeyDown() { return _keyDwon; }
-		int GetKey() { return _key; }
-		int GetKeyUp() { return _keyUp; }
+		KeyCode GetKeyDown() { return _keyDwon; }
+		KeyCode GetKey() { return _key; }
+		KeyCode GetKeyUp() { return _keyUp; }
 		bool GetMouseButtonDown(bool isLeft) { return isLeft ? _leftButtonDown : _rightButtonDown; }
 		bool GetMouseButtonUp(bool isLeft) { return isLeft ? _leftButtonUp : _rightButtonUp; }
 		bool GetMouseButton(bool isLeft) { return isLeft ? _leftButton : _rightButton; }
@@ -40,9 +42,9 @@ namespace LindaEngine
 
 		bool _mouseTracking = false;
 
-		int _keyDwon = -1;
-		int _keyUp = -1;
-		int _key = -1;
+		KeyCode _keyDwon = KeyCode::None;
+		KeyCode _keyUp = KeyCode::None;
+		KeyCode _key = KeyCode::None;
 		bool _leftButtonDown = false;
 		bool _rightButtonDown = false;
 		bool _leftButtonUp = false;

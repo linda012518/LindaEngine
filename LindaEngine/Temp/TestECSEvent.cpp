@@ -34,41 +34,41 @@ void TestECSEvent::Awake()
 
 void TestECSEvent::Update()
 {
-	if (Input::GetMouseButtonDown(0))
+	if (Input::GetMouseButtonDown(MouseCode::ButtonLeft))
 	{
 		std::cout << "	GetMouseButtonDown  0 \n" << std::endl;
 	}
-	if (Input::GetMouseButtonDown(1))
+	if (Input::GetMouseButtonDown(MouseCode::Button1))
 	{
 		std::cout << "	GetMouseButtonDown  1 \n" << std::endl;
 	}
-	if (Input::GetMouseButtonUp(0))
+	if (Input::GetMouseButtonUp(MouseCode::Button0))
 	{
 		std::cout << "	GetMouseButtonUp  0 \n" << std::endl;
 	}
-	if (Input::GetMouseButtonUp(1))
+	if (Input::GetMouseButtonUp(MouseCode::ButtonRight))
 	{
 		std::cout << "	GetMouseButtonUp  1 \n" << std::endl;
 	}
-	if (Input::GetMouseButton(0))
+	if (Input::GetMouseButton(MouseCode::Button0))
 	{
 		std::cout << "	GetMouseButton  0 \n" << std::endl;
 	}
-	if (Input::GetMouseButton(1))
+	if (Input::GetMouseButton(MouseCode::ButtonRight))
 	{
 		std::cout << "	GetMouseButton  1 \n" << std::endl;
 	}
-	if (Input::GetKeyDown(D))
+	if (Input::GetKeyDown(KeyCode::D))
 	{
-		std::cout << "	GetKeyDown  " << D << "   \n" << std::endl;
+		std::cout << "	GetKeyDown  " << static_cast<int>(KeyCode::D) << "   \n" << std::endl;
 	}
-	if (Input::GetKey(E))
+	if (Input::GetKey(KeyCode::E))
 	{
-		std::cout << "	GetKey  " << E << "   \n" << std::endl;
+		std::cout << "	GetKey  " << static_cast<int>(KeyCode::E) << "   \n" << std::endl;
 	}
-	if (Input::GetKeyUp(F))
+	if (Input::GetKeyUp(KeyCode::F))
 	{
-		std::cout << "	GetKeyUp  " << F << "   \n" << std::endl;
+		std::cout << "	GetKeyUp  " << static_cast<int>(KeyCode::F) << "   \n" << std::endl;
 	}
 	{
 		std::cout << "	GetMousePosition  " << Input::GetMousePosition().x << "  " << Input::GetMousePosition().y << std::endl;
@@ -114,17 +114,17 @@ void TestECSEvent::OnEvent(IEventHandler* sender, int eventCode, Event& eventDat
 	else if (eventCode == EventCode::KeyDown)
 	{
 		KeyEvent& me = dynamic_cast<KeyEvent&>(eventData);
-		std::cout << "	KeyDown  " << me.key << "\n" << std::endl;
+		std::cout << "	KeyDown  " << static_cast<int>(me.key) << "\n" << std::endl;
 	}
 	else if (eventCode == EventCode::KeyUp)
 	{
 		KeyEvent& me = dynamic_cast<KeyEvent&>(eventData);
-		std::cout << "	KeyUp  " << me.key << "\n" << std::endl;
+		std::cout << "	KeyUp  " << static_cast<int>(me.key) << "\n" << std::endl;
 	}
 	else if (eventCode == EventCode::Key)
 	{
 		KeyEvent& me = dynamic_cast<KeyEvent&>(eventData);
-		std::cout << "	Key---  " << me.key << "\n" << std::endl;
+		std::cout << "	Key---  " << static_cast<int>(me.key) << "\n" << std::endl;
 	}
 	else if (eventCode == EventCode::CharInput)
 	{
@@ -142,7 +142,7 @@ void TestECSEvent::OnEvent(IEventHandler* sender, int eventCode, Event& eventDat
 	else if (eventCode == EventCode::KeyClick)
 	{
 		KeyEvent& me = dynamic_cast<KeyEvent&>(eventData);
-		std::cout << "	KeyClick  " << me.key << "\n" << std::endl;
+		std::cout << "	KeyClick  " << static_cast<int>(me.key) << "\n" << std::endl;
 	}
 	else if (eventCode == EventCode::WindowResize)
 	{

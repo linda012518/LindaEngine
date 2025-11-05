@@ -114,8 +114,8 @@ void CameraController::ProcessKeyEvent(int eventCode, Event& eventData)
 	{
 	case EventCode::KeyDown:
 	{
-		std::cout << "	KeyDown  " << event.key << "\n" << std::endl;
-		if (event.key == LeftControl)
+		std::cout << "	KeyDown  " << static_cast<int>(event.key) << "\n" << std::endl;
+		if (event.key == KeyCode::LeftControl)
 		{
 			int a = 0;
 		}
@@ -179,6 +179,7 @@ void CameraController::RotateEvent(MouseEvent& event)
 
 void CameraController::LookRoundEvent(MouseEvent& event)
 {
+	return;
 	//TODO Î´²âÊÔ _lookRoundPos Î´ÉèÖÃ
 	if (false == _leftHeld)
 		return;
