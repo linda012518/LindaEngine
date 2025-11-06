@@ -17,7 +17,7 @@ void TextureLoader::Load(Ref<Texture> texture)
 
 Ref<Texture> TextureLoader::Load(const char* path)
 {
-    Ref<Texture> texture = texture = CreateRef<Texture2D>();
+    Ref<Texture> texture = CreateRef<Texture2D>();
     texture->width = 1;
     texture->height = 1;
     texture->path = path;
