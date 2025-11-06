@@ -10,6 +10,7 @@ namespace LindaEngine
 	{
 	public:
 		static void Load(Ref<Texture> texture);
+		static Ref<Texture> Load(const char* path);
 		static void Delete(Ref<Texture> texture);
 
 	private:

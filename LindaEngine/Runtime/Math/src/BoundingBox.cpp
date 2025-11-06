@@ -9,13 +9,13 @@ AABBBoundingBox::AABBBoundingBox()
 
 void AABBBoundingBox::Reset()
 {
-	min.x = -FLT_MAX;
-	min.y = -FLT_MAX;
-	min.z = -FLT_MAX;
+	min.x = FLT_MAX;
+	min.y = FLT_MAX;
+	min.z = FLT_MAX;
 
-	max.x = FLT_MAX;
-	max.y = FLT_MAX;
-	max.z = FLT_MAX;
+	max.x = -FLT_MAX;
+	max.y = -FLT_MAX;
+	max.z = -FLT_MAX;
 
 	size.x = center.x = 0.0f;
 	size.y = center.y = 0.0f;
@@ -96,13 +96,13 @@ void SphereBoundingBox::Reset()
 	center = glm::vec3(0.0f);
 	radius = 0.0f;
 
-	min.x = -FLT_MAX;
-	min.y = -FLT_MAX;
-	min.z = -FLT_MAX;
+	min.x = FLT_MAX;
+	min.y = FLT_MAX;
+	min.z = FLT_MAX;
 
-	max.x = FLT_MAX;
-	max.y = FLT_MAX;
-	max.z = FLT_MAX;
+	max.x = -FLT_MAX;
+	max.y = -FLT_MAX;
+	max.z = -FLT_MAX;
 }
 
 void SphereBoundingBox::AddVertex(glm::vec3& vertex)

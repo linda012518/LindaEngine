@@ -57,7 +57,7 @@ void RendererSystem::DrawRenderers(Camera* camera, Ref<DrawingSettings> settings
 
 	std::vector<std::string>& lightModes = settings->lightModes;
 
-	for (auto& renderer : _components)
+	for (auto& renderer : _renderables)
 	{
 		for (auto& lightMode : lightModes)
 		{
@@ -81,9 +81,11 @@ void RendererSystem::Cull(Camera* camera, Ref<DrawingSettings> settings)
 	{
 		AABBBoundingBox& box = renderer->GetBoundingBox();
 
-		if (cs.frustumCull && CullTool::FrustumCull(frustum, box)
-			&& cs.occlusionCull && CullTool::OcclusionCull()
-			&& cs.distanceCull && CullTool::DistanceCull(cameraPos, box, far))
+		bool fresult = cs.frustumCull ? CullTool::FrustumCull(frustum, box) : true;
+		bool oresult = cs.occlusionCull ? CullTool::OcclusionCull() : true;
+		bool dresult = cs.distanceCull ? CullTool::DistanceCull(cameraPos, box, far) : true;
+
+		if (fresult && oresult && dresult)
 			_renderables.push_back(renderer);
 	}
 }

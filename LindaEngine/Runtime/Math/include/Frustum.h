@@ -16,6 +16,7 @@ namespace LindaEngine
 
 	private:
 		bool IsInside(const glm::vec3& point);
+		bool IsInside(Plane& plane, AABBBoundingBox& aabb);
 
 	private:
 		Plane near;

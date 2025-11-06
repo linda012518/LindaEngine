@@ -8,10 +8,10 @@
 //#include <Windows.h>
 //#include "glad/glad_wgl.h"
 //
-//// ä½¿ç”¨è‡ªå®šä¹‰çš„ glad loaderï¼Œä¸ä½¿ç”¨ ImGui è‡ªå¸¦çš„ loader
+//// Ê¹ÓÃ×Ô¶¨ÒåµÄ glad loader£¬²»Ê¹ÓÃ ImGui ×Ô´øµÄ loader
 //#define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 //
-//// åŒ…å« glad å¤´æ–‡ä»¶ï¼ˆå¿…é¡»åœ¨ imgui_impl_opengl3.h ä¹‹å‰ï¼‰
+//// °üº¬ glad Í·ÎÄ¼ş£¨±ØĞëÔÚ imgui_impl_opengl3.h Ö®Ç°£©
 //#include "glad/glad.h"
 
 #include "imgui/imgui.h"

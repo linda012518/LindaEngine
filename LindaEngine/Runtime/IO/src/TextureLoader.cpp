@@ -15,6 +15,28 @@ void TextureLoader::Load(Ref<Texture> texture)
     }
 }
 
+Ref<Texture> TextureLoader::Load(const char* path)
+{
+    Ref<Texture> texture = texture = CreateRef<Texture2D>();
+    texture->width = 1;
+    texture->height = 1;
+    texture->path = path;
+
+    uint32_t data;
+
+    if (path == "white")
+        data = 0xffffffff;
+    else if (path == "black")
+        data = 0x000000ff;
+    else if (path == "gray")
+        data = 0x808080ff;
+    else if (path == "bump")
+        data = 0x8080ffff;
+
+    TextureDriver::CreateTexture2D(texture, &data, 4, 8);
+    return texture;
+}
+
 void TextureLoader::Delete(Ref<Texture> texture)
 {
     TextureDriver::DeleteTexture(texture);

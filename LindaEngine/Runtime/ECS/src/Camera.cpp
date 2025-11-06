@@ -61,6 +61,8 @@ void Camera::MakeViewProjectionMatrix()
 
 	_viewProjectMatrix = _projectMatrix * _viewMatrix;
 	_viewProjectInverseMatrix = glm::inverse(_viewProjectMatrix);
+
+	_frustum.UpdateFrustum(this);
 }
 
 void Camera::Tick()
@@ -71,8 +73,6 @@ void Camera::Tick()
 	MakeViewMatrix();
 	MakeProjectionMatrix();
 	MakeViewProjectionMatrix();
-
-	_frustum.UpdateFrustum(this);
 }
 
 void Camera::TransformDirty()

@@ -9,18 +9,25 @@ using namespace LindaEngine;
 std::unordered_map<std::string, Ref<Texture>> TextureManager::_textureMap;
 std::vector<Ref<RenderTexture>> RenderTextureManager::_renderTextures;
 
-Ref<Texture> TextureManager::GetTexture(const char* path)
+Ref<Texture> TextureManager::GetTexture(std::string path)
 {
     try
     {
         auto itr = _textureMap.find(path);
         if (itr == _textureMap.end())
         {
-            Ref<Texture> texture = YamlSerializer::DeSerializeTexture(path);
-            if (nullptr == texture)
-                return nullptr;
-            TextureLoader::Load(texture);
-            _textureMap[path] = texture;
+            if (path == "white" || path == "black" || path == "gray" || path == "bump")
+            {
+                _textureMap[path] = TextureLoader::Load(path.c_str());
+            }
+            else
+            {
+                Ref<Texture> texture = YamlSerializer::DeSerializeTexture(path.c_str());
+                if (nullptr == texture)
+                    return nullptr;
+                TextureLoader::Load(texture);
+                _textureMap[path] = texture;
+            }
         }
 
         return _textureMap[path];

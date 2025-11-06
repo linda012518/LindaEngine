@@ -10,23 +10,38 @@ void Frustum::UpdateFrustum(Camera* cam)
 {
 	const glm::mat4& m = cam->GetViewProjectMatrix();
 
-	left.normal = glm::normalize(glm::vec3(m[0][3] + m[0][0], m[1][3] + m[1][0], m[2][3] + m[2][0]));
-	left.distance = m[3][3] + m[3][0];
+	glm::vec4 plane;
+	float length;
 
-	right.normal = glm::normalize(glm::vec3(m[0][3] - m[0][0], m[1][3] - m[1][0], m[2][3] - m[2][0]));
-	right.distance = m[3][3] - m[3][0];
+	plane = glm::vec4(m[0][3] + m[0][0], m[1][3] + m[1][0], m[2][3] + m[2][0], m[3][3] + m[3][0]);
+	length = glm::length(glm::vec3(plane));
+	left.normal = glm::vec3(plane) / length;
+	left.distance = plane.w / length;
 
-	bottom.normal = glm::normalize(glm::vec3(m[0][3] + m[0][1], m[1][3] + m[1][1], m[2][3] + m[2][1]));
-	bottom.distance = m[3][3] + m[3][1];
+	plane = glm::vec4(m[0][3] - m[0][0], m[1][3] - m[1][0], m[2][3] - m[2][0], m[3][3] - m[3][0]);
+	length = glm::length(glm::vec3(plane));
+	right.normal = glm::vec3(plane) / length;
+	right.distance = plane.w / length;
 
-	top.normal = glm::normalize(glm::vec3(m[0][3] - m[0][1], m[1][3] - m[1][1], m[2][3] - m[2][1]));
-	top.distance = m[3][3] - m[3][1];
+	plane = glm::vec4(m[0][3] + m[0][1], m[1][3] + m[1][1], m[2][3] + m[2][1], m[3][3] + m[3][1]);
+	length = glm::length(glm::vec3(plane));
+	bottom.normal = glm::vec3(plane) / length;
+	bottom.distance = plane.w / length;
 
-	near.normal = glm::normalize(glm::vec3(m[0][3] + m[0][2], m[1][3] + m[1][2], m[2][3] + m[2][2]));
-	near.distance = m[3][3] + m[3][2];
+	plane = glm::vec4(m[0][3] - m[0][1], m[1][3] - m[1][1], m[2][3] - m[2][1], m[3][3] - m[3][1]);
+	length = glm::length(glm::vec3(plane));
+	top.normal = glm::vec3(plane) / length;
+	top.distance = plane.w / length;
 
-	far.normal = glm::normalize(glm::vec3(m[0][3] - m[0][2], m[1][3] - m[1][2], m[2][3] - m[2][2]));
-	far.distance = m[3][3] - m[3][2];
+	plane = glm::vec4(m[0][3] + m[0][2], m[1][3] + m[1][2], m[2][3] + m[2][2], m[3][3] + m[3][2]);
+	length = glm::length(glm::vec3(plane));
+	near.normal = glm::vec3(plane) / length;
+	near.distance = plane.w / length;
+
+	plane = glm::vec4(m[0][3] - m[0][2], m[1][3] - m[1][2], m[2][3] - m[2][2], m[3][3] - m[3][2]);
+	length = glm::length(glm::vec3(plane));
+	far.normal = glm::vec3(plane) / length;
+	far.distance = plane.w / length;
 }
 
 bool Frustum::AABBInside(AABBBoundingBox& aabb)
@@ -84,4 +99,15 @@ bool Frustum::IsInside(const glm::vec3& point)
 		return false;
 	return true;
 }
+
+bool Frustum::IsInside(Plane& plane, AABBBoundingBox& aabb)
+{
+	// 找到AABB在平面法向量方向上的最远点（p_vertex）
+	glm::vec3 p_vertex = aabb.min;
+	if (plane.normal.x >= 0) p_vertex.x = aabb.max.x;
+	if (plane.normal.y >= 0) p_vertex.y = aabb.max.y;
+	if (plane.normal.z >= 0) p_vertex.z = aabb.max.z;
+	return plane.GetDistance(p_vertex) < 0;
+}
+
 
