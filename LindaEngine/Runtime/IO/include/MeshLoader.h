@@ -22,6 +22,6 @@ namespace LindaEngine
 
 	private:
 		static void ParseAssimpNode(aiNode* node, const aiScene* scene, Ref<Mesh> mesh);
-		static void ParseAssimpMesh(aiMesh* aiMesh, const aiScene* scene, Mesh::Data& mesh);
+		static void ParseAssimpMesh(aiMesh* aiMesh, const aiScene* scene, Mesh::Data& meshData, Ref<Mesh> meshPtr);
 	};
 }

@@ -7,6 +7,7 @@
 #include "UniformBuffer.h"
 #include "CameraSystem.h"
 #include "Camera.h"
+#include "UniversalRenderer.h"
 
 using namespace LindaEngine;
 
@@ -24,6 +25,7 @@ void RenderPipeline::Finalize()
 
 void RenderPipeline::Tick()
 {
+    //_renderer->Render();
     Render();
 }
 
@@ -50,9 +52,9 @@ void RenderPipeline::CheckLightList()
 void RenderPipeline::Render()
 {
     //1 遍历相机
+    //4 视锥剔除，排序
     //2 设置相机参数到shader
     //3 配置相机 HDR 后处理等等
-    //4 视锥剔除，排序
     //5 设置清屏相关
     //6 渲染不透明物体
     //7 渲染天空
@@ -78,7 +80,7 @@ void RenderPipeline::Render()
         Graphic::Clear(true, true, true);
         Ref<DrawingSettings> settings = CreateRef<DrawingSettings>();
         settings->lightModes.push_back("customLightMode");
-        RendererSystem::DrawRenderers(settings);
+        RendererSystem::DrawRenderers(camera, settings);
     }
 
 }

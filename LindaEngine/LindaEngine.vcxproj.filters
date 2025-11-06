@@ -81,10 +81,7 @@
     <ClCompile Include="Runtime\Math\src\Plane.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime\Math\src\OBB.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Runtime\Math\src\AABB.cpp">
+    <ClCompile Include="Runtime\Math\src\BoundingBox.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\ECS\src\Renderer.cpp">
@@ -334,6 +331,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="External\imgui\imgui\imgui_widgets.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Render\Core\src\UniversalRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Math\src\Frustum.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Math\src\CullTool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1289,10 +1295,7 @@
     <ClInclude Include="Runtime\Math\include\Plane.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\Math\include\OBB.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Runtime\Math\include\AABB.h">
+    <ClInclude Include="Runtime\Math\include\BoundingBox.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\ECS\include\Renderer.h">
@@ -1764,6 +1767,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="External\imgui\imgui\imstb_truetype.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\Core\include\UniversalRenderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Math\include\Frustum.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Math\include\CullTool.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

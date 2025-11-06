@@ -9,6 +9,7 @@ namespace LindaEngine
 {
 	struct UniformDataGlobal;
 	class Camera;
+	//class UniversalRenderer;
 
 	class RenderPipeline : public IRuntimeModule
 	{
@@ -26,5 +27,6 @@ namespace LindaEngine
 
 	private:
 		Ref<UniformDataGlobal> _uniformGlobal;
+		//Ref<UniversalRenderer> _renderer;
 	};
 }

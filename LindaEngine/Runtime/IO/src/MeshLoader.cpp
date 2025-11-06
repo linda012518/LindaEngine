@@ -103,6 +103,7 @@ Ref<Mesh> MeshLoader::LoadSphereMesh()
 			float	yPos = std::cos(ySegment * PI);
 			float	zPos = std::sin(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
 
+			mesh->UpdateBoundingBox(xPos, yPos, zPos);
 			data.vertexData.insert(data.vertexData.end(), { xPos, yPos, zPos, xPos, yPos, zPos, 0.1f, 0.2f, 0.3f,  xSegment, ySegment });
 
 			position.push_back(glm::vec3(xPos, yPos, zPos));
@@ -140,6 +141,15 @@ Ref<Mesh> MeshLoader::LoadCube()
 	data.AddAttribute(VertexAttributeType::Normal);
 	data.AddAttribute(VertexAttributeType::Tangent);
 	data.AddAttribute(VertexAttributeType::UV0);
+
+	mesh->UpdateBoundingBox(-0.5f, -0.5f, -0.5f);
+	mesh->UpdateBoundingBox( 0.5f, -0.5f, -0.5f);
+	mesh->UpdateBoundingBox( 0.5f,  0.5f, -0.5f);
+	mesh->UpdateBoundingBox(-0.5f,  0.5f, -0.5f);
+	mesh->UpdateBoundingBox(-0.5f, -0.5f,  0.5f);
+	mesh->UpdateBoundingBox( 0.5f, -0.5f,  0.5f);
+	mesh->UpdateBoundingBox( 0.5f,  0.5f,  0.5f);
+	mesh->UpdateBoundingBox(-0.5f,  0.5f,  0.5f);
 
 	data.vertexData.insert(data.vertexData.end(), { -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, -1.0f,  0.1f, 0.2f, 0.3f,  0.0f, 0.0f });
 	data.vertexData.insert(data.vertexData.end(), {  0.5f, -0.5f, -0.5f,  0.0f, 0.0f, -1.0f,  0.1f, 0.2f, 0.3f,  1.0f, 0.0f });
@@ -241,6 +251,8 @@ Ref<Mesh> MeshLoader::LoadCapsule()
 	size_t len = position.size() / 3;
 	for (size_t i = 0; i < len; i++)
 	{
+		mesh->UpdateBoundingBox(position[0 + i * 3], position[1 + (size_t)i * 3], position[2 + (size_t)i * 3]);
+
 		data.vertexData.insert(data.vertexData.end(), { position[0 + i * 3], position[1 + (size_t)i * 3], position[2 + (size_t)i * 3] });
 		data.vertexData.insert(data.vertexData.end(), { normals[0 + i * 3], normals[1 + (size_t)i * 3], normals[2 + (size_t)i * 3] });
 		data.vertexData.insert(data.vertexData.end(), { 0.1f, 0.2f, 0.3f });
@@ -260,6 +272,11 @@ Ref<Mesh> MeshLoader::LoadPlane()
 	data.AddAttribute(VertexAttributeType::Normal);
 	data.AddAttribute(VertexAttributeType::Tangent);
 	data.AddAttribute(VertexAttributeType::UV0);
+
+	mesh->UpdateBoundingBox( 1.0f, 0.0f,  1.0f);
+	mesh->UpdateBoundingBox(-1.0f, 0.0f,  1.0f);
+	mesh->UpdateBoundingBox( 1.0f, 0.0f, -1.0f);
+	mesh->UpdateBoundingBox(-1.0f, 0.0f, -1.0f);
 
 	data.vertexData.insert(data.vertexData.end(), {  1.0f, 0.0f,  1.0f,  0.0f, 1.0f, 0.0f,  0.1f, 0.2f, 0.3f,  1.0f, 0.0f });
 	data.vertexData.insert(data.vertexData.end(), { -1.0f, 0.0f,  1.0f,  0.0f, 1.0f, 0.0f,  0.1f, 0.2f, 0.3f,  0.0f, 0.0f });
@@ -331,7 +348,7 @@ void MeshLoader::ParseAssimpNode(aiNode* node, const aiScene* scene, Ref<Mesh> m
 	{
 		//每个节点的网格索引，对应 场景的mMeshes数组的网格
 		aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
-		ParseAssimpMesh(aiMesh, scene, mesh->AddMeshData(Mesh::Data()));
+		ParseAssimpMesh(aiMesh, scene, mesh->AddMeshData(Mesh::Data()), mesh);
 	}
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
@@ -339,7 +356,7 @@ void MeshLoader::ParseAssimpNode(aiNode* node, const aiScene* scene, Ref<Mesh> m
 	}
 }
 
-void MeshLoader::ParseAssimpMesh(aiMesh* aiMesh, const aiScene* scene, Mesh::Data& meshData)
+void MeshLoader::ParseAssimpMesh(aiMesh* aiMesh, const aiScene* scene, Mesh::Data& meshData, Ref<Mesh> meshPtr)
 {
 	if (aiMesh->mNumVertices <= 3)
 		return;
@@ -368,6 +385,8 @@ void MeshLoader::ParseAssimpMesh(aiMesh* aiMesh, const aiScene* scene, Mesh::Dat
 		meshData.vertexData[index++] = (aiMesh->mVertices[i].x);
 		meshData.vertexData[index++] = (aiMesh->mVertices[i].y);
 		meshData.vertexData[index++] = (aiMesh->mVertices[i].z);
+
+		meshPtr->UpdateBoundingBox(aiMesh->mVertices[i].x, aiMesh->mVertices[i].y, aiMesh->mVertices[i].z);
 
 		if (NULL != aiMesh->mNormals)
 		{

@@ -71,6 +71,8 @@ void Camera::Tick()
 	MakeViewMatrix();
 	MakeProjectionMatrix();
 	MakeViewProjectionMatrix();
+
+	_frustum.UpdateFrustum(this);
 }
 
 void Camera::TransformDirty()

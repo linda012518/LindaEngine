@@ -84,6 +84,13 @@ void Renderer::Render(Transform* transform)
 	}
 }
 
+void Renderer::TransformDirty()
+{
+	_aabb.min = glm::vec4(_mesh->GetBoundingBox().min, 1.0f) * _transform->GetLocalToWorldMat();
+	_aabb.max = glm::vec4(_mesh->GetBoundingBox().max, 1.0f) * _transform->GetLocalToWorldMat();
+	_aabb.CalculateCenterSize();
+}
+
 /////////////////////////////////////////////////////////////////////
 
 MeshRenderer::MeshRenderer(Entity& entity, bool enable) : Renderer(entity, enable)

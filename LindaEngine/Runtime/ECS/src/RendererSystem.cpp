@@ -3,11 +3,13 @@
 #include "Settings.h"
 #include "Material.h"
 #include "Entity.h"
+#include "Camera.h"
+#include "Transform.h"
+#include "CullTool.h"
 
 using namespace LindaEngine;
 
 std::vector<Renderer*> RendererSystem::_components;
-std::vector<Renderer*> RendererSystem::_culledRenderers;
 std::vector<Renderer*> RendererSystem::_renderables;
 
 void RendererSystem::Tick()
@@ -44,12 +46,12 @@ void RendererSystem::Clear()
 		static_assert(true, "RendererSystem is not empty, Check destruction process.");
 
 	_components.clear();
-	_culledRenderers.clear();
 	_renderables.clear();
 }
 
-void RendererSystem::DrawRenderers(Ref<DrawingSettings> settings)
+void RendererSystem::DrawRenderers(Camera* camera, Ref<DrawingSettings> settings)
 {
+	Cull(camera, settings);
 	FillDrawables(settings);
 	SortDrawables(settings);
 
@@ -65,11 +67,25 @@ void RendererSystem::DrawRenderers(Ref<DrawingSettings> settings)
 	}
 }
 
-void RendererSystem::Cull()
+void RendererSystem::Cull(Camera* camera, Ref<DrawingSettings> settings)
 {
-	_culledRenderers.clear();
+	//TODO 距离剔除 视锥裁剪 遮挡剔除 可见灯光 可见反射Cubemap 可见SH
+	Frustum& frustum = camera->GetFrustum();
+	glm::vec3& cameraPos = (glm::vec3&)camera->GetEntity().GetTransform()->GetWorldPosition();
+	float far = camera->GetFar();
+	CullSettings& cs = settings->cullSettings;
+
 	_renderables.clear();
-	//TODO 视锥裁剪 遮挡剔除 可见灯光 可见反射Cubemap 可见SH
+
+	for (auto& renderer : _components)
+	{
+		AABBBoundingBox& box = renderer->GetBoundingBox();
+
+		if (cs.frustumCull && CullTool::FrustumCull(frustum, box)
+			&& cs.occlusionCull && CullTool::OcclusionCull()
+			&& cs.distanceCull && CullTool::DistanceCull(cameraPos, box, far))
+			_renderables.push_back(renderer);
+	}
 }
 
 void RendererSystem::FillDrawables(Ref<DrawingSettings> settings)

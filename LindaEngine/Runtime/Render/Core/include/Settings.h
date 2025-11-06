@@ -41,11 +41,19 @@ namespace LindaEngine
 		static RenderQueueRange transparent;
 	};
 
+	struct CullSettings
+	{
+		bool distanceCull = false;
+		bool frustumCull = true;
+		bool occlusionCull = true;
+	};
+
 	struct DrawingSettings
 	{
 		int layerMask;
 		RenderQueueRange renderQueueRange;
 		SortingSettings sortSettings;
+		CullSettings cullSettings;
 		std::vector<std::string> lightModes;
 	};
 

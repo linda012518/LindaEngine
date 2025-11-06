@@ -130,6 +130,13 @@ Mesh::Data& Mesh::AddMeshData(Mesh::Data data)
 	return _data[_data.size() - 1];
 }
 
+void Mesh::UpdateBoundingBox(float x, float y, float z)
+{
+	glm::vec3 pos = glm::vec3(x, y, z);
+	_aabb.AddVertex(pos);
+	_aabb.CalculateCenterSize();
+}
+
 void Mesh::Data::AddAttribute(VertexAttributeType attrType)
 {
 	attributes.push_back(VertexAttribute(attrType));
@@ -164,6 +171,9 @@ void Mesh::Data::Draw()
 		vertexArray->AddVertexBuffer(vertexBuffer, vertexStride);
 		if (indexData.size() > 3)
 			vertexArray->SetIndexBuffer(IndexBuffer::Create(&indexData[0], (uint32_t)indexData.size()));
+
+		vertexData.clear();
+		indexData.clear();
 	}
 
 	vertexArray->Draw(drawType);

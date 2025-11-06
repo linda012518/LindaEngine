@@ -53,8 +53,8 @@ void CameraController::ProcessMouseEvent(int eventCode, Event& eventData)
 	{
 		_isPanning = true;
 
-		_lastMousePos.x = event.x;
-		_lastMousePos.y = event.y;
+		_lastMousePos.x = (float)event.x;
+		_lastMousePos.y = (float)event.y;
 	}
 	break;
 	case EventCode::MouseWheelUp:
@@ -66,8 +66,8 @@ void CameraController::ProcessMouseEvent(int eventCode, Event& eventData)
 	{
 		//TODO _lookRoundPos 在这里初始化
 		_leftHeld = true;
-		_lastMousePos.x = event.x;
-		_lastMousePos.y = event.y;
+		_lastMousePos.x = (float)event.x;
+		_lastMousePos.y = (float)event.y;
 	}
 	break;
 	case EventCode::LeftMouseButtonUp:
@@ -78,8 +78,8 @@ void CameraController::ProcessMouseEvent(int eventCode, Event& eventData)
 	case EventCode::RightMouseButtonDown:
 	{
 		_rightHeld = true;
-		_lastMousePos.x = event.x;
-		_lastMousePos.y = event.y;
+		_lastMousePos.x = (float)event.x;
+		_lastMousePos.y = (float)event.y;
 	}
 	break;
 	case EventCode::RightMouseButtonUp:
@@ -133,8 +133,8 @@ void CameraController::ProcessKeyEvent(int eventCode, Event& eventData)
 void CameraController::ScaleEvent(MouseEvent& event)
 {
 	glm::vec3 pos;
-	pos.x = event.x;
-	pos.y = event.y;
+	pos.x = (float)event.x;
+	pos.y = (float)event.y;
 	pos.z = 1.0f;
 	glm::vec3 far = _camera->ScreenToWorldPosition(pos);
 	//glm::vec3 eyePos = _transform->GetWorldPosition();
@@ -149,8 +149,8 @@ void CameraController::PanningEvent(MouseEvent& event)
 	if (false == _isPanning)
 		return;
 	glm::vec2 mouseDelta = _lastMousePos - glm::vec2(event.x, event.y);
-	_lastMousePos.x = event.x;
-	_lastMousePos.y = event.y;
+	_lastMousePos.x = (float)event.x;
+	_lastMousePos.y = (float)event.y;
 	float distanceToTarget = glm::length(_transform->GetWorldPosition());//这里可以修改为相机到指向物体距离
 	float adaptiveSpeed = _panSpeed * distanceToTarget;
 	glm::vec3 front, up, right;
@@ -165,8 +165,8 @@ void CameraController::RotateEvent(MouseEvent& event)
 		return;
 	float xoffset = event.x - _lastMousePos.x;
 	float yoffset = event.y - _lastMousePos.y;
-	_lastMousePos.x = event.x;
-	_lastMousePos.y = event.y;
+	_lastMousePos.x = (float)event.x;
+	_lastMousePos.y = (float)event.y;
 
 	xoffset *= _rotateSpeed;
 	yoffset *= _rotateSpeed;
@@ -185,8 +185,8 @@ void CameraController::LookRoundEvent(MouseEvent& event)
 		return;
 	float xoffset = event.x - _lastMousePos.x;
 	float yoffset = event.y - _lastMousePos.y;
-	_lastMousePos.x = event.x;
-	_lastMousePos.y = event.y;
+	_lastMousePos.x = (float)event.x;
+	_lastMousePos.y = (float)event.y;
 
 	xoffset *= _rotateSpeed;
 	yoffset *= _rotateSpeed;

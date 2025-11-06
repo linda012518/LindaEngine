@@ -2,6 +2,7 @@
 
 #include "AutoPtr.h"
 #include "Component.h"
+#include "BoundingBox.h"
 
 #include <vector>
 
@@ -23,8 +24,10 @@ namespace LindaEngine
 		void SetMesh(Ref<Mesh> mesh);
 		void AddMaterial(int index, Ref<Material> mat);
 		void Render(Transform* transform);
+		void TransformDirty();
 
 		Mesh* GetMesh() { return _mesh.get(); }
+		AABBBoundingBox& GetBoundingBox() { return _aabb; }
 		std::vector<Ref<Material>>& GetMaterials() { return _materialList; }
 
 	protected:
@@ -32,6 +35,7 @@ namespace LindaEngine
 		Ref<Mesh> _mesh;
 		bool _shadowCast = true; //是否投射阴影
 		bool _receiveShadow = true; //是否接收阴影
+		AABBBoundingBox _aabb;
 	};
 
 	class MeshRenderer : public Renderer

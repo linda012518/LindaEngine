@@ -8,6 +8,7 @@
 namespace LindaEngine
 {
 	class Renderer;
+	class Camera;
 	struct DrawingSettings;
 
 	class RendererSystem
@@ -20,8 +21,8 @@ namespace LindaEngine
 		static void Remove(Renderer* renderer);
 		static void Clear();
 
-		static void DrawRenderers(Ref<DrawingSettings> settings);
-		static void Cull();
+		static void DrawRenderers(Camera* camera, Ref<DrawingSettings> settings);
+		static void Cull(Camera* camera, Ref<DrawingSettings> settings);
 
 	private:
 		static void FillDrawables(Ref<DrawingSettings> settings);
@@ -29,7 +30,6 @@ namespace LindaEngine
 
 	private:
 		static std::vector<Renderer*> _components;
-		static std::vector<Renderer*> _culledRenderers;
 		static std::vector<Renderer*> _renderables;
 	};
 }

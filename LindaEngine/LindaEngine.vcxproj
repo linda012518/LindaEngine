@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\Math\src\CullTool.cpp" />
     <ClCompile Include="Editor\ImGui\src\ImGuiContextEditor.cpp" />
     <ClCompile Include="External\imgui\imgui\imgui.cpp" />
     <ClCompile Include="External\imgui\imgui\imgui_demo.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="External\imgui\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="External\imgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="External\imgui\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Runtime\Math\src\Frustum.cpp" />
     <ClCompile Include="Runtime\Core\src\EventSystem.cpp" />
     <ClCompile Include="Runtime\Window\src\WindowsInput.cpp" />
     <ClCompile Include="Runtime\Core\src\Timestamp.cpp" />
@@ -216,8 +218,7 @@
     <ClCompile Include="Runtime\IO\src\ShaderLoader.cpp" />
     <ClCompile Include="Runtime\IO\src\TextLoader.cpp" />
     <ClCompile Include="Runtime\IO\src\TextureLoader.cpp" />
-    <ClCompile Include="Runtime\Math\src\AABB.cpp" />
-    <ClCompile Include="Runtime\Math\src\OBB.cpp" />
+    <ClCompile Include="Runtime\Math\src\BoundingBox.cpp" />
     <ClCompile Include="Runtime\Math\src\Plane.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\Material.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\MaterialPass.cpp" />
@@ -253,8 +254,10 @@
     <ClCompile Include="Runtime\Tools\src\UUID.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\UniformBuffer.cpp" />
     <ClCompile Include="Temp\TestECSEvent.cpp" />
+    <ClCompile Include="Runtime\Render\Core\src\UniversalRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Math\include\CullTool.h" />
     <ClInclude Include="Editor\ImGui\include\ImGuiContextEditor.h" />
     <ClInclude Include="External\imgui\imgui\imconfig.h" />
     <ClInclude Include="External\imgui\imgui\imgui.h" />
@@ -265,6 +268,7 @@
     <ClInclude Include="External\imgui\imgui\imstb_rectpack.h" />
     <ClInclude Include="External\imgui\imgui\imstb_textedit.h" />
     <ClInclude Include="External\imgui\imgui\imstb_truetype.h" />
+    <ClInclude Include="Runtime\Math\include\Frustum.h" />
     <ClInclude Include="Runtime\Core\include\Event.h" />
     <ClInclude Include="Runtime\Core\include\EventCode.h" />
     <ClInclude Include="Runtime\Core\include\EventSystem.h" />
@@ -396,8 +400,7 @@
     <ClInclude Include="Runtime\IO\include\ShaderLoader.h" />
     <ClInclude Include="Runtime\IO\include\TextLoader.h" />
     <ClInclude Include="Runtime\IO\include\TextureLoader.h" />
-    <ClInclude Include="Runtime\Math\include\AABB.h" />
-    <ClInclude Include="Runtime\Math\include\OBB.h" />
+    <ClInclude Include="Runtime\Math\include\BoundingBox.h" />
     <ClInclude Include="Runtime\Math\include\Plane.h" />
     <ClInclude Include="Runtime\Render\Core\include\Material.h" />
     <ClInclude Include="Runtime\Render\Core\include\MaterialPass.h" />
@@ -731,6 +734,7 @@
     <ClInclude Include="Runtime\Tools\include\UUID.h" />
     <ClInclude Include="Runtime\Render\Core\include\UniformBuffer.h" />
     <ClInclude Include="Temp\TestECSEvent.h" />
+    <ClInclude Include="Runtime\Render\Core\include\UniversalRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External\assimp\assimp\color4.inl" />

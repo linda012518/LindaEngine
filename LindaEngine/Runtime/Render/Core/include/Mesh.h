@@ -5,6 +5,7 @@
 #include "ISerializable.h"
 #include "RenderEnumData.h"
 #include "glm/glm.hpp"
+#include "BoundingBox.h"
 
 #include <unordered_map>
 #include <string>
@@ -67,6 +68,8 @@ namespace LindaEngine
 	public:
 		Mesh::Data& AddMeshData(Mesh::Data data);
 		Mesh::Data* GetMeshData(int index = 0) { return &_data[index]; }
+		AABBBoundingBox& GetBoundingBox() { return _aabb; }
+		void UpdateBoundingBox(float x, float y, float z);
 		const std::vector<VertexAttribute>& GetMeshAttributes(int index = 0) { return _data[index].attributes; }
 		const int GetMeshCount() { return _meshCount; }
 		void SetPath(const char* path) { _path = path; }
@@ -79,5 +82,6 @@ namespace LindaEngine
 		int _meshCount = 0;
 		std::vector<Mesh::Data> _data;
 		std::string _path;
+		AABBBoundingBox _aabb;
 	};
 }

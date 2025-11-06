@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "Frustum.h"
 
 #include "glm/glm.hpp"
 #include <glm\gtc\matrix_transform.hpp>
@@ -41,9 +42,10 @@ namespace LindaEngine
 		float GetNear() { return _zNear; }
 		float GetFar() { return _zFar; }
 
-		CameraType GetCameraType() { return _cameraType; }
-		CameraClearType GetClearType() { return _clearType; }
+		CameraType& GetCameraType() { return _cameraType; }
+		CameraClearType& GetClearType() { return _clearType; }
 		int GetDepth() { return _depth; }
+		Frustum& GetFrustum() { return _frustum; }
 
 		void SetCameraType(CameraType type) { _cameraType = type; }
 		void SetClearType(CameraClearType type) { _clearType = type; }
@@ -77,7 +79,7 @@ namespace LindaEngine
 		//bool _hdrEnable;
 		//int _msaa;
 		//int _cullMask;
-		
+		Frustum _frustum;
 	};
 
 	class PerspectiveCamera : public Camera
