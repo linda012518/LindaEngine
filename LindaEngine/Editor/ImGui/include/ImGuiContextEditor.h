@@ -2,7 +2,7 @@
 
 namespace LindaEditor
 {
-	class ImGuiContext
+	class ImGuiContextEditor
 	{
 	public:
 		int Initialize();

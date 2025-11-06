@@ -178,6 +178,10 @@
 #define IMGL3W_IMPL
 #define IMGUI_IMPL_OPENGL_LOADER_IMGL3W
 #include "imgui_impl_opengl3_loader.h"
+#else
+// When using custom loader (e.g. glad), include the OpenGL headers here
+// This ensures GLuint, GLint, etc. are defined
+#include "glad/glad.h"
 #endif
 
 // Vertex arrays are not supported on ES2/WebGL1 unless Emscripten which uses an extension

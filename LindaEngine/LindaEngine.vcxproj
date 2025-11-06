@@ -146,7 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Editor\ImGui\src\ImGuiContext.cpp" />
+    <ClCompile Include="Editor\ImGui\src\ImGuiContextEditor.cpp" />
     <ClCompile Include="External\imgui\imgui\imgui.cpp" />
     <ClCompile Include="External\imgui\imgui\imgui_demo.cpp" />
     <ClCompile Include="External\imgui\imgui\imgui_draw.cpp" />
@@ -255,7 +255,7 @@
     <ClCompile Include="Temp\TestECSEvent.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Editor\ImGui\include\ImGuiContext.h" />
+    <ClInclude Include="Editor\ImGui\include\ImGuiContextEditor.h" />
     <ClInclude Include="External\imgui\imgui\imconfig.h" />
     <ClInclude Include="External\imgui\imgui\imgui.h" />
     <ClInclude Include="External\imgui\imgui\imgui_impl_opengl3.h" />

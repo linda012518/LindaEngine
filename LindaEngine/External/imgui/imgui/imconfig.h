@@ -143,3 +143,7 @@ namespace ImGui
     void MyFunction(const char* name, MyMatrix44* mtx);
 }
 */
+
+//---- OpenGL Loader Configuration
+// Use custom OpenGL loader (glad) instead of ImGui's built-in loader
+#define IMGUI_IMPL_OPENGL_LOADER_CUSTOM

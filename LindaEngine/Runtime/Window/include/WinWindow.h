@@ -18,6 +18,7 @@ namespace LindaEngine
 		virtual void Tick();
 
 		HDC GetWinDC();
+		HWND GetHwnd() { return _hWnd; }
 
 		KeyCode GetKeyDown() { return _keyDwon; }
 		KeyCode GetKey() { return _key; }

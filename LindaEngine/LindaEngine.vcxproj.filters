@@ -312,6 +312,30 @@
     <ClCompile Include="Temp\TestECSEvent.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\ImGui\src\ImGuiContextEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\imgui\imgui.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\imgui\imgui_demo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\imgui\imgui_draw.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\imgui\imgui_impl_opengl3.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\imgui\imgui_impl_win32.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\imgui\imgui_tables.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="External\imgui\imgui\imgui_widgets.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -1712,6 +1736,36 @@
     <ClInclude Include="Runtime\Physics\include\Ray.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Editor\ImGui\include\ImGuiContextEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imgui\imconfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imgui\imgui.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imgui\imgui_impl_opengl3.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imgui\imgui_impl_opengl3_loader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imgui\imgui_impl_win32.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imgui\imgui_internal.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imgui\imstb_rectpack.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imgui\imstb_textedit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\imgui\imgui\imstb_truetype.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\glm\glm\detail\func_common.inl">
@@ -2167,5 +2221,6 @@
     <None Include="Runtime\ECS\include\ComponentImplement.inl">
       <Filter>头文件</Filter>
     </None>
+    <None Include="External\imgui\imgui\imgui.ini" />
   </ItemGroup>
 </Project>
