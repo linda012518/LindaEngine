@@ -4,6 +4,7 @@
 #include "RenderEnumData.h"
 
 #include <string>
+#include <vector>
 
 namespace LindaEngine
 {
@@ -49,17 +50,29 @@ namespace LindaEngine
 		std::string back;
 	};
 
+	struct FramebufferTextureSpecification
+	{
+		TextureFormat colorFormat = TextureFormat::None;
+		FilterMode filter = FilterMode::Bilinear;
+		TextureWrapMode warpU = TextureWrapMode::Clamp;
+		TextureWrapMode warpV = TextureWrapMode::Clamp;
+		TextureWrapMode warpW = TextureWrapMode::Clamp;
+	};
+
 	struct RenderTexture : public Texture
 	{
 		RenderTexture() { type = TextureType::RenderTexture; }
 
-		TextureFormat depthFormat = TextureFormat::None;
-		TextureFormat stencilFormat = TextureFormat::None;
-		int nativeDepthID = -1;
-		int msaa = -1;
+		int msaa = 1;
 		bool isCube = false;
 
+		std::vector<FramebufferTextureSpecification> attachments;
+		std::vector<FramebufferTextureSpecification> colorAttachments;
+		FramebufferTextureSpecification depthAttachment;
+		std::vector<unsigned int> nativeIDs;
+		unsigned int depthNativeID = 0;
 		static Ref<RenderTexture> active;
+
 	};
 }
 

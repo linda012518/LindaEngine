@@ -11,6 +11,7 @@ namespace LindaEngine
 {
 	struct Texture;
 	struct RenderTexture;
+	struct FramebufferTextureSpecification;
 
 	class TextureManager
 	{
@@ -26,9 +27,12 @@ namespace LindaEngine
 	class RenderTextureManager
 	{
 	public:
-		static Ref<RenderTexture> Get(int width, int height, TextureFormat colorFormat = TextureFormat::RGB8, bool sRGB = false, int msaa = 0, int mipCount = 0, TextureFormat depthFormat = TextureFormat::None, TextureFormat stencilFormat = TextureFormat::None);
+		static Ref<RenderTexture> Get(int width, int height, std::vector<FramebufferTextureSpecification>& fts, int msaa = 1, int mipCount = 1, bool isCube = false, bool isGammaCorrection = false, int anisotropy = 0);
 		static void Release(Ref<RenderTexture> rt);
 		static void Clear();
+
+	private:
+		static bool CompareAttachments(std::vector<FramebufferTextureSpecification>& left, std::vector<FramebufferTextureSpecification>& right);
 
 	private:
 		static std::vector<Ref<RenderTexture>> _renderTextures;

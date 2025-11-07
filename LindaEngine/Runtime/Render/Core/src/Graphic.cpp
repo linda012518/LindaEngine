@@ -1,5 +1,6 @@
 #include "Graphic.h"
 #include "RenderAPIContext.h"
+#include "TextureDriver.h"
 
 using namespace LindaEngine;
 
@@ -9,6 +10,7 @@ void Graphic::Initialize()
 {
 	_renderContext = RenderAPIContext::Create();
 	_renderContext->Initialize();
+	TextureDriver::Initialize();
 }
 
 void Graphic::SetViewport(int xStart, int yStart, int width, int height)
