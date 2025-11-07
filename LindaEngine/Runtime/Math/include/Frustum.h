@@ -16,7 +16,8 @@ namespace LindaEngine
 
 	private:
 		bool IsInside(const glm::vec3& point);
-		bool IsInside(Plane& plane, AABBBoundingBox& aabb);
+		bool IsIntersect(Plane& plane, AABBBoundingBox& aabb);
+		bool IsIntersect(AABBBoundingBox& aabb);
 
 	private:
 		Plane near;
