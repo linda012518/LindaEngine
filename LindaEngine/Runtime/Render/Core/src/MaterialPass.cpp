@@ -67,7 +67,7 @@ void MaterialPass::UpdateUniforms()
 		case UniformType::TEXTURE:
 		{
 			Ref<TextureUniformData> tud = DynamicCastRef(TextureUniformData, pair.second);
-			Ref<Texture> texture = TextureManager::GetTexture(tud->value.c_str());
+			Ref<Texture> texture = TextureManager::GetTexture(tud->value);
 			if (nullptr != texture)
 			{
 				TextureManager::Bind(texture, acitveChannel);

@@ -15,7 +15,7 @@ void TextureLoader::Load(Ref<Texture> texture)
     }
 }
 
-Ref<Texture> TextureLoader::Load(const char* path)
+Ref<Texture> TextureLoader::Load(std::string& path)
 {
     Ref<Texture> texture = CreateRef<Texture2D>();
     texture->width = 1;
@@ -24,14 +24,15 @@ Ref<Texture> TextureLoader::Load(const char* path)
 
     uint32_t data;
 
+    //数据要反过来，大多数系统是小端序
     if (path == "white")
-        data = 0xffffffff;
+        data = 0xFFFFFFFF;
     else if (path == "black")
-        data = 0x000000ff;
+        data = 0xFF000000;
     else if (path == "gray")
-        data = 0x808080ff;
+        data = 0xFF808080;
     else if (path == "bump")
-        data = 0x8080ffff;
+        data = 0xFFFF8080;
 
     TextureDriver::CreateTexture2D(texture, &data, 4, 8);
     return texture;

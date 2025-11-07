@@ -2,6 +2,8 @@
 
 #include "AutoPtr.h"
 
+#include <string>
+
 namespace LindaEngine
 {
 	struct Texture;
@@ -10,7 +12,7 @@ namespace LindaEngine
 	{
 	public:
 		static void Load(Ref<Texture> texture);
-		static Ref<Texture> Load(const char* path);
+		static Ref<Texture> Load(std::string& path);
 		static void Delete(Ref<Texture> texture);
 
 	private:

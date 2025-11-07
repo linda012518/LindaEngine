@@ -9,7 +9,7 @@ using namespace LindaEngine;
 std::unordered_map<std::string, Ref<Texture>> TextureManager::_textureMap;
 std::vector<Ref<RenderTexture>> RenderTextureManager::_renderTextures;
 
-Ref<Texture> TextureManager::GetTexture(std::string path)
+Ref<Texture> TextureManager::GetTexture(std::string& path)
 {
     try
     {
@@ -18,7 +18,7 @@ Ref<Texture> TextureManager::GetTexture(std::string path)
         {
             if (path == "white" || path == "black" || path == "gray" || path == "bump")
             {
-                _textureMap[path] = TextureLoader::Load(path.c_str());
+                _textureMap[path] = TextureLoader::Load(path);
             }
             else
             {
@@ -56,27 +56,25 @@ Ref<RenderTexture> RenderTextureManager::Get(int width, int height, TextureForma
 {
     for (auto& rt : _renderTextures)
     {
-        if (rt->width != width || rt->height != height || rt->colorFormat != colorFormat || rt->isGammaCorrection != sRGB ||
-            rt->msaa != msaa || rt->mipmapCount != mipCount || rt->depthFormat != depthFormat || rt->stencilFormat != stencilFormat)
+        if (rt->width == width || rt->height == height || rt->colorFormat == colorFormat || rt->isGammaCorrection == sRGB ||
+            rt->msaa == msaa || rt->mipmapCount == mipCount || rt->depthFormat == depthFormat || rt->stencilFormat == stencilFormat)
         {
-            Ref<RenderTexture> newRT = CreateRef<RenderTexture>();
-            newRT->width = width;
-            newRT->height = height;
-            newRT->colorFormat = colorFormat;
-            newRT->isGammaCorrection = sRGB;
-            newRT->msaa = msaa;
-            newRT->mipmapCount = mipCount;
-            newRT->depthFormat = depthFormat;
-            newRT->stencilFormat = stencilFormat;
-            return newRT;
+            auto itr = std::find(_renderTextures.begin(), _renderTextures.end(), rt);
+            _renderTextures.erase(itr);
+            return rt;
         }
-
-        auto itr = std::find(_renderTextures.begin(), _renderTextures.end(), rt);
-        _renderTextures.erase(itr);
-        return rt;
     }
 
-    return nullptr;
+    Ref<RenderTexture> newRT = CreateRef<RenderTexture>();
+    newRT->width = width;
+    newRT->height = height;
+    newRT->colorFormat = colorFormat;
+    newRT->isGammaCorrection = sRGB;
+    newRT->msaa = msaa;
+    newRT->mipmapCount = mipCount;
+    newRT->depthFormat = depthFormat;
+    newRT->stencilFormat = stencilFormat;
+    return newRT;
 }
 
 void RenderTextureManager::Release(Ref<RenderTexture> rt)
