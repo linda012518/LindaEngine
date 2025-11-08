@@ -13,162 +13,91 @@ void Frustum::UpdateFrustum(Camera* cam)
 	glm::vec4 plane;
 	float length;
 
-	//plane = glm::vec4(m[0][3] + m[0][0], m[1][3] + m[1][0], m[2][3] + m[2][0], m[3][3] + m[3][0]);
-	plane = glm::vec4(m[3][0] + m[0][0], m[3][1] + m[0][1], m[3][2] + m[0][2], m[3][3] + m[0][3]);
+	// 从矩阵中提取 right 平面
+	plane = glm::vec4(m[0][3] - m[0][0], m[1][3] - m[1][0], m[2][3] - m[2][0], m[3][3] - m[3][0]);
 	length = glm::length(glm::vec3(plane));
-	left.normal = glm::vec3(plane) / length;
-	left.distance = plane.w / length;
+	planes[0].normal = glm::vec3(plane) / length;
+	planes[0].distance = plane.w / length;
 
-	//plane = glm::vec4(m[0][3] - m[0][0], m[1][3] - m[1][0], m[2][3] - m[2][0], m[3][3] - m[3][0]);
-	plane = glm::vec4(m[3][0] - m[0][0], m[3][1] - m[0][1], m[3][2] - m[0][2], m[3][3] - m[0][3]);
+	// 从矩阵中提取 left 平面
+	plane = glm::vec4(m[0][3] + m[0][0], m[1][3] + m[1][0], m[2][3] + m[2][0], m[3][3] + m[3][0]);
 	length = glm::length(glm::vec3(plane));
-	right.normal = glm::vec3(plane) / length;
-	right.distance = plane.w / length;
+	planes[1].normal = glm::vec3(plane) / length;
+	planes[1].distance = plane.w / length;
 
-	//plane = glm::vec4(m[0][3] + m[0][1], m[1][3] + m[1][1], m[2][3] + m[2][1], m[3][3] + m[3][1]);
-	plane = glm::vec4(m[3][0] + m[1][0], m[3][1] + m[1][1], m[3][2] + m[1][2], m[3][3] + m[1][3]);
+	// 从矩阵中提取 bottom 平面
+	plane = glm::vec4(m[0][3] + m[0][1], m[1][3] + m[1][1], m[2][3] + m[2][1], m[3][3] + m[3][1]);
 	length = glm::length(glm::vec3(plane));
-	bottom.normal = glm::vec3(plane) / length;
-	bottom.distance = plane.w / length;
+	planes[2].normal = glm::vec3(plane) / length;
+	planes[2].distance = plane.w / length;
 
-	//plane = glm::vec4(m[0][3] - m[0][1], m[1][3] - m[1][1], m[2][3] - m[2][1], m[3][3] - m[3][1]);
-	plane = glm::vec4(m[3][0] - m[1][0], m[3][1] - m[1][1], m[3][2] - m[1][2], m[3][3] - m[1][3]);
+	// 从矩阵中提取 top 平面
+	plane = glm::vec4(m[0][3] - m[0][1], m[1][3] - m[1][1], m[2][3] - m[2][1], m[3][3] - m[3][1]);
 	length = glm::length(glm::vec3(plane));
-	top.normal = glm::vec3(plane) / length;
-	top.distance = plane.w / length;
+	planes[3].normal = glm::vec3(plane) / length;
+	planes[3].distance = plane.w / length;
 
-	//plane = glm::vec4(m[0][3] + m[0][2], m[1][3] + m[1][2], m[2][3] + m[2][2], m[3][3] + m[3][2]);
-	plane = glm::vec4(m[3][0] + m[2][0], m[3][1] + m[2][1], m[3][2] + m[2][2], m[3][3] + m[2][3]);
+	// 从矩阵中提取 far 平面
+	plane = glm::vec4(m[0][3] - m[0][2], m[1][3] - m[1][2], m[2][3] - m[2][2], m[3][3] - m[3][2]);
 	length = glm::length(glm::vec3(plane));
-	near.normal = glm::vec3(plane) / length;
-	near.distance = plane.w / length;
+	planes[4].normal = glm::vec3(plane) / length;
+	planes[4].distance = plane.w / length;
 
-	//plane = glm::vec4(m[0][3] - m[0][2], m[1][3] - m[1][2], m[2][3] - m[2][2], m[3][3] - m[3][2]);
-	plane = glm::vec4(m[3][0] - m[2][0], m[3][1] - m[2][1], m[3][2] - m[2][2], m[3][3] - m[2][3]);
+	// 从矩阵中提取 near 平面
+	plane = glm::vec4(m[0][3] + m[0][2], m[1][3] + m[1][2], m[2][3] + m[2][2], m[3][3] + m[3][2]);
 	length = glm::length(glm::vec3(plane));
-	far.normal = glm::vec3(plane) / length;
-	far.distance = plane.w / length;
+	planes[5].normal = glm::vec3(plane) / length;
+	planes[5].distance = plane.w / length;
 }
 
 bool Frustum::AABBInside(AABBBoundingBox& aabb)
 {
-	if (IsInside(aabb.min))
-		return true;
-	if (IsInside(glm::vec3(aabb.min.x, aabb.min.y, aabb.max.z)))
-		return true;
-	if (IsInside(glm::vec3(aabb.min.x, aabb.max.y, aabb.min.z)))
-		return true;
-	if (IsInside(glm::vec3(aabb.min.x, aabb.max.y, aabb.max.z)))
-		return true;
-	if (IsInside(glm::vec3(aabb.max.x, aabb.min.y, aabb.min.z)))
-		return true;
-	if (IsInside(glm::vec3(aabb.max.x, aabb.min.y, aabb.max.z)))
-		return true;
-	if (IsInside(glm::vec3(aabb.max.x, aabb.max.y, aabb.min.z)))
-		return true;
-	if (IsInside(aabb.max))
-		return true;
+	// 对每个视锥体平面进行测试
+	for (int i = 0; i < 6; i++)
+	{
+		const Plane& plane = planes[i];
+		const glm::vec3& N = plane.normal;
 
-	if (IsIntersect(aabb))
-		return true;
+		// 找到 AABB 在平面法向量正方向上的最远点（N-vertex）
+		// 如果这个点在平面负侧，说明整个AABB都在平面负侧（视锥体外）
+		// 如果法向量指向正方向，选择max；如果指向负方向，选择min
+		glm::vec3 nVertex;
 
-	return false;
+		nVertex.x = (N.x >= 0.0f) ? aabb.max.x : aabb.min.x;
+		nVertex.y = (N.y >= 0.0f) ? aabb.max.y : aabb.min.y;
+		nVertex.z = (N.z >= 0.0f) ? aabb.max.z : aabb.min.z;
+
+		// 计算N-vertex到平面的距离
+		// 如果距离 < 0，说明 AABB 完全在平面负侧（视锥体外），可以剔除
+		float distance = plane.GetDistance(nVertex);
+		if (distance < 0.0f)
+			return false;
+	}
+
+	// 所有平面测试都通过，AABB 在视锥体内或与视锥体相交
+	return true;
 }
 
 bool Frustum::SphereInside(SphereBoundingBox& sphere)
 {
-	if (left.GetDistance(sphere.center) < -sphere.radius)
-		return false;
-	if (right.GetDistance(sphere.center) < -sphere.radius)
-		return false;
-	if (bottom.GetDistance(sphere.center) < -sphere.radius)
-		return false;
-	if (top.GetDistance(sphere.center) < -sphere.radius)
-		return false;
-	if (near.GetDistance(sphere.center) < -sphere.radius)
-		return false;
-	if (far.GetDistance(sphere.center) < -sphere.radius)
-		return false;
+	for (int i = 0; i < 6; i++)
+	{
+		if (planes[i].GetDistance(sphere.center) < -sphere.radius)
+			return false;
+	}
+
 	return true;
 }
 
-bool Frustum::IsInside(const glm::vec3& point)
+bool Frustum::PointInside(const glm::vec3& point)
 {
-	if (left.GetDistance(point) < 0)
-		return false;
-	if (right.GetDistance(point) < 0)
-		return false;
-	if (bottom.GetDistance(point) < 0)
-		return false;
-	if (top.GetDistance(point) < 0)
-		return false;
-	if (near.GetDistance(point) < 0)
-		return false;
-	if (far.GetDistance(point) < 0)
-		return false;
+	for (int i = 0; i < 6; i++)
+	{
+		if (planes[i].GetDistance(point) < 0)
+			return false;
+	}
+
 	return true;
 }
-
-bool Frustum::IsIntersect(AABBBoundingBox& aabb)
-{
-	if (IsIntersect(left, aabb))
-		return true;
-	if (IsIntersect(right, aabb))
-		return true;
-	if (IsIntersect(top, aabb))
-		return true;
-	if (IsIntersect(bottom, aabb))
-		return true;
-	if (IsIntersect(near, aabb))
-		return true;
-	if (IsIntersect(far, aabb))
-		return true;
-	return false;
-}
-
-bool Frustum::IsIntersect(Plane& plane, AABBBoundingBox& aabb)
-{
-	glm::vec3 N = plane.normal;
-	float fD = plane.distance;
-	glm::vec3 MinTemp, MaxTemp;
-	// x 
-	if (N.x >= 0.0f)
-	{
-		MinTemp.x = aabb.min.x;
-		MaxTemp.x = aabb.max.x;
-	}
-	else
-	{
-		MinTemp.x = aabb.max.x;
-		MaxTemp.x = aabb.min.x;
-	}
-	// y 
-	if (N.y >= 0.0f)
-	{
-		MinTemp.y = aabb.min.y;
-		MaxTemp.y = aabb.max.y;
-	}
-	else
-	{
-		MinTemp.y = aabb.max.y;
-		MaxTemp.y = aabb.min.y;
-	}
-	// z 
-	if (N.z >= 0.0f)
-	{
-		MinTemp.z = aabb.min.z;
-		MaxTemp.z = aabb.max.z;
-	}
-	else
-	{
-		MinTemp.z = aabb.max.z;
-		MaxTemp.z = aabb.min.z;
-	}
-
-	if (plane.GetDistance(MinTemp) > 0.0f == false && plane.GetDistance(MaxTemp) < 0.0f == false)
-		return true;
-	return false;
-}
-
 
 
