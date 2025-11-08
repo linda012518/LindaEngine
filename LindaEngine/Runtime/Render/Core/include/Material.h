@@ -26,14 +26,17 @@ namespace LindaEngine
 		virtual ~Material();
 
 		void SetPath(const char* path) { _state.materialPath = path; }
-		bool Bind(Transform* transform, const std::vector<VertexAttribute>& attributes);
+		void Bind(Ref<MaterialPass> pass, Transform* transform, const std::vector<VertexAttribute>& attributes);
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
+		std::vector<Ref<MaterialPass>> GetPassByLightMode(std::string& lightMode);
+
 	private:
 		MaterialState _state;
-		std::unordered_map<std::string, Ref<MaterialPass>> _passes;
+		//std::unordered_map<std::string, Ref<MaterialPass>> _passes;
+		std::vector<Ref<MaterialPass>> _passes;
 
 	public:
 		static Ref<Material> overrideMat;

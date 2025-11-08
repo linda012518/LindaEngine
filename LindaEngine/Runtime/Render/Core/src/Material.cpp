@@ -18,28 +18,10 @@ Material::~Material()
 {
 }
 
-bool Material::Bind(Transform* transform, const std::vector<VertexAttribute>& attrubites)
+void Material::Bind(Ref<MaterialPass> pass, Transform* transform, const std::vector<VertexAttribute>& attributes)
 {
-	Ref<MaterialPass> pass = nullptr;
-
-	if (_passes.find(overrideLightMode) == _passes.end())
-	{
-		if (_state.hasFallback)
-		{
-			pass = MaterialManager::GetDefaultMaterialPass(overrideLightMode.c_str());
-			if (nullptr == pass)
-				return false;
-			pass->CompileShader(_state.shaderPath, attrubites);
-			pass->Bind(transform);
-			return true;
-		}
-		return false;
-	}
-
-	pass = _passes[overrideLightMode];
-	pass->CompileShader(_state.shaderPath, attrubites);
+	pass->CompileShader(_state.shaderPath, attributes);
 	pass->Bind(transform);
-	return true;
 }
 
 bool Material::Serialize()
@@ -57,4 +39,22 @@ bool Material::Deserialize(YAML::Node& node)
 {
 	_state.materialPath = node["FilePath"].as<std::string>();
 	return true;
+}
+
+std::vector<Ref<MaterialPass>> Material::GetPassByLightMode(std::string& lightMode)
+{
+	std::vector<Ref<MaterialPass>> go;
+	for (auto& pass : _passes)
+	{
+		if (pass->_state.lightMode != lightMode && _state.hasFallback)
+		{
+			pass = MaterialManager::GetDefaultMaterialPass(overrideLightMode.c_str());
+			if (nullptr == pass)
+				continue;
+			go.push_back(pass);
+		}
+		else
+			go.push_back(pass);
+	}
+	return go;
 }

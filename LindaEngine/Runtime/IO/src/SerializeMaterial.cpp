@@ -32,7 +32,7 @@ void YamlSerializer::SerializeMaterial(const char* path)
 	out << YAML::Value << YAML::BeginSeq;
 	auto tempPass = MaterialPass::overrideMatPass;
 	for (auto& pass : mat->_passes) {
-		MaterialPass::overrideMatPass = pass.second;
+		MaterialPass::overrideMatPass = pass;
 		SerializeMaterialPass(out);
 	}
 	MaterialPass::overrideMatPass = tempPass;
@@ -85,7 +85,7 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 		std::string passName = pass["PassName"].as<std::string>();
 		matPass = CreateRef<MaterialPass>();
 		matPass->_state.lightMode = passName;
-		mat->_passes[passName] = matPass;
+		mat->_passes.push_back(matPass);
 
 		auto uniforms = pass["ShaderUniforms"];
 		for (auto unif : uniforms)

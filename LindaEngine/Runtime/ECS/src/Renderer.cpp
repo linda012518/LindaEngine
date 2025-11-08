@@ -77,10 +77,15 @@ void Renderer::Render(Transform* transform)
 	int index = 0;
 	for (auto& material : _materialList)
 	{
-		index++;
-		if (material->Bind(transform, _mesh->GetMeshAttributes(index - 1)) == false)
+		std::vector<Ref<MaterialPass>> go = material->GetPassByLightMode(Material::overrideLightMode);
+		if (go.size() <= 0)
 			continue;
-		_mesh->Draw(index - 1);
+		for (auto& pass : go)
+		{
+			material->Bind(pass, transform, _mesh->GetMeshAttributes(index));
+			_mesh->Draw(index);
+		}
+		index++;
 	}
 }
 

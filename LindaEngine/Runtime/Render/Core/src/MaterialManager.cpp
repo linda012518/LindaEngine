@@ -39,7 +39,7 @@ Ref<Material> MaterialManager::GetMaterialByShader(const char* path)
     {
         Ref<MaterialPass> matPass = CreateRef<MaterialPass>();
         matPass->_state = pass->passState;
-        material->_passes[matPass->_state.lightMode] = matPass;
+        material->_passes.push_back(matPass);
     }
     return material;
 }
