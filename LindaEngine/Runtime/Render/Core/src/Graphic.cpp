@@ -28,6 +28,11 @@ void Graphic::Clear(bool color, bool depth, bool stencil)
 	_renderContext->Clear(color, depth, stencil);
 }
 
+void Graphic::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref<Material> mat, int pass)
+{
+	_renderContext->Blit(src, dest, mat, pass);
+}
+
 void Graphic::CheckRenderState(RenderState& state, RenderState& materialState)
 {
 	_renderContext->CheckRenderState(state, materialState);

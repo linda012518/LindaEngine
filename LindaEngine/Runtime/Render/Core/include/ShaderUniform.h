@@ -5,9 +5,11 @@
 
 namespace LindaEngine
 {
+	struct Texture;
+
 	enum class UniformType
 	{
-		None, TEXTURE, INT, INTARRAY, INT4, INT4ARRAY, FLOAT, FLOATARRAY, FLOAT4, FLOAT4ARRAY, 
+		None, TEXTURE, TEXTUREPOINTER, INT, INTARRAY, INT4, INT4ARRAY, FLOAT, FLOATARRAY, FLOAT4, FLOAT4ARRAY,
 		MAT2, MAT2ARRAY, MAT3, MAT3ARRAY, MAT4, MAT4ARRAY
 	};
 
@@ -23,6 +25,13 @@ namespace LindaEngine
 	{
 		TextureUniformData() { dataType = UniformType::TEXTURE; }
 		std::string value;
+	};
+
+	struct TexturePointerUniformData : public ShaderUniform
+	{
+		TexturePointerUniformData() { dataType = UniformType::TEXTUREPOINTER; }
+		Ref<Texture> value;
+		int renderTextureColorIndex = -1;
 	};
 
 	struct FloatUniformData : public ShaderUniform

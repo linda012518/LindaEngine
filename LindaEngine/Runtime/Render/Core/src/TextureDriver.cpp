@@ -20,9 +20,14 @@ void TextureDriver::DeleteTexture(Ref<Texture> texture)
 	_context->DeleteTexture(texture);
 }
 
-void TextureDriver::Bind(Ref<Texture> texture, int channel)
+void TextureDriver::Bind(Ref<Texture> texture, int channel, int renderTextureColorIndex)
 {
-	_context->Bind(texture, channel);
+	_context->Bind(texture, channel, renderTextureColorIndex);
+}
+
+void TextureDriver::BindRenderTarget(Ref<RenderTexture> texture)
+{
+	_context->BindRenderTarget(texture);
 }
 
 void TextureDriver::CreateRenderTexture(Ref<RenderTexture> rt)

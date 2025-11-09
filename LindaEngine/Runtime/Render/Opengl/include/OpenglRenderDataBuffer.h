@@ -57,9 +57,13 @@ namespace LindaEngine
 
 		virtual void Draw(DrawType drawType) override;
 
+		virtual void SetEmptyState() override { _isEmpty = true; }
+
 	private:
 		unsigned int _rendererID;
 		Ref<VertexBuffer> _vertexBuffer;
 		Ref<IndexBuffer> _indexBuffer;
+
+		bool _isEmpty = false;
 	};
 }

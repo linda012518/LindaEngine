@@ -47,14 +47,46 @@ void OpenglTexture::DeleteTexture(Ref<Texture> texture)
 		glDeleteTextures(1, &texture->nativeColorID);
 }
 
-void OpenglTexture::Bind(Ref<Texture> texture, int channel)
+void OpenglTexture::Bind(Ref<Texture> texture, int channel, int renderTextureColorIndex)
 {
+	if (nullptr == texture)
+		return;
+
 	glActiveTexture(GL_TEXTURE0 + channel);
 	switch (texture->type)
 	{
 	case TextureType::Tex2D: glBindTexture(GL_TEXTURE_2D, texture->nativeColorID); break;
 	case TextureType::Cube: glBindTexture(GL_TEXTURE_CUBE_MAP, texture->nativeColorID); break;
+	case TextureType::RenderTexture:
+	{
+		Ref<RenderTexture> rt = DynamicCastRef(RenderTexture, texture);
+		if (-1 != renderTextureColorIndex)
+		{
+			if (false == rt->isCube)
+				glBindTexture(GL_TEXTURE_2D, rt->nativeIDs[renderTextureColorIndex]);
+			else
+				glBindTexture(GL_TEXTURE_CUBE_MAP, rt->nativeIDs[renderTextureColorIndex]);
+		}
+		else
+		{
+			if (false == rt->isCube)
+				glBindTexture(GL_TEXTURE_2D, rt->depthNativeID);
+			else
+				glBindTexture(GL_TEXTURE_CUBE_MAP, rt->depthNativeID);
+		}
 	}
+	break;
+	}
+}
+
+void OpenglTexture::BindRenderTarget(Ref<RenderTexture> texture)
+{
+	if (nullptr == texture)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		return;
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, texture->nativeColorID);
 }
 
 void OpenglTexture::CreateRenderTexture(Ref<RenderTexture> rt)

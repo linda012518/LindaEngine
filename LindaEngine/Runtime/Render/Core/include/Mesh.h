@@ -73,7 +73,7 @@ namespace LindaEngine
 		const std::vector<VertexAttribute>& GetMeshAttributes(int index = 0) { return _data[index].attributes; }
 		const int GetMeshCount() { return _meshCount; }
 		void SetPath(const char* path) { _path = path; }
-		void Draw(int index);
+		void Draw(int index = 0);
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);

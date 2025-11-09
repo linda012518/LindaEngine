@@ -1,6 +1,11 @@
 #include "OpenglAPIContext.h"
 #include "glad/glad.h"
 #include "RenderState.h"
+#include "Material.h"
+#include "Mesh.h"
+#include "Texture.h"
+#include "TextureManager.h"
+#include "MeshManager.h"
 
 using namespace LindaEngine;
 
@@ -49,6 +54,15 @@ void OpenglAPIContext::Clear(bool color, bool depth, bool stencil)
 	glClear(ret);
 }
 
+void OpenglAPIContext::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref<Material> mat, int pass)
+{
+	RenderTextureManager::SetRenderTarget(dest);
+	Material::overrideLightMode = "Color";
+	mat->SetTexture("mainTexture", src, pass);
+	mat->Bind(pass, nullptr, std::vector<VertexAttribute>());
+	MeshManager::GetEmpty()->Draw();
+}
+
 void OpenglAPIContext::CheckRenderState(RenderState& state, RenderState& materialState)
 {
 	CheckColorMask(state, materialState);
@@ -78,9 +92,6 @@ void OpenglAPIContext::CheckDepthState(RenderState& state, RenderState& material
 		else
 			glDisable(GL_DEPTH_TEST);
 	}
-
-	if (false == state.depthState.depthTest)
-		return;
 
 	if (state.depthState.depthWrite != materialState.depthState.depthWrite)
 	{

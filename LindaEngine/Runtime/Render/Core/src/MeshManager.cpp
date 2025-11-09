@@ -48,3 +48,13 @@ Ref<Mesh> MeshManager::GetSkybox()
 {
     return GetMesh("Skybox");
 }
+
+Ref<Mesh> LindaEngine::MeshManager::GetQuad()
+{
+    return GetMesh("Quad");
+}
+
+Ref<Mesh> LindaEngine::MeshManager::GetEmpty()
+{
+    return GetMesh("Empty");
+}

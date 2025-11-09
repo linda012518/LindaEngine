@@ -12,7 +12,8 @@ namespace LindaEngine
 		void CreateTexture2D(Ref<Texture> texture, void* data, int channels, int bitCount);
 		void CreateCube(Ref<Texture> texture, void* right, void*left, void* top, void* bottom, void* front, void* back, int channels, int bitCount);
 		void DeleteTexture(Ref<Texture> texture);
-		void Bind(Ref<Texture> texture, int channel);
+		void Bind(Ref<Texture> texture, int channel, int renderTextureColorIndex);
+		void BindRenderTarget(Ref<RenderTexture> texture);
 		void CreateRenderTexture(Ref<RenderTexture> rt);
 		void DeleteRenderTexture(Ref<RenderTexture> rt);
 

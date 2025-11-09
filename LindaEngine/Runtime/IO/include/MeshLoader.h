@@ -14,11 +14,14 @@ namespace LindaEngine
 	public:
 		static Ref<Mesh> Load(std::string path);
 
+	private:
 		static Ref<Mesh> LoadSphereMesh();
 		static Ref<Mesh> LoadCube();
 		static Ref<Mesh> LoadCapsule();
 		static Ref<Mesh> LoadPlane();
 		static Ref<Mesh> LoadSkybox();
+		static Ref<Mesh> LoadQuad();
+		static Ref<Mesh> LoadEmpty();
 
 	private:
 		static void ParseAssimpNode(aiNode* node, const aiScene* scene, Ref<Mesh> mesh);

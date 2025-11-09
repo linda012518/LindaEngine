@@ -11,6 +11,7 @@ namespace LindaEngine
 		void SetViewport(int xStart, int yStart, int width, int height);
 		void SetClearColor(float r, float g, float b, float a);
 		void Clear(bool color, bool depth, bool stencil);
+		void Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref<Material> mat, int pass = 0);
 
 		void CheckRenderState(RenderState& state, RenderState& materialState);
 

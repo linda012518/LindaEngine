@@ -54,6 +54,8 @@ namespace LindaEngine
 
 		virtual void Draw(DrawType drawType) = 0;
 
+		virtual void SetEmptyState() = 0;
+
 		static Ref<VertexArray> Create();
 	};
 }

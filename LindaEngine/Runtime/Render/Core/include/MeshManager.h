@@ -18,6 +18,8 @@ namespace LindaEngine
 		static Ref<Mesh> GetCapsule();
 		static Ref<Mesh> GetPlane();
 		static Ref<Mesh> GetSkybox();
+		static Ref<Mesh> GetQuad();
+		static Ref<Mesh> GetEmpty();
 
 	private:
 		static std::unordered_map<std::string, Ref<Mesh>> _meshMap;

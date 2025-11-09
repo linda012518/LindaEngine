@@ -47,9 +47,9 @@ void TextureManager::Clear()
     _textureMap.clear(); 
 }
 
-void TextureManager::Bind(Ref<Texture> texture, int channel)
+void TextureManager::Bind(Ref<Texture> texture, int channel, int renderTextureColorIndex)
 {
-    TextureDriver::Bind(texture, channel);
+    TextureDriver::Bind(texture, channel, renderTextureColorIndex);
 }
 
 Ref<RenderTexture> RenderTextureManager::Get(int width, int height, std::vector<FramebufferTextureSpecification>& fts, int msaa, int mipCount, bool isCube, bool isGammaCorrection, int anisotropy)
@@ -63,8 +63,9 @@ Ref<RenderTexture> RenderTextureManager::Get(int width, int height, std::vector<
                 continue;
 
             auto itr = std::find(_renderTextures.begin(), _renderTextures.end(), rt);
+            auto go = rt;
             _renderTextures.erase(itr);
-            return rt;
+            return go;
         }
     }
 
@@ -91,9 +92,16 @@ Ref<RenderTexture> RenderTextureManager::Get(int width, int height, std::vector<
     return newRT;
 }
 
+Ref<RenderTexture> RenderTextureManager::Get(int width, int height, FramebufferTextureSpecification& fts, int msaa, int mipCount, bool isCube, bool isGammaCorrection, int anisotropy)
+{
+    std::vector<FramebufferTextureSpecification> array { fts };
+    return Get(width, height, array, msaa, mipCount, isCube, isGammaCorrection, anisotropy);
+}
+
 void RenderTextureManager::Release(Ref<RenderTexture> rt)
 {
     _renderTextures.push_back(rt);
+    SetRenderTarget(nullptr);
 }
 
 void RenderTextureManager::Clear() 
@@ -105,9 +113,14 @@ void RenderTextureManager::Clear()
     _renderTextures.clear(); 
 }
 
+void RenderTextureManager::SetRenderTarget(Ref<RenderTexture> texture)
+{
+    TextureDriver::BindRenderTarget(texture);
+}
+
 bool RenderTextureManager::CompareAttachments(std::vector<FramebufferTextureSpecification>& left, std::vector<FramebufferTextureSpecification>& right)
 {
-    int size = left.size();
+    int size = (int)left.size();
     if (size != right.size())
         return false;
 

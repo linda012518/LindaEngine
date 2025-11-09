@@ -150,6 +150,6 @@ void OpenGLVertexArray::Draw(DrawType drawType)
 	}
 	else
 	{
-		glDrawArrays(dt, 0, _vertexBuffer->GetCount());
+		glDrawArrays(dt, 0, _isEmpty ? 3 : _vertexBuffer->GetCount());
 	}
 }

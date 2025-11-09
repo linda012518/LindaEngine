@@ -8,6 +8,10 @@
 #include "CameraSystem.h"
 #include "Camera.h"
 #include "UniversalRenderer.h"
+#include "TextureManager.h"
+#include "Texture.h"
+#include "Material.h"
+#include "MaterialManager.h"
 
 using namespace LindaEngine;
 
@@ -36,29 +40,29 @@ Scope<RenderPipeline> RenderPipeline::Create()
 
 const std::vector<Camera*> RenderPipeline::CheckCameraList()
 {
-    //1 ²éÕÒ¿ÉÓÃÒõÓ°Ïà»ú
-    //2 ²éÕÒ¿ÉÓÃÑÕÉ«Ïà»ú
-    //3 Ïà»úÅÅĞò
+    //1 æŸ¥æ‰¾å¯ç”¨é˜´å½±ç›¸æœº
+    //2 æŸ¥æ‰¾å¯ç”¨é¢œè‰²ç›¸æœº
+    //3 ç›¸æœºæ’åº
     return CameraSystem::GetActiveCameraList();
 }
 
 void RenderPipeline::CheckLightList()
 {
-    //1 ²éÕÒ¿ÉÓÃµÆ¹â
-    //2 ÉèÖÃµÆ¹â²ÎÊıµ½shader
-    //3 ÉèÖÃÒõÓ°Ïà»ú
+    //1 æŸ¥æ‰¾å¯ç”¨ç¯å…‰
+    //2 è®¾ç½®ç¯å…‰å‚æ•°åˆ°shader
+    //3 è®¾ç½®é˜´å½±ç›¸æœº
 }
 
 void RenderPipeline::Render()
 {
-    //1 ±éÀúÏà»ú
-    //4 ÊÓ×¶ÌŞ³ı£¬ÅÅĞò
-    //2 ÉèÖÃÏà»ú²ÎÊıµ½shader
-    //3 ÅäÖÃÏà»ú HDR ºó´¦ÀíµÈµÈ
-    //5 ÉèÖÃÇåÆÁÏà¹Ø
-    //6 äÖÈ¾²»Í¸Ã÷ÎïÌå
-    //7 äÖÈ¾Ìì¿Õ
-    //8 äÖÈ¾Í¸Ã÷ÎïÌå
+    //1 éå†ç›¸æœº
+    //4 è§†é”¥å‰”é™¤ï¼Œæ’åº
+    //2 è®¾ç½®ç›¸æœºå‚æ•°åˆ°shader
+    //3 é…ç½®ç›¸æœº HDR åå¤„ç†ç­‰ç­‰
+    //5 è®¾ç½®æ¸…å±ç›¸å…³
+    //6 æ¸²æŸ“ä¸é€æ˜ç‰©ä½“
+    //7 æ¸²æŸ“å¤©ç©º
+    //8 æ¸²æŸ“é€æ˜ç‰©ä½“
 
     const std::vector<Camera*> cameraList = CheckCameraList();
 
@@ -80,7 +84,27 @@ void RenderPipeline::Render()
         Graphic::Clear(true, true, true);
         Ref<DrawingSettings> settings = CreateRef<DrawingSettings>();
         settings->lightModes.push_back("customLightMode");
+
+        FramebufferTextureSpecification fts;
+        fts.colorFormat = TextureFormat::RGBA8;
+        Ref<RenderTexture> rt = RenderTextureManager::Get(config.screenNewWidth, config.screenNewHeight, fts);
+        RenderTextureManager::SetRenderTarget(rt);
+
         RendererSystem::DrawRenderers(camera, settings);
+        RenderTextureManager::Release(rt);
+
+        Graphic::SetViewport(0, 0, config.screenNewWidth, config.screenNewHeight);
+        Graphic::SetClearColor(0.3, 0.3, 0, 0);
+        Graphic::Clear(true, true, true);
+        Ref<Material> material = MaterialManager::GetMaterialByShader("Assets/Shaders/postprocess.shader");
+        RenderTextureManager::SetRenderTarget(nullptr);
+        Graphic::Blit(rt, nullptr, material);
+
+        // å¿…é¡»åœ¨Bindä¹‹å‰è®¾ç½®overrideLightModeï¼Œå¦åˆ™shaderç¼–è¯‘æ—¶æ— æ³•åŒ¹é…åˆ°æ­£ç¡®çš„Pass
+        //Material::overrideLightMode = "Color";
+        //material->Bind(0, nullptr, std::vector<VertexAttribute>());
+        //MeshManager::GetEmpty()->Draw();
+        //RendererSystem::DrawRenderers(camera, settings);
     }
 
 }

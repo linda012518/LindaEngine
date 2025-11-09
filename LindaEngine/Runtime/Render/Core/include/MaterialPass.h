@@ -32,7 +32,7 @@ namespace LindaEngine
 		const std::string& GetLightMode() const { return _state.lightMode; }
 
 		template <typename T>
-		void SetUniformValue(const char* name, T val);
+		void SetUniformValue(const char* name, T val, int count = 1);
 
 	private:
 		MaterialPassState _state;

@@ -29,6 +29,8 @@ Ref<Mesh> MeshLoader::Load(std::string path)
 	else if (path == "Capsule") return LoadCapsule();
 	else if (path == "Plane") return LoadPlane();
 	else if (path == "Skybox") return LoadSkybox();
+	else if (path == "Quad") return LoadQuad();
+	else if (path == "Empty") return LoadEmpty();
 
 	Assimp::Importer importer;
 	//aiProcess_Triangulate			如果模型不是（全部）由三角形组成，它需要将模型所有的图元形状变换为三角形
@@ -339,6 +341,41 @@ Ref<Mesh> MeshLoader::LoadSkybox()
 	data.vertexData.insert(data.vertexData.end(), { -1.0f, -1.0f,  1.0f });
 	data.vertexData.insert(data.vertexData.end(), {  1.0f, -1.0f,  1.0f });
 
+	return mesh;
+}
+
+Ref<Mesh> MeshLoader::LoadQuad()
+{
+	Ref<Mesh> mesh = CreateRef<Mesh>();
+
+	Mesh::Data& data = mesh->AddMeshData(Mesh::Data());
+
+	data.AddAttribute(VertexAttributeType::Position);
+	data.AddAttribute(VertexAttributeType::Normal);
+	data.AddAttribute(VertexAttributeType::Tangent);
+	data.AddAttribute(VertexAttributeType::UV0);
+
+	mesh->UpdateBoundingBox(-1.0f, -1.0f, 0.0f);
+	mesh->UpdateBoundingBox( 1.0f, -1.0f, 0.0f);
+	mesh->UpdateBoundingBox(-1.0f,  1.0f, 0.0f);
+	mesh->UpdateBoundingBox( 1.0f,  1.0f, 0.0f);
+
+	data.vertexData.insert(data.vertexData.end(), { -1.0f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  0.1f, 0.2f, 0.3f,  0.0f, 1.0f });
+	data.vertexData.insert(data.vertexData.end(), { -1.0f, -1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  0.1f, 0.2f, 0.3f,  0.0f, 0.0f });
+	data.vertexData.insert(data.vertexData.end(), {  1.0f, -1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  0.1f, 0.2f, 0.3f,  1.0f, 0.0f });
+																			   		 
+	data.vertexData.insert(data.vertexData.end(), { -1.0f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  0.1f, 0.2f, 0.3f,  0.0f, 1.0f });
+	data.vertexData.insert(data.vertexData.end(), {  1.0f, -1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  0.1f, 0.2f, 0.3f,  1.0f, 0.0f });
+	data.vertexData.insert(data.vertexData.end(), {  1.0f,  1.0f, 0.0f,  0.0f, 0.0f, 1.0f,  0.1f, 0.2f, 0.3f,  1.0f, 1.0f });
+
+	return mesh;
+
+}
+
+Ref<Mesh> MeshLoader::LoadEmpty()
+{
+	Ref<Mesh> mesh = CreateRef<Mesh>();
+	Mesh::Data& data = mesh->AddMeshData(Mesh::Data());
 	return mesh;
 }
 

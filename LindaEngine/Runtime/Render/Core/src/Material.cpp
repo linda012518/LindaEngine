@@ -18,10 +18,70 @@ Material::~Material()
 {
 }
 
+void Material::SetTexture(const std::string& name, std::string value, int pass)
+{
+	_passes[pass]->SetUniformValue<const char*>(name.c_str(), value.c_str());
+}
+
+void Material::SetTexture(const std::string& name, Ref<Texture> value, int pass, int renderTextureColorIndex)
+{
+	_passes[pass]->SetUniformValue<Ref<Texture>>(name.c_str(), value, renderTextureColorIndex);
+}
+
+void Material::SetInt(const std::string& name, int value, int pass)
+{
+	_passes[pass]->SetUniformValue<int>(name.c_str(), value);
+}
+
+void Material::SetFloat(const std::string& name, float value, int pass)
+{
+	_passes[pass]->SetUniformValue<float>(name.c_str(), value);
+}
+
+void Material::SetIntArray(const std::string& name, int count, int* value, int pass)
+{
+	_passes[pass]->SetUniformValue<int*>(name.c_str(), value, count);
+}
+
+void Material::SetFloatArray(const std::string& name, int count, float* value, int pass)
+{
+	_passes[pass]->SetUniformValue<float*>(name.c_str(), value, count);
+}
+
+void Material::SetIVec4(const std::string& name, const glm::ivec4& value, int count, int pass)
+{
+	_passes[pass]->SetUniformValue<glm::ivec4>(name.c_str(), value);
+}
+
+void Material::SetVec4(const std::string& name, const glm::vec4& value, int count, int pass)
+{
+	_passes[pass]->SetUniformValue<glm::vec4>(name.c_str(), value);
+}
+
+void Material::SetMat2(const std::string& name, const glm::mat2& mat, int count, int pass)
+{
+	_passes[pass]->SetUniformValue<glm::mat2>(name.c_str(), mat);
+}
+
+void Material::SetMat3(const std::string& name, const glm::mat3& mat, int count, int pass)
+{
+	_passes[pass]->SetUniformValue<glm::mat3>(name.c_str(), mat);
+}
+
+void Material::SetMat4(const std::string& name, const glm::mat4& mat, int count, int pass)
+{
+	_passes[pass]->SetUniformValue<glm::mat4>(name.c_str(), mat);
+}
+
 void Material::Bind(Ref<MaterialPass> pass, Transform* transform, const std::vector<VertexAttribute>& attributes)
 {
 	pass->CompileShader(_state.shaderPath, attributes);
 	pass->Bind(transform);
+}
+
+void Material::Bind(int pass, Transform* transform, const std::vector<VertexAttribute>& attributes)
+{
+	Bind(_passes[pass], transform, attributes);
 }
 
 bool Material::Serialize()
