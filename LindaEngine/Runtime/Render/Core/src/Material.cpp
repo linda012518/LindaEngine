@@ -106,15 +106,17 @@ std::vector<Ref<MaterialPass>> Material::GetPassByLightMode(std::string& lightMo
 	std::vector<Ref<MaterialPass>> go;
 	for (auto& pass : _passes)
 	{
-		if (pass->_state.lightMode != lightMode && _state.hasFallback)
+		if (pass->_state.lightMode == lightMode)
+		{
+			go.push_back(pass);
+		}
+		else if (_state.hasFallback)
 		{
 			pass = MaterialManager::GetDefaultMaterialPass(overrideLightMode.c_str());
 			if (nullptr == pass)
 				continue;
 			go.push_back(pass);
 		}
-		else
-			go.push_back(pass);
 	}
 	return go;
 }

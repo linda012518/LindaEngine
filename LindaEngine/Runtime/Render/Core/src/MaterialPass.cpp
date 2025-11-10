@@ -99,15 +99,7 @@ void MaterialPass::UpdateUniforms()
 		case UniformType::TEXTUREPOINTER:
 		{
 			Ref<TexturePointerUniformData> tud = DynamicCastRef(TexturePointerUniformData, pair.second);
-			Ref<Texture> texture = tud->value;
-			if (nullptr == texture)
-				break;
-
-			if (texture->type == TextureType::RenderTexture)
-				TextureManager::Bind(texture, acitveChannel, tud->renderTextureColorIndex);
-			else if (texture->type == TextureType::Tex2D)
-				TextureManager::Bind(texture, acitveChannel);
-
+			TextureManager::Bind(tud->value, acitveChannel, tud->renderTextureColorIndex);
 			_shader->SetInt(pair.first, acitveChannel++);
 		}
 		break;
@@ -162,6 +154,7 @@ IMPLEMENT_SETUNIFORMARRAY(glm::mat4*, Mat4ArrayUniformData)
 template<>
 void MaterialPass::SetUniformValue<Ref<Texture>>(const char* name, Ref<Texture> val, int count)
 {
+	//TODO 注意这里如果覆盖掉将不被序列化
 	if (_state.uniformNameMap.find(name) == _state.uniformNameMap.end())
 		return;
 	Ref<TexturePointerUniformData> data = DynamicCastRef(TexturePointerUniformData, _state.uniformNameMap[name]);

@@ -6,11 +6,13 @@
 #include "MeshManager.h"
 #include "MaterialManager.h"
 #include "ComponentImplement.inl"
+#include "Entity.h"
 
 using namespace LindaEngine;
 
 DYNAMIC_CREATE(MeshRenderer)
 DYNAMIC_CREATE(SkinMeshRenderer)
+DYNAMIC_CREATE(SkyboxRenderer)
 
 Renderer::Renderer(Entity& entity, bool enable) : Component(entity, enable)
 {
@@ -29,15 +31,24 @@ bool Renderer::Serialize()
 	out << YAML::Key << "enable" << YAML::Value << _enable;
 	out << YAML::Key << "ShadowCast" << YAML::Value << _shadowCast;
 	out << YAML::Key << "ReceiveShadow" << YAML::Value << _receiveShadow;
-	out << YAML::Key << "Mesh";
-	_mesh->Serialize();
-	out << YAML::Key << "Material";
-	out << YAML::Value << YAML::BeginSeq;
-	for (auto& mat : _materialList)
+	if (nullptr != _mesh)
 	{
-		mat->Serialize();
+		out << YAML::Key << "Mesh";
+		_mesh->Serialize();
 	}
-	out << YAML::EndSeq;
+	if (_materialList.size() > 0)
+	{
+		out << YAML::Key << "Material";
+		out << YAML::Value << YAML::BeginSeq;
+		for (auto& mat : _materialList)
+		{
+			if (nullptr == mat)
+				continue;
+			mat->Serialize();
+		}
+		out << YAML::EndSeq;
+	}
+
 	return true;
 }
 
@@ -50,8 +61,11 @@ bool Renderer::Deserialize(YAML::Node& node)
 	auto mesh = node["Mesh"];
 	auto materials = node["Material"];
 	
-	_mesh = MeshManager::GetMesh(mesh["FilePath"].as<std::string>().c_str());
-	_mesh->Deserialize(mesh);
+	if (mesh)
+	{
+		_mesh = MeshManager::GetMesh(mesh["FilePath"].as<std::string>().c_str());
+		_mesh->Deserialize(mesh);
+	}
 
 	for (auto mat : materials)
 	{
@@ -72,7 +86,7 @@ void Renderer::AddMaterial(int index, Ref<Material> mat)
 	_materialList.insert(_materialList.begin() + index, mat);
 }
 
-void Renderer::Render(Transform* transform)
+void Renderer::Render()
 {
 	int index = 0;
 	for (auto& material : _materialList)
@@ -82,7 +96,7 @@ void Renderer::Render(Transform* transform)
 			continue;
 		for (auto& pass : go)
 		{
-			material->Bind(pass, transform, _mesh->GetMeshAttributes(index));
+			material->Bind(pass, _transform, _mesh->GetMeshAttributes(index));
 			_mesh->Draw(index);
 		}
 		index++;
@@ -96,10 +110,35 @@ void Renderer::TransformDirty()
 	_aabb.CalculateCenterSize();
 }
 
+Renderer* Renderer::GetSkyboxRenderer()
+{
+	static Entity entity("");
+	static SkyboxRenderer renderer(entity);
+	return &renderer;
+}
+
+void Renderer::SetSkyboxMaterial(Ref<Material> material)
+{
+	GetSkyboxRenderer()->GetMaterials().clear();
+	GetSkyboxRenderer()->AddMaterial(0, material);
+}
+
+Ref<Material> Renderer::GetSkyboxMaterial()
+{
+	return GetSkyboxRenderer()->GetMaterials()[0];
+}
+
+void Renderer::RenderSkybox()
+{
+	Material::overrideLightMode = "Skybox";
+	GetSkyboxRenderer()->Render();
+}
+
 /////////////////////////////////////////////////////////////////////
 
 MeshRenderer::MeshRenderer(Entity& entity, bool enable) : Renderer(entity, enable)
 {
+	_type = RenderComponentType::Mesh;
 }
 
 MeshRenderer::~MeshRenderer()
@@ -128,7 +167,7 @@ bool MeshRenderer::Deserialize(YAML::Node& node)
 
 SkinMeshRenderer::SkinMeshRenderer(Entity& entity, bool enable) : Renderer(entity, enable)
 {
-
+	_type = RenderComponentType::SkinMesh;
 }
 
 SkinMeshRenderer::~SkinMeshRenderer()
@@ -147,6 +186,38 @@ bool SkinMeshRenderer::Serialize()
 }
 
 bool SkinMeshRenderer::Deserialize(YAML::Node& node)
+{
+	Renderer::Deserialize(node);
+	return true;
+}
+
+/////////////////////////////////////////////////////////////////////
+
+SkyboxRenderer::SkyboxRenderer(Entity& entity, bool enable) : Renderer(entity, enable)
+{
+	_type = RenderComponentType::Skybox;
+	_materialList.push_back(MaterialManager::GetSkybox());
+	_mesh = MeshManager::GetSkybox();
+	_shadowCast = false;
+	_receiveShadow = false;
+}
+
+SkyboxRenderer::~SkyboxRenderer()
+{
+}
+
+bool SkyboxRenderer::Serialize()
+{
+	Renderer::Serialize();
+
+	YAML::Emitter& out = *YamlSerializer::out;
+	out << YAML::Key << "Name" << YAML::Value << "SkyboxRenderer";
+	out << YAML::EndMap;
+
+	return true;
+}
+
+bool SkyboxRenderer::Deserialize(YAML::Node& node)
 {
 	Renderer::Deserialize(node);
 	return true;

@@ -79,9 +79,7 @@ void RenderPipeline::Render()
         _uniformGlobal->SetUniformBufferData();
 
         GraphicsConfig& config = GraphicsContext::graphicsConfig;
-        Graphic::SetViewport(0, 0, config.screenNewWidth, config.screenNewHeight);
-        Graphic::SetClearColor(0, 0.3, 0, 0);
-        Graphic::Clear(true, true, true);
+
         Ref<DrawingSettings> settings = CreateRef<DrawingSettings>();
         settings->lightModes.push_back("customLightMode");
 
@@ -89,22 +87,15 @@ void RenderPipeline::Render()
         fts.colorFormat = TextureFormat::RGBA8;
         Ref<RenderTexture> rt = RenderTextureManager::Get(config.screenNewWidth, config.screenNewHeight, fts);
         RenderTextureManager::SetRenderTarget(rt);
-
+        Graphic::SetViewport(0, 0, config.screenNewWidth, config.screenNewHeight);
+        Graphic::SetClearColor(0.0f, 0.3f, 0.0f, 0.0f);
+        Graphic::Clear(true, true, true);
         RendererSystem::DrawRenderers(camera, settings);
+        //RendererSystem::DrawSkybox();
         RenderTextureManager::Release(rt);
 
-        Graphic::SetViewport(0, 0, config.screenNewWidth, config.screenNewHeight);
-        Graphic::SetClearColor(0.3, 0.3, 0, 0);
-        Graphic::Clear(true, true, true);
         Ref<Material> material = MaterialManager::GetMaterialByShader("Assets/Shaders/postprocess.shader");
-        RenderTextureManager::SetRenderTarget(nullptr);
         Graphic::Blit(rt, nullptr, material);
-
-        // 必须在Bind之前设置overrideLightMode，否则shader编译时无法匹配到正确的Pass
-        //Material::overrideLightMode = "Color";
-        //material->Bind(0, nullptr, std::vector<VertexAttribute>());
-        //MeshManager::GetEmpty()->Draw();
-        //RendererSystem::DrawRenderers(camera, settings);
     }
 
 }

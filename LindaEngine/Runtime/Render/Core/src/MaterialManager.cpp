@@ -11,17 +11,21 @@ std::unordered_map<std::string, Ref<Material>> MaterialManager::_defaultMaterial
 std::unordered_map<std::string, Ref<MaterialPass>> MaterialManager::_defaultPass;
 bool MaterialManager::_isLoadDefault = false;
 
-Ref<Material> MaterialManager::GetMaterial(const char* path)
+Ref<Material> MaterialManager::GetMaterial(std::string path)
 {
     try
     {
-        auto itr = _materialMap.find(path);
-        if (itr == _materialMap.end())
+        if ("SkyboxMaterial" == path)
+            _materialMap[path] = GetMaterialByShader("Assets/Shaders/Skybox.shader");
+        else
         {
-            _materialMap[path] = YamlSerializer::DeSerializeMaterial(path);
-            _materialMap[path]->SetPath(path);
+            auto itr = _materialMap.find(path);
+            if (itr == _materialMap.end())
+            {
+                _materialMap[path] = YamlSerializer::DeSerializeMaterial(path.c_str());
+                _materialMap[path]->SetPath(path.c_str());
+            }
         }
-
         return _materialMap[path];
     }
     catch (const std::exception&)
@@ -30,9 +34,9 @@ Ref<Material> MaterialManager::GetMaterial(const char* path)
     }
 }
 
-Ref<Material> MaterialManager::GetMaterialByShader(const char* path)
+Ref<Material> MaterialManager::GetMaterialByShader(std::string path)
 {
-    Ref<ShaderSource> ss = ShaderManager::GetShaderSource(path);
+    Ref<ShaderSource> ss = ShaderManager::GetShaderSource(path.c_str());
     Ref<Material> material = CreateRef<Material>();
     material->_state = ss->state;
     for (auto& pass : ss->shaderSrcCode)
@@ -47,6 +51,11 @@ Ref<Material> MaterialManager::GetMaterialByShader(const char* path)
 void MaterialManager::Clear()
 {
     _materialMap.clear();
+}
+
+Ref<Material> MaterialManager::GetSkybox()
+{
+    return GetMaterialByShader("Assets/Shaders/Skybox.shader");
 }
 
 Ref<MaterialPass> MaterialManager::GetDefaultMaterialPass(const char* lightMode)

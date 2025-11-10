@@ -1,10 +1,10 @@
 Texture:
-  left: left
-  right: right
-  top: top
-  bottom: bottom
-  front: front
-  back: back
+  left: Assets/Maps/skybox/left.jpg
+  right: Assets/Maps/skybox/right.jpg
+  top: Assets/Maps/skybox/top.jpg
+  bottom: Assets/Maps/skybox/bottom.jpg
+  front: Assets/Maps/skybox/front.jpg
+  back: Assets/Maps/skybox/back.jpg
   type: 2
   isGammaCorrection: false
   mipmapCount: 6

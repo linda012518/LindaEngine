@@ -22,6 +22,7 @@ namespace LindaEngine
 		static void Clear();
 
 		static void DrawRenderers(Camera* camera, Ref<DrawingSettings> settings);
+		static void DrawSkybox();
 		static void Cull(Camera* camera, Ref<DrawingSettings> settings);
 
 	private:

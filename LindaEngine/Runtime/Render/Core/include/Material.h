@@ -41,6 +41,7 @@ namespace LindaEngine
 		void SetMat4(const std::string& name, const glm::mat4& mat, int count = 1, int pass = 0);
 
 		void SetPath(const char* path) { _state.materialPath = path; }
+		std::string& GetPath() { return _state.materialPath; }
 		void Bind(Ref<MaterialPass> pass, Transform* transform, const std::vector<VertexAttribute>& attributes);
 		void Bind(int pass, Transform* transform, const std::vector<VertexAttribute>& attributes);
 

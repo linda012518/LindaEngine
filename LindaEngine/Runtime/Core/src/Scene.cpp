@@ -3,6 +3,9 @@
 #include "Transform.h"
 #include "YamlSerializer.h"
 #include "Path.h"
+#include "Renderer.h"
+#include "Material.h"
+#include "MaterialManager.h"
 
 #include <fstream>
 #include <iostream>
@@ -66,6 +69,11 @@ void Scene::Destroy()
 	//TODO 每个组件系统也要清空
 }
 
+void Scene::SetSkyboxMaterial(Ref<Material> material)
+{
+	Renderer::SetSkyboxMaterial(material);
+}
+
 bool Scene::Serialize()
 {
 	YAML::Emitter out;
@@ -76,6 +84,9 @@ bool Scene::Serialize()
 	if (_path == "")
 		_path = Path::overridePath;
 	out << YAML::Key << "FileName" << YAML::Value << _path;
+
+	out << YAML::Key << "SkyboxMaterial" << YAML::Value << Renderer::GetSkyboxMaterial()->GetPath();
+
 	out << YAML::Key << "Entitys";
 	out << YAML::Value << YAML::BeginSeq;
 	for (auto& entity : _entitys)
@@ -108,6 +119,8 @@ bool Scene::Deserialize(YAML::Node& node)
 		return false;
 
 	_path = scene["FileName"].as<std::string>();
+
+	SetSkyboxMaterial(MaterialManager::GetMaterial(scene["SkyboxMaterial"].as<std::string>().c_str()));
 
 	auto entitys = scene["Entitys"];
 	for (auto entity : entitys)

@@ -7,6 +7,11 @@ namespace LindaEngine
 		Opaque, Skybox, Transparent, Overlay
 	};
 
+	enum class RenderComponentType
+	{
+		Mesh, Skybox, SkinMesh, ScreenTriangle
+	};
+
 	enum class TextureType
 	{
 		None, Tex2D, Cube, RenderTexture

@@ -62,9 +62,14 @@ void RendererSystem::DrawRenderers(Camera* camera, Ref<DrawingSettings> settings
 		for (auto& lightMode : lightModes)
 		{
 			Material::overrideLightMode = lightMode;
-			renderer->Render(renderer->GetEntity().GetTransform());
+			renderer->Render();
 		}
 	}
+}
+
+void RendererSystem::DrawSkybox()
+{
+	Renderer::RenderSkybox();
 }
 
 void RendererSystem::Cull(Camera* camera, Ref<DrawingSettings> settings)

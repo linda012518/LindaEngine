@@ -9,6 +9,7 @@
 namespace LindaEngine
 {
 	class Entity;
+	class Material;
 
 	class Scene : public LObject, public ISerializable
 	{
@@ -19,6 +20,7 @@ namespace LindaEngine
 		void SetIndex(int index) { _index = index; }
 		std::string& GetPath() { return _path; }
 		void Destroy();
+		void SetSkyboxMaterial(Ref<Material> material);
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);

@@ -3,6 +3,7 @@
 #include "AutoPtr.h"
 #include "Component.h"
 #include "BoundingBox.h"
+#include "RenderEnumData.h"
 
 #include <vector>
 
@@ -23,10 +24,16 @@ namespace LindaEngine
 
 		void SetMesh(Ref<Mesh> mesh);
 		void AddMaterial(int index, Ref<Material> mat);
-		void Render(Transform* transform);
+		void Render();
 		void TransformDirty();
 
+		static Renderer* GetSkyboxRenderer();
+		static void SetSkyboxMaterial(Ref<Material> material);
+		static Ref<Material> GetSkyboxMaterial();
+		static void RenderSkybox();
+
 		Mesh* GetMesh() { return _mesh.get(); }
+		RenderComponentType GetType() { return _type; }
 		AABBBoundingBox& GetBoundingBox() { return _aabb; }
 		std::vector<Ref<Material>>& GetMaterials() { return _materialList; }
 
@@ -35,6 +42,7 @@ namespace LindaEngine
 		Ref<Mesh> _mesh;
 		bool _shadowCast = true; //是否投射阴影
 		bool _receiveShadow = true; //是否接收阴影
+		RenderComponentType _type = RenderComponentType::Mesh;
 		AABBBoundingBox _aabb;
 	};
 
@@ -58,5 +66,17 @@ namespace LindaEngine
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
+	};
+
+	class SkyboxRenderer : public Renderer
+	{
+	public:
+		DECLARE_DYNAMIC_CREATE()
+		SkyboxRenderer(Entity& entity, bool enable = true);
+		virtual ~SkyboxRenderer();
+
+		bool Serialize();
+		bool Deserialize(YAML::Node& node);
+
 	};
 }
