@@ -8,14 +8,14 @@ Shader
 
 		Properties
 		{
-			// uniform samplerCube skybox = white;
+			uniform samplerCube skybox = white;
 		}
 		
 		RenderState
 		{
 			// ColorMask (RGB)
-			// DepthState (depthTest=true; depthWrite=false; depthFunc= LESS)
-			CullFaceFunc(None)
+			DepthState (depthTest=true; depthWrite=true; depthFunc= LEQUAL)
+			// CullFaceFunc(None)
 			// StencilState(stencilTest=true)
 			// BlendState(enableBlend=true;blendSrc=SRC_ALPHA;blendDis=ONE_MINUS_SRC_ALPHA;constantColor=[1,0.2, 0, 1.0])
 			// PolygonModeState(LINE)
@@ -30,8 +30,8 @@ Shader
 			void main()
 			{
 				worldNormal = aPosition;
-				gl_Position = _linda_Matrix_VP * vec4(aPosition, 1.0);
-				gl_Position = gl_Position.xyww;
+				vec4 pos = vec4(aPosition, 1.0);
+				gl_Position = pos.xyww;
 			}
 		}
 		
@@ -43,8 +43,10 @@ Shader
 
 			void main()
 			{
-				// FragColor = texture(skybox, worldNormal);
-				FragColor = vec4(0.8, 0.0, 0.6, 1.0);
+				FragColor = texture(skybox, normalize(worldNormal));
+				// FragColor = vec4(0.8, 0.0, 0.6, 1.0);
+				// FragColor.rgb = vec3(1.0, 1.0, 0.0);
+				// FragColor.a = 1.0;
 			}
 		}
 	}

@@ -83,19 +83,19 @@ void RenderPipeline::Render()
         Ref<DrawingSettings> settings = CreateRef<DrawingSettings>();
         settings->lightModes.push_back("customLightMode");
 
-        FramebufferTextureSpecification fts;
-        fts.colorFormat = TextureFormat::RGBA8;
-        Ref<RenderTexture> rt = RenderTextureManager::Get(config.screenNewWidth, config.screenNewHeight, fts);
-        RenderTextureManager::SetRenderTarget(rt);
+        //FramebufferTextureSpecification fts;
+        //fts.colorFormat = TextureFormat::RGBA8;
+        //Ref<RenderTexture> rt = RenderTextureManager::Get(config.screenNewWidth, config.screenNewHeight, fts);
+        //RenderTextureManager::SetRenderTarget(rt);
         Graphic::SetViewport(0, 0, config.screenNewWidth, config.screenNewHeight);
         Graphic::SetClearColor(0.0f, 0.3f, 0.0f, 0.0f);
         Graphic::Clear(true, true, true);
         RendererSystem::DrawRenderers(camera, settings);
-        //RendererSystem::DrawSkybox();
-        RenderTextureManager::Release(rt);
+        RendererSystem::DrawSkybox();
+        //RenderTextureManager::Release(rt);
 
-        Ref<Material> material = MaterialManager::GetMaterialByShader("Assets/Shaders/postprocess.shader");
-        Graphic::Blit(rt, nullptr, material);
+        //Ref<Material> material = MaterialManager::GetMaterialByShader("Assets/Shaders/postprocess.shader");
+        //Graphic::Blit(rt, nullptr, material);
     }
 
 }
