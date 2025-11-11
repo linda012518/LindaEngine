@@ -17,13 +17,15 @@ void YamlSerializer::SerializeMaterial(const char* path)
 	//∏≤∏«Material::overrideMat£¨«ÎÃ·«∞±£¥Ê
 	Ref<Material> mat = Material::overrideMat;
 
+	std::string materialPath = mat->_state.materialPath == "" ? path : mat->_state.materialPath;
+
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 	out << YAML::Key << "Material";
 	out << YAML::Value << YAML::BeginMap;
 	out << YAML::Key << "HasFallback" << YAML::Value << mat->_state.hasFallback;
 	out << YAML::Key << "IsError" << YAML::Value << mat->_state.isError;
-	out << YAML::Key << "MaterialPath" << YAML::Value << mat->_state.materialPath;
+	out << YAML::Key << "MaterialPath" << YAML::Value << materialPath;
 	out << YAML::Key << "RenderQueue" << YAML::Value << mat->_state.renderQueue;
 	out << YAML::Key << "RenderType" << YAML::Value << static_cast<int>(mat->_state.renderType);
 	out << YAML::Key << "ShaderPath" << YAML::Value << mat->_state.shaderPath;
@@ -270,17 +272,15 @@ void YamlSerializer::SerializeMaterialPass(YAML::Emitter& out)
 	if (curState.cullFaceFunc != defaultState.cullFaceFunc)
 		out << YAML::Key << "CullFaceFunc" << YAML::Value << static_cast<int>(curState.cullFaceFunc);
 
+	out << YAML::Key << "DepthState";
+	out << YAML::Value << YAML::BeginMap;
 	if (curState.depthState.depthTest == false)
-	{
-		out << YAML::Key << "DepthState";
-		out << YAML::Value << YAML::BeginMap;
 		out << YAML::Key << "DepthTest" << YAML::Value << false;
-		if (curState.depthState.depthWrite == false)
-			out << YAML::Key << "DepthWrite" << YAML::Value << false;
-		if (curState.depthState.depthFunc != defaultState.depthState.depthFunc)
-			out << YAML::Key << "DepthFunc" << YAML::Value << static_cast<int>(curState.depthState.depthFunc);
-		out << YAML::EndMap;
-	}
+	if (curState.depthState.depthWrite == false)
+		out << YAML::Key << "DepthWrite" << YAML::Value << false;
+	if (curState.depthState.depthFunc != defaultState.depthState.depthFunc)
+		out << YAML::Key << "DepthFunc" << YAML::Value << static_cast<int>(curState.depthState.depthFunc);
+	out << YAML::EndMap;
 
 	if (curState.polygonModeState.polygonMode != defaultState.polygonModeState.polygonMode)
 	{

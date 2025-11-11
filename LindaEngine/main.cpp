@@ -133,6 +133,10 @@ void SerializeTexture()
 
 int main()
 {
+	//Ref<Material> mat = MaterialManager::GetMaterialByShader("Assets/Shaders/Skybox.shader");
+	//Material::overrideMat = mat;
+	//YamlSerializer::SerializeMaterial("Assets/Materials/Skybox1.mat");
+	//return 0 ;
 	//Ref<SceneNodeEditor> sne0 = CreateRef<SceneNodeEditor>();
 	//sne0->name = "test0.scene"; 
 	//sne0->path = "go/go/test0.scene";

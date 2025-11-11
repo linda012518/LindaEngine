@@ -95,6 +95,12 @@ Ref<Texture> YamlSerializer::DeSerializeTexture(const char* path)
 			cubemap->front = go4.c_str();
 			std::string go5 = data["back"].as<std::string>();
 			cubemap->back = go5.c_str();
+			cubemap->srcType = CubemapSrcType::SixTexture;
+		}
+		else
+		{
+			std::string go = data["FilePath"].as<std::string>();
+			cubemap->path = go.c_str();
 		}
 	}
 

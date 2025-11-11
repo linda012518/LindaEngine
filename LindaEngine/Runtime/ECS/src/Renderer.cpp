@@ -196,7 +196,6 @@ bool SkinMeshRenderer::Deserialize(YAML::Node& node)
 SkyboxRenderer::SkyboxRenderer(Entity& entity, bool enable) : Renderer(entity, enable)
 {
 	_type = RenderComponentType::Skybox;
-	_materialList.push_back(MaterialManager::GetSkybox());
 	_mesh = MeshManager::GetSkybox();
 	_shadowCast = false;
 	_receiveShadow = false;
