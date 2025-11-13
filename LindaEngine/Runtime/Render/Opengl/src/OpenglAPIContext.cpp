@@ -6,6 +6,7 @@
 #include "Texture.h"
 #include "TextureManager.h"
 #include "MeshManager.h"
+#include "GraphicsContext.h"
 
 using namespace LindaEngine;
 
@@ -57,6 +58,14 @@ void OpenglAPIContext::Clear(bool color, bool depth, bool stencil)
 void OpenglAPIContext::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref<Material> mat, int pass)
 {
 	RenderTextureManager::SetRenderTarget(dest);
+	if (nullptr == dest)
+	{
+		GraphicsConfig& config = GraphicsContext::graphicsConfig;
+		SetViewport(0, 0, config.screenNewWidth, config.screenNewHeight);
+	}
+	else
+		SetViewport(0, 0, dest->width, dest->height);
+	Clear(true, true, true);
 	Material::overrideLightMode = "Color";
 	mat->SetTexture("mainTexture", src, pass);
 	mat->Bind(pass, nullptr, std::vector<VertexAttribute>());

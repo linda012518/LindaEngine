@@ -7,12 +7,6 @@ Shader
 			uniform sampler2D mainTexture = white;
 		}
 
-		RenderState
-		{
-			DepthState (depthTest=false; depthWrite=false; depthFunc= ALWAYS)
-			CullFaceFunc(BACK)
-		}
-
 		Vertex
 		{
 			out vec2 uv;
