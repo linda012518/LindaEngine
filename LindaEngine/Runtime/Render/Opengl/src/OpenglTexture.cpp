@@ -280,14 +280,6 @@ void OpenglTexture::CreateRenderTextureCubemap(Ref<RenderTexture> rt)
 		rt->depthNativeID = textureColorbuffer;
 	}
 
-	//unsigned int rbo;
-	//glGenRenderbuffers(1, &rbo);
-	//glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	////替代下边的	glTexImage2D		创建一个深度和模板渲染缓冲对象
-	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, rt->width, rt->height);
-	////附加到帧缓冲上		替代下边的glFramebufferTexture2D
-	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-
 	if (rt->colorAttachments.size() > 1)
 		glDrawBuffers((int)rt->colorAttachments.size(), &buffers[0]);
 	else if (rt->colorAttachments.empty())

@@ -1,12 +1,6 @@
 #include "OpenglAPIContext.h"
 #include "glad/glad.h"
 #include "RenderState.h"
-#include "Material.h"
-#include "Mesh.h"
-#include "Texture.h"
-#include "TextureManager.h"
-#include "MeshManager.h"
-#include "GraphicsContext.h"
 
 using namespace LindaEngine;
 
@@ -53,31 +47,6 @@ void OpenglAPIContext::Clear(bool color, bool depth, bool stencil)
 	if (stencil) ret |= GL_STENCIL_BUFFER_BIT;
 
 	glClear(ret);
-}
-
-void OpenglAPIContext::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref<Material> mat, int pass)
-{
-	Ref<RenderTexture> go = nullptr;
-	if (src->msaa > 1)
-	{
-		go = RenderTextureManager::GetBlitRenderTexture(src);
-	}
-	else
-		go = src;
-
-	RenderTextureManager::SetRenderTarget(dest);
-	if (nullptr == dest)
-	{
-		GraphicsConfig& config = GraphicsContext::graphicsConfig;
-		SetViewport(0, 0, config.screenNewWidth, config.screenNewHeight);
-	}
-	else
-		SetViewport(0, 0, dest->width, dest->height);
-	Clear(true, true, true);
-	Material::overrideLightMode = "Color";
-	mat->SetTexture("mainTexture", go, pass);
-	mat->Bind(pass, nullptr, std::vector<VertexAttribute>());
-	MeshManager::GetEmpty()->Draw();
 }
 
 void OpenglAPIContext::CheckRenderState(RenderState& state, RenderState& materialState)
