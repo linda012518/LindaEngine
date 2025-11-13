@@ -40,6 +40,11 @@ void TextureDriver::DeleteRenderTexture(Ref<RenderTexture> rt)
 	_context->DeleteRenderTexture(rt);
 }
 
+void TextureDriver::CopyRenderTexture(Ref<RenderTexture> src, Ref<RenderTexture> dest, ColorType type)
+{
+	_context->CopyColor(src, dest, type);
+}
+
 void TextureDriver::Initialize()
 {
 	_context = TextureContext::Create();

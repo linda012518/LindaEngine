@@ -92,7 +92,7 @@ void RenderPipeline::Render()
         depth.colorFormat = TextureFormat::Depth16;
         fts.push_back(depth);
 
-        Ref<RenderTexture> rt = RenderTextureManager::Get(config.screenNewWidth, config.screenNewHeight, fts);
+        Ref<RenderTexture> rt = RenderTextureManager::Get(config.screenNewWidth, config.screenNewHeight, fts, 4);
         RenderTextureManager::SetRenderTarget(rt);
         Graphic::SetViewport(0, 0, config.screenNewWidth, config.screenNewHeight);
         Graphic::SetClearColor(0.0f, 0.3f, 0.0f, 0.0f);
@@ -111,6 +111,7 @@ void RenderPipeline::Render()
         Graphic::Blit(grayRT, nullptr, material);
 
         RenderTextureManager::Release(rt);
+        RenderTextureManager::Release(grayRT);
     }
 
 }

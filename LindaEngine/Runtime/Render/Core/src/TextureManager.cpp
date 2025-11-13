@@ -4,6 +4,8 @@
 #include "Texture.h"
 #include "TextureDriver.h"
 
+#include <iostream>
+
 using namespace LindaEngine;
 
 std::unordered_map<std::string, Ref<Texture>> TextureManager::_textureMap;
@@ -96,6 +98,33 @@ Ref<RenderTexture> RenderTextureManager::Get(int width, int height, FramebufferT
 {
     std::vector<FramebufferTextureSpecification> array { fts };
     return Get(width, height, array, msaa, mipCount, isCube, isGammaCorrection, anisotropy);
+}
+
+Ref<RenderTexture> RenderTextureManager::GetBlitRenderTexture(Ref<RenderTexture> rt)
+{
+    if (rt->msaa == 1)
+        return rt;
+    else if (rt->msaa > 1)
+    {
+        if (nullptr == rt->internalRT)
+        {
+            std::vector<FramebufferTextureSpecification> fts;
+            for (auto& go : rt->colorAttachments)
+            {
+                fts.push_back(go);
+            }
+            fts.push_back(rt->depthAttachment);
+
+            rt->internalRT = Get(rt->width, rt->height, fts, 1, rt->mipmapCount, rt->isCube, rt->isGammaCorrection, rt->anisotropy);
+        }
+        TextureDriver::CopyRenderTexture(rt, rt->internalRT);
+        return rt->internalRT;
+    }
+    else
+    {
+        std::cout << "RenderTextureManager::GetBlitRenderTexture Error this rt->mass < 0 !!!\n" << std::endl;
+        return nullptr;
+    }
 }
 
 void RenderTextureManager::Release(Ref<RenderTexture> rt)

@@ -61,6 +61,7 @@ namespace LindaEngine
 
 	struct RenderTexture : public Texture
 	{
+		friend class RenderTextureManager;
 		RenderTexture() { type = TextureType::RenderTexture; }
 
 		int msaa = 1;
@@ -72,6 +73,9 @@ namespace LindaEngine
 		std::vector<unsigned int> nativeIDs;
 		unsigned int depthNativeID = 0;
 		static Ref<RenderTexture> active;
+
+	private:
+		Ref<RenderTexture> internalRT;
 
 	};
 }

@@ -29,6 +29,7 @@ namespace LindaEngine
 	public:
 		static Ref<RenderTexture> Get(int width, int height, std::vector<FramebufferTextureSpecification>& fts, int msaa = 1, int mipCount = 1, bool isCube = false, bool isGammaCorrection = false, int anisotropy = 0);
 		static Ref<RenderTexture> Get(int width, int height, FramebufferTextureSpecification& fts, int msaa = 1, int mipCount = 1, bool isCube = false, bool isGammaCorrection = false, int anisotropy = 0);
+		static Ref<RenderTexture> GetBlitRenderTexture(Ref<RenderTexture> rt);
 		static void Release(Ref<RenderTexture> rt);
 		static void Clear();
 		static void SetRenderTarget(Ref<RenderTexture> texture);

@@ -83,9 +83,14 @@ void OpenglTexture::BindRenderTarget(Ref<RenderTexture> texture)
 {
 	if (nullptr == texture)
 	{
+		glDisable(GL_MULTISAMPLE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		return;
 	}
+	if (texture->msaa > 1)
+		glEnable(GL_MULTISAMPLE);
+	else
+		glDisable(GL_MULTISAMPLE);
 	glBindFramebuffer(GL_FRAMEBUFFER, texture->nativeColorID);
 }
 
@@ -102,6 +107,22 @@ void OpenglTexture::DeleteRenderTexture(Ref<RenderTexture> rt)
 	glDeleteFramebuffers(1, &rt->nativeColorID);
 	glDeleteTextures((int)rt->colorAttachments.size(), rt->nativeIDs.data());
 	glDeleteTextures(1, &rt->depthNativeID);
+}
+
+void OpenglTexture::CopyColor(Ref<RenderTexture> src, Ref<RenderTexture> dest, ColorType type)
+{
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, src->nativeColorID);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dest->nativeColorID);
+
+	unsigned int copyType = 0;
+	switch (type)
+	{
+	case ColorType::Color: copyType = GL_COLOR_BUFFER_BIT; break;
+	case ColorType::DepthOnly: copyType = GL_DEPTH_BUFFER_BIT; break;
+	case ColorType::ColorDepth: copyType = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT; break;
+	}
+
+	glBlitFramebuffer(0, 0, src->width, src->height, 0, 0, dest->width, dest->height, copyType, GL_LINEAR);
 }
 
 unsigned int OpenglTexture::CreateOpenglTexture2D(int width, int height, unsigned int dataFormat, unsigned int internalFormat, unsigned int dataType, FilterMode filter, TextureWrapMode warpU, TextureWrapMode warpV, int mipmapCount, int anisotropy, void* data)
@@ -164,14 +185,25 @@ void OpenglTexture::CreateRenderTexture2D(Ref<RenderTexture> rt)
 		GLenum format = GetRenderTextureDataFormat(tex.colorFormat);
 		GLenum dataType = GetRenderTextureDataType(tex.colorFormat);
 
-		unsigned int textureColorbuffer = CreateOpenglTexture2D(rt->width, rt->height, format, internalFormat, dataType, tex.filter,
-			tex.warpU, tex.warpV, rt->mipmapCount, rt->anisotropy, NULL);
+		if (rt->msaa > 1)
+		{
+			unsigned int colorRenderBuffer;
+			glGenRenderbuffers(1, &colorRenderBuffer);
+			glBindRenderbuffer(GL_RENDERBUFFER, colorRenderBuffer);
+			glRenderbufferStorageMultisample(GL_RENDERBUFFER, rt->msaa, internalFormat, rt->width, rt->height);
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, GL_RENDERBUFFER, colorRenderBuffer);
+		}
+		else
+		{
+			unsigned int textureColorbuffer = CreateOpenglTexture2D(rt->width, rt->height, format, internalFormat, dataType, tex.filter,
+				tex.warpU, tex.warpV, rt->mipmapCount, rt->anisotropy, NULL);
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, textureColorbuffer, 0);
-		buffers.push_back(GL_COLOR_ATTACHMENT0 + index);
-		index++;
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, textureColorbuffer, 0);
+			buffers.push_back(GL_COLOR_ATTACHMENT0 + index);
+			index++;
 
-		rt->nativeIDs.push_back(textureColorbuffer);
+			rt->nativeIDs.push_back(textureColorbuffer);
+		}
 	}
 
 	if (rt->depthAttachment.colorFormat != TextureFormat::None)
@@ -181,21 +213,24 @@ void OpenglTexture::CreateRenderTexture2D(Ref<RenderTexture> rt)
 		GLenum format = GetRenderTextureDataFormat(tex.colorFormat);
 		GLenum dataType = GetRenderTextureDataType(tex.colorFormat);
 
-		unsigned int textureColorbuffer = CreateOpenglTexture2D(rt->width, rt->height, format, internalFormat, dataType, tex.filter,
-			tex.warpU, tex.warpV, rt->mipmapCount, rt->anisotropy, NULL);
+		if (rt->msaa > 1)
+		{
+			unsigned int depthRenderBuffer;
+			glGenRenderbuffers(1, &depthRenderBuffer);
+			glBindRenderbuffer(GL_RENDERBUFFER, depthRenderBuffer);
+			glRenderbufferStorageMultisample(GL_RENDERBUFFER, rt->msaa, internalFormat, rt->width, rt->height);
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GetRenderTextureDepthAttachment(tex.colorFormat), GL_RENDERBUFFER, depthRenderBuffer);
+		}
+		else
+		{
+			unsigned int textureColorbuffer = CreateOpenglTexture2D(rt->width, rt->height, format, internalFormat, dataType, tex.filter,
+				tex.warpU, tex.warpV, rt->mipmapCount, rt->anisotropy, NULL);
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GetRenderTextureDepthAttachment(tex.colorFormat), GL_TEXTURE_2D, textureColorbuffer, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GetRenderTextureDepthAttachment(tex.colorFormat), GL_TEXTURE_2D, textureColorbuffer, 0);
 
-		rt->depthNativeID = textureColorbuffer;
+			rt->depthNativeID = textureColorbuffer;
+		}
 	}
-
-	//unsigned int rbo;
-	//glGenRenderbuffers(1, &rbo);
-	//glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	////替代下边的	glTexImage2D		创建一个深度和模板渲染缓冲对象
-	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, rt->width, rt->height);
-	////附加到帧缓冲上		替代下边的glFramebufferTexture2D
-	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
 	if (rt->colorAttachments.size() > 1)
 		glDrawBuffers((int)rt->colorAttachments.size(), &buffers[0]);

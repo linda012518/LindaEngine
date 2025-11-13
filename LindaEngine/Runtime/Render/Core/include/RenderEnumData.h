@@ -7,6 +7,16 @@ namespace LindaEngine
 		Opaque, Skybox, Transparent, Overlay
 	};
 
+	enum class ClearColorType
+	{
+		Color, DepthOnly, Skybox
+	};
+
+	enum class ColorType
+	{
+		Color, DepthOnly, ColorDepth
+	};
+
 	enum class RenderComponentType
 	{
 		Mesh, Skybox, SkinMesh, ScreenTriangle

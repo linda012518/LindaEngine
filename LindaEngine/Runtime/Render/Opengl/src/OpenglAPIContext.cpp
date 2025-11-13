@@ -57,6 +57,14 @@ void OpenglAPIContext::Clear(bool color, bool depth, bool stencil)
 
 void OpenglAPIContext::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref<Material> mat, int pass)
 {
+	Ref<RenderTexture> go = nullptr;
+	if (src->msaa > 1)
+	{
+		go = RenderTextureManager::GetBlitRenderTexture(src);
+	}
+	else
+		go = src;
+
 	RenderTextureManager::SetRenderTarget(dest);
 	if (nullptr == dest)
 	{
@@ -67,7 +75,7 @@ void OpenglAPIContext::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref
 		SetViewport(0, 0, dest->width, dest->height);
 	Clear(true, true, true);
 	Material::overrideLightMode = "Color";
-	mat->SetTexture("mainTexture", src, pass);
+	mat->SetTexture("mainTexture", go, pass);
 	mat->Bind(pass, nullptr, std::vector<VertexAttribute>());
 	MeshManager::GetEmpty()->Draw();
 }

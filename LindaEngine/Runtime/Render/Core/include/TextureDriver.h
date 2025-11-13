@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AutoPtr.h"
+#include "RenderEnumData.h"
 
 namespace LindaEngine
 {
@@ -18,6 +19,7 @@ namespace LindaEngine
 		static void BindRenderTarget(Ref<RenderTexture> texture);
 		static void CreateRenderTexture(Ref<RenderTexture> rt);
 		static void DeleteRenderTexture(Ref<RenderTexture> rt);
+		static void CopyRenderTexture(Ref<RenderTexture> src, Ref<RenderTexture> dest, ColorType type = ColorType::Color);
 
 		static void Initialize();
 
