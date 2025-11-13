@@ -99,10 +99,18 @@ void RenderPipeline::Render()
         Graphic::Clear(true, true, true);
         RendererSystem::DrawRenderers(camera, settings);
         RendererSystem::DrawSkybox();
-        RenderTextureManager::Release(rt);
+
+
+        FramebufferTextureSpecification gray;
+        gray.colorFormat = TextureFormat::RGBA8;
+        Ref<RenderTexture> grayRT = RenderTextureManager::Get(config.screenNewWidth, config.screenNewHeight, gray);
+        Ref<Material> grayMaterial = MaterialManager::GetMaterialByShader("Assets/Shaders/gray.shader");
+        Graphic::Blit(rt, grayRT, grayMaterial);
 
         Ref<Material> material = MaterialManager::GetMaterialByShader("Assets/Shaders/postprocess.shader");
-        Graphic::Blit(rt, nullptr, material);
+        Graphic::Blit(grayRT, nullptr, material);
+
+        RenderTextureManager::Release(rt);
     }
 
 }
