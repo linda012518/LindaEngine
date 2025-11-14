@@ -16,7 +16,7 @@ void YamlSerializer::SerializeTexture(const char* path)
 	out << YAML::Key << "Texture";
 	out << YAML::Value << YAML::BeginMap;
 	Ref<Cubemap> cubemap = DynamicCastRef(Cubemap, texture);
-	if (texture->type == TextureType::Cube && cubemap != nullptr && cubemap->srcType == CubemapSrcType::SixTexture)
+	if (texture->type == TextureType::Cube && cubemap != nullptr)
 	{
 		out << YAML::Key << "left" << YAML::Value << cubemap->left;
 		out << YAML::Key << "right" << YAML::Value << cubemap->right;
@@ -81,27 +81,18 @@ Ref<Texture> YamlSerializer::DeSerializeTexture(const char* path)
 		Ref<Cubemap> cubemap = CreateRef<Cubemap>();
 		texture = cubemap;
 
-		if (!data["FilePath"])
-		{
-			std::string go = data["left"].as<std::string>();
-			cubemap->left = go.c_str();
-			std::string go1 = data["right"].as<std::string>();
-			cubemap->right = go1.c_str();
-			std::string go2 = data["top"].as<std::string>();
-			cubemap->top = go2.c_str();
-			std::string go3 = data["bottom"].as<std::string>();
-			cubemap->bottom = go3.c_str();
-			std::string go4 = data["front"].as<std::string>();
-			cubemap->front = go4.c_str();
-			std::string go5 = data["back"].as<std::string>();
-			cubemap->back = go5.c_str();
-			cubemap->srcType = CubemapSrcType::SixTexture;
-		}
-		else
-		{
-			std::string go = data["FilePath"].as<std::string>();
-			cubemap->path = go.c_str();
-		}
+		std::string go = data["left"].as<std::string>();
+		cubemap->left = go.c_str();
+		std::string go1 = data["right"].as<std::string>();
+		cubemap->right = go1.c_str();
+		std::string go2 = data["top"].as<std::string>();
+		cubemap->top = go2.c_str();
+		std::string go3 = data["bottom"].as<std::string>();
+		cubemap->bottom = go3.c_str();
+		std::string go4 = data["front"].as<std::string>();
+		cubemap->front = go4.c_str();
+		std::string go5 = data["back"].as<std::string>();
+		cubemap->back = go5.c_str();
 	}
 
 	texture->isGammaCorrection = data["isGammaCorrection"].as<bool>();

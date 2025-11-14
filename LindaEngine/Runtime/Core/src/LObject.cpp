@@ -10,13 +10,11 @@ LObject::LObject()
 {
 	_selfID = _id;
 	_id++;
-	std::cout << "LObject" << _selfID << std::endl;
 }
 
 LObject::~LObject()
 {
 	_tempID++;
-	std::cout << "~LObject" << _selfID << std::endl;
 }
 
 int LObject::GetID() const

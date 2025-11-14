@@ -1,0 +1,18 @@
+Material:
+  HasFallback: false
+  IsError: false
+  MaterialPath: Assets/Materials/SkyboxCubemap.mat
+  RenderQueue: 2000
+  RenderType: 1
+  ShaderPath: Assets/Shaders/SkyboxCubemap.shader
+  MaterialPasses:
+    - PassName: Skybox
+      ShaderUniforms:
+        - UniformName: skybox
+          Value: Assets/Maps/Yamls/testCube.texture
+          skybox: 1
+      Keywords:
+        []
+      RenderState:
+        DepthState:
+          DepthFunc: 515

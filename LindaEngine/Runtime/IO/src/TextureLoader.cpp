@@ -49,11 +49,11 @@ TextureLoader::TextureTempData TextureLoader::LoadToMemory(const char* path)
     int width, height, channels, bitCount;
 
     if (stbi_is_16_bit(path)) {
-        stbi_load_16(path, &width, &height, &channels, 0);
+        data = stbi_load_16(path, &width, &height, &channels, 0);
         bitCount = 16;
     }
     else if (stbi_is_hdr(path)) {
-        stbi_loadf(path, &width, &height, &channels, 0);
+        data = stbi_loadf(path, &width, &height, &channels, 0);
         bitCount = 32;
     }
     else {
@@ -86,31 +86,25 @@ void TextureLoader::LoadTexture2D(Ref<Texture> texture)
 void TextureLoader::LoadCubemap(Ref<Texture> texture)
 {
     Ref<Cubemap> cubemap = DynamicCastRef(Cubemap, texture);
-    if (cubemap->srcType == CubemapSrcType::SixTexture)
-    {
-        TextureLoader::TextureTempData right = LoadToMemory(cubemap->right.c_str());
-        TextureLoader::TextureTempData left = LoadToMemory(cubemap->left.c_str());
-        TextureLoader::TextureTempData top = LoadToMemory(cubemap->top.c_str());
-        TextureLoader::TextureTempData bottom = LoadToMemory(cubemap->bottom.c_str());
-        TextureLoader::TextureTempData front = LoadToMemory(cubemap->front.c_str());
-        TextureLoader::TextureTempData back = LoadToMemory(cubemap->back.c_str());
 
-        texture->width = right.width;
-        texture->height = right.height;
-        texture->isLoad = true;
+    TextureLoader::TextureTempData right = LoadToMemory(cubemap->right.c_str());
+    TextureLoader::TextureTempData left = LoadToMemory(cubemap->left.c_str());
+    TextureLoader::TextureTempData top = LoadToMemory(cubemap->top.c_str());
+    TextureLoader::TextureTempData bottom = LoadToMemory(cubemap->bottom.c_str());
+    TextureLoader::TextureTempData front = LoadToMemory(cubemap->front.c_str());
+    TextureLoader::TextureTempData back = LoadToMemory(cubemap->back.c_str());
 
-        TextureDriver::CreateCube(texture, right.data, left.data, top.data, bottom.data, front.data, back.data, right.channels, right.bitCount);
+    texture->width = right.width;
+    texture->height = right.height;
+    texture->isLoad = true;
 
-        stbi_image_free(right.data);
-        stbi_image_free(left.data);
-        stbi_image_free(top.data);
-        stbi_image_free(bottom.data);
-        stbi_image_free(front.data);
-        stbi_image_free(back.data);
-    }
-    else
-    {
-        //TODO ¾ØÐÎÌì¿ÕºÐ
-    }
+    TextureDriver::CreateCube(texture, right.data, left.data, top.data, bottom.data, front.data, back.data, right.channels, right.bitCount);
+
+    stbi_image_free(right.data);
+    stbi_image_free(left.data);
+    stbi_image_free(top.data);
+    stbi_image_free(bottom.data);
+    stbi_image_free(front.data);
+    stbi_image_free(back.data);
 
 }

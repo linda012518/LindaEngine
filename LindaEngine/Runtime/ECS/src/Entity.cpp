@@ -49,14 +49,11 @@ Entity::Entity(const char* name, bool active)
 	_components.push_back(c);
 	OnComponentAdded(c.get());
 	_transform = c.get();
-
-	std::cout << "	Entity" << _selfID << std::endl;
 }
 
 Entity::~Entity()
 {
 	Destroy();
-	std::cout << "	~Entity" << _selfID << std::endl;
 }
 
 void Entity::SetName(const std::string& name)

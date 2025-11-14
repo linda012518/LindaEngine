@@ -25,12 +25,10 @@ using namespace LindaEngine;
 
 Transform::Transform(Entity& entity) : Component(entity, true)
 {
-	std::cout << "	Transform" << _selfID << std::endl;
 }
 
 Transform::~Transform()
 {
-	std::cout << "	~Transform" << _selfID << std::endl;
 }
 
 const glm::mat4& Transform::GetLocalToWorldMat() const

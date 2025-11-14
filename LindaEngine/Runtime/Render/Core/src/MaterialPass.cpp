@@ -154,18 +154,29 @@ IMPLEMENT_SETUNIFORMARRAY(glm::mat4*, Mat4ArrayUniformData)
 template<>
 void MaterialPass::SetUniformValue<Ref<Texture>>(const char* name, Ref<Texture> val, int count)
 {
-	//TODO 注意这里如果覆盖掉将不被序列化
 	if (_state.uniformNameMap.find(name) == _state.uniformNameMap.end())
 		return;
-	Ref<TexturePointerUniformData> data = DynamicCastRef(TexturePointerUniformData, _state.uniformNameMap[name]);
-	if (nullptr == data)
+
+	Ref<RenderTexture> rt = DynamicCastRef(RenderTexture, val);
+
+	if (nullptr == rt)
 	{
-		data = CreateRef<TexturePointerUniformData>();
-		data->name = name;
-		_state.uniformNameMap[name] = data;
+		Ref<TextureUniformData> tud = DynamicCastRef(TextureUniformData, _state.uniformNameMap[name]);
+		tud->value = val->path;
+	}
+	else
+	{
+		Ref<TexturePointerUniformData> data = DynamicCastRef(TexturePointerUniformData, _state.uniformNameMap[name]);
+		if (nullptr == data)
+		{
+			data = CreateRef<TexturePointerUniformData>();
+			data->name = name;
+			_state.uniformNameMap[name] = data;
+		}
+
+		data->value = val;
+		data->renderTextureColorIndex = count;
 	}
 
-	data->value = val;
-	data->renderTextureColorIndex = count;
 }
 

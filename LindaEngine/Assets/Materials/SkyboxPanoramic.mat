@@ -1,0 +1,18 @@
+Material:
+  HasFallback: false
+  IsError: false
+  MaterialPath: Assets/Materials/SkyboxPanoramic.mat
+  RenderQueue: 2000
+  RenderType: 1
+  ShaderPath: Assets/Shaders/SkyboxPanoramic.shader
+  MaterialPasses:
+    - PassName: Skybox
+      ShaderUniforms:
+        - UniformName: skybox
+          Value: Assets/Maps/Yamls/Panoramic.texture
+          skybox: 1
+      Keywords:
+        []
+      RenderState:
+        DepthState:
+          DepthFunc: 515

@@ -28,7 +28,6 @@ using namespace LindaEngine;
 
 Shader::Shader()
 {
-	std::cout << "	Shader" << std::endl;
 }
 
 Shader::Shader(const char* vs, const char* fs)
@@ -38,14 +37,12 @@ Shader::Shader(const char* vs, const char* fs)
 
 	CompileShader();
 	glUniformBlockBinding(_program, glGetUniformBlockIndex(_program, "globalUniform"), 0);
-	std::cout << "	Shader" << _selfID << std::endl;
 }
 
 Shader::~Shader()
 {
 	if (_program != -1)
 		glDeleteProgram(_program);
-	std::cout << "	~Shader" << _selfID << std::endl;
 }
 
 void Shader::Begin()

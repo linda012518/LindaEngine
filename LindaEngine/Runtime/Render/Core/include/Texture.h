@@ -40,8 +40,6 @@ namespace LindaEngine
 	{
 		Cubemap() { type = TextureType::Cube; }
 
-		CubemapSrcType srcType = CubemapSrcType::EquireCtangular;
-
 		std::string left;
 		std::string right;
 		std::string top;

@@ -1,6 +1,6 @@
 Scene:
   FileName: Assets/Scenes/All0.scene
-  SkyboxMaterial: Assets/Materials/Skybox.mat
+  SkyboxMaterial: Assets/Materials/SkyboxPanoramic.mat
   Entitys:
     - Name: test1
       ID: 0617baa2-a444-1829-0000-000000000001

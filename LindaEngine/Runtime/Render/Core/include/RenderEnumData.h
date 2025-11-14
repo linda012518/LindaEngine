@@ -4,7 +4,7 @@ namespace LindaEngine
 {
 	enum class RenderType
 	{
-		Opaque, Skybox, Transparent, Overlay
+		Opaque, Skybox, Transparent, Overlay, ReflectionProbe
 	};
 
 	enum class ClearColorType
@@ -25,11 +25,6 @@ namespace LindaEngine
 	enum class TextureType
 	{
 		None, Tex2D, Cube, RenderTexture
-	};
-
-	enum class CubemapSrcType
-	{
-		EquireCtangular, SixTexture
 	};
 
 	enum class TextureFormat

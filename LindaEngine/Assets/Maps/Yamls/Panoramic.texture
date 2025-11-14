@@ -1,0 +1,9 @@
+Texture:
+  FilePath: Assets/Maps/skybox/Skybox.png
+  type: 1
+  isGammaCorrection: false
+  mipmapCount: 1
+  filter: 0
+  warpU: 0
+  warpV: 0
+  warpW: 0
