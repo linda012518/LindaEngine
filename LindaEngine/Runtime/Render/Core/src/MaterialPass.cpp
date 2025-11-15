@@ -99,10 +99,10 @@ void MaterialPass::UpdateUniforms()
 				if (_state.uniformNameMap.find(texelSize) != _state.uniformNameMap.end())
 				{
 					glm::vec4 size;
-					size.x = texture->width;
-					size.y = texture->height;
-					size.z = 1.0 / size.x;
-					size.w = 1.0 / size.y;
+					size.x = (float)texture->width;
+					size.y = (float)texture->height;
+					size.z = 1.0f / size.x;
+					size.w = 1.0f / size.y;
 					_shader->SetVec4(texelSize, size);
 				}
 			}

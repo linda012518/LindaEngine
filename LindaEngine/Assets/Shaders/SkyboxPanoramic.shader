@@ -65,7 +65,7 @@ Shader
 				vec2 uv = DecodeDir2LatLongUV(normalize(worldNormal));
 				uv.y = 1.0 - uv.y;
 
-				//目前采用手动计算mip层级，解决接缝，4个纹素的边界范围
+				//目前采用手动计算mip层级，解决接缝，默认4个纹素的边界范围
 				float boundaryRange = skybox_TexelSize.z * 4.0;
 				if (uv.x < boundaryRange || uv.x > 1.0 - boundaryRange) 
 				{

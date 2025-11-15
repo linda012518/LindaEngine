@@ -13,6 +13,7 @@ namespace LindaEngine
 	public:
 		virtual void CreateTexture2D(Ref<Texture> texture, void* data, int channels, int bitCount) = 0;
 		virtual void CreateCube(Ref<Texture> texture, void* right, void* left, void* top, void* bottom, void* front, void* back, int channels, int bitCount) = 0;
+		virtual void CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest) = 0;
 		virtual void DeleteTexture(Ref<Texture> texture) = 0;
 		virtual void Bind(Ref<Texture> texture, int channel, int renderTextureColorIndex) = 0;
 		virtual void BindRenderTarget(Ref<RenderTexture> texture) = 0;

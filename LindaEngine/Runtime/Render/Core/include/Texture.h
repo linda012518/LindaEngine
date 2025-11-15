@@ -40,6 +40,8 @@ namespace LindaEngine
 	{
 		Cubemap() { type = TextureType::Cube; }
 
+		CubemapSrcType srcType = CubemapSrcType::EquireCtangular;
+
 		std::string left;
 		std::string right;
 		std::string top;
@@ -55,6 +57,7 @@ namespace LindaEngine
 		TextureWrapMode warpU = TextureWrapMode::Clamp;
 		TextureWrapMode warpV = TextureWrapMode::Clamp;
 		TextureWrapMode warpW = TextureWrapMode::Clamp;
+		bool isRenderBuffer = false;
 	};
 
 	struct RenderTexture : public Texture
@@ -69,6 +72,7 @@ namespace LindaEngine
 		std::vector<FramebufferTextureSpecification> colorAttachments;
 		FramebufferTextureSpecification depthAttachment;
 		std::vector<unsigned int> nativeIDs;
+		std::vector<unsigned int> renderBuffers;
 		unsigned int depthNativeID = 0;
 		static Ref<RenderTexture> active;
 

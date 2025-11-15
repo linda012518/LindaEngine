@@ -90,6 +90,7 @@ void RenderPipeline::Render()
         fts.push_back(color);
         FramebufferTextureSpecification depth;
         depth.colorFormat = TextureFormat::Depth16;
+        depth.isRenderBuffer = true;
         fts.push_back(depth);
 
         Ref<RenderTexture> rt = RenderTextureManager::Get(config.screenNewWidth, config.screenNewHeight, fts, 4);

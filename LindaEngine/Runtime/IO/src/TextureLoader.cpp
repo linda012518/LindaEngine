@@ -87,24 +87,40 @@ void TextureLoader::LoadCubemap(Ref<Texture> texture)
 {
     Ref<Cubemap> cubemap = DynamicCastRef(Cubemap, texture);
 
-    TextureLoader::TextureTempData right = LoadToMemory(cubemap->right.c_str());
-    TextureLoader::TextureTempData left = LoadToMemory(cubemap->left.c_str());
-    TextureLoader::TextureTempData top = LoadToMemory(cubemap->top.c_str());
-    TextureLoader::TextureTempData bottom = LoadToMemory(cubemap->bottom.c_str());
-    TextureLoader::TextureTempData front = LoadToMemory(cubemap->front.c_str());
-    TextureLoader::TextureTempData back = LoadToMemory(cubemap->back.c_str());
+    if (cubemap->srcType == CubemapSrcType::SixTexture)
+    {
+        TextureLoader::TextureTempData right = LoadToMemory(cubemap->right.c_str());
+        TextureLoader::TextureTempData left = LoadToMemory(cubemap->left.c_str());
+        TextureLoader::TextureTempData top = LoadToMemory(cubemap->top.c_str());
+        TextureLoader::TextureTempData bottom = LoadToMemory(cubemap->bottom.c_str());
+        TextureLoader::TextureTempData front = LoadToMemory(cubemap->front.c_str());
+        TextureLoader::TextureTempData back = LoadToMemory(cubemap->back.c_str());
 
-    texture->width = right.width;
-    texture->height = right.height;
-    texture->isLoad = true;
+        texture->width = right.width;
+        texture->height = right.height;
+        texture->isLoad = true;
 
-    TextureDriver::CreateCube(texture, right.data, left.data, top.data, bottom.data, front.data, back.data, right.channels, right.bitCount);
+        TextureDriver::CreateCube(texture, right.data, left.data, top.data, bottom.data, front.data, back.data, right.channels, right.bitCount);
 
-    stbi_image_free(right.data);
-    stbi_image_free(left.data);
-    stbi_image_free(top.data);
-    stbi_image_free(bottom.data);
-    stbi_image_free(front.data);
-    stbi_image_free(back.data);
+        stbi_image_free(right.data);
+        stbi_image_free(left.data);
+        stbi_image_free(top.data);
+        stbi_image_free(bottom.data);
+        stbi_image_free(front.data);
+        stbi_image_free(back.data);
+    }
+    else
+    {
+        Ref<Texture2D> panoramic = CreateRef<Texture2D>();
+        panoramic->path = texture->path;
+        panoramic->isGammaCorrection = false;
+        panoramic->mipmapCount = 6;
+        panoramic->filter = FilterMode::Bilinear;
+        panoramic->warpU = TextureWrapMode::Repeat;
+        panoramic->warpV = TextureWrapMode::Clamp;
+        LoadTexture2D(panoramic);
+        TextureDriver::CreateCubeByPanoramic(panoramic, texture);
+        Delete(panoramic);
+    }
 
 }

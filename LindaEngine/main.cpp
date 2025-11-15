@@ -126,6 +126,7 @@ void SerializeTexture()
 	cubemap->bottom = "bottom";
 	cubemap->front = "front";
 	cubemap->back = "back";
+	cubemap->srcType = CubemapSrcType::SixTexture;
 	Texture::overrideTexture = cubemap;
 	YamlSerializer::DeSerializeTexture("Assets/Maps/Yamls/testCube.texture");
 }

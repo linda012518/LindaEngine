@@ -15,6 +15,11 @@ void TextureDriver::CreateCube(Ref<Texture> texture, void* right, void* left, vo
 	_context->CreateCube(texture, right, left, top, bottom, front, back, channels, bitCount);
 }
 
+void TextureDriver::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
+{
+	_context->CreateCubeByPanoramic(src, dest);
+}
+
 void TextureDriver::DeleteTexture(Ref<Texture> texture)
 {
 	_context->DeleteTexture(texture);

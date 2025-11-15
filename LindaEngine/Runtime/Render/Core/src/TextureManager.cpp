@@ -40,6 +40,19 @@ Ref<Texture> TextureManager::GetTexture(std::string& path)
     }
 }
 
+void TextureManager::DeleteTexture(Ref<Texture> texture)
+{
+    for (auto itr = _textureMap.begin(); itr != _textureMap.end(); ) {
+        if (itr->second != texture) {
+            ++itr;
+            continue;
+        }
+        _textureMap.erase(itr);
+        TextureLoader::Delete(itr->second);
+        break;
+    }
+}
+
 void TextureManager::Clear() 
 { 
     for (auto& tex : _textureMap)
