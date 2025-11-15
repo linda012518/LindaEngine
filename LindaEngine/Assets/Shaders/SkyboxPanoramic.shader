@@ -9,6 +9,7 @@ Shader
 		Properties
 		{
 			uniform sampler2D skybox = white;
+			uniform vec4 skybox_TexelSize = [0.0, 0.0, 0.0, 0.0];
 		}
 		
 		RenderState
@@ -63,7 +64,17 @@ Shader
 			{
 				vec2 uv = DecodeDir2LatLongUV(normalize(worldNormal));
 				uv.y = 1.0 - uv.y;
-				FragColor = texture(skybox, uv);
+
+				//目前采用手动计算mip层级，解决接缝，4个纹素的边界范围
+				float boundaryRange = skybox_TexelSize.z * 4.0;
+				if (uv.x < boundaryRange || uv.x > 1.0 - boundaryRange) 
+				{
+					FragColor = textureLod(skybox, uv, 0.0);
+				}
+				else
+				{
+					FragColor = texture(skybox, uv);
+				}
 			}
 		}
 	}

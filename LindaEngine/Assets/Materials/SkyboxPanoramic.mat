@@ -11,6 +11,9 @@ Material:
         - UniformName: skybox
           Value: Assets/Maps/Yamls/Panoramic.texture
           skybox: 1
+        - UniformName: skybox_TexelSize
+          Value: [0, 0, 0, 0]
+          skybox_TexelSize: 8
       Keywords:
         []
       RenderState:

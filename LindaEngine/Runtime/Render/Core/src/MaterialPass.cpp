@@ -31,6 +31,8 @@ void MaterialPass::SetUniformValue<dataType>(const char* name, dataType val, int
 
 using namespace LindaEngine;
 
+std::string texelSizeSuffix = "_TexelSize";
+
 RenderState MaterialPass::_defualtState;
 RenderState MaterialPass::_currentState;
 Ref<MaterialPass> MaterialPass::overrideMatPass = nullptr;
@@ -93,6 +95,16 @@ void MaterialPass::UpdateUniforms()
 			{
 				TextureManager::Bind(texture, acitveChannel);
 				_shader->SetInt(pair.first, acitveChannel++);
+				std::string texelSize = pair.first + texelSizeSuffix;
+				if (_state.uniformNameMap.find(texelSize) != _state.uniformNameMap.end())
+				{
+					glm::vec4 size;
+					size.x = texture->width;
+					size.y = texture->height;
+					size.z = 1.0 / size.x;
+					size.w = 1.0 / size.y;
+					_shader->SetVec4(texelSize, size);
+				}
 			}
 			break;
 		}
@@ -113,8 +125,11 @@ void MaterialPass::UpdateUniforms()
 			_shader->SetFloat(pair.first, DynamicCastRef(FloatUniformData, pair.second)->value);
 			break;
 		case UniformType::FLOAT4:
-			_shader->SetVec4(pair.first, DynamicCastRef(Float4UniformData, pair.second)->value);
-			break;
+		{
+			if (pair.first.find(texelSizeSuffix) == std::string::npos)
+				_shader->SetVec4(pair.first, DynamicCastRef(Float4UniformData, pair.second)->value);
+		}
+		break;
 
 		case UniformType::INTARRAY:
 		{
