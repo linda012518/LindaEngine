@@ -7,6 +7,7 @@
 #include "MaterialManager.h"
 #include "ComponentImplement.inl"
 #include "Entity.h"
+#include "RendererSystem.h"
 
 using namespace LindaEngine;
 
@@ -16,10 +17,12 @@ DYNAMIC_CREATE(SkyboxRenderer)
 
 Renderer::Renderer(Entity& entity, bool enable) : Component(entity, enable)
 {
+	RendererSystem::Add(this);
 }
 
 Renderer::~Renderer()
 {
+	RendererSystem::Remove(this);
 }
 
 bool Renderer::Serialize()

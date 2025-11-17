@@ -6,6 +6,7 @@
 #include "Event.h"
 #include "GraphicsContext.h"
 #include "ComponentImplement.inl"
+#include "CameraSystem.h"
 
 using namespace LindaEngine;
 
@@ -15,6 +16,9 @@ DYNAMIC_CREATE(CubeCamera)
 
 Camera::Camera(Entity& entity, bool enable) : Component(entity, enable)
 {
+	CameraSystem::Add(this);
+	_transform->OnCameraAdded();
+
 	_viewMatrix = glm::mat4(1.0);
 	_projectMatrix = glm::mat4(1.0);
 	_viewProjectMatrix = glm::mat4(1.0);
@@ -36,6 +40,8 @@ Camera::Camera(Entity& entity, bool enable) : Component(entity, enable)
 
 Camera::~Camera()
 {
+	CameraSystem::Remove(this);
+	_transform->OnCameraRemoved();
 }
 
 void Camera::MakeViewMatrix()

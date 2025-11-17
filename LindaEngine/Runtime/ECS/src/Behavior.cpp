@@ -1,9 +1,18 @@
 #include "Behavior.h"
 #include "Entity.h"
+#include "BehaviorSystem.h"
 
 using namespace LindaEngine;
 
-Behavior::Behavior(Entity& entity, bool enable) : Component(entity, enable) {}
+Behavior::Behavior(Entity& entity, bool enable) : Component(entity, enable) 
+{
+	//BehaviorSystem::Add(this);
+}
+
+Behavior::~Behavior()
+{
+	//BehaviorSystem::Remove(this);
+}
 
 void Behavior::Awake(){}
 void Behavior::OnEnable(){}

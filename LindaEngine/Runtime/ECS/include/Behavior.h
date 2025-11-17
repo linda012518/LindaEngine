@@ -10,6 +10,7 @@ namespace LindaEngine
 		friend class BehaviorSystem;
 	public:
 		Behavior(Entity& entity, bool enable = true);
+		virtual ~Behavior();
 
 		virtual void Awake();
 		virtual void OnEnable();

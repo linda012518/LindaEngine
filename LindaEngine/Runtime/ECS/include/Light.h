@@ -2,8 +2,20 @@
 
 #include "Component.h"
 
+#include <glm/glm.hpp>
+
 namespace LindaEngine
 {
+	enum class LightType
+	{
+		None, DirectionLight, SpotLight, PointLight
+	};
+
+	enum class ShadowType
+	{
+		None, HardShadows, SoftShadows
+	};
+
 	class Light : public Component
 	{
 	public:
@@ -12,6 +24,12 @@ namespace LindaEngine
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
+
+	protected:
+		float _intensity;
+		glm::vec4 _color;
+		LightType _lightType;
+		ShadowType _shadowType;
 	};
 
 	class DirectionLight : public Light
@@ -34,6 +52,10 @@ namespace LindaEngine
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
+
+	private:
+		float _range;
+		float _spotAngle;
 	};
 
 	class PointLight : public Light
@@ -45,5 +67,8 @@ namespace LindaEngine
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
+
+	private:
+		float _range;
 	};
 }

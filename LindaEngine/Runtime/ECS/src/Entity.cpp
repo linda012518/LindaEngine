@@ -1,38 +1,15 @@
 #include "Entity.h"
 #include "Transform.h"
-#include "TransformSystem.h"
-#include "Camera.h"
-#include "CameraSystem.h"
 #include "YamlSerializer.h"
 #include "YamlCustomType.h"
 #include "UUID.h"
 #include "ComponentFactory.h"
-#include "Renderer.h"
-#include "RendererSystem.h"
 #include "Behavior.h"
 #include "BehaviorSystem.h"
 
 #include <fstream>
 #include <iostream>
 #include <string>
-
-#define COMPONENTADDED(className, pointerSrc, comSystem, pointer, otherCode) \
-className* pointer = dynamic_cast<className*>(pointerSrc); \
-if (nullptr != pointer) \
-{ \
-	comSystem::Add(pointer); \
-	otherCode \
-	return; \
-} 
-
-#define COMPONENTREMOVED(className, pointerSrc, comSystem, pointer, otherCode) \
-className* pointer = dynamic_cast<className*>(pointerSrc); \
-if (nullptr != pointer) \
-{ \
-	comSystem::Remove(pointer); \
-	otherCode \
-	return; \
-} 
 
 using namespace LindaEngine;
 
@@ -86,7 +63,6 @@ void Entity::Destroy()
 	for (auto& com : _components) {
 		com->Destroy();
 		OnComponentRemoved(com.get());
-		//LifeCycleFuncSystem::RemoveComponent(com.get());
 	}
 	_components.clear();
 	_transform = nullptr;
@@ -106,61 +82,22 @@ Transform* Entity::GetTransform()
 
 void Entity::OnComponentAdded(Component* com)
 {
-	//Transform* trans = dynamic_cast<Transform*>(com);
-	//if (nullptr != trans)
-	//{
-	//	TransformSystem::Add(trans);
-	//	return;
-	//}
-
-	//Camera* camera = dynamic_cast<Camera*>(com);
-	//if (nullptr != camera)
-	//{
-	//	CameraSystem::Add(camera);
-	//	_transform->OnCameraAdded();
-	//	return;
-	//}
-
-	//Renderer* renderer = dynamic_cast<Renderer*>(com);
-	//if (nullptr != renderer)
-	//{
-	//	RendererSystem::Add(renderer);
-	//	return;
-	//}
-
-	COMPONENTADDED(Transform, com, TransformSystem, trans, ;)
-	COMPONENTADDED(Camera, com, CameraSystem, camera, _transform->OnCameraAdded();)
-	COMPONENTADDED(Renderer, com, RendererSystem, renderer, ;)
-	COMPONENTADDED(Behavior, com, BehaviorSystem, behavior, ;)
+	Behavior* pointer = dynamic_cast<Behavior*>(com);
+	if (nullptr != pointer)
+	{
+		BehaviorSystem::Add(pointer);
+		return;
+	}
 }
 
 void Entity::OnComponentRemoved(Component* com)
 {
-	COMPONENTREMOVED(Transform, com, TransformSystem, trans, ;)
-	COMPONENTREMOVED(Camera, com, CameraSystem, camera, _transform->OnCameraRemoved();)
-	COMPONENTREMOVED(Renderer, com, RendererSystem, renderer, ;)
-	COMPONENTREMOVED(Behavior, com, BehaviorSystem, behavior, ;)
-	//Transform* trans = dynamic_cast<Transform*>(com);
-	//if (nullptr != trans)
-	//{
-	//	TransformSystem::Remove(trans);
-	//	return;
-	//}
-
-	//Camera* camera = dynamic_cast<Camera*>(com);
-	//if (nullptr != camera)
-	//{
-	//	CameraSystem::Remove(camera);
-	//	_transform->OnCameraRemoved();
-	//	return;
-	//}
-
-	//Renderer* renderer = dynamic_cast<Renderer*>(com);
-	//if (nullptr != renderer)
-	//{
-	//	RendererSystem::Remove(renderer);
-	//	return;
-	//}
+	Behavior* pointer = dynamic_cast<Behavior*>(com);
+	if (nullptr != pointer)
+	{
+		BehaviorSystem::Remove(pointer);
+		return;
+	}
 }
 
 void Entity::UpdateChildrenDirty(Transform* parent)

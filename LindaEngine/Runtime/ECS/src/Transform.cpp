@@ -3,6 +3,7 @@
 #include "YamlSerializer.h"
 #include "YamlCustomType.h"
 #include "Scene.h"
+#include "TransformSystem.h"
 
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/quaternion.hpp"
@@ -25,10 +26,12 @@ using namespace LindaEngine;
 
 Transform::Transform(Entity& entity) : Component(entity, true)
 {
+	TransformSystem::Add(this);
 }
 
 Transform::~Transform()
 {
+	TransformSystem::Remove(this);
 }
 
 const glm::mat4& Transform::GetLocalToWorldMat() const
