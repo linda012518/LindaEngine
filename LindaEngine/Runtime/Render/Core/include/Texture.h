@@ -25,6 +25,8 @@ namespace LindaEngine
         TextureWrapMode warpV = TextureWrapMode::Clamp;
         TextureWrapMode warpW = TextureWrapMode::Clamp;
 		std::string path;
+		std::string nodePath;
+		bool isUserCreate = false;
 
 		static Ref<Texture> overrideTexture;
 

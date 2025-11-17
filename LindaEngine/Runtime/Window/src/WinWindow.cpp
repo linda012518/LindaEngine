@@ -4,7 +4,10 @@
 #include "EventSystem.h"
 #include "EventCode.h"
 #include "Event.h"
+
 #include <tchar.h>
+#include <shellscalingapi.h>
+#pragma comment(lib, "Shcore.lib")
 
 #ifndef GET_X_LPARAM
 #define GET_X_LPARAM(lp)                        ((int)(short)LOWORD(lp))
@@ -28,6 +31,9 @@ WinWindow::WinWindow()
 
 int WinWindow::Initialize()
 {
+    //感知dpi，缩放窗口大小
+    SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+
     // get the HINSTANCE of the Console Program
     HINSTANCE hInstance = GetModuleHandle(NULL);
 

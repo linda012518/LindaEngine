@@ -1,6 +1,12 @@
 #include "OpenglTexture.h"
 #include "Texture.h"
 #include "glad/glad.h"
+#include "Material.h"
+#include "MaterialManager.h"
+#include "Entity.h"
+#include "Camera.h"
+#include "Mesh.h"
+#include "MeshManager.h"
 
 #include <iostream>
 
@@ -46,16 +52,51 @@ void OpenglTexture::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
 	//TODO srcÊÇÈ«¾°Í¼ destÊÇcubemap
 	FramebufferTextureSpecification color;
 	color.colorFormat = TextureFormat::RGBA8;
-	Ref<RenderTexture> newRT = CreateRef<RenderTexture>();
-	newRT->width = 512;
-	newRT->height = 512;
-	newRT->isCube = true;
-	newRT->isGammaCorrection = false;
-	newRT->msaa = 1;
-	newRT->mipmapCount = 6;
-	newRT->anisotropy = 1;
-	newRT->attachments.push_back(color);
-	CreateRenderTextureCubemap(newRT);
+
+	FramebufferTextureSpecification depth;
+	depth.colorFormat = TextureFormat::Depth16;
+	depth.isRenderBuffer = true;
+
+	Ref<RenderTexture> rt = CreateRef<RenderTexture>();
+	rt->width = 512;
+	rt->height = 512;
+	rt->isCube = true;
+	rt->isGammaCorrection = false;
+	rt->msaa = 1;
+	rt->mipmapCount = 6;
+	rt->anisotropy = 1;
+	rt->colorAttachments.push_back(color);
+	rt->depthAttachment = depth;
+	CreateRenderTextureCubemap(rt);
+	dest->nativeColorID = rt->nativeIDs[0];
+
+	glBindFramebuffer(GL_FRAMEBUFFER, rt->nativeColorID);
+	glViewport(0, 0, 512, 512);
+
+	Entity entity("temp");
+	CubeCamera* camera = entity.AddComponent<CubeCamera>();
+	camera->Tick();
+	Ref<Material> material = MaterialManager::GetMaterialByShader("Assets/Shaders/PanoramicToCubemap.shader");
+	material->SetTexture("skybox", src);
+
+	std::string temp = Material::overrideLightMode;
+	Material::overrideLightMode = "Color";
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, src->nativeColorID);
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		material->SetMat4("viewProjection", camera->GetVPMatrix(i));
+		material->Bind(0, nullptr, MeshManager::GetSkybox()->GetMeshAttributes());
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, dest->nativeColorID, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		MeshManager::GetSkybox()->Draw();
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glDeleteFramebuffers(1, &rt->nativeColorID);
+	glDeleteRenderbuffers((int)rt->renderBuffers.size(), rt->renderBuffers.data());
+
+	Material::overrideLightMode = temp;
 }
 
 void OpenglTexture::DeleteTexture(Ref<Texture> texture)

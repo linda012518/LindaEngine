@@ -18,15 +18,40 @@ void MaterialPass::SetUniformValue<dataType>(const char* name, dataType val, int
 	DynamicCastRef(UniformClass, _state.uniformNameMap[name])->value = val; \
 }
 
+#define IMPLEMENT_SETUNIFORMMATRIX(dataType, UniformClass) \
+template<> \
+void MaterialPass::SetUniformValue<dataType>(const char* name, dataType val, int count) \
+{ \
+	if (_state.uniformNameMap.find(name) != _state.uniformNameMap.end()) \
+	{ \
+		DynamicCastRef(UniformClass, _state.uniformNameMap[name])->value = val; \
+	} \
+	else \
+	{ \
+		Ref<UniformClass> matrix = CreateRef<UniformClass>(); \
+		matrix->name = name; \
+		matrix->value = val; \
+		_state.uniformNameMap[name] = matrix; \
+	} \
+}
+
 #define IMPLEMENT_SETUNIFORMARRAY(dataType, UniformClass) \
 template<> \
 void MaterialPass::SetUniformValue<dataType>(const char* name, dataType val, int count) \
 { \
-	if (_state.uniformNameMap.find(name) == _state.uniformNameMap.end()) \
-		return; \
-	Ref<UniformClass> data = DynamicCastRef(UniformClass, _state.uniformNameMap[name]); \
-	data->value = val; \
-	data->arraySize = count; \
+	if (_state.uniformNameMap.find(name) != _state.uniformNameMap.end()) \
+	{ \
+		DynamicCastRef(UniformClass, _state.uniformNameMap[name])->value = val; \
+		DynamicCastRef(UniformClass, _state.uniformNameMap[name])->arraySize = count; \
+	} \
+	else \
+	{ \
+		Ref<UniformClass> array = CreateRef<UniformClass>(); \
+		array->name = name; \
+		array->value = val; \
+		array->arraySize = count; \
+		_state.uniformNameMap[name] = array; \
+	} \
 }
 
 using namespace LindaEngine;
@@ -64,6 +89,8 @@ void MaterialPass::Bind(Transform* transform)
 {
 	if (nullptr == _shader)
 		return;
+
+	LoadTextures();
 	
 	// 确保renderState已初始化
 	if (nullptr == _state.renderState)
@@ -143,8 +170,58 @@ void MaterialPass::UpdateUniforms()
 			_shader->SetFloatArray(pair.first, floatArray->arraySize, floatArray->value);
 		}
 		break;
+		case UniformType::MAT2:
+		{
+			Ref<Mat2UniformData> mat2 = DynamicCastRef(Mat2UniformData, pair.second);
+			_shader->SetMat2(pair.first, mat2->value);
+		}
+		break;
+		case UniformType::MAT3:
+		{
+			Ref<Mat3UniformData> mat3 = DynamicCastRef(Mat3UniformData, pair.second);
+			_shader->SetMat3(pair.first, mat3->value);
+		}
+		break;
+		case UniformType::MAT4:
+		{
+			Ref<Mat4UniformData> mat4 = DynamicCastRef(Mat4UniformData, pair.second);
+			_shader->SetMat4(pair.first, mat4->value);
+		}
+		break;
+		case UniformType::MAT2ARRAY:
+		{
+			Ref<Mat2ArrayUniformData> mat2Array = DynamicCastRef(Mat2ArrayUniformData, pair.second);
+			//TODO
+		}
+		break;
+		case UniformType::MAT3ARRAY:
+		{
+			Ref<Mat3ArrayUniformData> mat3Array = DynamicCastRef(Mat3ArrayUniformData, pair.second);
+			//TODO
+		}
+		break;
+		case UniformType::MAT4ARRAY:
+		{
+			Ref<Mat4ArrayUniformData> mat4Array = DynamicCastRef(Mat4ArrayUniformData, pair.second);
+			//TODO
+		}
+		break;
 		}
 
+	}
+}
+
+void MaterialPass::LoadTextures()
+{
+	if (true == _textureLoaded)
+		return;
+	_textureLoaded = true;
+
+	for (const auto& pair : _state.uniformNameMap)
+	{
+		if (pair.second->dataType != UniformType::TEXTURE)
+			continue;
+		TextureManager::GetTexture(DynamicCastRef(TextureUniformData, pair.second)->value);
 	}
 }
 
@@ -154,9 +231,9 @@ IMPLEMENT_SETUNIFORM(glm::vec4, Float4UniformData)
 IMPLEMENT_SETUNIFORM(glm::ivec4, Int4UniformData)
 IMPLEMENT_SETUNIFORM(const char*, TextureUniformData)
 
-IMPLEMENT_SETUNIFORM(glm::mat2, Mat2UniformData)
-IMPLEMENT_SETUNIFORM(glm::mat3, Mat3UniformData)
-IMPLEMENT_SETUNIFORM(glm::mat4, Mat4UniformData)
+IMPLEMENT_SETUNIFORMMATRIX(glm::mat2, Mat2UniformData)
+IMPLEMENT_SETUNIFORMMATRIX(glm::mat3, Mat3UniformData)
+IMPLEMENT_SETUNIFORMMATRIX(glm::mat4, Mat4UniformData)
 
 IMPLEMENT_SETUNIFORMARRAY(int*, IntArrayUniformData)
 IMPLEMENT_SETUNIFORMARRAY(float*, FloatArrayUniformData)
@@ -174,10 +251,10 @@ void MaterialPass::SetUniformValue<Ref<Texture>>(const char* name, Ref<Texture> 
 
 	Ref<RenderTexture> rt = DynamicCastRef(RenderTexture, val);
 
-	if (nullptr == rt)
+	if (nullptr == rt && val->isUserCreate == false)
 	{
 		Ref<TextureUniformData> tud = DynamicCastRef(TextureUniformData, _state.uniformNameMap[name]);
-		tud->value = val->path;
+		tud->value = val->nodePath;
 	}
 	else
 	{

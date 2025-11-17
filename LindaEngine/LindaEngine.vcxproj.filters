@@ -201,9 +201,6 @@
     <ClCompile Include="Runtime\IO\src\TextLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime\IO\src\TextureLoader.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Runtime\IO\src\YamlSerializer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -340,6 +337,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Math\src\CullTool.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\IO\src\TextureLoader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

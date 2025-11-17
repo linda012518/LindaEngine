@@ -113,11 +113,13 @@ void TextureLoader::LoadCubemap(Ref<Texture> texture)
     {
         Ref<Texture2D> panoramic = CreateRef<Texture2D>();
         panoramic->path = texture->path;
+        panoramic->nodePath = texture->nodePath;
         panoramic->isGammaCorrection = false;
         panoramic->mipmapCount = 6;
         panoramic->filter = FilterMode::Bilinear;
-        panoramic->warpU = TextureWrapMode::Repeat;
+        panoramic->warpU = TextureWrapMode::Clamp;
         panoramic->warpV = TextureWrapMode::Clamp;
+        panoramic->isUserCreate = true;
         LoadTexture2D(panoramic);
         TextureDriver::CreateCubeByPanoramic(panoramic, texture);
         Delete(panoramic);

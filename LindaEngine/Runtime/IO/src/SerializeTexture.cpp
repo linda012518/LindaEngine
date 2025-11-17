@@ -110,6 +110,7 @@ Ref<Texture> YamlSerializer::DeSerializeTexture(const char* path)
 	texture->warpU = static_cast<TextureWrapMode>(data["warpU"].as<int>());
 	texture->warpV = static_cast<TextureWrapMode>(data["warpV"].as<int>());
 	texture->warpW = static_cast<TextureWrapMode>(data["warpW"].as<int>());
+	texture->nodePath = path;
 
 	return texture;
 

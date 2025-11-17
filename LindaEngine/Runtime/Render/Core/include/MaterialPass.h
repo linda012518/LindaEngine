@@ -35,9 +35,13 @@ namespace LindaEngine
 		void SetUniformValue(const char* name, T val, int count = 1);
 
 	private:
+		void LoadTextures();
+
+	private:
 		MaterialPassState _state;
 		Ref<Shader> _shader = nullptr;
 		static Ref<MaterialPass> overrideMatPass;
+		bool _textureLoaded = false;
 
 	private:
 		static RenderState _currentState; //当前渲染正在用的状态

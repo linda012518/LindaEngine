@@ -137,18 +137,15 @@ namespace LindaEngine
 		virtual void MakeProjectionMatrix();
 		virtual void MakeViewProjectionMatrix();
 
+		glm::mat4& GetVPMatrix(int index);
 		void SetProjectionData(float near, float far, float dontCare = -1.0f);
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
 	private:
-		PerspectiveCamera _right;
-		PerspectiveCamera _left;
-		PerspectiveCamera _top;
-		PerspectiveCamera _bottom;
-		PerspectiveCamera _back;
-		PerspectiveCamera _front;
+		glm::mat4 projectionMatrix;
+		glm::mat4 cameraMatrixs[6];
 	};
 
 }

@@ -9,7 +9,7 @@ Material:
     - PassName: Skybox
       ShaderUniforms:
         - UniformName: skybox
-          Value: Assets/Maps/Yamls/testCube.texture
+          Value: Assets/Maps/Yamls/PanoramicCube.texture
           skybox: 1
       Keywords:
         []

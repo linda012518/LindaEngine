@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\IO\src\TextureLoader.cpp" />
     <ClCompile Include="Runtime\Math\src\CullTool.cpp" />
     <ClCompile Include="Editor\ImGui\src\ImGuiContextEditor.cpp" />
     <ClCompile Include="External\imgui\imgui\imgui.cpp" />
@@ -217,7 +218,6 @@
     <ClCompile Include="Runtime\ECS\src\Renderer.cpp" />
     <ClCompile Include="Runtime\IO\src\ShaderLoader.cpp" />
     <ClCompile Include="Runtime\IO\src\TextLoader.cpp" />
-    <ClCompile Include="Runtime\IO\src\TextureLoader.cpp" />
     <ClCompile Include="Runtime\Math\src\BoundingBox.cpp" />
     <ClCompile Include="Runtime\Math\src\Plane.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\Material.cpp" />

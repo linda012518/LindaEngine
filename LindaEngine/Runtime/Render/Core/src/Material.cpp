@@ -8,7 +8,7 @@
 using namespace LindaEngine;
 
 Ref<Material> Material::overrideMat = nullptr;
-std::string Material::overrideLightMode;
+std::string Material::overrideLightMode = "Color";
 
 Material::Material()
 {

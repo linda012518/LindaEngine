@@ -32,8 +32,6 @@ Camera::Camera(Entity& entity, bool enable) : Component(entity, enable)
 	_cameraType = CameraType::None;
 	_clearType = CameraClearType::Skybox;
 	_depth = -1;
-
-	Bind(EventCode::WindowResize);
 }
 
 Camera::~Camera()
@@ -142,6 +140,7 @@ PerspectiveCamera::PerspectiveCamera(Entity& entity, bool enable) : Camera(entit
 	_cameraType = CameraType::PerspectiveCamera;
 	_fov = 60.0f;
 	_aspectRatio = (float)GraphicsContext::graphicsConfig.screenNewWidth / (float)GraphicsContext::graphicsConfig.screenNewHeight;
+	Bind(EventCode::WindowResize);
 }
 
 PerspectiveCamera::~PerspectiveCamera()
@@ -204,6 +203,7 @@ OrthoCamera::OrthoCamera(Entity& entity, bool enable) : Camera(entity, enable)
 	_right = 100;
 	_bottom = 100;
 	_top = 100;
+	Bind(EventCode::WindowResize);
 }
 
 OrthoCamera::~OrthoCamera()
@@ -263,8 +263,7 @@ bool OrthoCamera::Deserialize(YAML::Node& node)
 
 /////////////////////////////////////////////////////////////////////
 
-CubeCamera::CubeCamera(Entity& entity, bool enable) : Camera(entity, enable),
-	_right(entity, enable), _left(entity, enable), _top(entity, enable), _bottom(entity, enable), _back(entity, enable), _front(entity, enable)
+CubeCamera::CubeCamera(Entity& entity, bool enable) : Camera(entity, enable)
 {
 	_cameraType = CameraType::CubeCamera;
 }
@@ -279,17 +278,17 @@ void CubeCamera::MakeViewMatrix()
 	if (false == _viewDirty)
 		return;
 
-	_right._viewMatrix	= _transform->LookAt(glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
-	_left._viewMatrix	= _transform->LookAt(glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
-	_top._viewMatrix	= _transform->LookAt(glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f));
-	_bottom._viewMatrix = _transform->LookAt(glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f));
-	_back._viewMatrix	= _transform->LookAt(glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
-	_front._viewMatrix	= _transform->LookAt(glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
-
+	cameraMatrixs[0] = _transform->LookAt(glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+	cameraMatrixs[1] = _transform->LookAt(glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+	cameraMatrixs[2] = _transform->LookAt(glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f));
+	cameraMatrixs[3] = _transform->LookAt(glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f));
+	cameraMatrixs[4] = _transform->LookAt(glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+	cameraMatrixs[5] = _transform->LookAt(glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
 }
 
 void CubeCamera::MakeProjectionMatrix()
 {
+	projectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, _zNear, _zFar);
 }
 
 void CubeCamera::MakeViewProjectionMatrix()
@@ -299,14 +298,17 @@ void CubeCamera::MakeViewProjectionMatrix()
 	_viewDirty = false;
 	_projectDirty = false;
 
+	cameraMatrixs[0] = projectionMatrix * cameraMatrixs[0];
+	cameraMatrixs[1] = projectionMatrix * cameraMatrixs[1];
+	cameraMatrixs[2] = projectionMatrix * cameraMatrixs[2];
+	cameraMatrixs[3] = projectionMatrix * cameraMatrixs[3];
+	cameraMatrixs[4] = projectionMatrix * cameraMatrixs[4];
+	cameraMatrixs[5] = projectionMatrix * cameraMatrixs[5];
+}
 
-	glm::mat4 pro = glm::perspective(glm::radians(90.0f), 1.0f, _zNear, _zFar);
-	_right._viewProjectMatrix = pro * _right._viewMatrix;
-	_left._viewProjectMatrix = pro * _left._viewMatrix;
-	_top._viewProjectMatrix = pro * _top._viewMatrix;
-	_bottom._viewProjectMatrix = pro * _bottom._viewMatrix;
-	_back._viewProjectMatrix = pro * _back._viewMatrix;
-	_front._viewProjectMatrix = pro * _front._viewMatrix;
+glm::mat4& CubeCamera::GetVPMatrix(int index)
+{
+	return cameraMatrixs[index];
 }
 
 void CubeCamera::SetProjectionData(float near, float far, float dontCare)
