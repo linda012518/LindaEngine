@@ -25,6 +25,11 @@ namespace LindaEngine
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
+		glm::vec4 GetColor();
+		glm::vec3 GetPosition();
+		glm::vec3 GetDirection();
+		virtual float GetAttenuation() { return 1.0f; }
+
 	protected:
 		float _intensity;
 		glm::vec4 _color;
@@ -53,6 +58,9 @@ namespace LindaEngine
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
+		float GetAttenuation();
+		glm::vec4 GetSpotAngles();
+
 	private:
 		float _range;
 		float _spotAngle;
@@ -67,6 +75,8 @@ namespace LindaEngine
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
+
+		float GetAttenuation();
 
 	private:
 		float _range;

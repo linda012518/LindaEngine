@@ -159,6 +159,7 @@
     <ClCompile Include="External\imgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Runtime\Math\src\Frustum.cpp" />
     <ClCompile Include="Runtime\Core\src\EventSystem.cpp" />
+    <ClCompile Include="Runtime\Math\src\Mathf.cpp" />
     <ClCompile Include="Runtime\Window\src\WindowsInput.cpp" />
     <ClCompile Include="Runtime\Core\src\Timestamp.cpp" />
     <ClCompile Include="Runtime\ECS\src\Light.cpp" />
@@ -275,6 +276,7 @@
     <ClInclude Include="Runtime\Core\include\EventCode.h" />
     <ClInclude Include="Runtime\Core\include\EventSystem.h" />
     <ClInclude Include="Runtime\Core\include\IEventHandler.h" />
+    <ClInclude Include="Runtime\Math\include\Mathf.h" />
     <ClInclude Include="Runtime\Physics\include\Ray.h" />
     <ClInclude Include="Runtime\Window\include\InputCodes.h" />
     <ClInclude Include="Runtime\Window\include\Input.h" />

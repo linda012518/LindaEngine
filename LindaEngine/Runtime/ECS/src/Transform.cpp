@@ -5,12 +5,11 @@
 #include "Scene.h"
 #include "TransformSystem.h"
 
+#include "Mathf.h"
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/quaternion.hpp"
 #include "glm/gtx/matrix_decompose.hpp"
 #include "glm/gtx/euler_angles.hpp"
-
-#define PI 3.14159265358979323f
 
 #define DO_LOCALCHANGE \
 if (_localChange) \
@@ -160,7 +159,7 @@ void Transform::SetLocalRotation(const glm::quat& rotation)
 	_localChange = true;
 
 	_localRotation = rotation;
-	_localEulerAngles = glm::eulerAngles(rotation) * 180.f / PI;
+	_localEulerAngles = glm::eulerAngles(rotation) * 180.f / Mathf::PI;
 }
 
 void Transform::SetLocalScale(const glm::vec3& scale)
@@ -198,7 +197,7 @@ void Transform::SetWorldRotation(const glm::quat& rotation)
 	_worldChange = true;
 
 	_worldRotation = rotation;
-	_worldEulerAngles = glm::eulerAngles(rotation) * 180.f / PI;
+	_worldEulerAngles = glm::eulerAngles(rotation) * 180.f / Mathf::PI;
 }
 
 void Transform::SetWorldScale(const glm::vec3& scale)
@@ -260,7 +259,7 @@ void Transform::UpdateWhenLocalChange()
 		glm::vec3 skew;
 		glm::vec4 m;
 		glm::decompose(_worldMatrix, _worldScale, _worldRotation, _worldPosition, skew, m);
-		_worldEulerAngles = glm::eulerAngles(_worldRotation) * 180.f / PI;
+		_worldEulerAngles = glm::eulerAngles(_worldRotation) * 180.f / Mathf::PI;
 	}
 	else
 	{
@@ -305,7 +304,7 @@ void Transform::UpdateWhenWorldChange()
 		glm::vec3 skew;
 		glm::vec4 m;
 		glm::decompose(_localMatrix, _localScale, _localRotation, _localPosition, skew, m);
-		_localEulerAngles = glm::eulerAngles(_localRotation) * 180.f / PI;
+		_localEulerAngles = glm::eulerAngles(_localRotation) * 180.f / Mathf::PI;
 	}
 	else
 	{

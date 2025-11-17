@@ -1,5 +1,6 @@
 #include "MeshLoader.h"
 #include "Mesh.h"
+#include "Mathf.h"
 #include "glm/glm.hpp"
 
 #include "assimp\Importer.hpp"
@@ -68,7 +69,6 @@ Ref<Mesh> MeshLoader::LoadSphereMesh()
 
 	const unsigned int X_SEGMENTS = 32;
 	const unsigned int Y_SEGMENTS = 32;
-	const float PI = 3.14159265358979323f;
 
 	bool oddRow = false;
 	for (int y = 0; y < Y_SEGMENTS; ++y)
@@ -101,9 +101,9 @@ Ref<Mesh> MeshLoader::LoadSphereMesh()
 		{
 			float	xSegment = (float)x / (float)X_SEGMENTS;
 			float	ySegment = (float)y / (float)Y_SEGMENTS;
-			float	xPos = std::cos(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
-			float	yPos = std::cos(ySegment * PI);
-			float	zPos = std::sin(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
+			float	xPos = std::cos(xSegment * 2.0f * Mathf::PI) * std::sin(ySegment * Mathf::PI);
+			float	yPos = std::cos(ySegment * Mathf::PI);
+			float	zPos = std::sin(xSegment * 2.0f * Mathf::PI) * std::sin(ySegment * Mathf::PI);
 
 			mesh->UpdateBoundingBox(xPos, yPos, zPos);
 			data.vertexData.insert(data.vertexData.end(), { xPos, yPos, zPos, xPos, yPos, zPos, 0.1f, 0.2f, 0.3f,  xSegment, ySegment });

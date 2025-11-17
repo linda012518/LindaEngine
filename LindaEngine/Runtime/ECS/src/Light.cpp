@@ -4,6 +4,7 @@
 #include "YamlCustomType.h"
 #include "ComponentImplement.inl"
 #include "LightSystem.h"
+#include "Transform.h"
 
 using namespace LindaEngine;
 
@@ -47,6 +48,23 @@ bool Light::Deserialize(YAML::Node& node)
 	_color = node["color"].as<glm::vec4>();
 	_shadowType = static_cast<ShadowType>(node["shadowType"].as<int>());
 	return true;
+}
+
+glm::vec4 Light::GetColor()
+{
+	return _color * _intensity;
+}
+
+glm::vec3 Light::GetPosition()
+{
+	return _transform->GetWorldPosition();
+}
+
+glm::vec3 Light::GetDirection()
+{
+	glm::vec3 forward, up, right;
+	_transform->GetWorldDir(forward, up, right);
+	return forward;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -113,6 +131,17 @@ bool SpotLight::Deserialize(YAML::Node& node)
 	return true;
 }
 
+float SpotLight::GetAttenuation()
+{
+	//return 1.0f / std::max(_range * _range, 0.00001f);
+	return 0.0f;
+}
+
+glm::vec4 SpotLight::GetSpotAngles()
+{
+	return glm::vec4();
+}
+
 /////////////////////////////////////////////////////////////////////
 
 PointLight::PointLight(Entity& entity, bool enable) : Light(entity, enable)
@@ -144,3 +173,10 @@ bool PointLight::Deserialize(YAML::Node& node)
 	_range = node["range"].as<float>();
 	return true;
 }
+
+float PointLight::GetAttenuation()
+{
+	//return 1.0f / std::max(_range * _range, 0.00001f);
+	return 0.0f;
+}
+

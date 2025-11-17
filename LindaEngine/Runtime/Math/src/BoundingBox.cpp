@@ -1,4 +1,5 @@
 #include "BoundingBox.h"
+#include "Mathf.h"
 
 using namespace LindaEngine;
 
@@ -9,13 +10,13 @@ AABBBoundingBox::AABBBoundingBox()
 
 void AABBBoundingBox::Reset()
 {
-	min.x = FLT_MAX;
-	min.y = FLT_MAX;
-	min.z = FLT_MAX;
+	min.x = Mathf::MaxValue;
+	min.y = Mathf::MaxValue;
+	min.z = Mathf::MaxValue;
 
-	max.x = -FLT_MAX;
-	max.y = -FLT_MAX;
-	max.z = -FLT_MAX;
+	max.x = Mathf::MinValue;
+	max.y = Mathf::MinValue;
+	max.z = Mathf::MinValue;
 
 	size.x = center.x = 0.0f;
 	size.y = center.y = 0.0f;
@@ -24,13 +25,13 @@ void AABBBoundingBox::Reset()
 
 void AABBBoundingBox::AddVertex(glm::vec3& vertex)
 {
-	min.x = std::min(min.x, vertex.x);
-	min.y = std::min(min.y, vertex.y);
-	min.z = std::min(min.z, vertex.z);
+	min.x = glm::min(min.x, vertex.x);
+	min.y = glm::min(min.y, vertex.y);
+	min.z = glm::min(min.z, vertex.z);
 
-	max.x = std::max(max.x, vertex.x);
-	max.y = std::max(max.y, vertex.y);
-	max.z = std::max(max.z, vertex.z);
+	max.x = glm::max(max.x, vertex.x);
+	max.y = glm::max(max.y, vertex.y);
+	max.z = glm::max(max.z, vertex.z);
 }
 
 void AABBBoundingBox::CalculateCenterSize()
@@ -48,13 +49,13 @@ AABBBoundingBox AABBBoundingBox::Merge(const AABBBoundingBox& a, const AABBBound
 {
 	AABBBoundingBox aabb;
 
-	aabb.min.x = std::min(a.min.x, b.min.x);
-	aabb.min.y = std::min(a.min.y, b.min.y);
-	aabb.min.z = std::min(a.min.z, b.min.z);
+	aabb.min.x = glm::min(a.min.x, b.min.x);
+	aabb.min.y = glm::min(a.min.y, b.min.y);
+	aabb.min.z = glm::min(a.min.z, b.min.z);
 
-	aabb.max.x = std::max(a.max.x, b.max.x);
-	aabb.max.y = std::max(a.max.y, b.max.y);
-	aabb.max.z = std::max(a.max.z, b.max.z);
+	aabb.max.x = glm::max(a.max.x, b.max.x);
+	aabb.max.y = glm::max(a.max.y, b.max.y);
+	aabb.max.z = glm::max(a.max.z, b.max.z);
 
 	aabb.CalculateCenterSize();
 
@@ -96,24 +97,24 @@ void SphereBoundingBox::Reset()
 	center = glm::vec3(0.0f);
 	radius = 0.0f;
 
-	min.x = FLT_MAX;
-	min.y = FLT_MAX;
-	min.z = FLT_MAX;
+	min.x = Mathf::MaxValue;
+	min.y = Mathf::MaxValue;
+	min.z = Mathf::MaxValue;
 
-	max.x = -FLT_MAX;
-	max.y = -FLT_MAX;
-	max.z = -FLT_MAX;
+	max.x = Mathf::MinValue;
+	max.y = Mathf::MinValue;
+	max.z = Mathf::MinValue;
 }
 
 void SphereBoundingBox::AddVertex(glm::vec3& vertex)
 {
-	min.x = std::min(min.x, vertex.x);
-	min.y = std::min(min.y, vertex.y);
-	min.z = std::min(min.z, vertex.z);
+	min.x = glm::min(min.x, vertex.x);
+	min.y = glm::min(min.y, vertex.y);
+	min.z = glm::min(min.z, vertex.z);
 
-	max.x = std::max(max.x, vertex.x);
-	max.y = std::max(max.y, vertex.y);
-	max.z = std::max(max.z, vertex.z);
+	max.x = glm::max(max.x, vertex.x);
+	max.y = glm::max(max.y, vertex.y);
+	max.z = glm::max(max.z, vertex.z);
 }
 
 void SphereBoundingBox::CalculateCenterSize()
@@ -129,13 +130,13 @@ SphereBoundingBox SphereBoundingBox::Merge(const SphereBoundingBox& a, const Sph
 {
 	SphereBoundingBox sphere;
 
-	sphere.min.x = std::min(a.min.x, b.min.x);
-	sphere.min.y = std::min(a.min.y, b.min.y);
-	sphere.min.z = std::min(a.min.z, b.min.z);
+	sphere.min.x = glm::min(a.min.x, b.min.x);
+	sphere.min.y = glm::min(a.min.y, b.min.y);
+	sphere.min.z = glm::min(a.min.z, b.min.z);
 
-	sphere.max.x = std::max(a.max.x, b.max.x);
-	sphere.max.y = std::max(a.max.y, b.max.y);
-	sphere.max.z = std::max(a.max.z, b.max.z);
+	sphere.max.x = glm::max(a.max.x, b.max.x);
+	sphere.max.y = glm::max(a.max.y, b.max.y);
+	sphere.max.z = glm::max(a.max.z, b.max.z);
 
 	sphere.CalculateCenterSize();
 
