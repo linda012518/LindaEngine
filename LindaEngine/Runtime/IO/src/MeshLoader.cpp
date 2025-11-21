@@ -11,6 +11,11 @@
 
 using namespace LindaEngine;
 
+#define MAX_BONE_INFLUENCE 4
+
+std::unordered_map<std::string, BoneInfo> MeshLoader::_boneInfoMap;
+int MeshLoader::_boneCounter = 0;
+
 glm::vec3 CalculateTangent(glm::vec3& pos0, glm::vec3& pos1, glm::vec3& pos2, glm::vec2& uv0, glm::vec2& uv1, glm::vec2& uv2)
 {
 	glm::vec3 deltaPos1 = pos1 - pos0;
@@ -21,6 +26,17 @@ glm::vec3 CalculateTangent(glm::vec3& pos0, glm::vec3& pos1, glm::vec3& pos2, gl
 
 	float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
 	return (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+}
+
+glm::mat4 ConvertMatrixToGLMFormat(const aiMatrix4x4& from)
+{
+	glm::mat4 to;
+	//the a,b,c,d in assimp is the row ; the 1,2,3,4 is the column
+	to[0][0] = from.a1; to[1][0] = from.a2; to[2][0] = from.a3; to[3][0] = from.a4;
+	to[0][1] = from.b1; to[1][1] = from.b2; to[2][1] = from.b3; to[3][1] = from.b4;
+	to[0][2] = from.c1; to[1][2] = from.c2; to[2][2] = from.c3; to[3][2] = from.c4;
+	to[0][3] = from.d1; to[1][3] = from.d2; to[2][3] = from.d3; to[3][3] = from.d4;
+	return to;
 }
 
 Ref<Mesh> MeshLoader::Load(std::string path)
@@ -49,6 +65,8 @@ Ref<Mesh> MeshLoader::Load(std::string path)
 	}
 
 	Ref<Mesh> mesh = CreateRef<Mesh>();
+	_boneInfoMap.clear();
+	_boneCounter = 0;
 
 	ParseAssimpNode(scene->mRootNode, scene, mesh);
 
@@ -414,6 +432,12 @@ void MeshLoader::ParseAssimpMesh(aiMesh* aiMesh, const aiScene* scene, Mesh::Dat
 	if (NULL != aiMesh->mColors[0])
 		meshData.AddAttribute(VertexAttributeType::Color);
 
+	if (aiMesh->mNumBones >= 1)
+	{
+		meshData.AddAttribute(VertexAttributeType::BoneWeights1);
+		meshData.AddAttribute(VertexAttributeType::BoneID1);
+	}
+
 	int index = 0;
 	meshData.vertexData.resize(((size_t)meshData.vertexStride / 4) * ((size_t)aiMesh->mNumVertices));
 
@@ -452,6 +476,20 @@ void MeshLoader::ParseAssimpMesh(aiMesh* aiMesh, const aiScene* scene, Mesh::Dat
 			meshData.vertexData[index++] = (aiMesh->mColors[0][i].b);
 			meshData.vertexData[index++] = (aiMesh->mColors[0][i].a);
 		}
+
+		if (aiMesh->mNumBones >= 1)
+		{
+			meshData.vertexData[index++] = 0.0f;
+			meshData.vertexData[index++] = 0.0f;
+			meshData.vertexData[index++] = 0.0f;
+			meshData.vertexData[index++] = 0.0f;
+
+			meshData.vertexData[index++] = -1.1f;
+			meshData.vertexData[index++] = -1.1f;
+			meshData.vertexData[index++] = -1.1f;
+			meshData.vertexData[index++] = -1.1f;
+		}
+
 	}
 
 	for (unsigned int i = 0; i < aiMesh->mNumFaces; i++)
@@ -462,6 +500,7 @@ void MeshLoader::ParseAssimpMesh(aiMesh* aiMesh, const aiScene* scene, Mesh::Dat
 			meshData.indexData.push_back(face.mIndices[j]);
 	}
 	
+	ParseBoneWeight(aiMesh, scene, meshData);
 
 	////材质对象的内部对每种纹理类型都存储了一个纹理位置数组。不同的纹理类型都以aiTextureType_为前缀
 	//aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -480,4 +519,61 @@ void MeshLoader::ParseAssimpMesh(aiMesh* aiMesh, const aiScene* scene, Mesh::Dat
 
 	//return Mesh(vertices, indices, textures);
 
+}
+
+void MeshLoader::ParseBoneWeight(aiMesh* mesh, const aiScene* scene, Mesh::Data& meshData)
+{
+	auto& boneInfoMap = _boneInfoMap;
+	int& boneCount = _boneCounter;
+
+	for (int boneIndex = 0; boneIndex < (int)mesh->mNumBones; ++boneIndex)
+	{
+		int boneID = -1;
+		std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
+		if (boneInfoMap.find(boneName) == boneInfoMap.end())
+		{
+			BoneInfo newBoneInfo;
+			newBoneInfo.index = boneCount;
+			newBoneInfo.matrix = ConvertMatrixToGLMFormat(mesh->mBones[boneIndex]->mOffsetMatrix);
+			boneInfoMap[boneName] = newBoneInfo;
+			boneID = boneCount;
+			boneCount++;
+		}
+		else
+		{
+			boneID = boneInfoMap[boneName].index;
+		}
+		assert(boneID != -1);
+		auto weights = mesh->mBones[boneIndex]->mWeights;
+		int numWeights = mesh->mBones[boneIndex]->mNumWeights;
+
+		for (int weightIndex = 0; weightIndex < numWeights; ++weightIndex)
+		{
+			int vertexId = weights[weightIndex].mVertexId;
+			float weight = weights[weightIndex].mWeight;
+
+			SetVertexBoneData(meshData, vertexId, boneID + 0.1f, weight);
+		}
+	}
+
+}
+
+void MeshLoader::SetVertexBoneData(Mesh::Data& meshData, int vertexId, float boneID, float weight)
+{
+	int elementCount = meshData.vertexStride / 4;
+	int index = elementCount * vertexId;
+	int weightIndex = elementCount - 8;
+	int boneIndex = elementCount - 4;
+
+	for (int i = 0; i < MAX_BONE_INFLUENCE; ++i)
+	{
+		weightIndex += i;
+		boneIndex += i;
+		if (meshData.vertexData[index + boneIndex] < 0)
+		{
+			meshData.vertexData[index + boneIndex] = boneID;
+			meshData.vertexData[index + weightIndex] = weight;
+			break;
+		}
+	}
 }
