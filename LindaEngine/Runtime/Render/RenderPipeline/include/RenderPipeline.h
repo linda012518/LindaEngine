@@ -2,14 +2,14 @@
 
 #include "AutoPtr.h"
 #include "IRuntimeModule.h"
+#include "UniformDataGlobal.h"
+#include "ScriptablePass.h"
 
 #include <vector>
 
 namespace LindaEngine
 {
-	struct UniformDataGlobal;
 	class Camera;
-	//class UniversalRenderer;
 
 	class RenderPipeline : public IRuntimeModule
 	{
@@ -18,15 +18,21 @@ namespace LindaEngine
 		virtual void Finalize();
 		virtual void Tick();
 
+		void AddRenderPass(Ref<ScriptablePass> pass);
+
 		static Scope<RenderPipeline> Create();
 
 	private:
 		const std::vector<Camera*> CheckCameraList();
-		void CheckLightList();
+		void SetupShaderParameters(Camera* camera);
+		void SetupLightListShaderParameters(Camera* camera, UniformDataGlobal::Data& block);
+		void SetupCameraShaderParameters(Camera* camera, UniformDataGlobal::Data& block);
 		void Render();
+
+		void CollectRenderPass();
 
 	private:
 		Ref<UniformDataGlobal> _uniformGlobal;
-		//Ref<UniversalRenderer> _renderer;
+		std::vector<Ref<ScriptablePass>> _renderPasses;
 	};
 }

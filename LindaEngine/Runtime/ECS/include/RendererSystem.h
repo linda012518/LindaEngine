@@ -21,13 +21,13 @@ namespace LindaEngine
 		static void Remove(Renderer* renderer);
 		static void Clear();
 
-		static void DrawRenderers(Camera* camera, Ref<DrawingSettings> settings);
+		static void DrawRenderers(Camera* camera, DrawingSettings* settings);
 		static void DrawSkybox();
-		static void Cull(Camera* camera, Ref<DrawingSettings> settings);
 
 	private:
-		static void FillDrawables(Ref<DrawingSettings> settings);
-		static void SortDrawables(Ref<DrawingSettings> settings);
+		static void Cull(Camera* camera, DrawingSettings* settings);
+		static void FillDrawables(DrawingSettings* settings);
+		static void SortDrawables(DrawingSettings* settings);
 
 	private:
 		static std::vector<Renderer*> _components;

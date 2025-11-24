@@ -33,8 +33,8 @@ namespace LindaEngine
 		int minQueue;
 		int maxQueue;
 
-		const int minQueueBound = 0;
-		const int maxQueueBound = 5000;
+		static constexpr int minQueueBound = 0;
+		static constexpr int maxQueueBound = 5000;
 
 		static RenderQueueRange all;
 		static RenderQueueRange opaque;
@@ -54,7 +54,7 @@ namespace LindaEngine
 		RenderQueueRange renderQueueRange;
 		SortingSettings sortSettings;
 		CullSettings cullSettings;
-		std::vector<std::string> lightModes;
+		std::string lightMode;
 	};
 
 

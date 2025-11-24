@@ -2,6 +2,7 @@
 
 #include "Component.h"
 #include "Frustum.h"
+#include "Texture.h"
 
 #include "glm/glm.hpp"
 #include <glm\gtc\matrix_transform.hpp>
@@ -75,10 +76,10 @@ namespace LindaEngine
 		CameraType _cameraType;
 		CameraClearType _clearType;
 		int _depth;
-		//RenderTexture
+		//RenderTexture* _renderTexture;
 		//bool _hdrEnable;
 		//int _msaa;
-		//int _cullMask;
+		//int _layerMask;
 		Frustum _frustum;
 	};
 

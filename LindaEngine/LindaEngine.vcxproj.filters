@@ -42,7 +42,7 @@
     <ClCompile Include="Runtime\Render\Opengl\src\OpenglGraphicsContext.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime\Render\Core\src\RenderPipeline.cpp">
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\RenderPipeline.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Render\Core\src\RenderAPIContext.cpp">
@@ -330,7 +330,7 @@
     <ClCompile Include="External\imgui\imgui\imgui_widgets.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime\Render\Core\src\UniversalRenderer.cpp">
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Math\src\Frustum.cpp">
@@ -343,6 +343,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\ECS\src\LightSystem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Math\src\Mathf.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\ScriptablePass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\DrawObjectsPass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\SkyboxPass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1511,7 +1523,7 @@
     <ClInclude Include="Runtime\IO\include\TextureLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\Render\Core\include\RenderPipeline.h">
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\RenderPipeline.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\IO\include\YamlSerializer.h">
@@ -1772,7 +1784,7 @@
     <ClInclude Include="External\imgui\imgui\imstb_truetype.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\Render\Core\include\UniversalRenderer.h">
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\UniversalRenderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Math\include\Frustum.h">
@@ -1782,6 +1794,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\ECS\include\LightSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Math\include\Mathf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\ScriptablePass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\DrawObjectsPass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\SkyboxPass.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

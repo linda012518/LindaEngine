@@ -50,7 +50,14 @@ bool Light::Deserialize(YAML::Node& node)
 	return true;
 }
 
-glm::vec4 Light::GetColor()
+void Light::TransformDirty()
+{
+	_aabb.min = glm::vec4(_aabb.min, 1.0f) * _transform->GetLocalToWorldMat();
+	_aabb.max = glm::vec4(_aabb.max, 1.0f) * _transform->GetLocalToWorldMat();
+	_aabb.CalculateCenterSize();
+}
+
+glm::vec4 Light::GetFinalColor()
 {
 	return _color * _intensity;
 }
@@ -102,7 +109,10 @@ SpotLight::SpotLight(Entity& entity, bool enable) : Light(entity, enable)
 {
 	_lightType = LightType::SpotLight;
 	_range = 10.0f;
-	_spotAngle = 30.0f;
+	_innerAngle = 12.5f;
+	_outerAngle = 17.5f;
+
+	CalculateAABB();
 }
 
 SpotLight::~SpotLight()
@@ -116,7 +126,8 @@ bool SpotLight::Serialize()
 
 	out << YAML::Key << "Name" << YAML::Value << "DirectionLight";
 	out << YAML::Key << "range" << YAML::Value << _range;
-	out << YAML::Key << "spotAngle" << YAML::Value << _spotAngle;
+	out << YAML::Key << "innerAngle" << YAML::Value << _innerAngle;
+	out << YAML::Key << "outerAngle" << YAML::Value << _outerAngle;
 
 	out << YAML::EndMap;
 
@@ -127,20 +138,36 @@ bool SpotLight::Deserialize(YAML::Node& node)
 {
 	Light::Deserialize(node);
 	_range = node["range"].as<float>();
-	_spotAngle = node["spotAngle"].as<float>();
+	_innerAngle = node["innerAngle"].as<float>();
+	_outerAngle = node["outerAngle"].as<float>();
 	return true;
 }
 
-float SpotLight::GetAttenuation()
+void SpotLight::CalculateAABB()
 {
-	//return 1.0f / std::max(_range * _range, 0.00001f);
-	return 0.0f;
+	float radius = glm::tan(glm::radians(15.0f)) * _range;
+	glm::vec3 max = glm::vec3(radius, radius, 0);
+	_aabb.AddVertex(max);
+	glm::vec3 min = glm::vec3(-radius, -radius, _range);
+	_aabb.AddVertex(min);
+
+	_aabb.CalculateCenterSize();
+
+	TransformDirty();
 }
 
-glm::vec4 SpotLight::GetSpotAngles()
-{
-	return glm::vec4();
-}
+//float SpotLight::GetAttenuation()
+//{
+//	return 1.0f / glm::max(_range * _range, 0.00001f);
+//}
+//
+//glm::vec4 SpotLight::GetSpotAngles()
+//{
+//	float innerCos = glm::cos(glm::radians(0.5f * _innerAngle));
+//	float outerCos = glm::cos(glm::radians(0.5f * _outerAngle));
+//	float angleRangeInv = 1.0f / glm::max(innerCos - outerCos, 0.001f);
+//	return glm::vec4(angleRangeInv, -outerCos * angleRangeInv, 0.0f, 0.0f);
+//}
 
 /////////////////////////////////////////////////////////////////////
 
@@ -174,9 +201,20 @@ bool PointLight::Deserialize(YAML::Node& node)
 	return true;
 }
 
-float PointLight::GetAttenuation()
+void PointLight::CalculateAABB()
 {
-	//return 1.0f / std::max(_range * _range, 0.00001f);
-	return 0.0f;
+	glm::vec3 max = glm::vec3(_range);
+	_aabb.AddVertex(max);
+	glm::vec3 min = glm::vec3(-_range);
+	_aabb.AddVertex(min);
+	_aabb.CalculateCenterSize();
+
+	TransformDirty();
 }
+
+
+//float PointLight::GetAttenuation()
+//{
+//	return 1.0f / glm::max(_range * _range, 0.00001f);
+//}
 

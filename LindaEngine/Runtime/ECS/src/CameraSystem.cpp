@@ -5,7 +5,6 @@
 using namespace LindaEngine;
 
 std::vector<Camera*> CameraSystem::_components;
-Camera* CameraSystem::currentCamear;
 
 void CameraSystem::Tick()
 {

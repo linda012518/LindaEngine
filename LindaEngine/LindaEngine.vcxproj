@@ -122,7 +122,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include;./Runtime/Render/RenderPipeline/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\DrawObjectsPass.cpp" />
     <ClCompile Include="Runtime\ECS\src\LightSystem.cpp" />
     <ClCompile Include="Runtime\IO\src\TextureLoader.cpp" />
     <ClCompile Include="Runtime\Math\src\CullTool.cpp" />
@@ -247,7 +248,7 @@
     <ClCompile Include="Runtime\Render\Core\src\GraphicsContext.cpp" />
     <ClCompile Include="Runtime\Render\Opengl\src\OpenglGraphicsContext.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\RenderAPIContext.cpp" />
-    <ClCompile Include="Runtime\Render\Core\src\RenderPipeline.cpp" />
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\RenderPipeline.cpp" />
     <ClCompile Include="Runtime\Window\src\Window.cpp" />
     <ClCompile Include="Runtime\Window\src\WinWindow.cpp" />
     <ClCompile Include="Runtime\ECS\src\TransformSystem.cpp" />
@@ -255,10 +256,13 @@
     <ClCompile Include="Runtime\IO\src\YamlSerializer.cpp" />
     <ClCompile Include="Runtime\Tools\src\UUID.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\UniformBuffer.cpp" />
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\ScriptablePass.cpp" />
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\SkyboxPass.cpp" />
     <ClCompile Include="Temp\TestECSEvent.cpp" />
-    <ClCompile Include="Runtime\Render\Core\src\UniversalRenderer.cpp" />
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\DrawObjectsPass.h" />
     <ClInclude Include="Runtime\ECS\include\LightSystem.h" />
     <ClInclude Include="Runtime\Math\include\CullTool.h" />
     <ClInclude Include="Editor\ImGui\include\ImGuiContextEditor.h" />
@@ -409,7 +413,7 @@
     <ClInclude Include="Runtime\Render\Core\include\Material.h" />
     <ClInclude Include="Runtime\Render\Core\include\MaterialPass.h" />
     <ClInclude Include="Runtime\Render\Core\include\Mesh.h" />
-    <ClInclude Include="Runtime\Render\Core\include\RenderPipeline.h" />
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\RenderPipeline.h" />
     <ClInclude Include="Runtime\Render\Core\include\RenderState.h" />
     <ClInclude Include="Runtime\Render\Core\include\Shader.h" />
     <ClInclude Include="Runtime\Render\Core\include\ShaderManager.h" />
@@ -737,8 +741,10 @@
     <ClInclude Include="Runtime\IO\include\YamlSerializer.h" />
     <ClInclude Include="Runtime\Tools\include\UUID.h" />
     <ClInclude Include="Runtime\Render\Core\include\UniformBuffer.h" />
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\ScriptablePass.h" />
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\SkyboxPass.h" />
     <ClInclude Include="Temp\TestECSEvent.h" />
-    <ClInclude Include="Runtime\Render\Core\include\UniversalRenderer.h" />
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\UniversalRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External\assimp\assimp\color4.inl" />

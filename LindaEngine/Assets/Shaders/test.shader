@@ -6,7 +6,7 @@ Shader
 
 	Pass
 	{
-		LightMode "customLightMode"
+		LightMode "Color"
 
 		Properties
 		{

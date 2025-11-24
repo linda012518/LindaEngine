@@ -19,6 +19,7 @@ namespace LindaEngine
 		Component(Entity& entity, bool enable = true);
 		virtual ~Component();
 
+		Transform* GetTransform() { return _transform; }
 		Entity& GetEntity() const;
 		bool IsActive() const;
 		bool IsDirty();

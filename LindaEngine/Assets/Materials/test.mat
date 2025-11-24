@@ -6,7 +6,7 @@ Material:
   RenderType: 0
   ShaderPath: Assets/Shaders/test.shader
   MaterialPasses:
-    - PassName: customLightMode
+    - PassName: Color
       ShaderUniforms:
         - UniformName: testInt
           Value: 1

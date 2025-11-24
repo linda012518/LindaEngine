@@ -19,6 +19,21 @@ namespace LindaEngine
 			glm::mat4 projectInverse;
 			glm::mat4 viewProjectInverse;
 
+			glm::vec4 cameraPosition;
+
+			glm::ivec4 lightCount;//x=dirLightCount y=pointLightCount z=spotLightCount
+
+			glm::vec4 dirLightColors[8];
+			glm::vec4 dirLightDirections[8];
+
+			glm::vec4 pointLightColors[64];
+			glm::vec4 pointLightPositionAttens[64];
+
+			glm::vec4 spotLightColors[64];
+			glm::vec4 spotLightPositions[64];
+			glm::vec4 spotLightDirections[64];
+			glm::vec4 spotLightAngles[64];
+
 			glm::vec4 time;
 		};
 

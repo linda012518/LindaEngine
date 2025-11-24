@@ -49,21 +49,16 @@ void RendererSystem::Clear()
 	_renderables.clear();
 }
 
-void RendererSystem::DrawRenderers(Camera* camera, Ref<DrawingSettings> settings)
+void RendererSystem::DrawRenderers(Camera* camera, DrawingSettings* settings)
 {
 	Cull(camera, settings);
 	FillDrawables(settings);
 	SortDrawables(settings);
 
-	std::vector<std::string>& lightModes = settings->lightModes;
-
 	for (auto& renderer : _renderables)
 	{
-		for (auto& lightMode : lightModes)
-		{
-			Material::overrideLightMode = lightMode;
-			renderer->Render();
-		}
+		Material::overrideLightMode = settings->lightMode;
+		renderer->Render();
 	}
 }
 
@@ -72,11 +67,11 @@ void RendererSystem::DrawSkybox()
 	Renderer::RenderSkybox();
 }
 
-void RendererSystem::Cull(Camera* camera, Ref<DrawingSettings> settings)
+void RendererSystem::Cull(Camera* camera, DrawingSettings* settings)
 {
 	//TODO 距离剔除 视锥裁剪 遮挡剔除 可见灯光 可见反射Cubemap 可见SH
 	Frustum& frustum = camera->GetFrustum();
-	glm::vec3& cameraPos = (glm::vec3&)camera->GetEntity().GetTransform()->GetWorldPosition();
+	glm::vec3& cameraPos = (glm::vec3&)camera->GetTransform()->GetWorldPosition();
 	float far = camera->GetFar();
 	CullSettings& cs = settings->cullSettings;
 
@@ -95,12 +90,12 @@ void RendererSystem::Cull(Camera* camera, Ref<DrawingSettings> settings)
 	}
 }
 
-void RendererSystem::FillDrawables(Ref<DrawingSettings> settings)
+void RendererSystem::FillDrawables(DrawingSettings* settings)
 {
 	//TODO Check Layer、Queue、LightMode
 }
 
-void RendererSystem::SortDrawables(Ref<DrawingSettings> settings)
+void RendererSystem::SortDrawables(DrawingSettings* settings)
 {
 	//TODO
 }

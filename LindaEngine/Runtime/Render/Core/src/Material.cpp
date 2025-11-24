@@ -112,10 +112,10 @@ std::vector<Ref<MaterialPass>> Material::GetPassByLightMode(std::string& lightMo
 		}
 		else if (_state.hasFallback)
 		{
-			pass = MaterialManager::GetDefaultMaterialPass(overrideLightMode.c_str());
-			if (nullptr == pass)
+			Ref<MaterialPass> defaultPass = MaterialManager::GetDefaultMaterialPass(overrideLightMode.c_str());
+			if (nullptr == defaultPass)
 				continue;
-			go.push_back(pass);
+			go.push_back(defaultPass);
 		}
 	}
 	return go;

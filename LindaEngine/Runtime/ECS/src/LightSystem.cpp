@@ -1,6 +1,8 @@
 #include "LightSystem.h"
 #include "Light.h"
 #include "Entity.h"
+#include "Camera.h"
+#include "CullTool.h"
 
 using namespace LindaEngine;
 
@@ -17,7 +19,12 @@ void LightSystem::Tick()
 
 void LightSystem::OnDeserializeFinish()
 {
-
+	for (auto& light : _components)
+	{
+		if (light->GetLightType() == LightType::DirectionLight)
+			continue;
+		light->CalculateAABB();
+	}
 }
 
 void LightSystem::Add(Light* light)
@@ -38,5 +45,22 @@ void LightSystem::Clear()
 		static_assert(true, "LightSystem is not empty, Check destruction process.");
 
 	_components.clear();
+}
+
+const std::vector<Light*> LightSystem::GetLightList(Camera* camera)
+{
+	std::vector<Light*> list;
+
+	Frustum& frustum = camera->GetFrustum();
+
+	for (auto& light : _components)
+	{
+		if (light->IsEnable() == false)
+			continue;
+		if (light->GetLightType() == LightType::DirectionLight || CullTool::FrustumCull(frustum, light->GetBoundingBox()))
+			list.push_back(light);
+	}
+
+	return list;
 }
 

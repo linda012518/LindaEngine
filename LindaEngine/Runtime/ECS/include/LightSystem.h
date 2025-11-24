@@ -6,6 +6,7 @@
 namespace LindaEngine
 {
 	class Light;
+	class Camera;
 
 	class LightSystem
 	{
@@ -16,6 +17,8 @@ namespace LindaEngine
 		static void Add(Light* light);
 		static void Remove(Light* light);
 		static void Clear();
+
+		static const std::vector<Light*> GetLightList(Camera* camera);
 
 	private:
 		static std::vector<Light*> _components;
