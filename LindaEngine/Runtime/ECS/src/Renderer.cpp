@@ -8,6 +8,7 @@
 #include "ComponentImplement.inl"
 #include "Entity.h"
 #include "RendererSystem.h"
+#include "Drawable.h"
 
 using namespace LindaEngine;
 
@@ -76,17 +77,25 @@ bool Renderer::Deserialize(YAML::Node& node)
 		_materialList.push_back(pointer);
 		pointer->Deserialize(mat);
 	}
+
+	FillDrawables();
 	return true;
 }
 
 void Renderer::SetMesh(Ref<Mesh> mesh)
 {
 	_mesh = mesh;
+	_materialList.clear();
+	FillDrawables();
 }
 
 void Renderer::AddMaterial(int index, Ref<Material> mat)
 {
 	_materialList.insert(_materialList.begin() + index, mat);
+
+	if (_type == RenderComponentType::Skybox || _type == RenderComponentType::ScreenTriangle)
+		return;
+	_drawables[index]->material = mat;
 }
 
 void Renderer::Render()
@@ -113,6 +122,16 @@ void Renderer::TransformDirty()
 	_aabb.CalculateCenterSize();
 }
 
+bool Renderer::CanRender(int index, int layer, int minQueue, int maxQueue)
+{
+	if ((_entity.GetLayer() & layer) <= 0)
+		return false;
+	if (_materialList.size() <= index)
+		return false;
+
+	return _materialList[index]->CanRender(Material::overrideLightMode, minQueue, maxQueue);
+}
+
 Renderer* Renderer::GetSkyboxRenderer()
 {
 	static Entity entity("");
@@ -135,6 +154,28 @@ void Renderer::RenderSkybox()
 {
 	Material::overrideLightMode = "Skybox";
 	GetSkyboxRenderer()->Render();
+}
+
+void Renderer::FillDrawables()
+{
+	if (_type == RenderComponentType::Skybox || _type == RenderComponentType::ScreenTriangle)
+		return;
+
+	_drawables.clear();
+
+	int index = 0;
+	for (auto& data : _mesh->GetAllMeshData())
+	{
+		Ref<Drawable> da = CreateRef<Drawable>();
+		da->meshData = &data;
+		da->transform = _transform;
+		if (_materialList.size() > index)
+			da->material = _materialList[index];
+		else
+			da->material = nullptr;
+		index++;
+		_drawables.push_back(da);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////

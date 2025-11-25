@@ -357,6 +357,9 @@
     <ClCompile Include="Runtime\Render\RenderPipeline\src\SkyboxPass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\Drawable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -1806,6 +1809,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Render\RenderPipeline\include\SkyboxPass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\Drawable.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

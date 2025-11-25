@@ -17,6 +17,7 @@ bool Entity::_isPlaying = true;
 
 Entity::Entity(const char* name, bool active)
 {
+	_layer = 0xFFFFFFFF;
 	_name = name;
 	_active = active;
 	_activeDirty = false;
@@ -124,6 +125,7 @@ bool Entity::Serialize()
 	YAML::Emitter& out = *YamlSerializer::out;
 	out << YAML::Value << YAML::BeginMap;
 	out << YAML::Key << "Name" << YAML::Value << _name;
+	out << YAML::Key << "Layer" << YAML::Value << _layer;
 	out << YAML::Key << "ID" << YAML::Value << _uuid;
 	out << YAML::Key << "Active" << YAML::Value << _active;
 	out << YAML::Key << "Components";
@@ -145,6 +147,7 @@ bool Entity::Deserialize(YAML::Node& node)
 		return false;
 
 	_uuid = node["ID"].as<std::string>();
+	_layer = node["Layer"].as<int>();
 
 	for (auto com : components)
 	{

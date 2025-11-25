@@ -21,6 +21,9 @@ namespace LindaEngine
 		Entity(const char* name, bool active = true);
 		virtual ~Entity();
 
+		void SetLayer(int layer) { _layer = layer; }
+		int GetLayer() { return _layer; }
+
 		void SetName(const std::string& name);
 		const std::string& GetName() const;
 
@@ -61,6 +64,7 @@ namespace LindaEngine
 		void UpdateChildrenDirty(Transform* parent);
 
 	private:
+		int _layer;
 		std::string _name;
 		bool _active;
 		bool _activeDirty;

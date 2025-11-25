@@ -12,6 +12,7 @@ namespace LindaEngine
 	class Material;
 	class Mesh;
 	class Transform;
+	struct Drawable;
 
 	class Renderer : public Component
 	{
@@ -26,6 +27,10 @@ namespace LindaEngine
 		void AddMaterial(int index, Ref<Material> mat);
 		void Render();
 		void TransformDirty();
+		bool CanRender(int index, int layer, int minQueue, int maxQueue);
+		void SetDistanceToCamera(float distance) { _distanceToCamera = distance; }
+		float GetDistanceToCamera() { return _distanceToCamera; }
+		Ref<Drawable> GetDrawable(int index) { return _drawables[index]; }
 
 		static Renderer* GetSkyboxRenderer();
 		static void SetSkyboxMaterial(Ref<Material> material);
@@ -38,12 +43,17 @@ namespace LindaEngine
 		std::vector<Ref<Material>>& GetMaterials() { return _materialList; }
 
 	protected:
+		void FillDrawables();
+
+	protected:
 		std::vector<Ref<Material>> _materialList;
 		Ref<Mesh> _mesh;
 		bool _shadowCast = true; //是否投射阴影
 		bool _receiveShadow = true; //是否接收阴影
-		RenderComponentType _type = RenderComponentType::Mesh;
+		RenderComponentType _type = RenderComponentType::None;
 		AABBBoundingBox _aabb;
+		float _distanceToCamera = 0.0f;
+		std::vector<Ref<Drawable>> _drawables;
 	};
 
 	class MeshRenderer : public Renderer

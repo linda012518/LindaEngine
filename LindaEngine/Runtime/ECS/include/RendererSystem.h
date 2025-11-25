@@ -10,6 +10,7 @@ namespace LindaEngine
 	class Renderer;
 	class Camera;
 	struct DrawingSettings;
+	struct Drawable;
 
 	class RendererSystem
 	{
@@ -31,7 +32,8 @@ namespace LindaEngine
 
 	private:
 		static std::vector<Renderer*> _components;
-		static std::vector<Renderer*> _renderables;
+		static std::vector<Renderer*> _tempRenderables;
+		static std::vector<Ref<Drawable>> _drawables;
 	};
 }
 

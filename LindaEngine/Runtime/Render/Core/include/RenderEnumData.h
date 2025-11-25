@@ -19,7 +19,7 @@ namespace LindaEngine
 
 	enum class RenderComponentType
 	{
-		Mesh, Skybox, SkinMesh, ScreenTriangle
+		None, Mesh, Skybox, SkinMesh, ScreenTriangle
 	};
 
 	enum class TextureType

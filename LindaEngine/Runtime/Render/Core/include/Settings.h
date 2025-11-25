@@ -13,7 +13,7 @@ namespace LindaEngine
         SortingLayer = 1,				//按层排序
         RenderQueue = 2,				//按材质的队列排序
         FarToNear = 4,					//按从远到近排序
-        QuantizedFrontToBack = 8,		//按从近到远排序
+		NearToFar = 8,					//按从近到远排序
         OptimizeStateChanges = 0x10,	//按材质排序，减少渲染状态切换
         CanvasOrder = 0x20,				//按UI画布排序
         RendererPriority = 0x40,		//按Renderer优先级排序

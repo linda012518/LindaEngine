@@ -210,10 +210,12 @@ void RenderPipeline::CollectRenderPass()
     DrawingSettings settings;
     settings.lightMode = "Color";
 
+    //settings.layerMask = 0xFFFFFFFF;
     //settings.renderQueueRange = RenderQueueRange::transparent;
     //settings.sortSettings.criteria = SortingCriteria::CommonTransparent;
     //AddRenderPass(CreateRef<DrawObjectsPass>(RenderPassEvent::BeforeRenderingTransparents, settings));
 
+    settings.layerMask = 0xFFFFFFFF;
     settings.renderQueueRange = RenderQueueRange::opaque;
     settings.sortSettings.criteria = SortingCriteria::CommonOpaque;
     AddRenderPass(CreateRef<DrawObjectsPass>(RenderPassEvent::BeforeRenderingOpaques, settings));

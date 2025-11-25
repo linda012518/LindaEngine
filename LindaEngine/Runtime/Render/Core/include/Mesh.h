@@ -68,6 +68,7 @@ namespace LindaEngine
 	public:
 		Mesh::Data& AddMeshData(Mesh::Data data);
 		Mesh::Data* GetMeshData(int index = 0) { return &_data[index]; }
+		std::vector<Mesh::Data>& GetAllMeshData() { return _data; }
 		AABBBoundingBox& GetBoundingBox() { return _aabb; }
 		void UpdateBoundingBox(float x, float y, float z);
 		const std::vector<VertexAttribute>& GetMeshAttributes(int index = 0) { return _data[index].attributes; }

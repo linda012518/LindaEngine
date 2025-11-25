@@ -101,22 +101,40 @@ bool Material::Deserialize(YAML::Node& node)
 	return true;
 }
 
+bool Material::CanRender(std::string& lightMode, int minQueue, int maxQueue)
+{
+	return _state.renderQueue >= minQueue && _state.renderQueue <= maxQueue && HasLightMode(lightMode);
+}
+
+bool Material::HasLightMode(std::string& lightMode)
+{
+	for (auto& pass : _passes)
+	{
+		if (pass->_state.lightMode == lightMode)
+			return true;
+	}
+
+	if (_state.hasFallback)
+	{
+		if (nullptr != MaterialManager::GetDefaultMaterialPass(lightMode.c_str()))
+			return true;
+	}
+	return false;
+}
+
 std::vector<Ref<MaterialPass>> Material::GetPassByLightMode(std::string& lightMode)
 {
 	std::vector<Ref<MaterialPass>> go;
 	for (auto& pass : _passes)
 	{
 		if (pass->_state.lightMode == lightMode)
-		{
 			go.push_back(pass);
-		}
-		else if (_state.hasFallback)
-		{
-			Ref<MaterialPass> defaultPass = MaterialManager::GetDefaultMaterialPass(overrideLightMode.c_str());
-			if (nullptr == defaultPass)
-				continue;
+	}
+	if (go.size() <= 0 && _state.hasFallback)
+	{
+		Ref<MaterialPass> defaultPass = MaterialManager::GetDefaultMaterialPass(lightMode.c_str());
+		if (nullptr != defaultPass)
 			go.push_back(defaultPass);
-		}
 	}
 	return go;
 }

@@ -3,6 +3,7 @@ Scene:
   SkyboxMaterial: Assets/Materials/SkyboxCubemap.mat
   Entitys:
     - Name: test1
+      Layer: 1
       ID: 0617baa2-a444-1829-0000-000000000001
       Active: true
       Components:
@@ -12,6 +13,7 @@ Scene:
           worldRotation: [0, 0, 0, 1]
           parent: ""
     - Name: test2
+      Layer: 1
       ID: bf0c1a8b-30ec-38d7-0000-000000000002
       Active: true
       Components:
@@ -30,6 +32,7 @@ Scene:
         - enable: true
           Name: CameraController
     - Name: test3
+      Layer: 1
       ID: 14970d88-1d04-46ed-0000-000000000003
       Active: true
       Components:

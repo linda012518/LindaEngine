@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\Drawable.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\DrawObjectsPass.cpp" />
     <ClCompile Include="Runtime\ECS\src\LightSystem.cpp" />
     <ClCompile Include="Runtime\IO\src\TextureLoader.cpp" />
@@ -262,6 +263,7 @@
     <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\Drawable.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\DrawObjectsPass.h" />
     <ClInclude Include="Runtime\ECS\include\LightSystem.h" />
     <ClInclude Include="Runtime\Math\include\CullTool.h" />

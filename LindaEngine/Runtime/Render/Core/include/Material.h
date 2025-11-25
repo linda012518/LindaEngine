@@ -48,6 +48,8 @@ namespace LindaEngine
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
+		bool CanRender(std::string& lightMode, int minQueue, int maxQueue);
+		bool HasLightMode(std::string& lightMode);
 		std::vector<Ref<MaterialPass>> GetPassByLightMode(std::string& lightMode);
 
 	private:
