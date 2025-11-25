@@ -36,6 +36,8 @@ Camera::Camera(Entity& entity, bool enable) : Component(entity, enable)
 	_cameraType = CameraType::None;
 	_clearType = CameraClearType::Skybox;
 	_depth = -1;
+	_msaa = 1;
+	_layerMask = 0xFFFFFFFF;
 }
 
 Camera::~Camera()
@@ -100,9 +102,12 @@ bool Camera::Serialize()
 	out << YAML::Value << YAML::BeginMap;
 
 	out << YAML::Key << "enable" << YAML::Value << _enable;
+	out << YAML::Key << "hdrEnable" << YAML::Value << _hdrEnable;
 	out << YAML::Key << "zNear" << YAML::Value << _zNear;
 	out << YAML::Key << "zFar" << YAML::Value << _zFar;
 	out << YAML::Key << "depth" << YAML::Value << _depth;
+	out << YAML::Key << "layerMask" << YAML::Value << _layerMask;
+	out << YAML::Key << "msaa" << YAML::Value << _msaa;
 	out << YAML::Key << "clearType" << YAML::Value << static_cast<int>(_clearType);
 
 	return true;
@@ -111,9 +116,12 @@ bool Camera::Serialize()
 bool Camera::Deserialize(YAML::Node& node)
 {
 	_enable = node["enable"].as<bool>();
+	_hdrEnable = node["hdrEnable"].as<bool>();
 	_zNear = node["zNear"].as<float>();
 	_zFar = node["zFar"].as<float>();
 	_depth = node["depth"].as<int>();
+	_layerMask = node["layerMask"].as<int>();
+	_msaa = node["msaa"].as<int>();
 	_clearType = static_cast<CameraClearType>(node["clearType"].as<int>());
 	return true;
 }

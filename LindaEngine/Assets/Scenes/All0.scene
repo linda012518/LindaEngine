@@ -23,16 +23,19 @@ Scene:
           worldRotation: [0, 0, 0, 1]
           parent: 0617baa2-a444-1829-0000-000000000001
         - enable: true
+          hdrEnable: false
           zNear: 0.100000001
           zFar: 1000
           depth: -1
+          layerMask: 16
+          msaa: 4
           clearType: 0
           Name: PerspectiveCamera
           fov: 60
         - enable: true
           Name: CameraController
     - Name: test3
-      Layer: 1
+      Layer: 16
       ID: 14970d88-1d04-46ed-0000-000000000003
       Active: true
       Components:

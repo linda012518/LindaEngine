@@ -47,11 +47,17 @@ namespace LindaEngine
 		CameraClearType& GetClearType() { return _clearType; }
 		int GetDepth() { return _depth; }
 		Frustum& GetFrustum() { return _frustum; }
+		int GetMSAA() { return _msaa; }
+		int GetLayerMask() { return _layerMask; }
+		bool GetHDR() { return _hdrEnable; }
 
 		void SetCameraType(CameraType type) { _cameraType = type; }
 		void SetClearType(CameraClearType type) { _clearType = type; }
 		void SetDepth(int depth) { _depth = depth; }
 		void SetNearFar(float near, float far, float dontCare = -1.0f);
+		void SetMSAA(int msaa) { _msaa = msaa; }
+		void SetLayerMask(int layer) { _layerMask = layer; }
+		void SetHDR(bool hdr) { _hdrEnable = hdr; }
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
@@ -77,9 +83,9 @@ namespace LindaEngine
 		CameraClearType _clearType;
 		int _depth;
 		//RenderTexture* _renderTexture;
-		//bool _hdrEnable;
-		//int _msaa;
-		//int _layerMask;
+		bool _hdrEnable;
+		int _msaa;
+		int _layerMask;
 		Frustum _frustum;
 	};
 

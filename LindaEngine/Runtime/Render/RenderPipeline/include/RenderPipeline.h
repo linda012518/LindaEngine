@@ -3,7 +3,7 @@
 #include "AutoPtr.h"
 #include "IRuntimeModule.h"
 #include "UniformDataGlobal.h"
-#include "ScriptablePass.h"
+#include "UniversalRenderer.h"
 
 #include <vector>
 
@@ -18,8 +18,6 @@ namespace LindaEngine
 		virtual void Finalize();
 		virtual void Tick();
 
-		void AddRenderPass(Ref<ScriptablePass> pass);
-
 		static Scope<RenderPipeline> Create();
 
 	private:
@@ -29,10 +27,8 @@ namespace LindaEngine
 		void SetupCameraShaderParameters(Camera* camera, UniformDataGlobal::Data& block);
 		void Render();
 
-		void CollectRenderPass();
-
 	private:
 		Ref<UniformDataGlobal> _uniformGlobal;
-		std::vector<Ref<ScriptablePass>> _renderPasses;
+		UniversalRenderer _urp;
 	};
 }

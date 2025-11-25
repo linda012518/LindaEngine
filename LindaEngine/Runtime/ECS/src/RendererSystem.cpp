@@ -79,6 +79,7 @@ void RendererSystem::Cull(Camera* camera, DrawingSettings* settings)
 	Frustum& frustum = camera->GetFrustum();
 	glm::vec3& cameraPos = (glm::vec3&)camera->GetTransform()->GetWorldPosition();
 	float far = camera->GetFar();
+	int layer = camera->GetLayerMask();
 	glm::vec3 forward, up, right;
 	camera->GetTransform()->GetWorldDir(forward, up, right);
 	CullSettings& cs = settings->cullSettings;
@@ -87,7 +88,7 @@ void RendererSystem::Cull(Camera* camera, DrawingSettings* settings)
 
 	for (auto& renderer : _components)
 	{
-		if (renderer->IsEnable() == false)
+		if (renderer->InLayerMask(layer) == false || renderer->IsSkybox() || renderer->IsEnable() == false)
 			continue;
 
 		AABBBoundingBox& box = renderer->GetBoundingBox();
@@ -113,7 +114,7 @@ void RendererSystem::FillDrawables(DrawingSettings* settings)
 		int count = (int)renderer->GetMesh()->GetAllMeshData().size();
 		for (int i = 0; i < count; i++)
 		{
-			if (false == renderer->CanRender(i, settings->layerMask, settings->renderQueueRange.minQueue, settings->renderQueueRange.maxQueue))
+			if (false == renderer->CanRender(i, settings->renderQueueRange.minQueue, settings->renderQueueRange.maxQueue))
 				continue;
 
 			Ref<Drawable> da = renderer->GetDrawable(i);
@@ -130,11 +131,23 @@ void RendererSystem::SortDrawables(DrawingSettings* settings)
 	case SortingCriteria::SortingLayer:
 		break;
 	case SortingCriteria::RenderQueue:
-		break;
+	{
+		std::sort(_drawables.begin(), _drawables.end(), [](Ref<Drawable> a, Ref<Drawable> b) {
+				return a->material->GetRenderQueue() < b->material->GetRenderQueue(); });
+	}
+	break;
 	case SortingCriteria::FarToNear:
-		break;
+	{
+		std::sort(_drawables.begin(), _drawables.end(), [](Ref<Drawable> a, Ref<Drawable> b) {
+			return a->distanceToCamera > b->distanceToCamera; });
+	}
+	break;
 	case SortingCriteria::NearToFar:
-		break;
+	{
+		std::sort(_drawables.begin(), _drawables.end(), [](Ref<Drawable> a, Ref<Drawable> b) {
+			return a->distanceToCamera < b->distanceToCamera; });
+	}
+	break;
 	case SortingCriteria::OptimizeStateChanges:
 		break;
 	case SortingCriteria::CanvasOrder:
@@ -143,12 +156,24 @@ void RendererSystem::SortDrawables(DrawingSettings* settings)
 		break;
 	case SortingCriteria::CommonOpaque:
 	{
-		//std::sort(_renderables.begin(), _renderables.end(), [](Renderer* a, Renderer* b) { return a->GetDistanceToCamera() < b->GetDistanceToCamera(); });
-
+		std::sort(_drawables.begin(), _drawables.end(), [](Ref<Drawable> a, Ref<Drawable> b) { 
+			if (a->material->GetRenderQueue() != b->material->GetRenderQueue()) {
+				return a->material->GetRenderQueue() < b->material->GetRenderQueue();
+			}
+			return a->distanceToCamera < b->distanceToCamera;
+		});
 	}
 	break;
 	case SortingCriteria::CommonTransparent:
-		break;
+	{
+		std::sort(_drawables.begin(), _drawables.end(), [](Ref<Drawable> a, Ref<Drawable> b) {
+			if (a->material->GetRenderQueue() != b->material->GetRenderQueue()) {
+				return a->material->GetRenderQueue() < b->material->GetRenderQueue();
+			}
+			return a->distanceToCamera > b->distanceToCamera;
+			});
+	}
+	break;
 	}
 }
 

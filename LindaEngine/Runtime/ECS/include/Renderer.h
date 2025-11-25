@@ -27,7 +27,9 @@ namespace LindaEngine
 		void AddMaterial(int index, Ref<Material> mat);
 		void Render();
 		void TransformDirty();
-		bool CanRender(int index, int layer, int minQueue, int maxQueue);
+		bool IsSkybox() { return _type == RenderComponentType::Skybox; }
+		bool CanRender(int index, int minQueue, int maxQueue);
+		bool InLayerMask(int layer);
 		void SetDistanceToCamera(float distance) { _distanceToCamera = distance; }
 		float GetDistanceToCamera() { return _distanceToCamera; }
 		Ref<Drawable> GetDrawable(int index) { return _drawables[index]; }

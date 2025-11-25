@@ -122,14 +122,17 @@ void Renderer::TransformDirty()
 	_aabb.CalculateCenterSize();
 }
 
-bool Renderer::CanRender(int index, int layer, int minQueue, int maxQueue)
+bool Renderer::CanRender(int index, int minQueue, int maxQueue)
 {
-	if ((_entity.GetLayer() & layer) <= 0)
-		return false;
 	if (_materialList.size() <= index)
 		return false;
 
 	return _materialList[index]->CanRender(Material::overrideLightMode, minQueue, maxQueue);
+}
+
+bool Renderer::InLayerMask(int layer)
+{
+	return _entity.GetLayer() & layer;
 }
 
 Renderer* Renderer::GetSkyboxRenderer()

@@ -50,7 +50,6 @@ namespace LindaEngine
 
 	struct DrawingSettings
 	{
-		int layerMask;
 		RenderQueueRange renderQueueRange;
 		SortingSettings sortSettings;
 		CullSettings cullSettings;

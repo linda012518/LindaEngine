@@ -14,9 +14,6 @@
 #include "Light.h"
 #include "LightSystem.h"
 
-#include "SkyboxPass.h"
-#include "DrawObjectsPass.h"
-
 #include <algorithm>
 
 using namespace LindaEngine;
@@ -26,7 +23,7 @@ int RenderPipeline::Initialize()
 	Graphic::Initialize();
 	_uniformGlobal = CreateRef<UniformDataGlobal>();
 
-    CollectRenderPass();
+    _urp.Initialize();
 
     return 0;
 }
@@ -34,18 +31,12 @@ int RenderPipeline::Initialize()
 void RenderPipeline::Finalize()
 {
 	_uniformGlobal = nullptr;
+    _urp.Finalize();
 }
 
 void RenderPipeline::Tick()
 {
     Render();
-}
-
-void RenderPipeline::AddRenderPass(Ref<ScriptablePass> pass)
-{
-    _renderPasses.push_back(pass);
-
-    std::sort(_renderPasses.begin(), _renderPasses.end(), [](const Ref<ScriptablePass> a, const Ref<ScriptablePass> b) { return a->GetRenderPassEvent() < b->GetRenderPassEvent(); });
 }
 
 Scope<RenderPipeline> RenderPipeline::Create()
@@ -58,7 +49,9 @@ const std::vector<Camera*> RenderPipeline::CheckCameraList()
     //1 查找可用阴影相机
     //2 查找可用颜色相机
     //3 相机排序
-    return CameraSystem::GetActiveCameraList();
+    std::vector<Camera*> list = CameraSystem::GetActiveCameraList();
+    std::sort(list.begin(), list.end(), [](Camera* a, Camera* b) { return a->GetDepth() < b->GetDepth(); });
+    return list;
 }
 
 void RenderPipeline::SetupShaderParameters(Camera* camera)
@@ -162,7 +155,7 @@ void RenderPipeline::Render()
         std::vector<FramebufferTextureSpecification> fts;
 
         FramebufferTextureSpecification color;
-        color.colorFormat = TextureFormat::RGBA8;
+        color.colorFormat = camera->GetHDR() ? TextureFormat::RGBA32 : TextureFormat::RGBA8;
         fts.push_back(color);
         FramebufferTextureSpecification depth;
         depth.colorFormat = TextureFormat::Depth16;
@@ -171,22 +164,13 @@ void RenderPipeline::Render()
 
         GraphicsConfig& config = GraphicsContext::graphicsConfig;
 
-        Ref<RenderTexture> rt = RenderTextureManager::Get(config.screenNewWidth, config.screenNewHeight, fts, 4);
+        Ref<RenderTexture> rt = RenderTextureManager::Get(config.screenNewWidth, config.screenNewHeight, fts, camera->GetMSAA());
         RenderTextureManager::SetRenderTarget(rt);
         Graphic::SetViewport(0, 0, config.screenNewWidth, config.screenNewHeight);
         Graphic::SetClearColor(0.0f, 0.3f, 0.0f, 0.0f);
         Graphic::Clear(true, true, true);
 
-        for (auto& pass : _renderPasses)
-        {
-            pass->Render(camera);
-        }
-        //Ref<DrawingSettings> settings = CreateRef<DrawingSettings>();
-        //settings->lightModes.push_back("Color");
-        //RendererSystem::DrawRenderers(camera, settings);
-
-        //RendererSystem::DrawSkybox();
-
+        _urp.Render(camera);
 
         FramebufferTextureSpecification gray;
         gray.colorFormat = TextureFormat::RGBA8;
@@ -203,21 +187,5 @@ void RenderPipeline::Render()
 
 }
 
-void RenderPipeline::CollectRenderPass()
-{
-    AddRenderPass(CreateRef<SkyboxPass>());
 
-    DrawingSettings settings;
-    settings.lightMode = "Color";
-
-    //settings.layerMask = 0xFFFFFFFF;
-    //settings.renderQueueRange = RenderQueueRange::transparent;
-    //settings.sortSettings.criteria = SortingCriteria::CommonTransparent;
-    //AddRenderPass(CreateRef<DrawObjectsPass>(RenderPassEvent::BeforeRenderingTransparents, settings));
-
-    settings.layerMask = 0xFFFFFFFF;
-    settings.renderQueueRange = RenderQueueRange::opaque;
-    settings.sortSettings.criteria = SortingCriteria::CommonOpaque;
-    AddRenderPass(CreateRef<DrawObjectsPass>(RenderPassEvent::BeforeRenderingOpaques, settings));
-}
 
