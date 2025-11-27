@@ -15,6 +15,8 @@ PostProcessPass::PostProcessPass()
 
 void PostProcessPass::Render(Camera* camera)
 {
+	if (false == camera->HasPostProcess())
+		return;
 	Ref<RenderTexture> src = RenderTexture::active;
 	_source = RenderTextureManager::Get(src->width, src->height, src->attachments, 1, src->mipmapCount, src->isCube, src->isGammaCorrection, src->anisotropy);
 	_dest = RenderTextureManager::Get(_source);

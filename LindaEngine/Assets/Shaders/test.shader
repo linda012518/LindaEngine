@@ -42,10 +42,12 @@ Shader
 			AttributeNameArray { aPosition, aColor, aUV0 }
 
 			out vec2 uv;
+			out vec3 worldNormal;
 
 			void main()
 			{
 				uv = aUV0;
+				worldNormal = vec3(vec4(aNormal, 1.0) * _worldToLocal);
 				gl_Position = _linda_Matrix_VP * _localToWorld * vec4(aPosition, 1.0);
 			}
 		}
@@ -55,6 +57,7 @@ Shader
 			out vec4 FragColor;
 
 			in vec2 uv;
+			in vec3 worldNormal;
 
 			void main()
 			{
@@ -62,6 +65,11 @@ Shader
 				FragColor.a = 1.0;
 				FragColor = testVec4;
 				FragColor = texture(maskTexture, uv);
+				// FragColor = vec4(worldNormal, 1.0);
+				// vec3 lightDir = normalize(_dirLightDirections[0].xyz);
+				// vec3 normal = normalize(worldNormal);
+				// float NoL = max(0.0, dot(lightDir, normal));
+				// FragColor = vec4(NoL, NoL, NoL, 1.0);
 			}
 		}
 	}
