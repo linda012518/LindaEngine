@@ -3,19 +3,27 @@
 #include "Settings.h"
 #include "SkyboxPass.h"
 #include "DrawObjectsPass.h"
+#include "PostProcessPasses.h"
 
 #include <algorithm>
 
 using namespace LindaEngine;
 
-int UniversalRenderer::Initialize()
+void UniversalRenderer::Initialize()
 {
     CollectRenderPass();
-    return 0;
+    for (auto& pass : _renderPasses)
+    {
+        pass->Initialize();
+    }
 }
 
 void UniversalRenderer::Finalize()
 {
+    for (auto& pass : _renderPasses)
+    {
+        pass->Finalize();
+    }
     _renderPasses.clear();
 }
 
@@ -37,6 +45,7 @@ void UniversalRenderer::AddRenderPass(Ref<ScriptablePass> pass)
 void UniversalRenderer::CollectRenderPass()
 {
     AddRenderPass(CreateRef<SkyboxPass>());
+    AddRenderPass(CreateRef<PostProcessPass>());
 
     DrawingSettings settings;
     settings.lightMode = "Color";

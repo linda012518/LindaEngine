@@ -30,6 +30,10 @@ Scene:
           layerMask: 16
           msaa: 4
           clearType: 0
+          clearColor: [0, 0.3, 0, 1]
+          PostProcess:
+            - Name: GrayPostProcess
+              enable: true
           Name: PerspectiveCamera
           fov: 60
         - enable: true

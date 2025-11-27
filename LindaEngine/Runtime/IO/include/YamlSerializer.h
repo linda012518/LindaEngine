@@ -7,6 +7,8 @@ namespace LindaEngine
 {
 	class Material;
 	struct Texture;
+	struct RenderTexture;
+
 	class YamlSerializer
 	{
 	public:
@@ -15,6 +17,9 @@ namespace LindaEngine
 
 		static void SerializeTexture(const char* path);
 		static Ref<Texture> DeSerializeTexture(const char* path);
+
+		static void SerializeRenderTexture(const char* path);
+		static Ref<RenderTexture> DeSerializeRenderTexture(const char* path);
 
 		static void SerializeGraphicsConfig(const char* path);
 		static bool DeSerializeGraphicsConfig(const char* path);

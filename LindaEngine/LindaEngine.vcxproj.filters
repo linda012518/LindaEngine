@@ -360,6 +360,15 @@
     <ClCompile Include="Runtime\Render\RenderPipeline\src\Drawable.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\PostProcessPasses.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Render\PostProcess\src\PostProcessEffectRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Render\PostProcess\src\GrayPostProcess.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -1814,6 +1823,18 @@
     <ClInclude Include="Runtime\Render\RenderPipeline\include\Drawable.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\PostProcessPasses.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\PostProcess\include\PostProcessEffectRenderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Core\include\ClassFactory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\PostProcess\include\GrayPostProcess.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\glm\glm\detail\func_common.inl">
@@ -2270,5 +2291,11 @@
       <Filter>头文件</Filter>
     </None>
     <None Include="External\imgui\imgui\imgui.ini" />
+    <None Include="Runtime\Core\include\ClassDeclare.inl">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="Runtime\Core\include\ClassImplement.inl">
+      <Filter>头文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

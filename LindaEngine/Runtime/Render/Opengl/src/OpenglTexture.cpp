@@ -139,16 +139,19 @@ void OpenglTexture::Bind(Ref<Texture> texture, int channel, int renderTextureCol
 
 void OpenglTexture::BindRenderTarget(Ref<RenderTexture> texture)
 {
-	if (nullptr == texture)
-	{
-		glDisable(GL_MULTISAMPLE);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		return;
-	}
-	if (texture->msaa > 1)
+	int msaa = nullptr == texture ? Camera::currentRenderCamera->GetMSAA() : texture->msaa;
+
+	if (msaa > 1)
 		glEnable(GL_MULTISAMPLE);
 	else
 		glDisable(GL_MULTISAMPLE);
+
+	if (nullptr == texture)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		return;
+	}
+
 	glBindFramebuffer(GL_FRAMEBUFFER, texture->nativeColorID);
 }
 

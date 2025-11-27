@@ -1,5 +1,6 @@
 #include "SkyboxPass.h"
 #include "RendererSystem.h"
+#include "Camera.h"
 
 using namespace LindaEngine;
 
@@ -10,5 +11,6 @@ SkyboxPass::SkyboxPass()
 
 void SkyboxPass::Render(Camera* camera)
 {
-	RendererSystem::DrawSkybox();
+	if (camera->GetClearType() == CameraClearType::Skybox)
+		RendererSystem::DrawSkybox();
 }

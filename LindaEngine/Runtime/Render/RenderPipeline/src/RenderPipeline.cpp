@@ -150,41 +150,57 @@ void RenderPipeline::Render()
 
     for (auto& camera : cameraList)
     {
+        Camera::currentRenderCamera = camera;
+
         SetupShaderParameters(camera);
 
-        std::vector<FramebufferTextureSpecification> fts;
-
-        FramebufferTextureSpecification color;
-        color.colorFormat = camera->GetHDR() ? TextureFormat::RGBA32 : TextureFormat::RGBA8;
-        fts.push_back(color);
-        FramebufferTextureSpecification depth;
-        depth.colorFormat = TextureFormat::Depth16;
-        depth.isRenderBuffer = true;
-        fts.push_back(depth);
-
         GraphicsConfig& config = GraphicsContext::graphicsConfig;
+        int width = config.screenNewWidth;
+        int height = config.screenNewHeight;
+        Ref<RenderTexture> rt = camera->GetRenderTarget();
+        if (rt != nullptr)
+        {
+            width = rt->width;
+            height = rt->height;
+        }
+        else if (camera->HasPostProcess())
+        {
+            std::vector<FramebufferTextureSpecification> fts;
 
-        Ref<RenderTexture> rt = RenderTextureManager::Get(config.screenNewWidth, config.screenNewHeight, fts, camera->GetMSAA());
+            FramebufferTextureSpecification color;
+            color.colorFormat = camera->GetHDR() ? TextureFormat::RGBA32 : TextureFormat::RGBA8;
+            fts.push_back(color);
+            FramebufferTextureSpecification depth;
+            depth.colorFormat = TextureFormat::Depth16;
+            depth.filter = FilterMode::Point;
+            depth.isRenderBuffer = true;
+            fts.push_back(depth);
+
+            rt = RenderTextureManager::Get(width, height, fts, camera->GetMSAA());
+        }
         RenderTextureManager::SetRenderTarget(rt);
-        Graphic::SetViewport(0, 0, config.screenNewWidth, config.screenNewHeight);
-        Graphic::SetClearColor(0.0f, 0.3f, 0.0f, 0.0f);
-        Graphic::Clear(true, true, true);
+
+        Graphic::SetViewport(0, 0, width, height);
+        glm::vec4& color = camera->GetClearColor();
+        Graphic::SetClearColor(color.r, color.g, color.b, color.a);
+        switch (camera->GetClearType())
+        {
+        case CameraClearType::Skybox:
+        case CameraClearType::SolidColor:
+            Graphic::Clear(true, true, true);
+            break;
+        case CameraClearType::DepthOnly:
+            Graphic::Clear(false, true, true);
+            break;
+        case CameraClearType::DontClear:
+            Graphic::Clear(false, false, false);
+            break;
+        }
 
         _urp.Render(camera);
-
-        FramebufferTextureSpecification gray;
-        gray.colorFormat = TextureFormat::RGBA8;
-        Ref<RenderTexture> grayRT = RenderTextureManager::Get(config.screenNewWidth, config.screenNewHeight, gray);
-        Ref<Material> grayMaterial = MaterialManager::GetMaterialByShader("Assets/Shaders/gray.shader");
-        Graphic::Blit(rt, grayRT, grayMaterial);
-
-        Ref<Material> material = MaterialManager::GetMaterialByShader("Assets/Shaders/postprocess.shader");
-        Graphic::Blit(grayRT, nullptr, material);
-
-        RenderTextureManager::Release(rt);
-        RenderTextureManager::Release(grayRT);
     }
 
+    Camera::currentRenderCamera = nullptr;
 }
 
 

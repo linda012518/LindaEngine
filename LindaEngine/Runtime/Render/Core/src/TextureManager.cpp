@@ -113,7 +113,12 @@ Ref<RenderTexture> RenderTextureManager::Get(int width, int height, FramebufferT
     return Get(width, height, array, msaa, mipCount, isCube, isGammaCorrection, anisotropy);
 }
 
-Ref<RenderTexture> RenderTextureManager::GetBlitRenderTexture(Ref<RenderTexture> rt)
+Ref<RenderTexture> RenderTextureManager::Get(Ref<RenderTexture> src)
+{
+    return Get(src->width, src->height, src->attachments, src->msaa, src->mipmapCount, src->isCube, src->isGammaCorrection, src->anisotropy);
+}
+
+Ref<RenderTexture> RenderTextureManager::GetBlitRenderTexture(Ref<RenderTexture> rt, ColorType type)
 {
     if (rt->msaa == 1)
         return rt;
@@ -130,7 +135,7 @@ Ref<RenderTexture> RenderTextureManager::GetBlitRenderTexture(Ref<RenderTexture>
 
             rt->internalRT = Get(rt->width, rt->height, fts, 1, rt->mipmapCount, rt->isCube, rt->isGammaCorrection, rt->anisotropy);
         }
-        TextureDriver::CopyRenderTexture(rt, rt->internalRT);
+        TextureDriver::CopyRenderTexture(rt, rt->internalRT, type);
         return rt->internalRT;
     }
     else
@@ -140,10 +145,14 @@ Ref<RenderTexture> RenderTextureManager::GetBlitRenderTexture(Ref<RenderTexture>
     }
 }
 
+void RenderTextureManager::BlitRenderTexture(Ref<RenderTexture> src, Ref<RenderTexture> dest, ColorType type)
+{
+    TextureDriver::CopyRenderTexture(src, dest, type);
+}
+
 void RenderTextureManager::Release(Ref<RenderTexture> rt)
 {
     _renderTextures.push_back(rt);
-    SetRenderTarget(nullptr);
 }
 
 void RenderTextureManager::Clear() 
@@ -157,6 +166,7 @@ void RenderTextureManager::Clear()
 
 void RenderTextureManager::SetRenderTarget(Ref<RenderTexture> texture)
 {
+    RenderTexture::active = texture;
     TextureDriver::BindRenderTarget(texture);
 }
 

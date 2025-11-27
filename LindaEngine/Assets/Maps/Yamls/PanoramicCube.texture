@@ -3,6 +3,7 @@ Texture:
   type: 2
   isGammaCorrection: false
   mipmapCount: 6
+  anisotropy: 1
   filter: 1
   warpU: 1
   warpV: 1

@@ -1,5 +1,6 @@
 #include "YamlSerializer.h"
 #include "Texture.h"
+#include "TextureManager.h"
 
 #include <fstream>
 #include <iostream>
@@ -32,6 +33,7 @@ void YamlSerializer::SerializeTexture(const char* path)
 	out << YAML::Key << "type" << YAML::Value << static_cast<int>(texture->type);
 	out << YAML::Key << "isGammaCorrection" << YAML::Value << texture->isGammaCorrection;
 	out << YAML::Key << "mipmapCount" << YAML::Value << texture->mipmapCount;
+	out << YAML::Key << "anisotropy" << YAML::Value << texture->anisotropy;
 	out << YAML::Key << "filter" << YAML::Value << static_cast<int>(texture->filter);
 	out << YAML::Key << "warpU" << YAML::Value << static_cast<int>(texture->warpU);
 	out << YAML::Key << "warpV" << YAML::Value << static_cast<int>(texture->warpV);
@@ -106,6 +108,7 @@ Ref<Texture> YamlSerializer::DeSerializeTexture(const char* path)
 
 	texture->isGammaCorrection = data["isGammaCorrection"].as<bool>();
 	texture->mipmapCount = data["mipmapCount"].as<int>();
+	texture->anisotropy = data["anisotropy"].as<int>();
 	texture->filter = static_cast<FilterMode>(data["filter"].as<int>());
 	texture->warpU = static_cast<TextureWrapMode>(data["warpU"].as<int>());
 	texture->warpV = static_cast<TextureWrapMode>(data["warpV"].as<int>());
@@ -114,4 +117,95 @@ Ref<Texture> YamlSerializer::DeSerializeTexture(const char* path)
 
 	return texture;
 
+}
+
+void YamlSerializer::SerializeRenderTexture(const char* path)
+{
+	Ref<RenderTexture> texture = DynamicCastRef(RenderTexture, Texture::overrideTexture);
+	if (nullptr == texture)
+	{
+		std::cout << "YamlSerializer::SerializeRenderTexture Error" << path << "\n" << std::endl;
+		return;
+	}
+
+	YAML::Emitter out;
+	out << YAML::BeginMap;
+	out << YAML::Key << "RenderTexture";
+	out << YAML::Value << YAML::BeginMap;
+	out << YAML::Key << "width" << YAML::Value << texture->width;
+	out << YAML::Key << "height" << YAML::Value << texture->height;
+	out << YAML::Key << "isCube" << YAML::Value << texture->isCube;
+	out << YAML::Key << "isGammaCorrection" << YAML::Value << texture->isGammaCorrection;
+	out << YAML::Key << "msaa" << YAML::Value << texture->msaa;
+	out << YAML::Key << "mipmapCount" << YAML::Value << texture->mipmapCount;
+	out << YAML::Key << "anisotropy" << YAML::Value << texture->anisotropy;
+
+	out << YAML::Key << "Attachments";
+	out << YAML::Value << YAML::BeginSeq;
+	for (auto& attachment : texture->attachments) {
+		out << YAML::Value << YAML::BeginMap;
+		out << YAML::Key << "colorFormat" << YAML::Value << static_cast<int>(attachment.colorFormat);
+		out << YAML::Key << "filter" << YAML::Value << static_cast<int>(attachment.filter);
+		out << YAML::Key << "warpU" << YAML::Value << static_cast<int>(attachment.warpU);
+		out << YAML::Key << "warpV" << YAML::Value << static_cast<int>(attachment.warpV);
+		out << YAML::Key << "warpW" << YAML::Value << static_cast<int>(attachment.warpW);
+		out << YAML::Key << "isRenderBuffer" << YAML::Value << attachment.isRenderBuffer;
+		out << YAML::EndMap;
+	}
+	out << YAML::EndSeq;
+
+	out << YAML::EndMap;
+	out << YAML::EndMap;
+
+	try
+	{
+		std::ofstream fout(path);
+		fout << out.c_str();
+	}
+	catch (const std::exception&)
+	{
+		std::cout << "YamlSerializer::SerializeRenderTexture Error" << path << "\n" << std::endl;
+	}
+
+}
+
+Ref<RenderTexture> YamlSerializer::DeSerializeRenderTexture(const char* path)
+{
+	YAML::Node data;
+	try
+	{
+		data = YAML::LoadFile(path);
+	}
+	catch (const std::exception&)
+	{
+		return nullptr;
+	}
+
+	data = data["RenderTexture"];
+	if (!data)
+		return nullptr;
+
+	int width = data["width"].as<int>();
+	int height = data["height"].as<int>();
+	int msaa = data["msaa"].as<int>();
+	int mipmapCount = data["mipmapCount"].as<int>();
+	int anisotropy = data["anisotropy"].as<int>();
+	bool isCube = data["isCube"].as<bool>();
+	bool isGammaCorrection = data["isGammaCorrection"].as<bool>();
+
+	std::vector<FramebufferTextureSpecification> array;
+	auto attachments = data["Attachments"];
+	for (auto attachment : attachments)
+	{
+		FramebufferTextureSpecification fts;
+		fts.colorFormat = static_cast<TextureFormat>(attachment["colorFormat"].as<int>());
+		fts.filter = static_cast<FilterMode>(attachment["filter"].as<int>());
+		fts.warpU = static_cast<TextureWrapMode>(attachment["warpU"].as<int>());
+		fts.warpV = static_cast<TextureWrapMode>(attachment["warpV"].as<int>());
+		fts.warpW = static_cast<TextureWrapMode>(attachment["warpW"].as<int>());
+		fts.isRenderBuffer = attachment["isRenderBuffer"].as<bool>();
+		array.push_back(fts);
+	}
+
+	return RenderTextureManager::Get(width, height, array, msaa, mipmapCount, isCube, isGammaCorrection, anisotropy);
 }

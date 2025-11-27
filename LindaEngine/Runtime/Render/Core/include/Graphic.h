@@ -18,6 +18,7 @@ namespace LindaEngine
 		static void SetClearColor(float r, float g, float b, float a);
 		static void Clear(bool color, bool depth, bool stencil);
 		static void Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref<Material> mat, int pass = 0);
+		static void Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest);
 
 		static void CheckRenderState(RenderState& state, RenderState& materialState);
 

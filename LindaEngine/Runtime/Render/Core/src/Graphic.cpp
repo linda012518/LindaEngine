@@ -59,6 +59,11 @@ void Graphic::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref<Material
 	MeshManager::GetEmpty()->Draw();
 }
 
+void Graphic::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest)
+{
+	RenderTextureManager::BlitRenderTexture(src, dest);
+}
+
 void Graphic::CheckRenderState(RenderState& state, RenderState& materialState)
 {
 	_renderContext->CheckRenderState(state, materialState);

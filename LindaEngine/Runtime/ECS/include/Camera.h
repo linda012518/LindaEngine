@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "Frustum.h"
 #include "Texture.h"
+#include "PostProcessEffectRenderer.h"
 
 #include "glm/glm.hpp"
 #include <glm\gtc\matrix_transform.hpp>
@@ -50,6 +51,10 @@ namespace LindaEngine
 		int GetMSAA() { return _msaa; }
 		int GetLayerMask() { return _layerMask; }
 		bool GetHDR() { return _hdrEnable; }
+		Ref<RenderTexture> GetRenderTarget() { return _renderTexture; }
+		std::vector<Ref<PostProcessEffectRenderer>>& GetPostStack() { return _postStack; }
+		bool HasPostProcess() { return _postStack.size() > 0; }
+		glm::vec4& GetClearColor() { return _clearColor; }
 
 		void SetCameraType(CameraType type) { _cameraType = type; }
 		void SetClearType(CameraClearType type) { _clearType = type; }
@@ -58,11 +63,16 @@ namespace LindaEngine
 		void SetMSAA(int msaa) { _msaa = msaa; }
 		void SetLayerMask(int layer) { _layerMask = layer; }
 		void SetHDR(bool hdr) { _hdrEnable = hdr; }
+		void SetRenderTarget(Ref<RenderTexture> target) { _renderTexture = target; }
+		void SetClearColor(glm::vec4& color) { _clearColor = color; }
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
 		glm::vec3 ScreenToWorldPosition(glm::vec3& screenPos);
+
+	public:
+		static Camera* currentRenderCamera;
 
 	protected:
 		glm::mat4 _viewMatrix;
@@ -80,13 +90,15 @@ namespace LindaEngine
 		bool _projectDirty;
 
 		CameraType _cameraType;
+		glm::vec4 _clearColor;
 		CameraClearType _clearType;
 		int _depth;
-		//RenderTexture* _renderTexture;
+		Ref<RenderTexture> _renderTexture;
 		bool _hdrEnable;
 		int _msaa;
 		int _layerMask;
 		Frustum _frustum;
+		std::vector<Ref<PostProcessEffectRenderer>> _postStack;
 	};
 
 	class PerspectiveCamera : public Camera

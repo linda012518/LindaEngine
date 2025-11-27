@@ -8,6 +8,7 @@ Texture:
   type: 2
   isGammaCorrection: false
   mipmapCount: 6
+  anisotropy: 1
   filter: 0
   warpU: 0
   warpV: 0

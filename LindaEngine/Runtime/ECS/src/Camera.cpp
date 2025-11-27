@@ -2,17 +2,22 @@
 #include "Entity.h"
 #include "Transform.h"
 #include "YamlSerializer.h"
+#include "YamlCustomType.h"
 #include "EventCode.h"
 #include "Event.h"
 #include "GraphicsContext.h"
 #include "ComponentImplement.inl"
 #include "CameraSystem.h"
+#include "ClassFactory.h"
+#include "TextureManager.h"
 
 using namespace LindaEngine;
 
 DYNAMIC_CREATE(PerspectiveCamera)
 DYNAMIC_CREATE(OrthoCamera)
 DYNAMIC_CREATE(CubeCamera)
+
+Camera* Camera::currentRenderCamera = nullptr;
 
 Camera::Camera(Entity& entity, bool enable) : Component(entity, enable)
 {
@@ -35,15 +40,20 @@ Camera::Camera(Entity& entity, bool enable) : Component(entity, enable)
 
 	_cameraType = CameraType::None;
 	_clearType = CameraClearType::Skybox;
+	_clearColor = glm::vec4(0.0);
 	_depth = -1;
 	_msaa = 1;
 	_layerMask = 0xFFFFFFFF;
+	_renderTexture = nullptr;
 }
 
 Camera::~Camera()
 {
 	CameraSystem::Remove(this);
 	_transform->OnCameraRemoved();
+	_postStack.clear();
+	if (nullptr != _renderTexture)
+		RenderTextureManager::Release(_renderTexture);
 }
 
 void Camera::MakeViewMatrix()
@@ -108,7 +118,20 @@ bool Camera::Serialize()
 	out << YAML::Key << "depth" << YAML::Value << _depth;
 	out << YAML::Key << "layerMask" << YAML::Value << _layerMask;
 	out << YAML::Key << "msaa" << YAML::Value << _msaa;
+	if (nullptr != _renderTexture)
+		out << YAML::Key << "renderTexture" << YAML::Value << _renderTexture->nodePath;
 	out << YAML::Key << "clearType" << YAML::Value << static_cast<int>(_clearType);
+	out << YAML::Key << "clearColor" << YAML::Value << _clearColor;
+	
+	if (_postStack.size() > 0)
+	{
+		out << YAML::Key << "PostProcess";
+		out << YAML::Value << YAML::BeginSeq;
+		for (auto& pass : _postStack) {
+			pass->Serialize();
+		}
+		out << YAML::EndSeq;
+	}
 
 	return true;
 }
@@ -122,7 +145,23 @@ bool Camera::Deserialize(YAML::Node& node)
 	_depth = node["depth"].as<int>();
 	_layerMask = node["layerMask"].as<int>();
 	_msaa = node["msaa"].as<int>();
+	if (node["renderTexture"])
+		_renderTexture = YamlSerializer::DeSerializeRenderTexture(node["renderTexture"].as<std::string>().c_str());
 	_clearType = static_cast<CameraClearType>(node["clearType"].as<int>());
+	_clearColor = node["clearColor"].as<glm::vec4>();
+
+	auto postStack = node["PostProcess"];
+	if (!postStack)
+		return true;
+
+	for (auto pass : postStack)
+	{
+		std::string name = pass["Name"].as<std::string>();
+		Ref<PostProcessEffectRenderer> renderer = ClassFactory<PostProcessEffectRenderer>::CreateObj(name);
+		renderer->Deserialize(pass);
+		_postStack.push_back(renderer);
+	}
+
 	return true;
 }
 

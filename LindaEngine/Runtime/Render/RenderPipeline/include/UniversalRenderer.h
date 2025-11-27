@@ -12,7 +12,7 @@ namespace LindaEngine
 	class UniversalRenderer
 	{
 	public:
-		int Initialize();
+		void Initialize();
 		void Finalize();
 		void Render(Camera* camera);
 

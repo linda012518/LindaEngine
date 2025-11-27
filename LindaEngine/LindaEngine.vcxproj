@@ -122,7 +122,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include;./Runtime/Render/RenderPipeline/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include;./Runtime/Render/RenderPipeline/include;./Runtime/Render/PostProcess/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,6 +146,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\Render\PostProcess\src\GrayPostProcess.cpp" />
+    <ClCompile Include="Runtime\Render\PostProcess\src\PostProcessEffectRenderer.cpp" />
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\PostProcessPasses.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\Drawable.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\DrawObjectsPass.cpp" />
     <ClCompile Include="Runtime\ECS\src\LightSystem.cpp" />
@@ -263,6 +266,10 @@
     <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Render\PostProcess\include\GrayPostProcess.h" />
+    <ClInclude Include="Runtime\Core\include\ClassFactory.h" />
+    <ClInclude Include="Runtime\Render\PostProcess\include\PostProcessEffectRenderer.h" />
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\PostProcessPasses.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\Drawable.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\DrawObjectsPass.h" />
     <ClInclude Include="Runtime\ECS\include\LightSystem.h" />
@@ -895,6 +902,8 @@
     <None Include="External\glm\glm\gtx\vector_query.inl" />
     <None Include="External\glm\glm\gtx\wrap.inl" />
     <None Include="External\imgui\imgui\imgui.ini" />
+    <None Include="Runtime\Core\include\ClassDeclare.inl" />
+    <None Include="Runtime\Core\include\ClassImplement.inl" />
     <None Include="Runtime\ECS\include\BehaviorDeclare.inl" />
     <None Include="Runtime\ECS\include\BehaviorImplement.inl" />
     <None Include="Runtime\ECS\include\Component.inl" />
