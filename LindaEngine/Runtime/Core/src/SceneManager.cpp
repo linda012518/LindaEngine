@@ -1,4 +1,4 @@
-#include "SceneManager.h"
+ï»¿#include "SceneManager.h"
 #include "Scene.h"
 #include "Path.h"
 #include <yaml-cpp/yaml.h>
@@ -49,7 +49,9 @@ void SceneManager::Finalize()
 
 void SceneManager::Tick()
 {
-	//TODO Òì²½¼ÓÔØºÍÇÐ»»³¡¾°£¿£¿
+	//TODO å¼‚æ­¥åŠ è½½å’Œåˆ‡æ¢åœºæ™¯ï¼Ÿï¼Ÿ
+	_currentScene->UpdateEntityComponents();
+	_currentScene->DestroyEntity();
 }
 
 Ref<Scene> SceneManager::LoadScene(const char* name)

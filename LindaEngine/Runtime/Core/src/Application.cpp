@@ -8,10 +8,12 @@
 using namespace LindaEngine;
 
 bool Application::_isQuit = false;
+AppState Application::state = AppState::Loading;
 Scope<Window> Application::_window;
 
 int Application::Initialize()
 {
+    state = AppState::Loading;
     YamlSerializer::DeSerializeGraphicsConfig(Path::graphicsConfig);
 
     _window = Window::Create();
@@ -55,37 +57,40 @@ void Application::Finalize()
 
 void Application::Tick()
 {
+    state = AppState::Running;
+
     while (false == _isQuit)
     {
-        BehaviorSystem::DoAwake();
-        //BehaviorSystem::OnEnable();
-        //BehaviorSystem::Start();
-
-        //BehaviorSystem::FixUpdate();
-        //BehaviorSystem::OnTriggerEvent();
-        //BehaviorSystem::OnCollisionEvent();
         Timestamp::Tick();
-        _window->Tick();
-        //BehaviorSystem::OnMouseEvent();
         SceneManager::Tick();
+        BehaviorSystem::DoAwake();
+        BehaviorSystem::DoOnEnable();
+        BehaviorSystem::DoStart();
+
+        BehaviorSystem::DoFixUpdate();
+        BehaviorSystem::DoOnTriggerEvent();
+        BehaviorSystem::DoOnCollisionEvent();
+        _window->Tick();
+        BehaviorSystem::DoOnMouseEvent();
         ComponentSystem::Tick();
         BehaviorSystem::DoUpdate();
-        //BehaviorSystem::LateUpdate();
+        BehaviorSystem::DoLateUpdate();
 
         //BehaviorSystem::OnPreCull();
-        //BehaviorSystem::OnPreRender();
+        BehaviorSystem::DoOnPreRender();
         //BehaviorSystem::OnRenderObject();
         _graphicContext->Tick();
-        //BehaviorSystem::OnPostRender();
-        //BehaviorSystem::OnApplicationPause();
-        //BehaviorSystem::OnApplicationQuit();
-        //BehaviorSystem::OnDisable();
-        //BehaviorSystem::OnDestroy();
+        BehaviorSystem::DoOnPostRender();
+        BehaviorSystem::DoOnApplicationPause();
+        BehaviorSystem::DoOnApplicationQuit();
+        BehaviorSystem::DoOnDisable();
+        BehaviorSystem::DoOnDestroy();
         BehaviorSystem::Tick();
     }
 }
 
 void Application::Quit()
 {
+    state = AppState::PrepareQuit;
     _isQuit = true;
 }

@@ -11,7 +11,7 @@ const char* Path::graphicsConfig = "Assets/Config/GraphicsConfig";
 const char* Path::sceneConfig = "Assets/Config/SceneConfig";
 const char* Path::shaderConfig = "Assets/Config/ShaderConfig";
 
-std::vector<std::string> Path::GetFileDirtcorys(const char* path)
+std::vector<std::string> Path::GetFileDirectorys(const char* path)
 {
 	std::vector<std::string> go;
 

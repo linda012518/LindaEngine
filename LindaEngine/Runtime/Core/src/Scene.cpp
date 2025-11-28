@@ -22,9 +22,7 @@ Entity* Scene::CreateEntity(const char* name, bool active)
 
 void Scene::DestroyEntity(Entity* entity)
 {
-	Transform* trans = entity->GetTransform();
-	trans->SetParent(nullptr);
-	DestroyEntityIncludeChild(entity);
+	_dirtyEntitys.push_back(entity);
 }
 
 Entity* Scene::GetEntity(const char* name)
@@ -35,6 +33,26 @@ Entity* Scene::GetEntity(const char* name)
 		return e.get();
 	}
 	return nullptr;
+}
+
+void Scene::DestroyEntity()
+{
+	for (auto& e : _dirtyEntitys) 
+	{
+		Transform* trans = e->GetTransform();
+		trans->SetParent(nullptr);
+		DestroyEntityIncludeChild(e);
+	}
+	_dirtyEntitys.clear();
+}
+
+void Scene::UpdateEntityComponents()
+{
+	for (auto& e : _entitys)
+	{
+		e->RemoveDirtyComponents();
+		e->AddBehaviorsToSystem();
+	}
 }
 
 void Scene::DestroyEntityIncludeChild(Entity* entity)

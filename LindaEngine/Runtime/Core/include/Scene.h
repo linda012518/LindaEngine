@@ -13,6 +13,7 @@ namespace LindaEngine
 
 	class Scene : public LObject, public ISerializable
 	{
+		friend class SceneManager;
 	public:
 		Entity* CreateEntity(const char* name, bool active = true);
 		void DestroyEntity(Entity* entity);
@@ -26,10 +27,13 @@ namespace LindaEngine
 		bool Deserialize(YAML::Node& node);
 
 	private:
+		void DestroyEntity();
+		void UpdateEntityComponents();
 		void DestroyEntityIncludeChild(Entity* entity);
 
 	private:
 		std::vector<Ref<Entity>> _entitys;
+		std::vector<Entity*> _dirtyEntitys;
 		std::string _path = "";
 		int _index = -1;
 	};

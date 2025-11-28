@@ -8,7 +8,7 @@ namespace LindaEngine
 	class Path
 	{
 	public:
-		static std::vector<std::string> GetFileDirtcorys(const char* path);
+		static std::vector<std::string> GetFileDirectorys(const char* path);
 		static std::string GetFilePath(std::string& path);
 		static std::string GetFileName(std::string& path);
 		static std::string GetFileNameNoExtension(std::string& path);

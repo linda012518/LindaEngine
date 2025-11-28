@@ -18,7 +18,7 @@ Ref<ShaderSource> ShaderLoader::Load(const char* url)
 	{
 		std::string tex = TextLoader::Load(url);
 
-		std::vector<std::string> paths = Path::GetFileDirtcorys(url);
+		std::vector<std::string> paths = Path::GetFileDirectorys(url);
 
 		TextLoader::DeleteAnnotation(tex);
 		DeleteShaderFrame(tex);

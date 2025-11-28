@@ -4,7 +4,7 @@
 #include "YamlCustomType.h"
 #include "Scene.h"
 #include "TransformSystem.h"
-
+#include "Path.h"
 #include "Mathf.h"
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/quaternion.hpp"
@@ -56,6 +56,28 @@ const Transform* Transform::GetParent() const
 const std::list<Transform*>& Transform::GetChildren() const
 {
 	return _children;
+}
+
+const Transform* Transform::Find(std::string path) const
+{
+	std::list<Transform*> list = _children;
+	std::vector<std::string> directorys = Path::GetFileDirectorys(path.c_str());
+	int index = 0;
+	int lastIndex = (int)directorys.size() - 1;
+	for (auto& directory : directorys)
+	{
+		for (auto& child : list)
+		{
+			if (child->GetEntity().GetName() != directory)
+				continue;
+			if (index == lastIndex)
+				return child;
+			list = child->_children;
+			break;
+		}
+		index++;
+	}
+	return nullptr;
 }
 
 const glm::vec3& Transform::GetLocalPosition() const

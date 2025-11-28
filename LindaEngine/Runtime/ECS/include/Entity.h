@@ -14,9 +14,11 @@ namespace LindaEngine
 {
 	class Component;
 	class Transform;
+	class Behavior;
 
 	class Entity : public LObject, public ISerializable
 	{
+		friend class Scene;
 	public:
 		Entity(const char* name, bool active = true);
 		virtual ~Entity();
@@ -46,8 +48,7 @@ namespace LindaEngine
 		template <typename TComponent>
 		TComponent* GetComponent();
 
-		template <typename TComponent>
-		void RemoveComponent();
+		void RemoveComponent(Ref<Component> com);
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
@@ -62,6 +63,8 @@ namespace LindaEngine
 		void OnComponentAdded(Component* com);
 		void OnComponentRemoved(Component* com);
 		void UpdateChildrenDirty(Transform* parent);
+		void RemoveDirtyComponents();
+		void AddBehaviorsToSystem();
 
 	private:
 		int _layer;
@@ -71,7 +74,8 @@ namespace LindaEngine
 		std::string _uuid;
 		Transform* _transform;
 		std::vector<Ref<Component>> _components;
-		static bool _isPlaying;
+		std::vector<Ref<Component>> _dirtyComponents;
+		std::vector<Behavior*> _behaviors;
 	};
 }
 

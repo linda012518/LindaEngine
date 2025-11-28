@@ -7,6 +7,8 @@
 #include "glm/gtc/type_ptr.hpp"
 
 #include <list>
+#include <string>
+#include <vector>
 
 namespace LindaEngine
 {
@@ -53,6 +55,7 @@ namespace LindaEngine
 		const glm::mat4& GetViewMat() const;
 		const Transform* GetParent() const;
 		const std::list<Transform*>& GetChildren() const;
+		const Transform* Find(std::string path) const;
 
 		const glm::vec3& GetLocalPosition() const;
 		const glm::vec3& GetLocalEulerAngles() const;

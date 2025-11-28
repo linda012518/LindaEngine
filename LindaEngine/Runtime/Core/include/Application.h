@@ -8,6 +8,11 @@
 
 namespace LindaEngine
 {
+	enum class AppState
+	{
+		Loading, Running, PrepareQuit
+	};
+
 	class Application : public IRuntimeModule
 	{
 	public:
@@ -18,6 +23,8 @@ namespace LindaEngine
 		static void Quit();
 
 		static Window& GetWindow() { return *_window; }
+
+		static AppState state;
 
 	private:
 		static bool _isQuit;

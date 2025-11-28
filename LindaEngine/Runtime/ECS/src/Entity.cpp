@@ -6,14 +6,13 @@
 #include "ComponentFactory.h"
 #include "Behavior.h"
 #include "BehaviorSystem.h"
+#include "Application.h"
 
 #include <fstream>
 #include <iostream>
 #include <string>
 
 using namespace LindaEngine;
-
-bool Entity::_isPlaying = true;
 
 Entity::Entity(const char* name, bool active)
 {
@@ -84,10 +83,14 @@ Transform* Entity::GetTransform()
 void Entity::OnComponentAdded(Component* com)
 {
 	Behavior* pointer = dynamic_cast<Behavior*>(com);
-	if (nullptr != pointer)
-	{
-		BehaviorSystem::Add(pointer);
+	if (nullptr == pointer)
 		return;
+
+	if (Application::state != AppState::Running)
+		BehaviorSystem::Add(pointer);
+	else
+	{
+		_behaviors.push_back(pointer);
 	}
 }
 
@@ -110,6 +113,35 @@ void Entity::UpdateChildrenDirty(Transform* parent)
 	}
 }
 
+void Entity::RemoveDirtyComponents()
+{
+	if (_dirtyComponents.empty())
+		return;
+
+	for (auto& com : _dirtyComponents)
+	{
+		for (auto it = _components.begin(); it != _components.end(); ++it)
+		{
+			if (com != *it)
+				continue;
+			OnComponentRemoved(com.get());
+			_components.erase(it);
+		}
+	}
+	_dirtyComponents.clear();
+}
+
+void Entity::AddBehaviorsToSystem()
+{
+	if (_behaviors.empty())
+		return;
+	for (auto& b : _behaviors)
+	{
+		BehaviorSystem::Add(b);
+	}
+	_behaviors.clear();
+}
+
 bool Entity::IsDirty()
 {
 	return _activeDirty;
@@ -118,6 +150,13 @@ bool Entity::IsDirty()
 void Entity::ClearDirty()
 {
 	_activeDirty = false;
+}
+
+void Entity::RemoveComponent(Ref<Component> com)
+{
+	static_assert(!std::is_same<Transform, Component>::value, "You can't remove a Transform from an actor");
+
+	_dirtyComponents.push_back(com);
 }
 
 bool Entity::Serialize()
