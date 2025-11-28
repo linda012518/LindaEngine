@@ -4,6 +4,7 @@
 #include "ComponentSystem.h"
 #include "BehaviorSystem.h"
 #include "Timestamp.h"
+#include "LThread.h"
 
 using namespace LindaEngine;
 
@@ -14,6 +15,8 @@ Scope<Window> Application::_window;
 int Application::Initialize()
 {
     state = AppState::Loading;
+    SetFrameRate(60);
+
     YamlSerializer::DeSerializeGraphicsConfig(Path::graphicsConfig);
 
     _window = Window::Create();
@@ -59,9 +62,19 @@ void Application::Tick()
 {
     state = AppState::Running;
 
+    double currentInterval = 100.0;
+
     while (false == _isQuit)
     {
+        currentInterval += Timestamp::GetDeltaMilliSecond();
         Timestamp::Tick();
+        if (currentInterval < _frameInterval)
+        {
+            LThread::Sleep(1);
+            continue;
+        }
+        currentInterval = 0.0;
+
         SceneManager::Tick();
         BehaviorSystem::DoAwake();
         BehaviorSystem::DoOnEnable();
@@ -87,6 +100,13 @@ void Application::Tick()
         BehaviorSystem::DoOnDestroy();
         BehaviorSystem::Tick();
     }
+}
+
+void Application::SetFrameRate(int rate)
+{
+    _frameRate = rate;
+    _frameInterval = 1.0f / _frameRate;
+    _frameInterval *= 1000;
 }
 
 void Application::Quit()

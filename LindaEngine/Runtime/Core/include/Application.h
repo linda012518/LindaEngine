@@ -20,10 +20,10 @@ namespace LindaEngine
 		void Finalize();
 		void Tick();
 
+		void SetFrameRate(int rate);
+
 		static void Quit();
-
 		static Window& GetWindow() { return *_window; }
-
 		static AppState state;
 
 	private:
@@ -32,5 +32,8 @@ namespace LindaEngine
 		static Scope<Window> _window;
 		Scope<GraphicsContext> _graphicContext;
 		Scope<SceneManager> _sceneManager;
+
+		int _frameRate;
+		float _frameInterval;
 	};
 }

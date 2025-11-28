@@ -146,6 +146,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\Core\src\LSemaphore.cpp" />
+    <ClCompile Include="Runtime\Core\src\LThread.cpp" />
     <ClCompile Include="Runtime\Render\PostProcess\src\GrayPostProcess.cpp" />
     <ClCompile Include="Runtime\Render\PostProcess\src\PostProcessEffectRenderer.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\PostProcessPasses.cpp" />
@@ -266,6 +268,8 @@
     <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Core\include\LSemaphore.h" />
+    <ClInclude Include="Runtime\Core\include\LThread.h" />
     <ClInclude Include="Runtime\Render\PostProcess\include\GrayPostProcess.h" />
     <ClInclude Include="Runtime\Core\include\ClassFactory.h" />
     <ClInclude Include="Runtime\Render\PostProcess\include\PostProcessEffectRenderer.h" />
