@@ -46,11 +46,15 @@ int Application::Initialize()
     ComponentSystem::OnDeserializeFinish();
     BehaviorSystem::OnDeserializeFinish();
 
+    _imgui.Initialize();
+
     return ret;
 }
 
 void Application::Finalize()
 {
+    _imgui.Finalize();
+
     _graphicContext->Finalize();
     ComponentSystem::Finalize();
     BehaviorSystem::Finalize();
@@ -99,6 +103,12 @@ void Application::Tick()
         BehaviorSystem::DoOnDisable();
         BehaviorSystem::DoOnDestroy();
         BehaviorSystem::Tick();
+
+        _imgui.Begin();
+        _imgui.OnImGuiRender();
+        _imgui.End();
+
+        _graphicContext->SwapBuffers();
     }
 }
 

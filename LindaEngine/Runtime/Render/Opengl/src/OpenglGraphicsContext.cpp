@@ -214,7 +214,11 @@ void OpenglGraphicsContext::Finalize()
 void OpenglGraphicsContext::Tick()
 {
 	_renderPipeline->Tick();
-	SwapBuffers(_hDc);
+}
+
+void OpenglGraphicsContext::SwapBuffers()
+{
+	::SwapBuffers(_hDc);
 }
 
 void OpenglGraphicsContext::CreateRenderPipeline()

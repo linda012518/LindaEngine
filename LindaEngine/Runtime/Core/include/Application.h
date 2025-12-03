@@ -6,6 +6,8 @@
 #include "GraphicsContext.h"
 #include "SceneManager.h"
 
+#include "ImGuiContextEditor.h"
+
 namespace LindaEngine
 {
 	enum class AppState
@@ -32,6 +34,8 @@ namespace LindaEngine
 		static Scope<Window> _window;
 		Scope<GraphicsContext> _graphicContext;
 		Scope<SceneManager> _sceneManager;
+
+		LindaEditor::ImGuiContextEditor _imgui;
 
 		int _frameRate;
 		float _frameInterval;

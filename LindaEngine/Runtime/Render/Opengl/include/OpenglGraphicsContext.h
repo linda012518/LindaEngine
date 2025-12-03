@@ -15,6 +15,7 @@ namespace LindaEngine
 		virtual int Initialize();
 		virtual void Finalize();
 		virtual void Tick();
+		virtual void SwapBuffers();
 
 	protected:
 		virtual void CreateRenderPipeline();

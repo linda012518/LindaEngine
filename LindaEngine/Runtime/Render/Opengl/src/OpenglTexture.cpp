@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "Mesh.h"
 #include "MeshManager.h"
+#include "GraphicsContext.h"
 
 #include <iostream>
 
@@ -139,7 +140,8 @@ void OpenglTexture::Bind(Ref<Texture> texture, int channel, int renderTextureCol
 
 void OpenglTexture::BindRenderTarget(Ref<RenderTexture> texture)
 {
-	int msaa = nullptr == texture ? Camera::currentRenderCamera->GetMSAA() : texture->msaa;
+	int cameraMSAA = nullptr == Camera::currentRenderCamera ? GraphicsContext::graphicsConfig.msaaSamples : Camera::currentRenderCamera->GetMSAA();
+	int msaa = nullptr == texture ? cameraMSAA : texture->msaa;
 
 	if (msaa > 1)
 		glEnable(GL_MULTISAMPLE);

@@ -5,6 +5,8 @@
 #include "EventCode.h"
 #include "Event.h"
 
+#include "imgui/imgui_impl_win32.h"
+
 #include <tchar.h>
 #include <shellscalingapi.h>
 #pragma comment(lib, "Shcore.lib")
@@ -149,8 +151,13 @@ LRESULT WinWindow::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
 }
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+    if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+        return true;
+
     switch (msg)
     {
     case WM_ERASEBKGND:
