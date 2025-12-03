@@ -146,6 +146,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Editor\Core\src\RenderPipelineEditor.cpp" />
+    <ClCompile Include="Runtime\Core\src\ApplicationRuntime.cpp" />
+    <ClCompile Include="Editor\Core\src\ApplicationEditor.cpp" />
     <ClCompile Include="Runtime\Core\src\LSemaphore.cpp" />
     <ClCompile Include="Runtime\Core\src\LThread.cpp" />
     <ClCompile Include="Runtime\Render\PostProcess\src\GrayPostProcess.cpp" />
@@ -266,8 +269,13 @@
     <ClCompile Include="Runtime\Render\RenderPipeline\src\SkyboxPass.cpp" />
     <ClCompile Include="Temp\TestECSEvent.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderer.cpp" />
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Editor\Core\include\RenderPipelineEditor.h" />
+    <ClInclude Include="Runtime\Core\include\ApplicationRuntime.h" />
+    <ClInclude Include="Editor\Core\include\ApplicationEditor.h" />
+    <ClInclude Include="Runtime\Core\include\AppState.h" />
     <ClInclude Include="Runtime\Core\include\LSemaphore.h" />
     <ClInclude Include="Runtime\Core\include\LThread.h" />
     <ClInclude Include="Runtime\Render\PostProcess\include\GrayPostProcess.h" />
@@ -758,6 +766,7 @@
     <ClInclude Include="Runtime\Render\RenderPipeline\include\SkyboxPass.h" />
     <ClInclude Include="Temp\TestECSEvent.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\UniversalRenderer.h" />
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\UniversalRenderPipeline.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External\assimp\assimp\color4.inl" />

@@ -196,8 +196,6 @@ int OpenglGraphicsContext::Initialize()
 		return result;
 	}
 
-	CreateRenderPipeline();
-
 	return 0;
 }
 
@@ -214,16 +212,13 @@ void OpenglGraphicsContext::Finalize()
 void OpenglGraphicsContext::Tick()
 {
 	_renderPipeline->Tick();
+	SwapBuffers(_hDc);
 }
 
-void OpenglGraphicsContext::SwapBuffers()
+void OpenglGraphicsContext::SetRenderPipeline(Ref<RenderPipeline> pipeline)
 {
-	::SwapBuffers(_hDc);
-}
-
-void OpenglGraphicsContext::CreateRenderPipeline()
-{
-	_renderPipeline = RenderPipeline::Create();
+	_renderPipeline = pipeline;
 	_renderPipeline->Initialize();
 }
+
 

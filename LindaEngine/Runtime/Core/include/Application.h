@@ -4,23 +4,16 @@
 
 #include "Window.h"
 #include "GraphicsContext.h"
-#include "SceneManager.h"
-
-#include "ImGuiContextEditor.h"
+#include "AppState.h"
 
 namespace LindaEngine
 {
-	enum class AppState
-	{
-		Loading, Running, PrepareQuit
-	};
-
 	class Application : public IRuntimeModule
 	{
 	public:
-		int Initialize();
-		void Finalize();
-		void Tick();
+		virtual int Initialize() = 0;
+		virtual void Finalize() = 0;
+		virtual void Tick() = 0;
 
 		void SetFrameRate(int rate);
 
@@ -28,16 +21,12 @@ namespace LindaEngine
 		static Window& GetWindow() { return *_window; }
 		static AppState state;
 
-	private:
+	protected:
 		static bool _isQuit;
-
 		static Scope<Window> _window;
 		Scope<GraphicsContext> _graphicContext;
-		Scope<SceneManager> _sceneManager;
 
-		LindaEditor::ImGuiContextEditor _imgui;
-
-		int _frameRate;
-		float _frameInterval;
+		int _frameRate = -1;
+		float _frameInterval = -1.0f;
 	};
 }

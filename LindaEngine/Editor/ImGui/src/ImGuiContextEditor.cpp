@@ -178,6 +178,8 @@ void ImGuiContextEditor::End()
 	RenderTextureManager::SetRenderTarget(nullptr);
 	GraphicsConfig& config = GraphicsContext::graphicsConfig;
 	Graphic::SetViewport(0, 0, config.screenNewWidth, config.screenNewHeight);
+	Graphic::SetClearColor(0.0f, 0.3f, 0.0f, 1.0f);
+	Graphic::Clear(true, true, true);
 
 	// Rendering
 	ImGui::Render();

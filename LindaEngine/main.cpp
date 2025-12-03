@@ -3,7 +3,8 @@
 
 #include <iostream>
 
-#include "Application.h"
+#include "ApplicationRuntime.h"
+#include "ApplicationEditor.h"
 
 #include "Entity.h"
 #include "Transform.h"
@@ -31,7 +32,7 @@
 using namespace LindaEngine;
 using namespace LindaEditor;
 
-#define LindaEditor
+//#define LindaEditor
 
 void SerializeMaterial()
 {
@@ -175,7 +176,12 @@ int main()
 	////cc.Initialize();
 	//return 1;
 
-	Application app;
+#ifdef LindaEditor
+	ApplicationEditor app;
+#else
+	ApplicationRuntime app;
+#endif // LindaEditor
+
 	app.Initialize();
 	app.Tick();
 	app.Finalize();

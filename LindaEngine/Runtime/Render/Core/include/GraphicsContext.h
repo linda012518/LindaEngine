@@ -13,16 +13,13 @@ namespace LindaEngine
 		virtual int Initialize() = 0;
 		virtual void Finalize() = 0;
 		virtual void Tick() = 0;
-		virtual void SwapBuffers() = 0;
+		virtual void SetRenderPipeline(Ref<RenderPipeline> pipeline) = 0;
 
 		static GraphicsConfig graphicsConfig;
 
 		static Scope<GraphicsContext> Create(void* window);
 
 	protected:
-		virtual void CreateRenderPipeline() = 0;
-
-	protected:
-		Scope<RenderPipeline> _renderPipeline;
+		Ref<RenderPipeline> _renderPipeline;
 	};
 }

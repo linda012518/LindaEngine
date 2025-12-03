@@ -15,10 +15,7 @@ namespace LindaEngine
 		virtual int Initialize();
 		virtual void Finalize();
 		virtual void Tick();
-		virtual void SwapBuffers();
-
-	protected:
-		virtual void CreateRenderPipeline();
+		virtual void SetRenderPipeline(Ref<RenderPipeline> pipeline);
 
 	private:
 		HGLRC _renderContext;
