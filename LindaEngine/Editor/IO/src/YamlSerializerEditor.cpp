@@ -9,7 +9,7 @@ std::vector<std::string> YamlSerializerEditor::DeSerializeEditorPanel()
 	YAML::Node data;
 	try
 	{
-		data = YAML::LoadFile("Built-inAssets/Config/EditorPanelConfig");
+		data = YAML::LoadFile("BuiltInAssets/Config/EditorPanelConfig");
 	}
 	catch (const std::exception&)
 	{

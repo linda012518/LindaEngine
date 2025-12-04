@@ -414,6 +414,9 @@
     <ClCompile Include="Editor\IO\src\YamlSerializerEditor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\ImGui\src\ImGuiStyleEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -1926,6 +1929,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Editor\IO\include\YamlSerializerEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\include\ImGuiStyleEditor.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

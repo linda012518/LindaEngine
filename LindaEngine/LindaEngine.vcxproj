@@ -155,6 +155,7 @@
     <ClCompile Include="Editor\ImGui\src\InspectorPanelEditor.cpp" />
     <ClCompile Include="Editor\ImGui\src\EditViewPanelEditor.cpp" />
     <ClCompile Include="Editor\ImGui\src\PlayViewPanelEditor.cpp" />
+    <ClCompile Include="Editor\ImGui\src\ImGuiStyleEditor.cpp" />
     <ClCompile Include="Runtime\Core\src\ApplicationRuntime.cpp" />
     <ClCompile Include="Editor\Core\src\ApplicationEditor.cpp" />
     <ClCompile Include="Runtime\Core\src\LSemaphore.cpp" />
@@ -290,6 +291,7 @@
     <ClInclude Include="Editor\ImGui\include\InspectorPanelEditor.h" />
     <ClInclude Include="Editor\ImGui\include\EditViewPanelEditor.h" />
     <ClInclude Include="Editor\ImGui\include\PlayViewPanelEditor.h" />
+    <ClInclude Include="Editor\ImGui\include\ImGuiStyleEditor.h" />
     <ClInclude Include="Runtime\Core\include\ApplicationRuntime.h" />
     <ClInclude Include="Editor\Core\include\ApplicationEditor.h" />
     <ClInclude Include="Runtime\Core\include\AppState.h" />

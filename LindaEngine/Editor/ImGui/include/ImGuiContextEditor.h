@@ -17,8 +17,6 @@ namespace LindaEditor
 		void Begin();
 		void End();
 
-		static void SetDarkThemeColors();
-
 		void OnImGuiRender();
 
 		void AddPanel();
