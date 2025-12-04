@@ -10,6 +10,9 @@
 #include "ClassFactory.h"
 #include "ImGuiStyleEditor.h"
 
+#include "EditViewPanelEditor.h"
+#include "PlayViewPanelEditor.h"
+
 // 使用自定义的 glad loader，不使用 ImGui 自带的 loader
 //#define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 //
@@ -239,6 +242,25 @@ void ImGuiContextEditor::AddPanel()
 	for (auto& go : result)
 	{
 		Ref<ImGuiPanelEditor> panel = ClassFactory<ImGuiPanelEditor>::CreateObj(go);
+
+		Ref<EditViewPanelEditor> editPointer = DynamicCastRef(EditViewPanelEditor, panel);
+		if (nullptr != editPointer)
+			_editPanel = editPointer;
+
+		Ref<PlayViewPanelEditor> playPointer = DynamicCastRef(PlayViewPanelEditor, panel);
+		if (nullptr != playPointer)
+			_playPanel = playPointer;
+
 		_panels.push_back(panel);
 	}
+}
+
+Ref<RenderTexture> ImGuiContextEditor::GetEditRenderTexture()
+{
+	return _editPanel->GetRenderTexture();
+}
+
+Ref<RenderTexture> ImGuiContextEditor::GetPlayRenderTexture()
+{
+	return _playPanel->GetRenderTexture();
 }

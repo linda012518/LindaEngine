@@ -34,6 +34,7 @@ namespace LindaEngine
 		static Ref<RenderTexture> GetBlitRenderTexture(Ref<RenderTexture> rt, ColorType type = ColorType::Color);
 		static void BlitRenderTexture(Ref<RenderTexture> src, Ref<RenderTexture> dest, ColorType type = ColorType::Color);
 		static void Release(Ref<RenderTexture> rt);
+		static void DeleteImmediately(Ref<RenderTexture> rt);
 		static void Clear();
 		static void SetRenderTarget(Ref<RenderTexture> texture);
 

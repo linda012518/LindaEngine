@@ -155,6 +155,11 @@ void RenderTextureManager::Release(Ref<RenderTexture> rt)
     _renderTextures.push_back(rt);
 }
 
+void RenderTextureManager::DeleteImmediately(Ref<RenderTexture> rt)
+{
+    TextureDriver::DeleteRenderTexture(rt);
+}
+
 void RenderTextureManager::Clear() 
 { 
     for (auto& rt : _renderTextures)

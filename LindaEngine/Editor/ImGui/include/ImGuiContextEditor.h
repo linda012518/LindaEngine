@@ -2,12 +2,16 @@
 
 #include "AutoPtr.h"
 #include "ImGuiPanelEditor.h"
+#include "Texture.h"
 
 #include <string>
 #include <vector>
 
 namespace LindaEditor
 {
+	class EditViewPanelEditor;
+	class PlayViewPanelEditor;
+
 	class ImGuiContextEditor
 	{
 	public:
@@ -20,8 +24,12 @@ namespace LindaEditor
 		void OnImGuiRender();
 
 		void AddPanel();
+		Ref<LindaEngine::RenderTexture> GetEditRenderTexture();
+		Ref<LindaEngine::RenderTexture> GetPlayRenderTexture();
 
 	private:
 		std::vector<Ref<ImGuiPanelEditor>> _panels;
+		Ref<EditViewPanelEditor> _editPanel;
+		Ref<PlayViewPanelEditor> _playPanel;
 	};
 }

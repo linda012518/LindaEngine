@@ -193,6 +193,7 @@ PerspectiveCamera::PerspectiveCamera(Entity& entity, bool enable) : Camera(entit
 	_cameraType = CameraType::PerspectiveCamera;
 	_fov = 60.0f;
 	_aspectRatio = (float)GraphicsContext::graphicsConfig.screenNewWidth / (float)GraphicsContext::graphicsConfig.screenNewHeight;
+	//TODO 待删除，不应该每个相机关心这个事件
 	Bind(EventCode::WindowResize);
 }
 
@@ -242,6 +243,7 @@ bool PerspectiveCamera::Deserialize(YAML::Node& node)
 
 void PerspectiveCamera::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
 {
+	//TODO 待删除，不应该每个相机关心这个事件
 	WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
 	_aspectRatio = (float)wre.width / (float)wre.height;
 	_projectDirty = true;

@@ -12,8 +12,8 @@ void ImGuiStyleEditor::SetUnityStyle()
     SetUnityBlueThemeColors();
 
     // 窗口和框架样式
-    style.WindowPadding = ImVec2(8, 8);
-    style.FramePadding = ImVec2(4, 3);
+    style.WindowPadding = ImVec2(1, 1);
+    style.FramePadding = ImVec2(1, 6);
     style.CellPadding = ImVec2(4, 2);
     style.ItemSpacing = ImVec2(4, 4);
     style.ItemInnerSpacing = ImVec2(4, 4);
@@ -23,7 +23,7 @@ void ImGuiStyleEditor::SetUnityStyle()
     style.GrabMinSize = 10;
 
     // 边框和圆角
-    style.WindowBorderSize = 1.5f;
+    style.WindowBorderSize = 1;
     style.ChildBorderSize = 1;
     style.PopupBorderSize = 1;
     style.FrameBorderSize = 0;
