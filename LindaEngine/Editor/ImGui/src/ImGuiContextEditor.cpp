@@ -6,6 +6,8 @@
 #include "GraphicsContext.h"
 #include "TextureManager.h"
 #include "Graphic.h"
+#include "YamlSerializerEditor.h"
+#include "ClassFactory.h"
 
 // 使用自定义的 glad loader，不使用 ImGui 自带的 loader
 //#define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
@@ -103,6 +105,8 @@ static void Hook_Renderer_SwapBuffers(ImGuiViewport* viewport, void*)
 
 int ImGuiContextEditor::Initialize()
 {
+	AddPanel();
+
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -112,11 +116,13 @@ int ImGuiContextEditor::Initialize()
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
+	io.IniFilename = "Built-inAssets/Config/imgui.ini";
+
 	// Note: Docking and Viewports are only available in the 'docking' branch of ImGui
 	// Current version (1.92.4 WIP) is the main branch which doesn't support these features
 
-	io.Fonts->AddFontFromFileTTF("Assets/Fonts/Opensans/OpenSans-Bold.ttf", 18.0f);
-	io.FontDefault = io.Fonts->AddFontFromFileTTF("Assets/Fonts/Opensans/OpenSans-Regular.ttf", 18.0f);
+	io.Fonts->AddFontFromFileTTF("Assets/Fonts/Opensans/OpenSans-Bold.ttf", 18.0f * 1.5f);
+	io.FontDefault = io.Fonts->AddFontFromFileTTF("Assets/Fonts/Opensans/OpenSans-Regular.ttf", 18.0f * 1.5f);
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
@@ -243,12 +249,28 @@ void ImGuiContextEditor::OnImGuiRender()
 	// 第三个参数是flags，使用PassthruCentralNode让中央区域透明
 	ImGuiID dockspace_id = ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 	
-	// 显示Demo窗口 - 使用&show_demo来允许关闭窗口
-	static bool show_demo = true;
-	if (show_demo)
+	for (auto& go : _panels)
 	{
-		// 设置窗口默认停靠到停靠空间（仅在首次使用时）
-		ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
-		ImGui::ShowDemoWindow(&show_demo);
+		go->OnImGuiRender();
+	}
+
+	//// 显示Demo窗口 - 使用&show_demo来允许关闭窗口
+	//static bool show_demo = true;
+	//if (show_demo)
+	//{
+	//	// 设置窗口默认停靠到停靠空间（仅在首次使用时）
+	//	ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
+	//	ImGui::ShowDemoWindow(&show_demo);
+	//}
+}
+
+void ImGuiContextEditor::AddPanel()
+{
+	std::vector<std::string> result = YamlSerializerEditor::DeSerializeEditorPanel();
+
+	for (auto& go : result)
+	{
+		Ref<ImGuiPanelEditor> panel = ClassFactory<ImGuiPanelEditor>::CreateObj(go);
+		_panels.push_back(panel);
 	}
 }

@@ -122,7 +122,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include;./Runtime/Render/RenderPipeline/include;./Runtime/Render/PostProcess/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include;./Runtime/Render/RenderPipeline/include;./Runtime/Render/PostProcess/include;./Editor/IO/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,7 +146,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Editor\ImGui\src\ConsolePanelEditor.cpp" />
+    <ClCompile Include="Editor\ImGui\src\ContentBrowserPanelEditor.cpp" />
     <ClCompile Include="Editor\Core\src\RenderPipelineEditor.cpp" />
+    <ClCompile Include="Editor\ImGui\src\HierarchyPanelEditor.cpp" />
+    <ClCompile Include="Editor\ImGui\src\MenuBarEditor.cpp" />
+    <ClCompile Include="Editor\ImGui\src\ImGuiPanelEditor.cpp" />
+    <ClCompile Include="Editor\ImGui\src\InspectorPanelEditor.cpp" />
+    <ClCompile Include="Editor\ImGui\src\EditViewPanelEditor.cpp" />
+    <ClCompile Include="Editor\ImGui\src\PlayViewPanelEditor.cpp" />
     <ClCompile Include="Runtime\Core\src\ApplicationRuntime.cpp" />
     <ClCompile Include="Editor\Core\src\ApplicationEditor.cpp" />
     <ClCompile Include="Runtime\Core\src\LSemaphore.cpp" />
@@ -270,9 +278,18 @@
     <ClCompile Include="Temp\TestECSEvent.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderer.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderPipeline.cpp" />
+    <ClCompile Include="Editor\IO\src\YamlSerializerEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Editor\ImGui\include\ConsolePanelEditor.h" />
+    <ClInclude Include="Editor\ImGui\include\ContentBrowserPanelEditor.h" />
     <ClInclude Include="Editor\Core\include\RenderPipelineEditor.h" />
+    <ClInclude Include="Editor\ImGui\include\HierarchyPanelEditor.h" />
+    <ClInclude Include="Editor\ImGui\include\MenuBarEditor.h" />
+    <ClInclude Include="Editor\ImGui\include\ImGuiPanelEditor.h" />
+    <ClInclude Include="Editor\ImGui\include\InspectorPanelEditor.h" />
+    <ClInclude Include="Editor\ImGui\include\EditViewPanelEditor.h" />
+    <ClInclude Include="Editor\ImGui\include\PlayViewPanelEditor.h" />
     <ClInclude Include="Runtime\Core\include\ApplicationRuntime.h" />
     <ClInclude Include="Editor\Core\include\ApplicationEditor.h" />
     <ClInclude Include="Runtime\Core\include\AppState.h" />
@@ -767,6 +784,7 @@
     <ClInclude Include="Temp\TestECSEvent.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\UniversalRenderer.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\UniversalRenderPipeline.h" />
+    <ClInclude Include="Editor\IO\include\YamlSerializerEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External\assimp\assimp\color4.inl" />

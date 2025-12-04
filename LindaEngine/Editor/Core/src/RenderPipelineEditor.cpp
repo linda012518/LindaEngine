@@ -26,11 +26,11 @@ void RenderPipelineEditor::Tick()
     _imgui.OnImGuiRender();
     _imgui.End();
 
-    //RenderTextureManager::SetRenderTarget(nullptr);
+    ////RenderTextureManager::SetRenderTarget(nullptr);
     //GraphicsConfig& config = GraphicsContext::graphicsConfig;
     //Graphic::SetViewport(0, 0, config.screenNewWidth, config.screenNewHeight);
-    //Graphic::SetClearColor(0.0f, 0.3f, 0.0f, 1.0f);
-
+    //Graphic::SetClearColor(0.0f, 0.3f, 0.3f, 1.0f);
+    //Graphic::Clear(true, true, true);
 
 }
 

@@ -32,7 +32,7 @@
 using namespace LindaEngine;
 using namespace LindaEditor;
 
-//#define LindaEditor
+#define LindaEditor
 
 void SerializeMaterial()
 {

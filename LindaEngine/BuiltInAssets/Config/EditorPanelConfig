@@ -1,0 +1,8 @@
+EditorPanelConfig:
+  - ConsolePanelEditor
+  - ContentBrowserPanelEditor
+  - EditViewPanelEditor
+  - HierarchyPanelEditor
+  - InspectorPanelEditor
+  - MenuBarEditor
+  - PlayViewPanelEditor
