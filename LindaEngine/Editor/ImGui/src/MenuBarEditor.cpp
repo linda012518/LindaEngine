@@ -1,4 +1,5 @@
 #include "MenuBarEditor.h"
+#include "SceneManagerEditor.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -27,7 +28,7 @@ void MenuBarEditor::OnImGuiRender()
         {
             if (ImGui::MenuItem("New Scene", "Ctrl+N"))
             {
-                // 新建文件的操作
+                SceneManagerEditor::LoadScene(nullptr);
             }
             if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
             {

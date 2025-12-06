@@ -6,6 +6,8 @@
 #include "Renderer.h"
 #include "Material.h"
 #include "MaterialManager.h"
+#include "ComponentSystem.h"
+#include "BehaviorSystem.h"
 
 #include <fstream>
 #include <iostream>
@@ -23,6 +25,13 @@ Entity* Scene::CreateEntity(const char* name, bool active)
 void Scene::DestroyEntity(Entity* entity)
 {
 	_dirtyEntitys.push_back(entity);
+}
+
+void Scene::DestroyEntityImmediately(Entity* entity)
+{
+	Transform* trans = entity->GetTransform();
+	trans->SetParent(nullptr);
+	DestroyEntityIncludeChild(entity);
 }
 
 Entity* Scene::GetEntity(const char* name)
@@ -84,7 +93,8 @@ void Scene::Destroy()
 	_index = -1;
 	_path = "";
 
-	//TODO 每个组件系统也要清空
+	BehaviorSystem::Clear();
+	ComponentSystem::Finalize();
 }
 
 void Scene::SetSkyboxMaterial(Ref<Material> material)

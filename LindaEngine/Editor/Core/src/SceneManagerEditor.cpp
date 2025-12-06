@@ -1,7 +1,11 @@
 #include "SceneManagerEditor.h"
 #include "Scene.h"
+#include "Entity.h"
 #include "NodeEditor.h"
 #include "Path.h"
+#include "ComponentSystem.h"
+#include "BehaviorSystem.h"
+
 #include <yaml-cpp/yaml.h>
 
 #include <fstream>
@@ -10,7 +14,7 @@
 using namespace LindaEditor;
 using namespace LindaEngine;
 
-Ref<SceneNodeEditor> SceneManagerEditor::_node = CreateRef<SceneNodeEditor>();
+Ref<SceneNodeEditor> SceneManagerEditor::_node;
 std::vector<Ref<SceneNodeEditor>> SceneManagerEditor::_buildScenes;
 std::vector<Ref<SceneNodeEditor>> SceneManagerEditor::_sceneNodes;
 
@@ -95,19 +99,26 @@ bool SceneManagerEditor::Build(const char* path)
 	}
 }
 
-bool SceneManagerEditor::LoadScene()
+bool SceneManagerEditor::LoadScene(Ref<SceneNodeEditor> node)
 {
 	YAML::Node data;
 	try
 	{
-		if (nullptr == _node->scene)
+		if (nullptr == node)
 		{
-			//TODO 加载默认场景
+			data = YAML::LoadFile("BuiltInAssets/Scenes/Default.scene");
+			//data = YAML::LoadFile("Assets/Scenes/All0.scene");
+			_node->scene->Destroy();
+			_node->scene->Deserialize(data);
+
+			ComponentSystem::OnDeserializeFinish();
+			BehaviorSystem::OnDeserializeFinish();
 		}
 		else
 		{
-			_node->scene->Destroy();
+			_node = node;
 			data = YAML::LoadFile(_node->path);
+			_node->scene->Destroy();
 			_node->scene->Deserialize(data);
 		}
 		return true;
@@ -123,7 +134,11 @@ Ref<SceneNodeEditor> SceneManagerEditor::GetCurrentNode()
 	return _node;
 }
 
-void SceneManagerEditor::Initialize()
+int SceneManagerEditor::Initialize()
 {
+	_node = CreateRef<SceneNodeEditor>();
+	_node->scene = CreateRef<Scene>();
 	//TODO 打开工程，加载所有的Scene存SceneNodeEditor，并打开对应Scene
+
+	return 0;
 }

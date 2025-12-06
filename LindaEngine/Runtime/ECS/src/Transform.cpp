@@ -33,6 +33,21 @@ Transform::~Transform()
 	TransformSystem::Remove(this);
 }
 
+bool Transform::HasChild(Transform* transform)
+{
+	if (_children.empty())
+		return false;
+
+	for (auto& go : _children)
+	{
+		if (go == transform)
+			return true;
+		if (go->HasChild(go))
+			return true;
+	}
+	return false;
+}
+
 const glm::mat4& Transform::GetLocalToWorldMat() const
 {
 	return _worldMatrix;

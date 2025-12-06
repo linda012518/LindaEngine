@@ -12,7 +12,7 @@ void ImGuiStyleEditor::SetUnityStyle()
     SetUnityBlueThemeColors();
 
     // 窗口和框架样式
-    style.WindowPadding = ImVec2(1, 1);
+    style.WindowPadding = ImVec2(8, 8);
     style.FramePadding = ImVec2(1, 6);
     style.CellPadding = ImVec2(4, 2);
     style.ItemSpacing = ImVec2(4, 4);
@@ -166,8 +166,8 @@ void ImGuiStyleEditor::SetUnityBlueThemeColors()
     colors[ImGuiCol_MenuBarBg] = ImVec4(0.18f, 0.18f, 0.18f, 1.00f);
 
     // =============== 头部 ===============
-    colors[ImGuiCol_Header] = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
-    colors[ImGuiCol_HeaderHovered] = ImVec4(unityBlue.x, unityBlue.y, unityBlue.z, 0.8f);
+    colors[ImGuiCol_Header] = ImVec4(unityBlue.x, unityBlue.y, unityBlue.z, 1.00f);
+    colors[ImGuiCol_HeaderHovered] = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
     colors[ImGuiCol_HeaderActive] = ImVec4(unityDarkBlue.x, unityDarkBlue.y, unityDarkBlue.z, 1.00f);
 
     // =============== 按钮 ===============

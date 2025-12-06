@@ -37,6 +37,9 @@ namespace LindaEngine
 		void SetUUID(std::string& uuid) { _uuid = uuid; }
 		std::string& GetUUID() { return _uuid; }
 
+		void SetIndex(int index) { _hierarchyIndex = index; }
+		int GetIndex() { return _hierarchyIndex; }
+
 		void Destroy();
 		void TransformDirty();
 
@@ -76,6 +79,7 @@ namespace LindaEngine
 		std::vector<Ref<Component>> _components;
 		std::vector<Ref<Component>> _dirtyComponents;
 		std::vector<Behavior*> _behaviors;
+		int _hierarchyIndex;
 	};
 }
 

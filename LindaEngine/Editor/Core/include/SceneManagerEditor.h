@@ -5,6 +5,11 @@
 #include <vector>
 #include <string>
 
+namespace LindaEngine
+{
+	class Entity;
+}
+
 namespace LindaEditor
 {
 	struct SceneNodeEditor;
@@ -16,10 +21,10 @@ namespace LindaEditor
 		static void AddToBuild(int index, Ref<SceneNodeEditor> scene);
 		static void RemoveToBuild(Ref<SceneNodeEditor> scene);
 		static bool Build(const char* path);
-		static bool LoadScene();
+		static bool LoadScene(Ref<SceneNodeEditor> node);
 		static Ref<SceneNodeEditor> GetCurrentNode();
 
-		static void Initialize();
+		static int Initialize();
 
 	private:
 		static Ref<SceneNodeEditor> _node;

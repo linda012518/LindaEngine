@@ -4,6 +4,7 @@
 #include "Timestamp.h"
 #include "LThread.h"
 #include "RenderPipeline.h"
+#include "SceneManagerEditor.h"
 
 using namespace LindaEditor;
 using namespace LindaEngine;
@@ -21,6 +22,12 @@ int ApplicationEditor::Initialize()
 
     if ((ret = _window->Initialize()) != 0) {
         printf("Window Initialize Failed...");
+        return ret;
+    }
+
+    if ((ret = SceneManagerEditor::Initialize()) != 0)
+    {
+        printf("SceneManagerEditor Initialize Failed...");
         return ret;
     }
 

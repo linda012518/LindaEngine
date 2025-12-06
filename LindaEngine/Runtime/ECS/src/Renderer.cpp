@@ -132,6 +132,10 @@ bool Renderer::CanRender(int index, int minQueue, int maxQueue)
 
 bool Renderer::InLayerMask(int layer)
 {
+	if (-1 == layer)
+		return false;
+	if (0 == layer)
+		return true;
 	return _entity.GetLayer() & layer;
 }
 
@@ -246,6 +250,8 @@ SkyboxRenderer::SkyboxRenderer(Entity& entity, bool enable) : Renderer(entity, e
 	_mesh = MeshManager::GetSkybox();
 	_shadowCast = false;
 	_receiveShadow = false;
+
+	RendererSystem::Remove(this);
 }
 
 SkyboxRenderer::~SkyboxRenderer()

@@ -21,6 +21,7 @@ Entity::Entity(const char* name, bool active)
 	_active = active;
 	_activeDirty = false;
 	_uuid = UUID::Get();
+	_hierarchyIndex = 0;
 
 	Ref<Transform> c = CreateRef<Transform>(*this);
 	_components.push_back(c);

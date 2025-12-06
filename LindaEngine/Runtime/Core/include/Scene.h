@@ -16,12 +16,14 @@ namespace LindaEngine
 		friend class SceneManager;
 	public:
 		Entity* CreateEntity(const char* name, bool active = true);
-		void DestroyEntity(Entity* entity);
+		void DestroyEntity(Entity* entity); 
+		void DestroyEntityImmediately(Entity* entity);
 		Entity* GetEntity(const char* name);
 		void SetIndex(int index) { _index = index; }
 		std::string& GetPath() { return _path; }
 		void Destroy();
 		void SetSkyboxMaterial(Ref<Material> material);
+		std::vector<Ref<Entity>>& GetEntitys() { return _entitys; }
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);

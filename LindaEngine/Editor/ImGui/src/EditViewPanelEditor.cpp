@@ -18,9 +18,8 @@ EditViewPanelEditor::EditViewPanelEditor()
 
 void EditViewPanelEditor::OnImGuiRender()
 {
-	//ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 18));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(1, 1));
 	ImGui::Begin("Edit View");
-	//ImGui::PopStyleVar();
 
 	ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	uint64_t textureID = _renderTexture->nativeIDs[0];
@@ -33,4 +32,5 @@ void EditViewPanelEditor::OnImGuiRender()
 	}
 
 	ImGui::End();
+	ImGui::PopStyleVar();
 }

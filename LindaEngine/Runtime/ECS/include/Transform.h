@@ -49,6 +49,7 @@ namespace LindaEngine
 		void OnCameraRemoved() { _hasCamera = false; }
 		std::string& GetParentID() { return _parentID; }
 		void SetParentID(std::string& id) { _parentID = id; }
+		bool HasChild(Transform* transform);
 
 		const glm::mat4& GetLocalToWorldMat() const;
 		const glm::mat4& GetWorldToLocalMat() const;

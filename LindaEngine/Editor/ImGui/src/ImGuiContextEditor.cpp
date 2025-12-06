@@ -120,13 +120,13 @@ int ImGuiContextEditor::Initialize()
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
-	io.IniFilename = "BuiltInAssets/Config/imgui.ini";
+	io.IniFilename = "Temporary/imgui.ini";
 
 	// Note: Docking and Viewports are only available in the 'docking' branch of ImGui
 	// Current version (1.92.4 WIP) is the main branch which doesn't support these features
 
-	io.Fonts->AddFontFromFileTTF("Assets/Fonts/Opensans/OpenSans-Bold.ttf", 18.0f * 1.5f);
-	io.FontDefault = io.Fonts->AddFontFromFileTTF("Assets/Fonts/Opensans/OpenSans-Regular.ttf", 18.0f * 1.5f);
+	io.Fonts->AddFontFromFileTTF("BuiltInAssets/Fonts/Opensans/OpenSans-Bold.ttf", 18.0f * 1.5f);
+	io.FontDefault = io.Fonts->AddFontFromFileTTF("BuiltInAssets/Fonts/Opensans/OpenSans-Regular.ttf", 18.0f * 1.5f);
 
 	// Setup Dear ImGui style
 	ImGuiStyleEditor::SetUnityStyle();
