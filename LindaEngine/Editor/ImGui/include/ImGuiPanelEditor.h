@@ -2,6 +2,7 @@
 
 #include "ClassDeclare.inl"
 #include "ClassImplement.inl"
+#include "imgui/imgui.h"
 
 namespace LindaEditor
 {

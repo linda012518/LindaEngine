@@ -11,6 +11,8 @@
 using namespace LindaEditor;
 using namespace LindaEngine;
 
+static char renameBuffer[256] = "";
+
 DYNAMIC_CREATE_CLASS(HierarchyPanelEditor, ImGuiPanelEditor)
 
 void HierarchyPanelEditor::OnImGuiRender()
@@ -18,6 +20,8 @@ void HierarchyPanelEditor::OnImGuiRender()
 	ImGui::Begin("Hierarchy");
 
 	DrawEntitys();
+
+	DrawBlankAreaDropTarget();
 
 	if (ImGui::IsWindowHovered() && !ImGui::IsAnyItemHovered())
 	{
@@ -77,20 +81,91 @@ void HierarchyPanelEditor::DrawEntityRecursive(Entity* entity, int* index)
 		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.20f, 0.50f, 0.80f, 1.00f));
 	}
 
-	bool opened = ImGui::TreeNodeEx((void*)entity, flags, entity->GetName().c_str());
+	bool opened = false;
+
+	if (_renameEntity == entity)
+	{
+		// 重命名状态下：绘制一个空的树节点（用于布局）
+		opened = ImGui::TreeNodeEx((void*)entity, flags, "");
+
+		// 绘制输入框
+		ImGui::SameLine();
+		ImGui::SetKeyboardFocusHere();
+
+		if (ImGui::InputText("##Rename", renameBuffer, IM_ARRAYSIZE(renameBuffer),
+			ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll))
+		{
+			// 按下回车确认重命名
+			_renameEntity->SetName(renameBuffer);
+			_renameEntity = nullptr;
+		}
+
+		// 失去焦点也确认重命名
+		if (!ImGui::IsItemActive() && ImGui::IsItemDeactivated() && nullptr != _renameEntity)
+		{
+			_renameEntity->SetName(renameBuffer);
+			_renameEntity = nullptr;
+		}
+		// ESC键取消重命名
+		if (ImGui::IsKeyPressed(ImGuiKey_Escape) && nullptr != _renameEntity)
+		{
+			_renameEntity = nullptr;
+		}
+	}
+	else
+	{
+		opened = ImGui::TreeNodeEx((void*)entity, flags, entity->GetName().c_str());
+	}
 
 	if (isSelected)
 	{
 		ImGui::PopStyleColor(2);
 	}
 
+	if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left))
+	{
+		_mouseDownPos = ImGui::GetMousePos();
+	}
+
 	DragEntitys(entity);
 
-	if (ImGui::IsItemClicked(ImGuiMouseButton_Left) && _isDrag == false)
+	// 检查是否点击了展开三角区域
+	bool clickedOnArrow = false;
+	if (hasChildren && ImGui::IsItemHovered())
 	{
-		bool isCtrlDown = ImGui::GetIO().KeyCtrl;
-		bool isShiftDown = ImGui::GetIO().KeyShift;
-		HandleEntitySelection(entity, isCtrlDown, isShiftDown);
+		// 获取树节点的矩形区域
+		ImVec2 rectMin = ImGui::GetItemRectMin();
+		ImVec2 rectMax = ImGui::GetItemRectMax();
+		// 获取鼠标位置
+		ImVec2 mousePos = ImGui::GetMousePos();
+
+		// 计算展开三角的近似区域（在ImGui中，箭头区域通常在左侧）
+		float arrowWidth = ImGui::GetFrameHeight();
+		ImRect arrowRect = ImRect(rectMin.x, rectMin.y, rectMin.x + arrowWidth, rectMax.y);
+
+		// 检查鼠标是否在箭头区域内
+		if (arrowRect.Contains(mousePos))
+		{
+			clickedOnArrow = true;
+		}
+	}
+
+	if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+	{
+		ImVec2 mouseDelta = ImVec2(
+			ImGui::GetMousePos().x - _mouseDownPos.x,
+			ImGui::GetMousePos().y - _mouseDownPos.y
+		);
+
+		float dragThreshold = 5.0f;
+		bool isDragging = std::abs(mouseDelta.x) > dragThreshold || std::abs(mouseDelta.y) > dragThreshold;
+
+		if (false == isDragging && false == clickedOnArrow)
+		{
+			bool isCtrlDown = ImGui::GetIO().KeyCtrl;
+			bool isShiftDown = ImGui::GetIO().KeyShift;
+			HandleEntitySelection(entity, isCtrlDown, isShiftDown);
+		}
 	}
 
 	if (ImGui::IsItemHovered() && _hoveredEntity != entity)
@@ -127,20 +202,29 @@ void HierarchyPanelEditor::DrawContextMenu()
 	{
 		if (nullptr != _hoveredEntity)
 		{
-			_selectionEntityArray.clear();
-			_selectionEntity = _hoveredEntity;
-			_selectionEntityArray.push_back(_selectionEntity);
-			if (ImGui::MenuItem("Rename"))
+			if (IsEntitySelected(_hoveredEntity) == false || _selectionEntityArray.size() <= 1)
 			{
+				_selectionEntityArray.clear();
+				_selectionEntity = _hoveredEntity;
+				_selectionEntityArray.push_back(_selectionEntity);
+				if (ImGui::MenuItem("Rename"))
+				{
+					_firstRename = true;
+					_renameEntity = _selectionEntity;
+					strcpy_s(renameBuffer, _renameEntity->GetName().c_str());
+				}
 
+				ImGui::Separator();
 			}
-
-			ImGui::Separator();
 
 			if (ImGui::MenuItem("Delete Entity"))
 			{
-				SceneManagerEditor::GetCurrentNode()->scene->DestroyEntityImmediately(_selectionEntity);
+				for (auto& go : _selectionEntityArray)
+				{
+					SceneManagerEditor::GetCurrentNode()->scene->DestroyEntityImmediately(go);
+				}
 				_selectionEntity = nullptr;
+				_selectionEntityArray.clear();
 			}
 
 			ImGui::Separator();
@@ -155,6 +239,57 @@ void HierarchyPanelEditor::DrawContextMenu()
 
 	ImGui::PopStyleColor(8);
 
+}
+
+void HierarchyPanelEditor::DrawBlankAreaDropTarget()
+{
+	if (false == _isDrag)
+		return;
+
+	// 添加一个覆盖整个窗口的透明拖放目标
+	// 首先保存当前光标位置
+	ImVec2 cursorPos = ImGui::GetCursorPos();
+
+	// 将光标移到窗口左上角
+	ImGui::SetCursorPos(ImVec2(0, 0));
+
+	// 创建一个覆盖整个窗口的不可见按钮
+	ImGui::InvisibleButton("##FullWindowDropTarget", ImGui::GetWindowSize());
+
+	// 为这个按钮添加拖放目标
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
+		{
+			// 单个实体拖拽到空白区域
+			Entity* draggedEntity = *(Entity**)payload->Data;
+			if (draggedEntity && draggedEntity->GetTransform())
+			{
+				draggedEntity->GetTransform()->SetParent(nullptr);
+			}
+			_isDrag = false;
+		}
+		else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG_MULTI"))
+		{
+			// 多个实体拖拽到空白区域
+			int count = payload->DataSize / sizeof(Entity*);
+			Entity** draggedEntities = (Entity**)payload->Data;
+
+			for (int i = 0; i < count; i++)
+			{
+				if (draggedEntities[i] && draggedEntities[i]->GetTransform())
+				{
+					draggedEntities[i]->GetTransform()->SetParent(nullptr);
+				}
+			}
+			_isDrag = false;
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
+	// 恢复光标位置
+	ImGui::SetCursorPos(cursorPos);
 }
 
 void HierarchyPanelEditor::DragEntitys(Entity* entity)
@@ -185,13 +320,14 @@ void HierarchyPanelEditor::DragEntitys(Entity* entity)
 		{
 			// 单个实体拖拽
 			Entity* draggedEntity = *(Entity**)payload->Data;
-			
+
 			if (draggedEntity->GetTransform()->HasChild(entity->GetTransform()) == false && draggedEntity != entity)
 			{
 				Transform* parentTransform = entity->GetTransform();
 				Transform* childTransform = draggedEntity->GetTransform();
 				childTransform->SetParent(parentTransform);
 			}
+			_isDrag = false;
 		}
 		else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG_MULTI"))
 		{
@@ -219,8 +355,8 @@ void HierarchyPanelEditor::DragEntitys(Entity* entity)
 					}
 				}
 			}
+			_isDrag = false;
 		}
-		_isDrag = false;
 		ImGui::EndDragDropTarget();
 	}
 }

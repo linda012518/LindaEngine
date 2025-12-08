@@ -22,6 +22,7 @@ namespace LindaEditor
 		void DrawEntityRecursive(LindaEngine::Entity* entity, int* index);
 		void DrawContextMenu();
 
+		void DrawBlankAreaDropTarget();
 		void DragEntitys(LindaEngine::Entity* entity);
 		void HandleEntitySelection(LindaEngine::Entity* entity, bool isCtrlDown, bool isShiftDown);
 		bool IsEntitySelected(LindaEngine::Entity* entity);
@@ -31,7 +32,10 @@ namespace LindaEditor
 	private:
 		LindaEngine::Entity* _selectionEntity;
 		LindaEngine::Entity* _hoveredEntity;
+		LindaEngine::Entity* _renameEntity;
+		bool _firstRename = false;
 		std::vector<LindaEngine::Entity*> _selectionEntityArray;
+		ImVec2 _mouseDownPos;
 		bool _isDrag = false;
 	};
 }
