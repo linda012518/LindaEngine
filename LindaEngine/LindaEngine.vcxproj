@@ -122,7 +122,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include;./Runtime/Render/RenderPipeline/include;./Runtime/Render/PostProcess/include;./Editor/IO/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include;./Runtime/Render/RenderPipeline/include;./Runtime/Render/PostProcess/include;./Editor/IO/include;./Editor/Tools/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -156,6 +156,7 @@
     <ClCompile Include="Editor\ImGui\src\EditViewPanelEditor.cpp" />
     <ClCompile Include="Editor\ImGui\src\PlayViewPanelEditor.cpp" />
     <ClCompile Include="Editor\ImGui\src\ImGuiStyleEditor.cpp" />
+    <ClCompile Include="Editor\Tools\src\FileDialogs.cpp" />
     <ClCompile Include="Runtime\Core\src\ApplicationRuntime.cpp" />
     <ClCompile Include="Editor\Core\src\ApplicationEditor.cpp" />
     <ClCompile Include="Runtime\Core\src\LSemaphore.cpp" />
@@ -292,6 +293,7 @@
     <ClInclude Include="Editor\ImGui\include\EditViewPanelEditor.h" />
     <ClInclude Include="Editor\ImGui\include\PlayViewPanelEditor.h" />
     <ClInclude Include="Editor\ImGui\include\ImGuiStyleEditor.h" />
+    <ClInclude Include="Editor\Tools\include\FileDialogs.h" />
     <ClInclude Include="Runtime\Core\include\ApplicationRuntime.h" />
     <ClInclude Include="Editor\Core\include\ApplicationEditor.h" />
     <ClInclude Include="Runtime\Core\include\AppState.h" />

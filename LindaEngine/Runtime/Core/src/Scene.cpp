@@ -109,8 +109,6 @@ bool Scene::Serialize()
 	out << YAML::BeginMap;
 	out << YAML::Key << "Scene";
 	out << YAML::Value << YAML::BeginMap;
-	if (_path == "")
-		_path = Path::overridePath;
 	out << YAML::Key << "FileName" << YAML::Value << _path;
 
 	out << YAML::Key << "SkyboxMaterial" << YAML::Value << Renderer::GetSkyboxMaterial()->GetPath();

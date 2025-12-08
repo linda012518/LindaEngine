@@ -17,29 +17,16 @@ using namespace LindaEngine;
 Ref<SceneNodeEditor> SceneManagerEditor::_node;
 std::vector<Ref<SceneNodeEditor>> SceneManagerEditor::_buildScenes;
 std::vector<Ref<SceneNodeEditor>> SceneManagerEditor::_sceneNodes;
+std::string SceneManagerEditor::_defaultScenePath = "BuiltInAssets/Scenes/Default.scene";
 
-bool SceneManagerEditor::SaveScene()
+bool SceneManagerEditor::SaveScene(std::string path)
 {
 	try
 	{
-		std::string path = "Assets/Scenes/All0.scene";
-		if (false == _node->path.empty())
-		{
-			Path::overridePath = _node->path.c_str();
-			return _node->scene->Serialize();
-		}
+		if ("" != path)
+			_node->scene->SetPath(path);
 
-		//TODO 打开保存对话框选择路径
-		Path::overridePath = path.c_str();
-		bool ret = _node->scene->Serialize();
-		if (ret == false)
-			return false;
-
-		_node = CreateRef<SceneNodeEditor>();
-		_node->path = path;
-		_node->name = Path::GetFileName(path);
-		_sceneNodes.push_back(_node);
-		return true;
+		return _node->scene->Serialize();
 	}
 	catch (const std::exception&)
 	{
@@ -99,34 +86,34 @@ bool SceneManagerEditor::Build(const char* path)
 	}
 }
 
-bool SceneManagerEditor::LoadScene(Ref<SceneNodeEditor> node)
+bool SceneManagerEditor::LoadScene(std::string path)
 {
 	YAML::Node data;
 	try
 	{
-		if (nullptr == node)
-		{
-			data = YAML::LoadFile("BuiltInAssets/Scenes/Default.scene");
-			//data = YAML::LoadFile("Assets/Scenes/All0.scene");
-			_node->scene->Destroy();
-			_node->scene->Deserialize(data);
+		std::string readPath = path;
+		if (path == "")
+			readPath = _defaultScenePath;
 
-			ComponentSystem::OnDeserializeFinish();
-			BehaviorSystem::OnDeserializeFinish();
-		}
-		else
-		{
-			_node = node;
-			data = YAML::LoadFile(_node->path);
-			_node->scene->Destroy();
-			_node->scene->Deserialize(data);
-		}
+		data = YAML::LoadFile(readPath);
+		_node->path = readPath;
+		_node->name = Path::GetFileNameNoExtension(readPath);
+		_node->scene->Destroy();
+		_node->scene->Deserialize(data);
+
+		ComponentSystem::OnDeserializeFinish();
+		BehaviorSystem::OnDeserializeFinish();
 		return true;
 	}
 	catch (const std::exception&)
 	{
 		return false;
 	}
+}
+
+bool SceneManagerEditor::IsNewScene()
+{
+	return _node->path == _defaultScenePath;
 }
 
 Ref<SceneNodeEditor> SceneManagerEditor::GetCurrentNode()

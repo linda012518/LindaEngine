@@ -21,6 +21,7 @@ namespace LindaEngine
 		Entity* GetEntity(const char* name);
 		void SetIndex(int index) { _index = index; }
 		std::string& GetPath() { return _path; }
+		void SetPath(std::string path) { _path = path; }
 		void Destroy();
 		void SetSkyboxMaterial(Ref<Material> material);
 		std::vector<Ref<Entity>>& GetEntitys() { return _entitys; }

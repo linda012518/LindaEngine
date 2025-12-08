@@ -1,5 +1,6 @@
 #include "MenuBarEditor.h"
 #include "SceneManagerEditor.h"
+#include "FileDialogs.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -28,22 +29,30 @@ void MenuBarEditor::OnImGuiRender()
         {
             if (ImGui::MenuItem("New Scene", "Ctrl+N"))
             {
-                SceneManagerEditor::LoadScene(nullptr);
+                SceneManagerEditor::LoadScene();
             }
             if (ImGui::MenuItem("Open Scene", "Ctrl+O"))
             {
-                // 打开文件的操作
+                SceneManagerEditor::LoadScene(FileDialogs::OpenFile("LindaEngine Scene (*.scene)\0*.scene\0"));
             }
 
             ImGui::Separator();
 
             if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
             {
-                // 保存文件的操作
+                if (SceneManagerEditor::IsNewScene())
+                {
+                    SceneManagerEditor::SaveScene(FileDialogs::SaveFile("LindaEngine Scene (*.scene)\0*.scene\0"));
+                }
+                else
+                {
+                    SceneManagerEditor::SaveScene();
+                }
+
             }
             if (ImGui::MenuItem("Save Scene As...", "Ctrl+Shift+S"))
             {
-                // 另存为的操作
+                SceneManagerEditor::SaveScene(FileDialogs::SaveFile("LindaEngine Scene (*.scene)\0*.scene\0"));
             }
 
             ImGui::EndMenu();
