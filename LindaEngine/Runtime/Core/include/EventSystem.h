@@ -17,5 +17,19 @@ namespace LindaEngine
 		static void Unbind(int code, IEventHandler* obj);
 
 		static void Dispatch(IEventHandler* sender, int code, Event& eventData);
+
+		static void Clear();
+
+		//////////////////////////////////////////////////////////////////////////////
+
+		static std::unordered_map<int, std::list<IEventHandler*>> _eventMapEditor;
+
+		static void BindEditor(int code, IEventHandler* obj);
+
+		static void UnbindEditor(int code, IEventHandler* obj);
+
+		static void DispatchEditor(IEventHandler* sender, int code, Event& eventData);
+
+		static void ClearEditor();
 	};
 }

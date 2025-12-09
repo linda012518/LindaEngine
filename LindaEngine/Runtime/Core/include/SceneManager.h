@@ -18,6 +18,7 @@ namespace LindaEngine
 
 		static Ref<Scene> LoadScene(const char* name);
 		static Ref<Scene> LoadScene(int index);
+		static Ref<Scene> LoadSceneByPath(std::string path);
 
 		static Ref<Scene> GetCurrentScene() { return _currentScene; }
 

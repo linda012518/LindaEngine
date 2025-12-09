@@ -58,3 +58,8 @@ Ref<Mesh> LindaEngine::MeshManager::GetEmpty()
 {
     return GetMesh("Empty");
 }
+
+void LindaEngine::MeshManager::Clear()
+{
+    _meshMap.clear();
+}

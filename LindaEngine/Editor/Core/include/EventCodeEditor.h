@@ -4,8 +4,8 @@ namespace LindaEditor
 {
 	class EventCodeEditor
 	{
-#define BasicCount 1000000
+#define BasicCountEditor 1000000
 	public:
-		const static int SwitchSelectEntity = BasicCount + 1;
+		const static int SwitchSelectEntity = BasicCountEditor + 1;
 	};
 }

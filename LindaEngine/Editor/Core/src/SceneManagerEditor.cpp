@@ -5,6 +5,7 @@
 #include "Path.h"
 #include "ComponentSystem.h"
 #include "BehaviorSystem.h"
+#include "SceneManager.h"
 
 #include <yaml-cpp/yaml.h>
 
@@ -88,21 +89,15 @@ bool SceneManagerEditor::Build(const char* path)
 
 bool SceneManagerEditor::LoadScene(std::string path)
 {
-	YAML::Node data;
 	try
 	{
 		std::string readPath = path;
 		if (path == "")
 			readPath = _defaultScenePath;
 
-		data = YAML::LoadFile(readPath);
 		_node->path = readPath;
 		_node->name = Path::GetFileNameNoExtension(readPath);
-		_node->scene->Destroy();
-		_node->scene->Deserialize(data);
-
-		ComponentSystem::OnDeserializeFinish();
-		BehaviorSystem::OnDeserializeFinish();
+		_node->scene = SceneManager::LoadSceneByPath(readPath);
 		return true;
 	}
 	catch (const std::exception&)

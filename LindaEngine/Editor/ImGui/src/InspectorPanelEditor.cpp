@@ -123,7 +123,7 @@ DYNAMIC_CREATE_CLASS(InspectorPanelEditor, ImGuiPanelEditor)
 
 InspectorPanelEditor::InspectorPanelEditor()
 {
-	EventSystem::Bind(EventCodeEditor::SwitchSelectEntity, this);
+	EventSystem::BindEditor(EventCodeEditor::SwitchSelectEntity, this);
 }
 
 void InspectorPanelEditor::OnImGuiRender()

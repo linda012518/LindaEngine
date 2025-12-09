@@ -1,6 +1,15 @@
 ﻿#include "SceneManager.h"
 #include "Scene.h"
 #include "Path.h"
+
+#include "EventSystem.h"
+#include "ComponentSystem.h"
+#include "BehaviorSystem.h"
+#include "TextureManager.h"
+#include "MeshManager.h"
+#include "MaterialManager.h"
+#include "ShaderManager.h"
+
 #include <yaml-cpp/yaml.h>
 
 using namespace LindaEngine;
@@ -56,8 +65,6 @@ void SceneManager::Tick()
 
 Ref<Scene> SceneManager::LoadScene(const char* name)
 {
-	_currentScene->Destroy();
-
 	if (_sceneNameMap.find(name) == _sceneNameMap.end())
 		return _currentScene;
 
@@ -66,21 +73,37 @@ Ref<Scene> SceneManager::LoadScene(const char* name)
 
 Ref<Scene> SceneManager::LoadScene(int index)
 {
-	_currentScene->Destroy();
-
 	if (_sceneIndexMap.find(index) == _sceneIndexMap.end())
 		return _currentScene;
 
 	return LoadSceneFromPath(_sceneIndexMap[index]);
 }
 
+Ref<Scene> SceneManager::LoadSceneByPath(std::string path)
+{
+	return LoadSceneFromPath(path);
+}
+
 Ref<Scene> SceneManager::LoadSceneFromPath(std::string& path)
 {
+	EventSystem::Clear();
+	ComponentSystem::Finalize();
+	BehaviorSystem::Finalize();
+	TextureManager::Clear();
+	RenderTextureManager::Clear();
+	MaterialManager::Clear();
+	ShaderManager::Clear();
+	MeshManager::Clear();
+
 	YAML::Node data;
 	try
 	{
 		data = YAML::LoadFile(path);
+		_currentScene->Destroy();
 		_currentScene->Deserialize(data);
+
+		ComponentSystem::OnDeserializeFinish();
+		BehaviorSystem::OnDeserializeFinish();
 	}
 	catch (const std::exception&)
 	{

@@ -40,8 +40,6 @@ int ApplicationRuntime::Initialize()
     _graphicContext->SetRenderPipeline(RenderPipeline::Create());
 
     SceneManager::LoadScene(0);
-    ComponentSystem::OnDeserializeFinish();
-    BehaviorSystem::OnDeserializeFinish();
 
     return ret;
 }

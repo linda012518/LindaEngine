@@ -446,7 +446,7 @@ void HierarchyPanelEditor::SelectNone()
 
 	SwitchSelectEntityEditor ssee;
 	ssee.selectionEntity = nullptr;
-	EventSystem::Dispatch(nullptr, EventCodeEditor::SwitchSelectEntity, ssee);
+	EventSystem::DispatchEditor(nullptr, EventCodeEditor::SwitchSelectEntity, ssee);
 }
 
 void HierarchyPanelEditor::SelectSingle()
@@ -457,6 +457,6 @@ void HierarchyPanelEditor::SelectSingle()
 
 	SwitchSelectEntityEditor ssee;
 	ssee.selectionEntity = _selectionEntity;
-	EventSystem::Dispatch(nullptr, EventCodeEditor::SwitchSelectEntity, ssee);
+	EventSystem::DispatchEditor(nullptr, EventCodeEditor::SwitchSelectEntity, ssee);
 }
 

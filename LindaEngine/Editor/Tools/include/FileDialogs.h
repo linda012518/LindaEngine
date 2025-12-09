@@ -1,6 +1,6 @@
-#pragma once
+﻿#pragma once
 
-#include <string>s
+#include <string>
 
 namespace LindaEditor
 {
