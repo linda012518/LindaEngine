@@ -123,10 +123,11 @@ void Entity::RemoveDirtyComponents()
 	{
 		for (auto it = _components.begin(); it != _components.end(); ++it)
 		{
-			if (com != *it)
+			if (com != (*it).get())
 				continue;
-			OnComponentRemoved(com.get());
+			OnComponentRemoved(com);
 			_components.erase(it);
+			break;
 		}
 	}
 	_dirtyComponents.clear();
@@ -153,11 +154,23 @@ void Entity::ClearDirty()
 	_activeDirty = false;
 }
 
-void Entity::RemoveComponent(Ref<Component> com)
+void Entity::RemoveComponent(Component* com)
 {
 	static_assert(!std::is_same<Transform, Component>::value, "You can't remove a Transform from an actor");
 
 	_dirtyComponents.push_back(com);
+}
+
+void Entity::RemoveComponentImmediately(Component* com)
+{
+	for (auto it = _components.begin(); it != _components.end(); ++it)
+	{
+		if (com != (*it).get())
+			continue;
+		OnComponentRemoved(com);
+		_components.erase(it);
+		break;
+	}
 }
 
 bool Entity::Serialize()

@@ -44,6 +44,7 @@ namespace LindaEngine
 		void TransformDirty();
 
 		Transform* GetTransform();
+		std::vector<Ref<Component>>& GetAllComponent() { return _components; }
 
 		template <typename TComponent, typename ... Args>
 		TComponent* AddComponent(Args&& ... args);
@@ -51,7 +52,8 @@ namespace LindaEngine
 		template <typename TComponent>
 		TComponent* GetComponent();
 
-		void RemoveComponent(Ref<Component> com);
+		void RemoveComponent(Component* com);
+		void RemoveComponentImmediately(Component* com);
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
@@ -77,7 +79,7 @@ namespace LindaEngine
 		std::string _uuid;
 		Transform* _transform;
 		std::vector<Ref<Component>> _components;
-		std::vector<Ref<Component>> _dirtyComponents;
+		std::vector<Component*> _dirtyComponents;
 		std::vector<Behavior*> _behaviors;
 		int _hierarchyIndex;
 	};

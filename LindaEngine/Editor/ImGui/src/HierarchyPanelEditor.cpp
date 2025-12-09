@@ -4,6 +4,9 @@
 #include "Scene.h"
 #include "NodeEditor.h"
 #include "Transform.h"
+#include "EventSystem.h"
+#include "EventEditor.h"
+#include "EventCodeEditor.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -17,7 +20,12 @@ DYNAMIC_CREATE_CLASS(HierarchyPanelEditor, ImGuiPanelEditor)
 
 void HierarchyPanelEditor::OnImGuiRender()
 {
-	ImGui::Begin("Hierarchy");
+	bool close = true;
+	ImGuiWindowFlags window_flags = 0;
+	window_flags |= ImGuiWindowFlags_NoCollapse;
+	window_flags |= ImGuiWindowFlags_UnsavedDocument;
+
+	ImGui::Begin("Hierarchy", &close, window_flags);
 
 	DrawEntitys();
 
@@ -28,8 +36,7 @@ void HierarchyPanelEditor::OnImGuiRender()
 		_hoveredEntity = nullptr;
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left))
 		{
-			_selectionEntity = nullptr;
-			_selectionEntityArray.clear();
+			SelectNone();
 		}
 	}
 
@@ -204,9 +211,7 @@ void HierarchyPanelEditor::DrawContextMenu()
 		{
 			if (IsEntitySelected(_hoveredEntity) == false || _selectionEntityArray.size() <= 1)
 			{
-				_selectionEntityArray.clear();
-				_selectionEntity = _hoveredEntity;
-				_selectionEntityArray.push_back(_selectionEntity);
+				SelectSingle();
 				if (ImGui::MenuItem("Rename"))
 				{
 					_firstRename = true;
@@ -223,8 +228,7 @@ void HierarchyPanelEditor::DrawContextMenu()
 				{
 					SceneManagerEditor::GetCurrentNode()->scene->DestroyEntityImmediately(go);
 				}
-				_selectionEntity = nullptr;
-				_selectionEntityArray.clear();
+				SelectNone();
 			}
 
 			ImGui::Separator();
@@ -305,9 +309,7 @@ void HierarchyPanelEditor::DragEntitys(Entity* entity)
 		}
 		else
 		{
-			_selectionEntity = entity;
-			_selectionEntityArray.clear();
-			_selectionEntityArray.push_back(entity);
+			SelectSingle();
 			ImGui::SetDragDropPayload("ENTITY_DRAG", &_selectionEntity, sizeof(Entity*));
 			ImGui::Text("Dragging");
 		}
@@ -388,9 +390,7 @@ void HierarchyPanelEditor::HandleEntitySelection(Entity* entity, bool isCtrlDown
 	}
 	else
 	{
-		_selectionEntityArray.clear();
-		_selectionEntityArray.push_back(entity);
-		_selectionEntity = entity;
+		SelectSingle();
 	}
 }
 
@@ -411,8 +411,7 @@ void HierarchyPanelEditor::SelectRange(Entity* entity)
 	_selectionEntityArray.clear();
 	if (nullptr == _selectionEntity)
 	{
-		_selectionEntity = entity;
-		_selectionEntityArray.push_back(entity);
+		SelectSingle();
 	}
 	else
 	{
@@ -438,5 +437,26 @@ void HierarchyPanelEditor::SelectRange(Entity* entity)
 			_selectionEntityArray.push_back(go.get());
 		}
 	}
+}
+
+void HierarchyPanelEditor::SelectNone()
+{
+	_selectionEntity = nullptr;
+	_selectionEntityArray.clear();
+
+	SwitchSelectEntityEditor ssee;
+	ssee.selectionEntity = nullptr;
+	EventSystem::Dispatch(nullptr, EventCodeEditor::SwitchSelectEntity, ssee);
+}
+
+void HierarchyPanelEditor::SelectSingle()
+{
+	_selectionEntityArray.clear();
+	_selectionEntity = _hoveredEntity;
+	_selectionEntityArray.push_back(_selectionEntity);
+
+	SwitchSelectEntityEditor ssee;
+	ssee.selectionEntity = _selectionEntity;
+	EventSystem::Dispatch(nullptr, EventCodeEditor::SwitchSelectEntity, ssee);
 }
 

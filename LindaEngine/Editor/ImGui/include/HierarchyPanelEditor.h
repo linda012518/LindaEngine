@@ -29,6 +29,9 @@ namespace LindaEditor
 		void DeselectEntity(LindaEngine::Entity* entity);
 		void SelectRange(LindaEngine::Entity* entity);
 
+		void SelectNone();
+		void SelectSingle();
+
 	private:
 		LindaEngine::Entity* _selectionEntity;
 		LindaEngine::Entity* _hoveredEntity;

@@ -1940,6 +1940,15 @@
     <ClInclude Include="Editor\Tools\include\FileDialogs.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Editor\ImGui\include\EventEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Core\include\EventEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Core\include\EventCodeEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\glm\glm\detail\func_common.inl">

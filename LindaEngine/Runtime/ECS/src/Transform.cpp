@@ -95,22 +95,22 @@ const Transform* Transform::Find(std::string path) const
 	return nullptr;
 }
 
-const glm::vec3& Transform::GetLocalPosition() const
+glm::vec3& Transform::GetLocalPosition()
 {
 	return _localPosition;
 }
 
-const glm::vec3& Transform::GetLocalEulerAngles() const
+glm::vec3& Transform::GetLocalEulerAngles()
 {
 	return _localEulerAngles;
 }
 
-const glm::quat& Transform::GetLocalRotation() const
+glm::quat& Transform::GetLocalRotation()
 {
 	return _localRotation;
 }
 
-const glm::vec3& Transform::GetLocalScale() const
+glm::vec3& Transform::GetLocalScale()
 {
 	return _localScale;
 }

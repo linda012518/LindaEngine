@@ -283,9 +283,12 @@
     <ClCompile Include="Editor\IO\src\YamlSerializerEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Editor\Core\include\EventCodeEditor.h" />
+    <ClInclude Include="Editor\Core\include\EventEditor.h" />
     <ClInclude Include="Editor\ImGui\include\ConsolePanelEditor.h" />
     <ClInclude Include="Editor\ImGui\include\ContentBrowserPanelEditor.h" />
     <ClInclude Include="Editor\Core\include\RenderPipelineEditor.h" />
+    <ClInclude Include="Editor\ImGui\include\EventEditor.h" />
     <ClInclude Include="Editor\ImGui\include\HierarchyPanelEditor.h" />
     <ClInclude Include="Editor\ImGui\include\MenuBarEditor.h" />
     <ClInclude Include="Editor\ImGui\include\ImGuiPanelEditor.h" />
