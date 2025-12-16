@@ -152,6 +152,8 @@ void RenderTextureManager::BlitRenderTexture(Ref<RenderTexture> src, Ref<RenderT
 
 void RenderTextureManager::Release(Ref<RenderTexture> rt)
 {
+    if (nullptr == rt)
+        return;
     _renderTextures.push_back(rt);
 }
 

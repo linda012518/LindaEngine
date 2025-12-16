@@ -4,6 +4,11 @@ namespace LindaEngine
 {
 	enum class AppState
 	{
-		Loading, Running, PrepareQuit, Editor
+		Loading, Running, PrepareQuit
+	};
+
+	enum class AppModule
+	{
+		Runtime, Editor
 	};
 }

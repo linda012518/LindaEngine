@@ -77,7 +77,7 @@ namespace LindaEngine
 		std::vector<unsigned int> renderBuffers;
 		unsigned int depthNativeID = 0;
 		static Ref<RenderTexture> active;
-
+		static Ref<RenderTexture> finalRT;
 	private:
 		Ref<RenderTexture> internalRT;
 

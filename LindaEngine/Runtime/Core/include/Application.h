@@ -20,6 +20,7 @@ namespace LindaEngine
 		static void Quit();
 		static Window& GetWindow() { return *_window; }
 		static AppState state;
+		static AppModule module;
 
 	protected:
 		static bool _isQuit;

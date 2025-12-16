@@ -121,8 +121,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include;./Runtime/Render/RenderPipeline/include;./Runtime/Render/PostProcess/include;./Editor/IO/include;./Editor/Tools/include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include;./Runtime/Render/RenderPipeline/include;./Runtime/Render/PostProcess/include;./Editor/IO/include;./Editor/Tools/include;./Editor/ImGui/UICore/Core;./Editor/ImGui/UICore/Widgets;./Editor/ImGui/UICore/Plugins;./Editor/ImGui/UICore/Panel</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,6 +146,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\Bullet.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\CheckBox.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\ColorEdit.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\ColorPicker.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\ComboBox.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Layout\Dummy.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Drags\DragSingleScalar.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonArrow.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonColored.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonImage.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonSmall.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Core\ImguiConverter.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Buttons\Button.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Plugins\ContextualMenu.cpp" />
     <ClCompile Include="Editor\ImGui\src\ConsolePanelEditor.cpp" />
     <ClCompile Include="Editor\ImGui\src\ContentBrowserPanelEditor.cpp" />
     <ClCompile Include="Editor\Core\src\RenderPipelineEditor.cpp" />
@@ -157,6 +171,26 @@
     <ClCompile Include="Editor\ImGui\src\PlayViewPanelEditor.cpp" />
     <ClCompile Include="Editor\ImGui\src\ImGuiStyleEditor.cpp" />
     <ClCompile Include="Editor\Tools\src\FileDialogs.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Core\ImGuiManager.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Panels\Panel.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Panels\PanelTransformable.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Panels\PanelWindow.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Panels\PanelUndecorated.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Panels\PanelMenuBar.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\InputFields\InputSingleScalar.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\InputFields\InputText.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Layout\Group.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Layout\GroupCollapsable.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Layout\NewLine.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Menu\MenuItem.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Menu\MenuList.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Plots\Plot.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Plots\PlotHistogram.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Plots\PlotLines.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\RadioButton.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\RadioButtonLinker.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\Image.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\ProgressBar.cpp" />
     <ClCompile Include="Runtime\Core\src\ApplicationRuntime.cpp" />
     <ClCompile Include="Editor\Core\src\ApplicationEditor.cpp" />
     <ClCompile Include="Runtime\Core\src\LSemaphore.cpp" />
@@ -277,12 +311,54 @@
     <ClCompile Include="Runtime\Render\Core\src\UniformBuffer.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\ScriptablePass.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\SkyboxPass.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Layout\Spacing.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Sliders\SliderSingleScalar.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\Separator.cpp" />
     <ClCompile Include="Temp\TestECSEvent.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderer.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderPipeline.cpp" />
     <ClCompile Include="Editor\IO\src\YamlSerializerEditor.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Core\UIStyle.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Core\WidgetContainer.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Widget.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Layout\TreeNode.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\Text.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextClickable.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextColored.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextDisabled.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextLabelled.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextSelectable.cpp" />
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextWrapped.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\Bullet.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\CheckBox.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\ColorEdit.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\ColorPicker.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\ComboBox.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Layout\Columns.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Layout\Dummy.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragDouble.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragFloat.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragInt.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragMultipleDoubles.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragMultipleFloats.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragMultipleInts.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragMultipleScalars.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragSingleScalar.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonArrow.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonColored.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonImage.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonSmall.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Core\ImguiConverter.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Buttons\Button.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonBase.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\DataWidget.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Core\UISettings.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Plugins\ContextualMenu.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Plugins\DataDispatcher.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Plugins\DragDropTarget.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Plugins\DragDropSource.h" />
     <ClInclude Include="Editor\Core\include\EventCodeEditor.h" />
     <ClInclude Include="Editor\Core\include\EventEditor.h" />
     <ClInclude Include="Editor\ImGui\include\ConsolePanelEditor.h" />
@@ -296,10 +372,42 @@
     <ClInclude Include="Editor\ImGui\include\EditViewPanelEditor.h" />
     <ClInclude Include="Editor\ImGui\include\PlayViewPanelEditor.h" />
     <ClInclude Include="Editor\ImGui\include\ImGuiStyleEditor.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Core\TextureID.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderOrientation.h" />
     <ClInclude Include="Editor\Tools\include\FileDialogs.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Core\ImGuiManager.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Plugins\IPlugin.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Plugins\Pluginable.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Panels\Panel.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Panels\PanelTransformable.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Panels\PanelWindow.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Panels\PanelUndecorated.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Panels\PanelMenuBar.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputDouble.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputFloat.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputInt.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputMultipleDoubles.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputMultipleFloats.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputMultipleInts.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputMultipleScalars.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputSingleScalar.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputText.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Layout\Group.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Layout\GroupCollapsable.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Layout\NewLine.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Menu\MenuItem.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Menu\MenuList.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Plots\Plot.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Plots\PlotHistogram.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Plots\PlotLines.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\RadioButton.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\RadioButtonLinker.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\Image.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\ProgressBar.h" />
     <ClInclude Include="Runtime\Core\include\ApplicationRuntime.h" />
     <ClInclude Include="Editor\Core\include\ApplicationEditor.h" />
     <ClInclude Include="Runtime\Core\include\AppState.h" />
+    <ClInclude Include="Runtime\Core\include\EventCallback.h" />
     <ClInclude Include="Runtime\Core\include\LSemaphore.h" />
     <ClInclude Include="Runtime\Core\include\LThread.h" />
     <ClInclude Include="Runtime\Render\PostProcess\include\GrayPostProcess.h" />
@@ -788,10 +896,31 @@
     <ClInclude Include="Runtime\Render\Core\include\UniformBuffer.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\ScriptablePass.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\SkyboxPass.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Layout\Spacing.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderDouble.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderFloat.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderInt.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderMultipleDoubles.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderMultipleFloats.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderMultipleInts.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderMultipleScalars.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderSingleScalar.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\Separator.h" />
     <ClInclude Include="Temp\TestECSEvent.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\UniversalRenderer.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\UniversalRenderPipeline.h" />
     <ClInclude Include="Editor\IO\include\YamlSerializerEditor.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Core\UIStyle.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Core\WidgetContainer.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Widget.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Layout\TreeNode.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\Text.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextClickable.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextColored.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextDisabled.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextLabelled.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextSelectable.h" />
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextWrapped.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External\assimp\assimp\color4.inl" />
@@ -942,6 +1071,7 @@
     <None Include="External\imgui\imgui\imgui.ini" />
     <None Include="Runtime\Core\include\ClassDeclare.inl" />
     <None Include="Runtime\Core\include\ClassImplement.inl" />
+    <None Include="Runtime\Core\include\EventCallback.inl" />
     <None Include="Runtime\ECS\include\BehaviorDeclare.inl" />
     <None Include="Runtime\ECS\include\BehaviorImplement.inl" />
     <None Include="Runtime\ECS\include\Component.inl" />

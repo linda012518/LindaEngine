@@ -1,7 +1,7 @@
 #pragma once
 
 #include "RenderPipeline.h"
-#include "ImGuiContextEditor.h"
+//#include "ImGuiContextEditor.h"
 
 namespace LindaEditor
 {
@@ -13,7 +13,7 @@ namespace LindaEditor
 		virtual void Tick();
 
 	private:
-		ImGuiContextEditor _imgui;
+		//ImGuiContextEditor _imgui;
 
 	};
 }

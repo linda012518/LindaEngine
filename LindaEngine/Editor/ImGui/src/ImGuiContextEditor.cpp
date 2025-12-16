@@ -125,7 +125,7 @@ int ImGuiContextEditor::Initialize()
 	// Note: Docking and Viewports are only available in the 'docking' branch of ImGui
 	// Current version (1.92.4 WIP) is the main branch which doesn't support these features
 
-	io.Fonts->AddFontFromFileTTF("BuiltInAssets/Fonts/Opensans/OpenSans-Bold.ttf", 18.0f * 1.5f);
+	//io.Fonts->AddFontFromFileTTF("BuiltInAssets/Fonts/Opensans/OpenSans-Bold.ttf", 18.0f * 1.5f);
 	io.FontDefault = io.Fonts->AddFontFromFileTTF("BuiltInAssets/Fonts/Opensans/OpenSans-Regular.ttf", 18.0f * 1.5f);
 
 	// Setup Dear ImGui style
@@ -263,4 +263,14 @@ Ref<RenderTexture> ImGuiContextEditor::GetEditRenderTexture()
 Ref<RenderTexture> ImGuiContextEditor::GetPlayRenderTexture()
 {
 	return _playPanel->GetRenderTexture();
+}
+
+void ImGuiContextEditor::SetEditRenderTexture()
+{
+	RenderTexture::finalRT = _editPanel->GetRenderTexture();
+}
+
+void ImGuiContextEditor::SetPlayRenderTexture()
+{
+	RenderTexture::finalRT = _playPanel->GetRenderTexture();
 }

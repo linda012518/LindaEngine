@@ -273,7 +273,7 @@ void ShaderLoader::CollectProperties(std::string& tex, Ref<ShaderSourceCode> pas
 			}
 			else
 			{
-				std::cout << "MaterialManagerEditor::CollectProperties Not supported <" << type << "> yet \n" << std::endl;
+				std::cout << "ShaderLoader::CollectProperties Not supported <" << type << "> yet \n" << std::endl;
 			}
 		}
 		searchStart = matches.suffix().first;

@@ -37,7 +37,9 @@ int ApplicationRuntime::Initialize()
         return ret;
     }
 
-    _graphicContext->SetRenderPipeline(RenderPipeline::Create());
+    Ref<RenderPipeline> rp = RenderPipeline::Create();
+    rp->Initialize();
+    _graphicContext->SetRenderPipeline(rp);
 
     SceneManager::LoadScene(0);
 

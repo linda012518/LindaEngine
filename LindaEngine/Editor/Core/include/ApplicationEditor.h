@@ -1,6 +1,12 @@
 #pragma once
 
 #include "Application.h"
+#include "ImGuiContextEditor.h"
+
+namespace LindaEngine
+{
+	class RenderPipeline;
+}
 
 namespace LindaEditor
 {
@@ -12,7 +18,9 @@ namespace LindaEditor
 		void Tick();
 
 	private:
-
+		Ref<LindaEngine::RenderPipeline> _editorRP;
+		Ref<LindaEngine::RenderPipeline> _runtimeRP;
+		ImGuiContextEditor _imgui;
 	};
 }
 

@@ -1,5 +1,8 @@
 #include "PlayViewPanelEditor.h"
 #include "TextureManager.h"
+#include "Event.h"
+#include "EventCode.h"
+#include "EventSystem.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -28,6 +31,11 @@ void PlayViewPanelEditor::OnImGuiRender()
 	{
 		RenderTextureManager::DeleteImmediately(_renderTexture);
 		_renderTexture = RenderTextureManager::Get((int)viewportPanelSize.x, (int)viewportPanelSize.y, _fboSpec);
+
+		WindowResizeEvent event;
+		event.width = (int)viewportPanelSize.x;
+		event.height = (int)viewportPanelSize.y;
+		EventSystem::Dispatch(nullptr, EventCode::WindowResize, event);
 	}
 
 	ImGui::End();

@@ -11,7 +11,7 @@ using namespace LindaEngine;
 
 int ApplicationEditor::Initialize()
 {
-    state = AppState::Editor;
+    state = AppState::Loading;
 
     YamlSerializer::DeSerializeGraphicsConfig(Path::graphicsConfig);
 
@@ -36,13 +36,22 @@ int ApplicationEditor::Initialize()
         return ret;
     }
 
-    _graphicContext->SetRenderPipeline(RenderPipeline::Create());
+    module = AppModule::Editor;
+    _editorRP = RenderPipeline::Create();
+    _editorRP->Initialize();
+
+    module = AppModule::Runtime;
+    _runtimeRP = RenderPipeline::Create();
+    _runtimeRP->Initialize();
+
+    _imgui.Initialize();
 
     return ret;
 }
 
 void ApplicationEditor::Finalize()
 {
+    _imgui.Finalize();
     _graphicContext->Finalize();
     _window->Finalize();
 }
@@ -52,6 +61,16 @@ void ApplicationEditor::Tick()
     while (false == _isQuit)
     {
         _window->Tick();
+
+        _imgui.SetEditRenderTexture();
+        _editorRP->Tick();
+        _imgui.SetPlayRenderTexture();
+        _runtimeRP->Tick();
+
+        _imgui.Begin();
+        _imgui.OnImGuiRender();
+        _imgui.End();
+
         _graphicContext->Tick();
     }
 }

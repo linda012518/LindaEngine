@@ -420,6 +420,150 @@
     <ClCompile Include="Editor\Tools\src\FileDialogs.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Core\ImGuiManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Core\UIStyle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Core\WidgetContainer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Widget.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Plugins\ContextualMenu.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Panels\Panel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Panels\PanelTransformable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Panels\PanelWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Panels\PanelUndecorated.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Panels\PanelMenuBar.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Buttons\Button.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Core\ImguiConverter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonArrow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonColored.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonSmall.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonImage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Drags\DragSingleScalar.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\InputFields\InputSingleScalar.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\InputFields\InputText.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Layout\Dummy.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Layout\Group.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Layout\GroupCollapsable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Layout\NewLine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Layout\Spacing.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Layout\TreeNode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Menu\MenuItem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Menu\MenuList.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Plots\Plot.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Plots\PlotHistogram.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Plots\PlotLines.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\CheckBox.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\ColorEdit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\ColorPicker.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\ComboBox.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\RadioButton.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\RadioButtonLinker.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Sliders\SliderSingleScalar.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\Text.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextClickable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextColored.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextDisabled.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextLabelled.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextSelectable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextWrapped.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\Bullet.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\Image.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\ProgressBar.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\Separator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -1949,6 +2093,249 @@
     <ClInclude Include="Editor\Core\include\EventCodeEditor.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Core\ImGuiManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Core\UIStyle.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Core\WidgetContainer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Widget.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Core\TextureID.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Plugins\IPlugin.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Plugins\DragDropSource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Core\include\EventCallback.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Plugins\DragDropTarget.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Plugins\Pluginable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Plugins\DataDispatcher.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Plugins\ContextualMenu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Core\UISettings.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Panels\Panel.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Panels\PanelTransformable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Panels\PanelWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Panels\PanelUndecorated.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Panels\PanelMenuBar.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\DataWidget.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonBase.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Buttons\Button.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Core\ImguiConverter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonArrow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonColored.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonSmall.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Buttons\ButtonImage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragDouble.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragFloat.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragInt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragMultipleDoubles.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragMultipleFloats.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragMultipleInts.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragMultipleScalars.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Drags\DragSingleScalar.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputDouble.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputFloat.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputInt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputMultipleDoubles.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputMultipleFloats.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputMultipleInts.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputMultipleScalars.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputSingleScalar.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\InputFields\InputText.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Layout\Columns.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Layout\Dummy.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Layout\Group.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Layout\GroupCollapsable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Layout\NewLine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Layout\Spacing.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Layout\TreeNode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Menu\MenuItem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Menu\MenuList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Plots\Plot.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Plots\PlotHistogram.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Plots\PlotLines.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\CheckBox.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\ColorEdit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\ColorPicker.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\ComboBox.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\RadioButton.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\RadioButtonLinker.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderOrientation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderDouble.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderFloat.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderInt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderMultipleDoubles.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderMultipleFloats.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderMultipleInts.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderMultipleScalars.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderSingleScalar.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\Text.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextClickable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextColored.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextDisabled.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextLabelled.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextSelectable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextWrapped.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\Bullet.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\Image.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\ProgressBar.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\Separator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\glm\glm\detail\func_common.inl">
@@ -2409,6 +2796,9 @@
       <Filter>头文件</Filter>
     </None>
     <None Include="Runtime\Core\include\ClassImplement.inl">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="Runtime\Core\include\EventCallback.inl">
       <Filter>头文件</Filter>
     </None>
   </ItemGroup>

@@ -4,6 +4,7 @@ using namespace LindaEngine;
 
 bool Application::_isQuit = false;
 AppState Application::state = AppState::Loading;
+AppModule Application::module = AppModule::Runtime;
 Scope<Window> Application::_window;
 
 void Application::SetFrameRate(int rate)

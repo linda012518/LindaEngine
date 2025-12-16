@@ -5,3 +5,4 @@ using namespace LindaEngine;
 Ref<Texture> Texture::overrideTexture = nullptr;
 
 Ref<RenderTexture> RenderTexture::active = nullptr;
+Ref<RenderTexture> RenderTexture::finalRT = nullptr;

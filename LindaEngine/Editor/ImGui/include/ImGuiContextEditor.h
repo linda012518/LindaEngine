@@ -27,6 +27,9 @@ namespace LindaEditor
 		Ref<LindaEngine::RenderTexture> GetEditRenderTexture();
 		Ref<LindaEngine::RenderTexture> GetPlayRenderTexture();
 
+		void SetEditRenderTexture();
+		void SetPlayRenderTexture();
+
 	private:
 		std::vector<Ref<ImGuiPanelEditor>> _panels;
 		Ref<EditViewPanelEditor> _editPanel;

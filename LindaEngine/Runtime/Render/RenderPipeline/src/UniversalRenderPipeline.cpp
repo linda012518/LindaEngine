@@ -150,13 +150,19 @@ void UniversalRenderPipeline::Render()
         GraphicsConfig& config = GraphicsContext::graphicsConfig;
         int width = config.screenNewWidth;
         int height = config.screenNewHeight;
+        if (nullptr != RenderTexture::finalRT)
+        {
+            width = RenderTexture::finalRT->width;
+            height = RenderTexture::finalRT->height;
+        }
+
         Ref<RenderTexture> rt = camera->GetRenderTarget();
         if (rt != nullptr)
         {
             width = rt->width;
             height = rt->height;
         }
-        else if (camera->HasPostProcess())
+        else
         {
             std::vector<FramebufferTextureSpecification> fts;
 

@@ -9,7 +9,6 @@ using namespace LindaEditor;
 
 int RenderPipeline::Initialize()
 {
-    Graphic::Initialize();
     _uniformGlobal = CreateRef<UniformDataGlobal>();
     return 0;
 }
@@ -21,7 +20,7 @@ void RenderPipeline::Finalize()
 
 Ref<RenderPipeline> RenderPipeline::Create()
 {
-    if (Application::state != AppState::Editor)
+    if (Application::module != AppModule::Editor)
         return CreateRef<UniversalRenderPipeline>();
     else
         return CreateRef<RenderPipelineEditor>();
