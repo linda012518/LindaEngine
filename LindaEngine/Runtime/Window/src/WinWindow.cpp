@@ -4,6 +4,7 @@
 #include "EventSystem.h"
 #include "EventCode.h"
 #include "Event.h"
+#include "TextureManager.h"
 
 #include "imgui/imgui_impl_win32.h"
 
@@ -165,6 +166,8 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         break;
     case WM_SIZE:
     {
+        RenderTextureManager::ClearLinkScreen();
+
         RECT    rt;
         GetClientRect(_hWnd, &rt);
         int width = rt.right - rt.left;

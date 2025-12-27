@@ -69,6 +69,7 @@ namespace LindaEngine
 
 		int msaa = 1;
 		bool isCube = false;
+		bool isLinkScreen = true;
 
 		std::vector<FramebufferTextureSpecification> attachments;
 		std::vector<FramebufferTextureSpecification> colorAttachments;
@@ -79,7 +80,7 @@ namespace LindaEngine
 		static Ref<RenderTexture> active;
 		static Ref<RenderTexture> finalRT;
 	private:
-		Ref<RenderTexture> internalRT;
+		Ref<RenderTexture> internalRT;//当rt是RenderBuffer时，调用Blit需要生成对应纹理（调用者无感知）
 
 	};
 }

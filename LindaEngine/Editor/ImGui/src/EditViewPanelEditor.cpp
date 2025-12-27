@@ -28,6 +28,7 @@ void EditViewPanelEditor::OnImGuiRender()
 	if (viewportPanelSize.x > 0 && viewportPanelSize.y > 0 && (_renderTexture->width != viewportPanelSize.x || _renderTexture->height != viewportPanelSize.y))
 	{
 		RenderTextureManager::DeleteImmediately(_renderTexture);
+		RenderTextureManager::ClearLinkScreen();
 		_renderTexture = RenderTextureManager::Get((int)viewportPanelSize.x, (int)viewportPanelSize.y, _fboSpec);
 	}
 

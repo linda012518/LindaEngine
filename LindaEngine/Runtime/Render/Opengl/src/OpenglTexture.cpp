@@ -167,7 +167,7 @@ void OpenglTexture::CreateRenderTexture(Ref<RenderTexture> rt)
 
 void OpenglTexture::DeleteRenderTexture(Ref<RenderTexture> rt)
 {
-	glDeleteFramebuffers(1, &rt->nativeColorID);
+	glDeleteFramebuffers(1, &rt->nativeColorID);//这里是FBO的ID
 	glDeleteTextures((int)rt->nativeIDs.size(), rt->nativeIDs.data());
 	glDeleteTextures(1, &rt->depthNativeID);
 	glDeleteRenderbuffers((int)rt->renderBuffers.size(), rt->renderBuffers.data());
@@ -251,7 +251,7 @@ void OpenglTexture::CreateRenderTexture2D(Ref<RenderTexture> rt)
 
 		if (rt->msaa > 1)
 		{
-			CreateRenderBuffer(rt->msaa, internalFormat, rt->width, rt->height, GL_COLOR_ATTACHMENT0 + index);
+			rt->renderBuffers.push_back(CreateRenderBuffer(rt->msaa, internalFormat, rt->width, rt->height, GL_COLOR_ATTACHMENT0 + index));
 		}
 		else
 		{
@@ -280,7 +280,7 @@ void OpenglTexture::CreateRenderTexture2D(Ref<RenderTexture> rt)
 
 		if (rt->msaa > 1)
 		{
-			CreateRenderBuffer(rt->msaa, internalFormat, rt->width, rt->height, GetRenderTextureDepthAttachment(tex.colorFormat));
+			rt->renderBuffers.push_back(CreateRenderBuffer(rt->msaa, internalFormat, rt->width, rt->height, GetRenderTextureDepthAttachment(tex.colorFormat)));
 		}
 		else
 		{

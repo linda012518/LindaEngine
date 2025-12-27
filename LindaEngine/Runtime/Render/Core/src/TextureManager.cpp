@@ -67,12 +67,12 @@ void TextureManager::Bind(Ref<Texture> texture, int channel, int renderTextureCo
     TextureDriver::Bind(texture, channel, renderTextureColorIndex);
 }
 
-Ref<RenderTexture> RenderTextureManager::Get(int width, int height, std::vector<FramebufferTextureSpecification>& fts, int msaa, int mipCount, bool isCube, bool isGammaCorrection, int anisotropy)
+Ref<RenderTexture> RenderTextureManager::Get(int width, int height, std::vector<FramebufferTextureSpecification>& fts, int msaa, int mipCount, bool isCube, bool isGammaCorrection, int anisotropy, bool linkScreen)
 {
     for (auto& rt : _renderTextures)
     {
         if (rt->width == width && rt->height == height && rt->isCube == isCube && rt->isGammaCorrection == isGammaCorrection &&
-            rt->msaa == msaa && rt->mipmapCount == mipCount && rt->anisotropy == anisotropy)
+            rt->msaa == msaa && rt->mipmapCount == mipCount && rt->anisotropy == anisotropy && rt->isLinkScreen == linkScreen)
         {
             if (false == CompareAttachments(fts, rt->attachments))
                 continue;
@@ -88,6 +88,7 @@ Ref<RenderTexture> RenderTextureManager::Get(int width, int height, std::vector<
     newRT->width = width;
     newRT->height = height;
     newRT->isCube = isCube;
+    newRT->isLinkScreen = linkScreen;
     newRT->isGammaCorrection = isGammaCorrection;
     newRT->msaa = msaa;
     newRT->mipmapCount = mipCount;
@@ -107,10 +108,10 @@ Ref<RenderTexture> RenderTextureManager::Get(int width, int height, std::vector<
     return newRT;
 }
 
-Ref<RenderTexture> RenderTextureManager::Get(int width, int height, FramebufferTextureSpecification& fts, int msaa, int mipCount, bool isCube, bool isGammaCorrection, int anisotropy)
+Ref<RenderTexture> RenderTextureManager::Get(int width, int height, FramebufferTextureSpecification& fts, int msaa, int mipCount, bool isCube, bool isGammaCorrection, int anisotropy, bool linkScreen)
 {
     std::vector<FramebufferTextureSpecification> array { fts };
-    return Get(width, height, array, msaa, mipCount, isCube, isGammaCorrection, anisotropy);
+    return Get(width, height, array, msaa, mipCount, isCube, isGammaCorrection, anisotropy, linkScreen);
 }
 
 Ref<RenderTexture> RenderTextureManager::Get(Ref<RenderTexture> src)
@@ -160,15 +161,36 @@ void RenderTextureManager::Release(Ref<RenderTexture> rt)
 void RenderTextureManager::DeleteImmediately(Ref<RenderTexture> rt)
 {
     TextureDriver::DeleteRenderTexture(rt);
+    if (rt->internalRT != nullptr)
+    {
+        TextureDriver::DeleteRenderTexture(rt->internalRT);
+        rt->internalRT = nullptr;
+    }
+    rt = nullptr;
 }
 
 void RenderTextureManager::Clear() 
 { 
     for (auto& rt : _renderTextures)
     {
-        TextureDriver::DeleteRenderTexture(rt);
+        DeleteImmediately(rt);
     }
     _renderTextures.clear(); 
+}
+
+void RenderTextureManager::ClearLinkScreen()
+{
+    for (auto it = _renderTextures.begin(); it != _renderTextures.end();) 
+    {
+        Ref<RenderTexture> rt = *it;
+        if (rt->isLinkScreen == true) {
+            DeleteImmediately(rt);
+            it = _renderTextures.erase(it);
+        }
+        else {
+            ++it;
+        }
+    }
 }
 
 void RenderTextureManager::SetRenderTarget(Ref<RenderTexture> texture)
