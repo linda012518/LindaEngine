@@ -30,37 +30,29 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
 	float lineHeight = GImGui->Font->LegacySize + GImGui->Style.FramePadding.y * 2.0f;
 	ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
 
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
-	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.26f, 0.26f, 0.26f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.36f, 0.36f, 0.36f, 1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.56f, 0.56f, 0.56f, 1.0f });
 	ImGui::PushFont(boldFont);
 	if (ImGui::Button("X", buttonSize))
 		values.x = resetValue;
 	ImGui::PopFont();
-	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
 	ImGui::DragFloat("##X", &values.x, 0.1f);
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
-	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
 	ImGui::PushFont(boldFont);
 	if (ImGui::Button("Y", buttonSize))
 		values.y = resetValue;
 	ImGui::PopFont();
-	ImGui::PopStyleColor(3);
 
 	ImGui::SameLine();
 	ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
 
-	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
-	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
 	ImGui::PushFont(boldFont);
 	if (ImGui::Button("Z", buttonSize))
 		values.z = resetValue;
@@ -82,16 +74,46 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
 template<typename T, typename UIFunction>
 static void DrawComponent(T* component, Entity* entity, UIFunction uiFunction)
 {
-	const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_FramePadding;
+	bool isTransform = std::is_same<Transform, T>::value;
 
+	ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, 0);
+	
+	ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(1.0f, 1.0f, 1.0f, 1.00f));
+	if (isTransform)
+		ImGui::BeginDisabled();
+
+	std::string go = "##" + std::string((const char *)component);
+	bool ret = true;
+	ImGui::Checkbox(go.c_str(), &ret);
+
+	ImGui::PopStyleVar(1);
+	ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, 1);
+
+	ImGui::SameLine();
+	ImGui::Spacing();
+	ImGui::SameLine();
+
+	if (isTransform)
+		ImGui::EndDisabled();
+	ImGui::PopStyleColor(1);
+
+	ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.26f, 0.26f, 0.26f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.36f, 0.36f, 0.36f, 1.00f));
+	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.56f, 0.56f, 0.56f, 1.00f));
+
+	ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
+	treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_SpanAvailWidth;
 	if (ImGui::TreeNodeEx((void*)component, treeNodeFlags, component->GetClassName().c_str()))
 	{
 		uiFunction(component);
 		ImGui::TreePop();
 	}
 
+	ImGui::PopStyleVar(1);
+	ImGui::PopStyleColor(3);
+
 	bool removeComponent = false;
-	if (!std::is_same<Transform, T>::value)
+	if (false == isTransform)
 	{
 		ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));       // 菜单栏背景
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));            // 文本颜色
@@ -117,6 +139,7 @@ static void DrawComponent(T* component, Entity* entity, UIFunction uiFunction)
 
 	if (removeComponent)
 		entity->RemoveComponentImmediately(component);
+
 }
 
 DYNAMIC_CREATE_CLASS(InspectorPanelEditor, ImGuiPanelEditor)
@@ -153,6 +176,10 @@ void InspectorPanelEditor::OnEvent(IEventHandler* sender, int eventCode, Event& 
 
 void InspectorPanelEditor::DrawComponents()
 {
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+	ImGui::PopStyleColor(1);
+
 	std::vector<Ref<Component>>&  coms = _selectionEntity->GetAllComponent();
 	for (auto& go : coms)
 	{
@@ -161,12 +188,13 @@ void InspectorPanelEditor::DrawComponents()
 		{
 			DrawComponent<Transform>(pointer, _selectionEntity, [](auto& com)
 			{
+				//ImGui::Separator();
 				glm::vec3& pos = com->GetLocalPosition();
 				DrawVec3Control("Position", pos);
-				ImGui::Separator();
+				ImGui::Spacing();
 				glm::vec3& angles = com->GetLocalEulerAngles();
 				DrawVec3Control("Angles", angles);
-				ImGui::Separator();
+				ImGui::Spacing();
 				glm::vec3& scale = com->GetLocalScale();
 				DrawVec3Control("Scale", scale, 1.0f);
 			});
@@ -177,7 +205,9 @@ void InspectorPanelEditor::DrawComponents()
 			{
 			});
 		}
-
+		ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+		ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+		ImGui::PopStyleColor(1);
 	}
 
 }

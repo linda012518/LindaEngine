@@ -249,21 +249,14 @@ void HierarchyPanelEditor::DrawBlankAreaDropTarget()
 {
 	if (false == _isDrag)
 		return;
-
-	// 添加一个覆盖整个窗口的透明拖放目标
-	// 首先保存当前光标位置
-	ImVec2 cursorPos = ImGui::GetCursorPos();
-
-	// 将光标移到窗口左上角
-	ImGui::SetCursorPos(ImVec2(0, 0));
-
-	// 创建一个覆盖整个窗口的不可见按钮
-	ImGui::InvisibleButton("##FullWindowDropTarget", ImGui::GetWindowSize());
-
+	
 	// 为这个按钮添加拖放目标
-	if (ImGui::BeginDragDropTarget())
+	if (ImGui::BeginDragDropTargetCustom(ImGui::GetCurrentWindow()->WorkRect, ImGui::GetID("##FullWindowDropTarget")))
 	{
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
+		ImGuiDragDropFlags target_flags = 0;
+		target_flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG", target_flags))
 		{
 			// 单个实体拖拽到空白区域
 			Entity* draggedEntity = *(Entity**)payload->Data;
@@ -273,7 +266,7 @@ void HierarchyPanelEditor::DrawBlankAreaDropTarget()
 			}
 			_isDrag = false;
 		}
-		else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG_MULTI"))
+		else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG_MULTI", target_flags))
 		{
 			// 多个实体拖拽到空白区域
 			int count = payload->DataSize / sizeof(Entity*);
@@ -291,9 +284,6 @@ void HierarchyPanelEditor::DrawBlankAreaDropTarget()
 
 		ImGui::EndDragDropTarget();
 	}
-
-	// 恢复光标位置
-	ImGui::SetCursorPos(cursorPos);
 }
 
 void HierarchyPanelEditor::DragEntitys(Entity* entity)
