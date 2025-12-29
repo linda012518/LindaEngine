@@ -564,6 +564,12 @@
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\Separator.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\ScriptableRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Core\src\UniversalRendererEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -2334,6 +2340,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\Separator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\ScriptableRenderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Core\include\UniversalRendererEditor.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

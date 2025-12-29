@@ -51,7 +51,20 @@ void RendererSystem::Clear()
 
 	_drawables.clear();
 	_tempRenderables.clear();
+
+	std::vector<Renderer*> temp;
+
+	for (auto& com : _components) {
+		if (false == com->GetEntity().GetDontDestory())
+			continue;
+		temp.push_back(com);
+	}
+
 	_components.clear();
+
+	for (auto& com : temp) {
+		_components.push_back(com);
+	}
 }
 
 void RendererSystem::DrawRenderers(Camera* camera, DrawingSettings* settings)

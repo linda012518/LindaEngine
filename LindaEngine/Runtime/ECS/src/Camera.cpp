@@ -37,13 +37,14 @@ Camera::Camera(Entity& entity, bool enable) : Component(entity, enable)
 
 	_viewDirty = true;
 	_projectDirty = true;
+	_renderTextureDirty = false;
 
 	_cameraType = CameraType::None;
 	_clearType = CameraClearType::Skybox;
 	_clearColor = glm::vec4(0.0);
 	_depth = -1;
 	_msaa = 1;
-	_layerMask = 0xFFFFFFFF;
+	_layerMask = 0;
 	_renderTexture = nullptr;
 }
 
@@ -103,6 +104,12 @@ void Camera::SetNearFar(float near, float far, float dontCare)
 		_zNear = near;
 	if (far != dontCare)
 		_zFar = far;
+}
+
+void Camera::SetRenderTarget(Ref<RenderTexture> target)
+{
+	_renderTexture = target;
+	_renderTextureDirty = true;
 }
 
 bool Camera::Serialize()
@@ -204,6 +211,16 @@ PerspectiveCamera::~PerspectiveCamera()
 
 void PerspectiveCamera::MakeProjectionMatrix()
 {
+	if (true == _renderTextureDirty)
+	{
+		_renderTextureDirty = false;
+		_projectDirty = true;
+		if (nullptr != _renderTexture)
+			_aspectRatio = (float)_renderTexture->width / (float)_renderTexture->height;
+		else
+			_aspectRatio = (float)GraphicsContext::graphicsConfig.screenNewWidth / (float)GraphicsContext::graphicsConfig.screenNewHeight;
+	}
+
 	if (false == _projectDirty)
 		return;
 
@@ -243,10 +260,12 @@ bool PerspectiveCamera::Deserialize(YAML::Node& node)
 
 void PerspectiveCamera::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
 {
-	//TODO 待删除，不应该每个相机关心这个事件
-	WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
-	_aspectRatio = (float)wre.width / (float)wre.height;
-	_projectDirty = true;
+	if (nullptr == _renderTexture && eventCode == EventCode::WindowResize)
+	{
+		WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
+		_aspectRatio = (float)wre.width / (float)wre.height;
+		_projectDirty = true;
+	}
 }
 
 /////////////////////////////////////////////////////////////////////

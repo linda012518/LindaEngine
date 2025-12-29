@@ -40,7 +40,19 @@ void TransformSystem::Clear()
 	if (false == _components.empty())
 		static_assert(true, "TransformSystem is not empty, Check destruction process.");
 
+	std::vector<Transform*> temp;
+
+	for (auto& com : _components) {
+		if (false == com->GetEntity().GetDontDestory())
+			continue;
+		temp.push_back(com);
+	}
+
 	_components.clear();
+
+	for (auto& com : temp) {
+		_components.push_back(com);
+	}
 }
 
 Transform* TransformSystem::Get(std::string& uuid)

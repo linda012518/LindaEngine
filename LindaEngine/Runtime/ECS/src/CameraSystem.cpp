@@ -39,7 +39,19 @@ void CameraSystem::Clear()
 	if (false == _components.empty())
 		static_assert(true, "CameraSystem is not empty, Check destruction process.");
 
+	std::vector<Camera*> temp;
+
+	for (auto& com : _components) {
+		if (false == com->GetEntity().GetDontDestory())
+			continue;
+		temp.push_back(com);
+	}
+
 	_components.clear();
+
+	for (auto& com : temp) {
+		_components.push_back(com);
+	}
 }
 
 const std::vector<Camera*> CameraSystem::GetActiveCameraList()
@@ -47,6 +59,8 @@ const std::vector<Camera*> CameraSystem::GetActiveCameraList()
 	std::vector<Camera*> list;
 
 	for (auto& com : _components) {
+		if (com->GetEntity().GetName() == "EditorModeMainCamera")
+			continue;
 		if (com->IsEnable() == false)
 			continue;
 		list.push_back(com);

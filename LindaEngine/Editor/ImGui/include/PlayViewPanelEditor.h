@@ -17,6 +17,6 @@ namespace LindaEditor
 
 	private:
 		Ref<LindaEngine::RenderTexture> _renderTexture;
-		LindaEngine::FramebufferTextureSpecification _fboSpec;
+		std::vector<LindaEngine::FramebufferTextureSpecification> _fboSpecs;
 	};
 }

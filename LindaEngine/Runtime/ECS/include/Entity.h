@@ -36,7 +36,8 @@ namespace LindaEngine
 
 		void SetUUID(std::string& uuid) { _uuid = uuid; }
 		std::string& GetUUID() { return _uuid; }
-
+		void SetDontDestory(bool value) { _isDontDestory = value; }
+		bool GetDontDestory() { return _isDontDestory; }
 		void SetIndex(int index) { _hierarchyIndex = index; }
 		int GetIndex() { return _hierarchyIndex; }
 
@@ -81,6 +82,7 @@ namespace LindaEngine
 		std::vector<Ref<Component>> _components;
 		std::vector<Component*> _dirtyComponents;
 		std::vector<Behavior*> _behaviors;
+		bool _isDontDestory;
 		int _hierarchyIndex;
 	};
 }

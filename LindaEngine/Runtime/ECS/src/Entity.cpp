@@ -21,6 +21,7 @@ Entity::Entity(const char* name, bool active)
 	_active = active;
 	_activeDirty = false;
 	_uuid = UUID::Get();
+	_isDontDestory = false;
 	_hierarchyIndex = 0;
 
 	Ref<Transform> c = CreateRef<Transform>(*this);
@@ -181,6 +182,9 @@ bool Entity::Serialize()
 	out << YAML::Key << "Layer" << YAML::Value << _layer;
 	out << YAML::Key << "ID" << YAML::Value << _uuid;
 	out << YAML::Key << "Active" << YAML::Value << _active;
+	if (_isDontDestory)
+		out << YAML::Key << "IsDontDestory" << YAML::Value << _isDontDestory;
+	
 	out << YAML::Key << "Components";
 	out << YAML::Value << YAML::BeginSeq;
 	for (auto& com : _components)
@@ -195,12 +199,16 @@ bool Entity::Serialize()
 
 bool Entity::Deserialize(YAML::Node& node)
 {
-	auto components = node["Components"];
-	if (!components)
-		return false;
-
 	_uuid = node["ID"].as<std::string>();
 	_layer = node["Layer"].as<int>();
+
+	auto sign = node["IsDontDestory"];
+	if (sign)
+		_isDontDestory = node["IsDontDestory"].as<bool>();
+
+	auto components = node["Components"];
+	if (!components)
+		return true;
 
 	for (auto com : components)
 	{

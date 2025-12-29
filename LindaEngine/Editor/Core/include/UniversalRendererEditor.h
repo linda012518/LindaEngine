@@ -2,9 +2,9 @@
 
 #include "ScriptableRenderer.h"
 
-namespace LindaEngine
+namespace LindaEditor
 {
-	class UniversalRenderer : public ScriptableRenderer
+	class UniversalRendererEditor : public LindaEngine::ScriptableRenderer
 	{
 	protected:
 		void CollectRenderPass();

@@ -60,6 +60,9 @@ namespace LindaEngine
 		static void AddOnDestroy(Behavior* behavior, bool none);
 
 	private:
+		static void ClearFunctionArray(std::vector<Behavior*> array);
+
+	private:
 		static std::vector<Behavior*> _awakes;
 		static std::vector<Behavior*> _onEnables;
 		static std::vector<Behavior*> _starts;

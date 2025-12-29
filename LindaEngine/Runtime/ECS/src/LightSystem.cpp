@@ -44,7 +44,19 @@ void LightSystem::Clear()
 	if (false == _components.empty())
 		static_assert(true, "LightSystem is not empty, Check destruction process.");
 
+	std::vector<Light*> temp;
+
+	for (auto& com : _components) {
+		if (false == com->GetEntity().GetDontDestory())
+			continue;
+		temp.push_back(com);
+	}
+
 	_components.clear();
+
+	for (auto& com : temp) {
+		_components.push_back(com);
+	}
 }
 
 const std::vector<Light*> LightSystem::GetLightList(Camera* camera)

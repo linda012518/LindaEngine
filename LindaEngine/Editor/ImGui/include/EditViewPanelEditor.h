@@ -19,7 +19,6 @@ namespace LindaEditor
 
 	private:
 		Ref<LindaEngine::RenderTexture> _renderTexture;
-		//glm::vec2 _viewportSize;
-		LindaEngine::FramebufferTextureSpecification _fboSpec;
+		std::vector<LindaEngine::FramebufferTextureSpecification> _fboSpecs;
 	};
 }

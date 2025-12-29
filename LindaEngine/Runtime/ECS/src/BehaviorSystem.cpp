@@ -1,5 +1,6 @@
 #include "BehaviorSystem.h"
 #include "Behavior.h"
+#include "Entity.h"
 
 //#define ADDTOLIST(fun, array) if (behavior->fun == false) array.push_back(behavior);
 
@@ -89,23 +90,41 @@ void BehaviorSystem::Remove(Behavior* behavior)
 
 void BehaviorSystem::Clear()
 {
-	_awakes.clear();
-	_onEnables.clear();
-	_starts.clear();
-	_fixUpdates.clear();
-	_onTriggerEvents.clear();
-	_onCollisionEvents.clear();
-	_onMouseEvents.clear();
-	_updates.clear();
-	_lateUpdates.clear();
-	_onPreCulls.clear();
-	_onPreRenders.clear();
-	_onRenderObjects.clear();
-	_onPostRenders.clear();
-	_onApplicationPauses.clear();
-	_onApplicationQuits.clear();
-	_onDisables.clear();
-	_onDestroys.clear();
+	ClearFunctionArray(_awakes);
+	ClearFunctionArray(_onEnables);
+	ClearFunctionArray(_starts);
+	ClearFunctionArray(_fixUpdates);
+	ClearFunctionArray(_onTriggerEvents);
+	ClearFunctionArray(_onCollisionEvents);
+	ClearFunctionArray(_onMouseEvents);
+	ClearFunctionArray(_updates);
+	ClearFunctionArray(_lateUpdates);
+	ClearFunctionArray(_onPreCulls);
+	ClearFunctionArray(_onPreRenders);
+	ClearFunctionArray(_onRenderObjects);
+	ClearFunctionArray(_onPostRenders);
+	ClearFunctionArray(_onApplicationPauses);
+	ClearFunctionArray(_onApplicationQuits);
+	ClearFunctionArray(_onDisables);
+	ClearFunctionArray(_onDestroys);
+
+	//_awakes.clear();
+	//_onEnables.clear();
+	//_starts.clear();
+	//_fixUpdates.clear();
+	//_onTriggerEvents.clear();
+	//_onCollisionEvents.clear();
+	//_onMouseEvents.clear();
+	//_updates.clear();
+	//_lateUpdates.clear();
+	//_onPreCulls.clear();
+	//_onPreRenders.clear();
+	//_onRenderObjects.clear();
+	//_onPostRenders.clear();
+	//_onApplicationPauses.clear();
+	//_onApplicationQuits.clear();
+	//_onDisables.clear();
+	//_onDestroys.clear();
 }
 
 void BehaviorSystem::Finalize()
@@ -191,5 +210,19 @@ ADDTOLIST(OnApplicationQuit, _onApplicationQuits);
 ADDTOLIST(OnDisable, _onDisables);
 ADDTOLIST(OnDestroy, _onDestroys);
 
+void BehaviorSystem::ClearFunctionArray(std::vector<Behavior*> array)
+{
+	std::vector<Behavior*> temp;
 
+	for (auto& com : array) {
+		if (false == com->GetEntity().GetDontDestory())
+			continue;
+		temp.push_back(com);
+	}
 
+	array.clear();
+
+	for (auto& com : temp) {
+		array.push_back(com);
+	}
+}

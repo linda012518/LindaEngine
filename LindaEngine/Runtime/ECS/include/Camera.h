@@ -63,7 +63,7 @@ namespace LindaEngine
 		void SetMSAA(int msaa) { _msaa = msaa; }
 		void SetLayerMask(int layer) { _layerMask = layer; }
 		void SetHDR(bool hdr) { _hdrEnable = hdr; }
-		void SetRenderTarget(Ref<RenderTexture> target) { _renderTexture = target; }
+		void SetRenderTarget(Ref<RenderTexture> target);
 		void SetClearColor(glm::vec4& color) { _clearColor = color; }
 
 		bool Serialize();
@@ -88,6 +88,7 @@ namespace LindaEngine
 
 		bool _viewDirty;
 		bool _projectDirty;
+		bool _renderTextureDirty;
 
 		CameraType _cameraType;
 		glm::vec4 _clearColor;

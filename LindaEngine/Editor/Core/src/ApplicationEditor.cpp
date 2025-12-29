@@ -1,10 +1,13 @@
 #include "ApplicationEditor.h"
 #include "YamlSerializer.h"
 #include "Path.h"
+#include "ComponentSystem.h"
+#include "BehaviorSystem.h"
 #include "Timestamp.h"
 #include "LThread.h"
 #include "RenderPipeline.h"
 #include "SceneManagerEditor.h"
+#include "SceneManager.h"
 
 using namespace LindaEditor;
 using namespace LindaEngine;
@@ -53,25 +56,68 @@ void ApplicationEditor::Finalize()
 {
     _imgui.Finalize();
     _graphicContext->Finalize();
+    ComponentSystem::Finalize();
+    BehaviorSystem::Finalize();
     _window->Finalize();
 }
 
 void ApplicationEditor::Tick()
 {
+    Timestamp::Initialize();
+    state = AppState::Running;
+
+    double currentInterval = 100.0;
+
     while (false == _isQuit)
     {
+        currentInterval += Timestamp::GetDeltaMilliSecond();
+        Timestamp::Tick();
+        if (currentInterval < _frameInterval)
+        {
+            LThread::Sleep(1);
+            continue;
+        }
+        currentInterval = 0.0;
+
+        SceneManager::Tick();
+        BehaviorSystem::DoAwake();
+        BehaviorSystem::DoOnEnable();
+        BehaviorSystem::DoStart();
+
+        BehaviorSystem::DoFixUpdate();
+        BehaviorSystem::DoOnTriggerEvent();
+        BehaviorSystem::DoOnCollisionEvent();
+
         _window->Tick();
+
+        BehaviorSystem::DoOnMouseEvent();
+        ComponentSystem::Tick();
+        BehaviorSystem::DoUpdate();
+        BehaviorSystem::DoLateUpdate();
+
+        //BehaviorSystem::OnPreCull();
+        BehaviorSystem::DoOnPreRender();
+        //BehaviorSystem::OnRenderObject();
+
+        _imgui.Begin();
+        _imgui.OnImGuiRender();
 
         _imgui.SetEditRenderTexture();
         _editorRP->Tick();
         _imgui.SetPlayRenderTexture();
         _runtimeRP->Tick();
 
-        _imgui.Begin();
-        _imgui.OnImGuiRender();
         _imgui.End();
 
+
         _graphicContext->Tick();
+
+        BehaviorSystem::DoOnPostRender();
+        BehaviorSystem::DoOnApplicationPause();
+        BehaviorSystem::DoOnApplicationQuit();
+        BehaviorSystem::DoOnDisable();
+        BehaviorSystem::DoOnDestroy();
+        BehaviorSystem::Tick();
     }
 }
 

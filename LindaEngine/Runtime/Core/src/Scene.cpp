@@ -85,16 +85,25 @@ void Scene::DestroyEntityIncludeChild(Entity* entity)
 
 void Scene::Destroy()
 {
+	std::vector<Ref<Entity>> temp;
+
 	for (auto& entity : _entitys)
 	{
+		if (entity->GetDontDestory())
+		{
+			temp.push_back(entity);
+			continue;
+		}
 		entity->Destroy();
 	}
 	_entitys.clear();
 	_index = -1;
 	_path = "";
 
-	BehaviorSystem::Clear();
-	ComponentSystem::Finalize();
+	for (auto& entity : temp)
+	{
+		_entitys.push_back(entity);
+	}
 }
 
 void Scene::SetSkyboxMaterial(Ref<Material> material)

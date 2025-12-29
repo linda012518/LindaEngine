@@ -1,10 +1,16 @@
 #pragma once
 
 #include "RenderPipeline.h"
-//#include "ImGuiContextEditor.h"
+#include "UniversalRendererEditor.h"
+
+namespace LindaEngine
+{
+	class Camera;
+}
 
 namespace LindaEditor
 {
+
 	class RenderPipelineEditor : public LindaEngine::RenderPipeline
 	{
 	public:
@@ -13,7 +19,13 @@ namespace LindaEditor
 		virtual void Tick();
 
 	private:
-		//ImGuiContextEditor _imgui;
+		void SetupShaderParameters(LindaEngine::Camera* camera);
+		void SetupLightListShaderParameters(LindaEngine::Camera* camera, LindaEngine::UniformDataGlobal::Data& block);
+		void SetupCameraShaderParameters(LindaEngine::Camera* camera, LindaEngine::UniformDataGlobal::Data& block);
+		void Render();
+
+	private:
+		UniversalRendererEditor _urpEditor;
 
 	};
 }

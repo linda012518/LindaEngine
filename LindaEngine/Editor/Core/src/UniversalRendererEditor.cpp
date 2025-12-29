@@ -1,12 +1,13 @@
-#include "UniversalRenderer.h"
+#include "UniversalRendererEditor.h"
 #include "Settings.h"
 #include "SkyboxPass.h"
 #include "DrawObjectsPass.h"
 #include "PostProcessPasses.h"
 
+using namespace LindaEditor;
 using namespace LindaEngine;
 
-void UniversalRenderer::CollectRenderPass()
+void UniversalRendererEditor::CollectRenderPass()
 {
     AddRenderPass(CreateRef<SkyboxPass>());
     AddRenderPass(CreateRef<PostProcessPass>());
