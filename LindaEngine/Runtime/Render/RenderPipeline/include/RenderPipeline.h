@@ -16,6 +16,6 @@ namespace LindaEngine
 		static Ref<RenderPipeline> Create();
 
 	protected:
-		Ref<UniformDataGlobal> _uniformGlobal;
+		static Ref<UniformDataGlobal> _uniformGlobal;
 	};
 }

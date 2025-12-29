@@ -19,6 +19,7 @@ int RenderPipelineEditor::Initialize()
 {
     _entity.SetDontDestory(true);
     _activeCamera = _entity.AddComponent<PerspectiveCamera>();
+    _activeCamera->GetTransform()->SetWorldPosition(glm::vec3(0.0f, 0.0f, 3.0f));
     _entity.AddComponent<OrthoCamera>();
 
     RenderPipeline::Initialize();

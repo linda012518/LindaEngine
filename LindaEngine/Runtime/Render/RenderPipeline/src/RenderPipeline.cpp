@@ -7,6 +7,8 @@
 using namespace LindaEngine;
 using namespace LindaEditor;
 
+Ref<UniformDataGlobal> RenderPipeline::_uniformGlobal;
+
 int RenderPipeline::Initialize()
 {
     _uniformGlobal = CreateRef<UniformDataGlobal>();

@@ -224,14 +224,14 @@ void ImGuiContextEditor::OnImGuiRender()
 		go->OnImGuiRender();
 	}
 
-	// 显示Demo窗口 - 使用&show_demo来允许关闭窗口
-	static bool show_demo = true;
-	if (show_demo)
-	{
-		// 设置窗口默认停靠到停靠空间（仅在首次使用时）
-		ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
-		ImGui::ShowDemoWindow(&show_demo);
-	}
+	//// 显示Demo窗口 - 使用&show_demo来允许关闭窗口
+	//static bool show_demo = true;
+	//if (show_demo)
+	//{
+	//	// 设置窗口默认停靠到停靠空间（仅在首次使用时）
+	//	ImGui::SetNextWindowDockID(dockspace_id, ImGuiCond_FirstUseEver);
+	//	ImGui::ShowDemoWindow(&show_demo);
+	//}
 }
 
 void ImGuiContextEditor::AddPanel()
