@@ -191,6 +191,7 @@
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\RadioButtonLinker.cpp" />
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\Image.cpp" />
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\ProgressBar.cpp" />
+    <ClCompile Include="Editor\Core\src\EventSystemEditor.cpp" />
     <ClCompile Include="Runtime\Core\src\ApplicationRuntime.cpp" />
     <ClCompile Include="Editor\Core\src\ApplicationEditor.cpp" />
     <ClCompile Include="Runtime\Core\src\LSemaphore.cpp" />
@@ -406,6 +407,7 @@
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\RadioButtonLinker.h" />
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\Image.h" />
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\ProgressBar.h" />
+    <ClInclude Include="Editor\Core\include\EventSystemEditor.h" />
     <ClInclude Include="Runtime\Core\include\ApplicationRuntime.h" />
     <ClInclude Include="Editor\Core\include\ApplicationEditor.h" />
     <ClInclude Include="Runtime\Core\include\AppState.h" />

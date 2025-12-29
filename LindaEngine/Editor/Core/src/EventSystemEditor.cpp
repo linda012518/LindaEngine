@@ -1,13 +1,12 @@
-#include "EventSystem.h"
+#include "EventSystemEditor.h"
 #include "LObject.h"
-#include "Entity.h"
-#include "Component.h"
 
 using namespace LindaEngine;
+using namespace LindaEditor;
 
-std::unordered_map<int, std::list<IEventHandler*>> EventSystem::_eventMap;
+std::unordered_map<int, std::list<IEventHandler*>> EventSystemEditor::_eventMap;
 
-void EventSystem::Bind(int code, IEventHandler* obj)
+void EventSystemEditor::Bind(int code, IEventHandler* obj)
 {
     auto it1 = _eventMap.find(code);
     if (it1 != _eventMap.end())
@@ -28,7 +27,7 @@ void EventSystem::Bind(int code, IEventHandler* obj)
     }
 }
 
-void EventSystem::Unbind(int code, IEventHandler* obj)
+void EventSystemEditor::Unbind(int code, IEventHandler* obj)
 {
     auto it1 = _eventMap.find(code);
     if (it1 == _eventMap.end())
@@ -43,7 +42,7 @@ void EventSystem::Unbind(int code, IEventHandler* obj)
     }
 }
 
-void EventSystem::Dispatch(IEventHandler* sender, int code, Event& eventData)
+void EventSystemEditor::Dispatch(IEventHandler* sender, int code, Event& eventData)
 {
     auto itr = _eventMap.find(code);
     if (itr == _eventMap.end())
@@ -59,23 +58,7 @@ void EventSystem::Dispatch(IEventHandler* sender, int code, Event& eventData)
     }
 }
 
-void EventSystem::Clear()
+void EventSystemEditor::Clear()
 {
-    std::unordered_map<int, std::list<IEventHandler*>> temp = _eventMap;
-
     _eventMap.clear();
-
-    for (auto& dic : temp)
-    {
-        for (auto& obj : dic.second)
-        {
-            Entity* entity = dynamic_cast<Entity*>(obj);
-            if (nullptr != entity && entity->GetDontDestory())
-                Bind(dic.first, obj);
-
-            Component* com = dynamic_cast<Component*>(obj);
-            if (nullptr != com && com->GetEntity().GetDontDestory())
-                Bind(dic.first, obj);
-        }
-    }
 }

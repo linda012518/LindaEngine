@@ -1,5 +1,5 @@
 #include "InspectorPanelEditor.h"
-#include "EventSystem.h"
+#include "EventSystemEditor.h"
 #include "Entity.h"
 #include "EventCodeEditor.h"
 #include "glm/glm.hpp"
@@ -146,7 +146,7 @@ DYNAMIC_CREATE_CLASS(InspectorPanelEditor, ImGuiPanelEditor)
 
 InspectorPanelEditor::InspectorPanelEditor()
 {
-	EventSystem::BindEditor(EventCodeEditor::SwitchSelectEntity, this);
+	EventSystemEditor::Bind(EventCodeEditor::SwitchSelectEntity, this);
 }
 
 void InspectorPanelEditor::OnImGuiRender()

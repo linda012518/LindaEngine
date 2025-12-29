@@ -570,6 +570,9 @@
     <ClCompile Include="Editor\Core\src\UniversalRendererEditor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\Core\src\EventSystemEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -2346,6 +2349,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Editor\Core\include\UniversalRendererEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\Core\include\EventSystemEditor.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

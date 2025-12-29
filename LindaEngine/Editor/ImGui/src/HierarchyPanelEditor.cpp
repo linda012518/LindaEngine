@@ -4,7 +4,7 @@
 #include "Scene.h"
 #include "NodeEditor.h"
 #include "Transform.h"
-#include "EventSystem.h"
+#include "EventSystemEditor.h"
 #include "EventEditor.h"
 #include "EventCodeEditor.h"
 
@@ -436,7 +436,7 @@ void HierarchyPanelEditor::SelectNone()
 
 	SwitchSelectEntityEditor ssee;
 	ssee.selectionEntity = nullptr;
-	EventSystem::DispatchEditor(nullptr, EventCodeEditor::SwitchSelectEntity, ssee);
+	EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchSelectEntity, ssee);
 }
 
 void HierarchyPanelEditor::SelectSingle()
@@ -447,6 +447,6 @@ void HierarchyPanelEditor::SelectSingle()
 
 	SwitchSelectEntityEditor ssee;
 	ssee.selectionEntity = _selectionEntity;
-	EventSystem::DispatchEditor(nullptr, EventCodeEditor::SwitchSelectEntity, ssee);
+	EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchSelectEntity, ssee);
 }
 
