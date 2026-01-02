@@ -83,8 +83,6 @@ void OpenglTexture::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
 	std::string temp = Material::overrideLightMode;
 	Material::overrideLightMode = "Color";
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, src->nativeColorID);
 	for (unsigned int i = 0; i < 6; ++i)
 	{
 		material->SetMat4("viewProjection", camera->GetVPMatrix(i));
@@ -93,6 +91,13 @@ void OpenglTexture::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		MeshManager::GetSkybox()->Draw();
 	}
+
+	if (dest->mipmapCount > 1)
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, dest->nativeColorID);
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	}
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDeleteFramebuffers(1, &rt->nativeColorID);
 	glDeleteRenderbuffers((int)rt->renderBuffers.size(), rt->renderBuffers.data());
