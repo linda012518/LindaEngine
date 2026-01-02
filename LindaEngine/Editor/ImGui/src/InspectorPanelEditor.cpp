@@ -191,12 +191,17 @@ void InspectorPanelEditor::DrawComponents()
 				//ImGui::Separator();
 				glm::vec3& pos = com->GetLocalPosition();
 				DrawVec3Control("Position", pos);
+				com->SetLocalPosition(pos);
+
 				ImGui::Spacing();
 				glm::vec3& angles = com->GetLocalEulerAngles();
 				DrawVec3Control("Angles", angles);
+				com->SetLocalEulerAngles(angles);
+
 				ImGui::Spacing();
 				glm::vec3& scale = com->GetLocalScale();
 				DrawVec3Control("Scale", scale, 1.0f);
+				com->SetLocalScale(scale);
 			});
 		}
 		else

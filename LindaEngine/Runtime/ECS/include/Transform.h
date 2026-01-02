@@ -96,7 +96,7 @@ namespace LindaEngine
 		void UpdateWhenLocalChange();
 		void UpdateWhenWorldChange();
 		void UpdateViewMatrix();
-		void UpdateChildren(std::list<Transform*> children);
+		void UpdateChildren();
 
 		void NotifyChange();
 

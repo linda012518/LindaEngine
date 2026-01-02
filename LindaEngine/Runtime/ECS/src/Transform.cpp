@@ -311,7 +311,7 @@ void Transform::UpdateWhenLocalChange()
 
 	UpdateViewMatrix();
 	NotifyChange();
-	UpdateChildren(_children);
+	UpdateChildren();
 }
 
 void Transform::UpdateWhenWorldChange()
@@ -354,7 +354,7 @@ void Transform::UpdateWhenWorldChange()
 
 	UpdateViewMatrix();
 	NotifyChange();
-	UpdateChildren(_children);
+	UpdateChildren();
 
 }
 
@@ -374,24 +374,24 @@ void Transform::UpdateViewMatrix()
 
 }
 
-void Transform::UpdateChildren(std::list<Transform*> children)
+void Transform::UpdateChildren()
 {
-	if (children.size() <= 0)
+	if (_children.size() <= 0)
 		return;
 
 	glm::mat4& worldMat = _worldMatrix;
 	glm::vec3 skew;
 	glm::vec4 m;
 
-	for (auto& com : children) {
+	for (auto& com : _children) {
 		com->_worldMatrix = worldMat * com->_localMatrix;
 		glm::decompose(com->_worldMatrix, com->_worldScale, com->_worldRotation, com->_worldPosition, skew, m);
 		com->_worldEulerAngles = glm::eulerAngles(com->_worldRotation);
 		com->_worldInverseMatrix = glm::inverse(com->_worldMatrix);
 
-		UpdateViewMatrix();
-		NotifyChange();
-		UpdateChildren(com->_children);
+		com->UpdateViewMatrix();
+		com->NotifyChange();
+		com->UpdateChildren();
 	}
 
 }
