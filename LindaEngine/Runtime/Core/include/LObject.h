@@ -14,6 +14,7 @@ namespace LindaEngine
 		int GetID() const;
 
 		void Bind(int eventCode);
+		void Unbind(int eventCode);
 		void Dispatch(IEventHandler* sender, int eventCode, Event& eventData);
 		virtual void OnEvent(IEventHandler* sender, int eventCode, Event& eventData) { }
 

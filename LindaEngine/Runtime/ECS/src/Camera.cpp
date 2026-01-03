@@ -205,7 +205,7 @@ PerspectiveCamera::PerspectiveCamera(Entity& entity, bool enable) : Camera(entit
 
 PerspectiveCamera::~PerspectiveCamera()
 {
-
+	Unbind(EventCode::WindowResize);
 }
 
 void PerspectiveCamera::MakeProjectionMatrix()
@@ -281,7 +281,7 @@ OrthoCamera::OrthoCamera(Entity& entity, bool enable) : Camera(entity, enable)
 
 OrthoCamera::~OrthoCamera()
 {
-
+	Unbind(EventCode::WindowResize);
 }
 
 void OrthoCamera::MakeProjectionMatrix()

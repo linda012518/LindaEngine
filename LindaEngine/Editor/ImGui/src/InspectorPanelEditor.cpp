@@ -111,35 +111,6 @@ static void DrawComponent(T* component, Entity* entity, UIFunction uiFunction)
 
 	ImGui::PopStyleVar(1);
 	ImGui::PopStyleColor(3);
-
-	bool removeComponent = false;
-	if (false == isTransform)
-	{
-		ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));       // 菜单栏背景
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));            // 文本颜色
-		ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));         // 弹出菜单背景
-		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));          // 选中状态（子菜单打开时）
-
-		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.75f, 0.75f, 0.75f, 1.0f));   // 悬停背景
-		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));    // 激活背景
-		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));          // 边框颜色
-		ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));       // 分隔线颜色
-		
-		if (ImGui::BeginPopupContextWindow(0, ImGuiPopupFlags_MouseButtonRight))
-		{
-			if (ImGui::MenuItem("Remove component"))
-			{
-				removeComponent = true;
-			}
-			ImGui::EndPopup();
-		}
-
-		ImGui::PopStyleColor(8);
-	}
-
-	if (removeComponent)
-		entity->RemoveComponentImmediately(component);
-
 }
 
 DYNAMIC_CREATE_CLASS(InspectorPanelEditor, ImGuiPanelEditor)
@@ -180,34 +151,39 @@ void InspectorPanelEditor::DrawComponents()
 	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
 	ImGui::PopStyleColor(1);
 
-	std::vector<Ref<Component>>&  coms = _selectionEntity->GetAllComponent();
+	std::vector<Ref<Component>>& coms = _selectionEntity->GetAllComponent();
 	for (auto& go : coms)
 	{
 		Transform* pointer = dynamic_cast<Transform*>(go.get());
 		if (nullptr != pointer)
 		{
 			DrawComponent<Transform>(pointer, _selectionEntity, [](auto& com)
-			{
-				//ImGui::Separator();
-				glm::vec3& pos = com->GetLocalPosition();
-				DrawVec3Control("Position", pos);
-				com->SetLocalPosition(pos);
+				{
+					//ImGui::Separator();
+					glm::vec3& pos = com->GetLocalPosition();
+					DrawVec3Control("Position", pos);
+					com->SetLocalPosition(pos);
 
-				ImGui::Spacing();
-				glm::vec3& angles = com->GetLocalEulerAngles();
-				DrawVec3Control("Angles", angles);
-				com->SetLocalEulerAngles(angles);
+					ImGui::Spacing();
+					glm::vec3& angles = com->GetLocalEulerAngles();
+					DrawVec3Control("Angles", angles);
+					com->SetLocalEulerAngles(angles);
 
-				ImGui::Spacing();
-				glm::vec3& scale = com->GetLocalScale();
-				DrawVec3Control("Scale", scale, 1.0f);
-				com->SetLocalScale(scale);
-			});
+					ImGui::Spacing();
+					glm::vec3& scale = com->GetLocalScale();
+					DrawVec3Control("Scale", scale, 1.0f);
+					com->SetLocalScale(scale);
+				});
 		}
 		else
 		{
-			DrawComponent<Component>(go.get(), _selectionEntity, [](auto& com)
+			DrawComponent<Component>(go.get(), _selectionEntity, [=](auto& com)
 			{
+				if (ImGui::IsItemHovered())
+				{
+					_component = go.get();
+					printf(_component->GetClassName().c_str());
+				}
 			});
 		}
 		ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
@@ -215,6 +191,31 @@ void InspectorPanelEditor::DrawComponents()
 		ImGui::PopStyleColor(1);
 	}
 
+	ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));       // 菜单栏背景
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));            // 文本颜色
+	ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));         // 弹出菜单背景
+	ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));          // 选中状态（子菜单打开时）
+
+	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.75f, 0.75f, 0.75f, 1.0f));   // 悬停背景
+	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));    // 激活背景
+	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));          // 边框颜色
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));       // 分隔线颜色
+
+	if (ImGui::BeginPopupContextWindow(0, ImGuiPopupFlags_MouseButtonRight))
+	{
+		if (ImGui::MenuItem("Remove component"))
+		{
+			_selectionEntity->RemoveComponentImmediately(_component);
+			_component = nullptr;
+		}
+		ImGui::EndPopup();
+	}
+	else
+	{
+		_component = nullptr;
+	}
+
+	ImGui::PopStyleColor(8);
 }
 
 

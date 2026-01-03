@@ -15,6 +15,7 @@ namespace LindaEngine
 
 		void Awake();
 		void Update();
+		void OnDestroy();
 
 		void OnEvent(IEventHandler* sender, int eventCode, Event& eventData);
 

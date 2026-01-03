@@ -43,7 +43,7 @@ std::vector<Behavior*> BehaviorSystem::_onPostRenders;
 std::vector<Behavior*> BehaviorSystem::_onApplicationPauses;
 std::vector<Behavior*> BehaviorSystem::_onApplicationQuits;
 std::vector<Behavior*> BehaviorSystem::_onDisables;
-std::vector<Behavior*> BehaviorSystem::_onDestroys;
+//std::vector<Behavior*> BehaviorSystem::_onDestroys;
 
 void BehaviorSystem::Tick()
 {
@@ -85,7 +85,7 @@ void BehaviorSystem::Remove(Behavior* behavior)
 	REMOVETOLIST(_onApplicationPauses, behavior);
 	REMOVETOLIST(_onApplicationQuits, behavior);
 	REMOVETOLIST(_onDisables, behavior);
-	REMOVETOLIST(_onDestroys, behavior);
+	//REMOVETOLIST(_onDestroys, behavior);
 }
 
 void BehaviorSystem::Clear()
@@ -106,7 +106,7 @@ void BehaviorSystem::Clear()
 	ClearFunctionArray(_onApplicationPauses);
 	ClearFunctionArray(_onApplicationQuits);
 	ClearFunctionArray(_onDisables);
-	ClearFunctionArray(_onDestroys);
+	//ClearFunctionArray(_onDestroys);
 
 	//_awakes.clear();
 	//_onEnables.clear();
@@ -170,7 +170,7 @@ IMPLEMENT_LIFECYCLEFUN(DoOnPostRender, _onPostRenders, IsEnable, OnPostRender);
 IMPLEMENT_LIFECYCLEFUN(DoOnApplicationPause, _onApplicationPauses, IsEnable, OnApplicationPause);
 IMPLEMENT_LIFECYCLEFUN(DoOnApplicationQuit, _onApplicationQuits, IsEnable, OnApplicationQuit);
 IMPLEMENT_LIFECYCLEFUN(DoOnDisable, _onDisables, CanDisable, OnDisable);
-IMPLEMENT_LIFECYCLEFUN(DoOnDestroy, _onDestroys, IsEnable, OnDestroy);
+//IMPLEMENT_LIFECYCLEFUN(DoOnDestroy, _onDestroys, IsEnable, OnDestroy);
 
 void BehaviorSystem::DoStart()
 {
@@ -208,7 +208,7 @@ ADDTOLIST(OnPostRender, _onPostRenders);
 ADDTOLIST(OnApplicationPause, _onApplicationPauses);
 ADDTOLIST(OnApplicationQuit, _onApplicationQuits);
 ADDTOLIST(OnDisable, _onDisables);
-ADDTOLIST(OnDestroy, _onDestroys);
+//ADDTOLIST(OnDestroy, _onDestroys);
 
 void BehaviorSystem::ClearFunctionArray(std::vector<Behavior*> array)
 {

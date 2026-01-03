@@ -38,12 +38,12 @@ void PlayViewPanelEditor::OnImGuiRender()
 		RenderTextureManager::DeleteImmediately(_renderTexture);
 		RenderTextureManager::ClearLinkScreen();
 		_renderTexture = RenderTextureManager::Get((int)viewportPanelSize.x, (int)viewportPanelSize.y, _fboSpecs);
-
-		WindowResizeEvent event;
-		event.width = (int)viewportPanelSize.x;
-		event.height = (int)viewportPanelSize.y;
-		EventSystem::Dispatch(nullptr, EventCode::WindowResize, event);
 	}
+
+	WindowResizeEvent event;
+	event.width = (int)viewportPanelSize.x;
+	event.height = (int)viewportPanelSize.y;
+	EventSystem::Dispatch(nullptr, EventCode::WindowResize, event);
 
 	uint64_t textureID = _renderTexture->nativeIDs[0];
 	ImGui::Image(reinterpret_cast<void*>(textureID), viewportPanelSize, ImVec2(0, 1), ImVec2(1, 0));

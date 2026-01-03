@@ -31,7 +31,6 @@
 		BehaviorSystem::AddOnApplicationPause(this, OVERRIDE(Behavior, className, OnApplicationPause)); \
 		BehaviorSystem::AddOnApplicationQuit(this, OVERRIDE(Behavior, className, OnApplicationQuit)); \
 		BehaviorSystem::AddOnDisable(this, OVERRIDE(Behavior, className, OnDisable)); \
-		BehaviorSystem::AddOnDestroy(this, OVERRIDE(Behavior, className, OnDestroy)); \
 	} \
 	bool className::Serialize() \
 	{ \

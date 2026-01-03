@@ -79,7 +79,7 @@ namespace LindaEngine
 		static std::vector<Behavior*> _onApplicationPauses;
 		static std::vector<Behavior*> _onApplicationQuits;
 		static std::vector<Behavior*> _onDisables;
-		static std::vector<Behavior*> _onDestroys;
+		//static std::vector<Behavior*> _onDestroys;
 
 	};
 }

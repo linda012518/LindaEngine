@@ -141,7 +141,7 @@ bool Renderer::InLayerMask(int layer)
 
 Renderer* Renderer::GetSkyboxRenderer()
 {
-	static Entity entity("");
+	static Entity entity("SkyboxRendererEntity");
 	static SkyboxRenderer renderer(entity);
 	return &renderer;
 }

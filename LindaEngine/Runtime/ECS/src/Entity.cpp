@@ -101,6 +101,7 @@ void Entity::OnComponentRemoved(Component* com)
 	Behavior* pointer = dynamic_cast<Behavior*>(com);
 	if (nullptr != pointer)
 	{
+		pointer->OnDestroy();
 		BehaviorSystem::Remove(pointer);
 		return;
 	}

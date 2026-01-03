@@ -95,7 +95,6 @@ void ApplicationRuntime::Tick()
         BehaviorSystem::DoOnApplicationPause();
         BehaviorSystem::DoOnApplicationQuit();
         BehaviorSystem::DoOnDisable();
-        BehaviorSystem::DoOnDestroy();
         BehaviorSystem::Tick();
     }
 }

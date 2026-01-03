@@ -31,6 +31,21 @@ void CameraController::Update()
 
 }
 
+void CameraController::OnDestroy()
+{
+	Unbind(EventCode::MouseWheel);
+	Unbind(EventCode::MouseWheelDown);
+	Unbind(EventCode::MouseWheelUp);
+	Unbind(EventCode::MouseMove);
+	Unbind(EventCode::LeftMouseButtonDown);
+	Unbind(EventCode::LeftMouseButtonUp);
+	Unbind(EventCode::RightMouseButtonDown);
+	Unbind(EventCode::RightMouseButtonUp);
+	Unbind(EventCode::MouseLeave);
+	Unbind(EventCode::KeyDown);
+	Unbind(EventCode::KeyUp);
+}
+
 void CameraController::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
 {
 	ProcessMouseEvent(eventCode, eventData);

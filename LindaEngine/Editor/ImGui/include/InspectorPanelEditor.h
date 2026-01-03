@@ -7,6 +7,7 @@
 namespace LindaEngine
 {
 	class Entity;
+	class Component;
 }
 
 namespace LindaEditor
@@ -25,6 +26,6 @@ namespace LindaEditor
 
 	private:
 		LindaEngine::Entity* _selectionEntity = nullptr;
-
+		LindaEngine::Component* _component = nullptr;
 	};
 }

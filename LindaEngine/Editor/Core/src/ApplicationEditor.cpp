@@ -58,6 +58,7 @@ void ApplicationEditor::Finalize()
     _graphicContext->Finalize();
     ComponentSystem::Finalize();
     BehaviorSystem::Finalize();
+    SceneManager::Finalize();
     _window->Finalize();
 }
 
@@ -116,7 +117,6 @@ void ApplicationEditor::Tick()
         BehaviorSystem::DoOnApplicationPause();
         BehaviorSystem::DoOnApplicationQuit();
         BehaviorSystem::DoOnDisable();
-        BehaviorSystem::DoOnDestroy();
         BehaviorSystem::Tick();
     }
 }
