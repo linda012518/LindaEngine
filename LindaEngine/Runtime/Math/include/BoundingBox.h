@@ -22,6 +22,7 @@ namespace LindaEngine
 		void Reset();
 		void AddVertex(glm::vec3& vertex);
 		void CalculateCenterSize();
+		AABBBoundingBox ConvertNewAABB();
 
 		static AABBBoundingBox Merge(const AABBBoundingBox& a, const AABBBoundingBox& b);
 	};
