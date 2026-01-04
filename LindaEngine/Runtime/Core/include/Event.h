@@ -13,6 +13,7 @@ namespace LindaEngine
 	{
 		int width;
 		int height;
+		bool isMinimized;
 	};
 
 	struct MouseEvent : public Event

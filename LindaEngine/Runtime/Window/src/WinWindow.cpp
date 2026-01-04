@@ -178,6 +178,8 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         WindowResizeEvent event;
         event.width = width;
         event.height = height;
+        if (wParam == SIZE_MINIMIZED)
+            event.isMinimized = true;
         EventSystem::Dispatch(nullptr, EventCode::WindowResize, event);
     }
     break;

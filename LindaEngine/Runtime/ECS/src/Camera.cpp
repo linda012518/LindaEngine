@@ -262,6 +262,8 @@ void PerspectiveCamera::OnEvent(IEventHandler* sender, int eventCode, Event& eve
 	if (nullptr == _renderTexture && eventCode == EventCode::WindowResize)
 	{
 		WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
+		if (wre.isMinimized == true)
+			return;
 		_aspectRatio = (float)wre.width / (float)wre.height;
 		_projectDirty = true;
 	}
