@@ -24,17 +24,14 @@ namespace LindaEngine
 		static Ref<Mesh> Load(std::string path);
 
 	private:
-		static Ref<Mesh> LoadSphereMesh();
-		static Ref<Mesh> LoadCube();
-		static Ref<Mesh> LoadCapsule();
-		static Ref<Mesh> LoadPlane();
 		static Ref<Mesh> LoadSkybox();
-		static Ref<Mesh> LoadQuad();
 		static Ref<Mesh> LoadEmpty();
+		static Ref<Mesh> LoadCameraFrustum();
+		static Ref<Mesh> LoadSpotLightFrustum();
 
 	private:
-		static void ParseAssimpNode(aiNode* node, const aiScene* scene, Ref<Mesh> mesh);
-		static void ParseAssimpMesh(aiMesh* aiMesh, const aiScene* scene, Mesh::Data& meshData, Ref<Mesh> meshPtr);
+		static void ParseAssimpNode(void* mat, aiNode* node, const aiScene* scene, Ref<Mesh> mesh);
+		static void ParseAssimpMesh(void* mat, aiMesh* aiMesh, const aiScene* scene, Mesh::Data& meshData, Ref<Mesh> meshPtr);
 		static void ParseBoneWeight(aiMesh* mesh, const aiScene* scene, Mesh::Data& meshData);
 		static void SetVertexBoneData(Mesh::Data& meshData, int vertexId, float boneID, float weight);
 

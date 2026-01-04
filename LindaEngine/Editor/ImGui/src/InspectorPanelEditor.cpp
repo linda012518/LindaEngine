@@ -182,7 +182,6 @@ void InspectorPanelEditor::DrawComponents()
 				if (ImGui::IsItemHovered())
 				{
 					_component = go.get();
-					printf(_component->GetClassName().c_str());
 				}
 			});
 		}
