@@ -19,7 +19,7 @@ void TransformSystem::OnDeserializeFinish()
 {
 	for (auto& com : _components) {
 		com->SetParent(Get(com->GetParentID()));
-		com->CalculateWordMatrix();
+		com->CalculateLocalMatrix();
 	}
 }
 

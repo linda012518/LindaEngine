@@ -11,8 +11,6 @@
 
 using namespace LindaEngine;
 
-#define MAX_BONE_INFLUENCE 4
-
 std::unordered_map<std::string, BoneInfo> MeshLoader::_boneInfoMap;
 int MeshLoader::_boneCounter = 0;
 

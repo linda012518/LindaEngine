@@ -52,6 +52,7 @@ void Frustum::UpdateFrustum(Camera* cam)
 
 bool Frustum::AABBInside(AABBBoundingBox& aabb)
 {
+	//TODO 现在每帧更新，可移到渲染组件
 	AABBBoundingBox temp = aabb.ConvertNewAABB();
 
 	// 对每个视锥体平面进行测试

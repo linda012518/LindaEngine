@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "AutoPtr.h"
 #include "Component.h"
@@ -50,10 +50,10 @@ namespace LindaEngine
 	protected:
 		std::vector<Ref<Material>> _materialList;
 		Ref<Mesh> _mesh;
-		bool _shadowCast = true; //�Ƿ�Ͷ����Ӱ
-		bool _receiveShadow = true; //�Ƿ������Ӱ
+		bool _shadowCast = true; //是否投射阴影
+		bool _receiveShadow = true; //是否接收阴影
 		RenderComponentType _type = RenderComponentType::None;
-		AABBBoundingBox _aabb;
+		AABBBoundingBox _aabb;//这里分根据Transform做变换，其实是OBB了
 		float _distanceToCamera = 0.0f;
 		std::vector<Ref<Drawable>> _drawables;
 	};

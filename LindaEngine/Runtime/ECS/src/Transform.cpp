@@ -251,7 +251,7 @@ const glm::mat4& Transform::LookAt(const glm::vec3& center, const glm::vec3& up)
 	return glm::lookAt(_worldPosition, _worldPosition + center, up);
 }
 
-void Transform::CalculateWordMatrix()
+void Transform::CalculateLocalMatrix()
 {
 	UpdateWhenWorldChange();
 }

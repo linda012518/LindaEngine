@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+#define MAX_BONE_INFLUENCE 4
+
 namespace LindaEngine
 {
 	enum class VertexDataType
