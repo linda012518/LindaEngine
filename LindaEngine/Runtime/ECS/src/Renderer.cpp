@@ -3,6 +3,7 @@
 #include "YamlSerializer.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "FBXManager.h"
 #include "MeshManager.h"
 #include "MaterialManager.h"
 #include "ComponentImplement.inl"
@@ -67,7 +68,7 @@ bool Renderer::Deserialize(YAML::Node& node)
 	
 	if (mesh)
 	{
-		_mesh = MeshManager::GetMesh(mesh["FilePath"].as<std::string>().c_str());
+		_mesh = FBXManager::GetMesh(mesh["FilePath"].as<std::string>().c_str(), mesh["HashCode"].as<std::string>().c_str());
 		_mesh->Deserialize(mesh);
 	}
 

@@ -52,7 +52,8 @@ Scene:
           ShadowCast: true
           ReceiveShadow: true
           Mesh:
-            FilePath: Assets/Meshs/rock.obj
+            FilePath: BuiltInAssets/Meshs/Cube.FBX
+            HashCode: 35f8d1cbbe28c261
           Material:
             - FilePath: Assets/Materials/test.mat
           Name: MeshRenderer

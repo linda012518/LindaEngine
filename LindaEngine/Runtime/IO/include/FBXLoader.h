@@ -1,12 +1,18 @@
-#pragma once
+﻿#pragma once
 
 #include "AutoPtr.h"
 #include "Mesh.h"
 
 #include "glm/glm.hpp"
+#include "glm/gtx/matrix_decompose.hpp"
 
 #include <string>
 #include <vector>
+#include <iostream>
+#include <map>
+#include <functional>
+#include <sstream>
+#include <iomanip>
 
 struct aiNode;
 struct aiScene;
@@ -15,6 +21,18 @@ struct aiMesh;
 namespace LindaEngine
 {
 	class Entity;
+
+	struct BoneInfo
+	{
+		/*id is index in finalBoneMatrices*/
+		int id;
+
+		/*offset matrix transforms vertex from model space to bone space*/
+		glm::mat4 offset;
+
+		/*transform node hashCode*/
+		std::string hashCode;
+	};
 
 	struct Vertex {
 		glm::vec3 position;
@@ -46,43 +64,51 @@ namespace LindaEngine
 	struct FBXMesh
 	{
 		std::vector<FBXMeshData> vertices;
+		bool isSkinMesh = false;
+		std::map<aiNode*, BoneInfo> boneInfoMap;
+		int boneCount = 0;
 	};
 
 	struct AssimpNodeData
 	{
 		glm::mat4 transformation;
 		std::string name;
-		int childrenCount;
+		int childrenCount = 0;
 		std::vector<AssimpNodeData> children;
+		FBXMesh mesh;
+		bool hasMesh = false;
+		std::string hashCode;
+		aiNode* nativeNode;
 	};
 
-	struct FBXModel
+	struct FBXResources
 	{
-		std::vector<FBXMesh> meshs;
-		AssimpNodeData hierarchy;
-	};
-
-	struct BoneInfo
-	{
-		/*id is index in finalBoneMatrices*/
-		int id;
-
-		/*offset matrix transforms vertex from model space to bone space*/
-		glm::mat4 offset;
-
+		glm::vec3 localPosition;
+		glm::quat localRotation;
+		glm::vec3 localScale;
+		std::string name;
+		std::vector<Ref<FBXResources>> children;
+		Ref<Mesh> mesh = nullptr;
+		std::string hashCode;
 	};
 
 	class FBXLoader
 	{
 	public:
-		std::vector<Ref<Entity>> LoadFBX(std::string path);
+		static Ref<FBXResources> LoadFBX(std::string path);
 
 	private:
-		void ParseAssimpFBX(void* mat, AssimpNodeData& dest, aiNode* node, const aiScene* scene, FBXModel& model);
-		void ParseAssimpMesh(void* mat, aiMesh* aiMesh, const aiScene* scene, FBXModel& model);
-		void FillVertexUV(glm::vec2& dest, int uvIndex, int vertexIndex, aiMesh* aiMesh);
-		void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
-		void SetVertexBoneData(Vertex& vertex, int boneID, float weight);
-		void SetVertexBoneDataToDefault(Vertex& vertex);
+		static void ParseAssimpFBX(void* mat, AssimpNodeData& dest, aiNode* node, const aiScene* scene, int& index);
+		static void ParseAssimpMesh(void* mat, aiMesh* aiMesh, const aiScene* scene, AssimpNodeData& node);
+		static void FillVertexUV(glm::vec2& dest, int uvIndex, int vertexIndex, aiMesh* aiMesh);
+		static void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene, FBXMesh& fbxMesh);
+		static void SetHashBoneInfoMap(AssimpNodeData& root, AssimpNodeData& nodeData);
+		static std::string GetNodeByNativeNode(AssimpNodeData& root, aiNode* nativeNode);
+		static void SetVertexBoneData(Vertex& vertex, int boneID, float weight);
+		static void SetVertexBoneDataToDefault(Vertex& vertex);
+		static void ParseAssimpNodePath(aiNode* node, std::string& path);
+
+		static void ConvertFBXResources(Ref<FBXResources> res, AssimpNodeData& data);
+		static bool HasAttribute(std::vector<VertexAttributeType>& attributes, VertexAttributeType attr);
 	};
 }

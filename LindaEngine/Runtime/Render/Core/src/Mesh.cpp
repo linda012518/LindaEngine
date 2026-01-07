@@ -197,6 +197,7 @@ bool Mesh::Serialize()
 
 	out << YAML::Value << YAML::BeginMap;
 	out << YAML::Key << "FilePath" << YAML::Value << _path;
+	out << YAML::Key << "HashCode" << YAML::Value << _hashCode;
 	out << YAML::EndMap;
 
 	return true;
@@ -205,5 +206,6 @@ bool Mesh::Serialize()
 bool Mesh::Deserialize(YAML::Node& node)
 {
 	_path = node["FilePath"].as<std::string>();
+	_hashCode = node["HashCode"].as<std::string>();
 	return true;
 }

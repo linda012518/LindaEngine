@@ -192,6 +192,7 @@
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\Image.cpp" />
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\ProgressBar.cpp" />
     <ClCompile Include="Editor\Core\src\EventSystemEditor.cpp" />
+    <ClCompile Include="Runtime\IO\src\FBXManager.cpp" />
     <ClCompile Include="Runtime\IO\src\FBXLoader.cpp" />
     <ClCompile Include="Runtime\Core\src\ApplicationRuntime.cpp" />
     <ClCompile Include="Editor\Core\src\ApplicationEditor.cpp" />
@@ -409,6 +410,7 @@
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\Image.h" />
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\ProgressBar.h" />
     <ClInclude Include="Editor\Core\include\EventSystemEditor.h" />
+    <ClInclude Include="Runtime\IO\include\FBXManager.h" />
     <ClInclude Include="Runtime\IO\include\AssimpGLMHelpers.h" />
     <ClInclude Include="Runtime\IO\include\FBXLoader.h" />
     <ClInclude Include="Runtime\Core\include\ApplicationRuntime.h" />

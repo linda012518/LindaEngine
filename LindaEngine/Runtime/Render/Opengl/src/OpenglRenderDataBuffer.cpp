@@ -5,6 +5,32 @@
 
 using namespace LindaEngine;
 
+static GLenum VertexAttributeTypeToOpenGLType(VertexAttributeType type)
+{
+	switch (type)
+	{
+	case VertexAttributeType::Position:
+	case VertexAttributeType::Normal:
+	case VertexAttributeType::Tangent:
+	case VertexAttributeType::UV0:
+	case VertexAttributeType::UV1:
+	case VertexAttributeType::UV2:
+	case VertexAttributeType::UV3:
+	case VertexAttributeType::UV4:
+	case VertexAttributeType::UV5:
+	case VertexAttributeType::UV6:
+	case VertexAttributeType::UV7:
+	case VertexAttributeType::Color:
+	case VertexAttributeType::BoneWeights1:
+	case VertexAttributeType::BoneWeights2:
+		return GL_FLOAT;
+	case VertexAttributeType::BoneID1:
+	case VertexAttributeType::BoneID2:
+		return GL_INT;
+	}
+	return 0;
+}
+
 OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count, bool is32Bit, bool isStatic) : _count(count)
 {
 	_rendererID = 0;
@@ -115,7 +141,7 @@ void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& buffer, int ver
 	for (auto& attr : *buffer->GetAttributes())
 	{
 		glEnableVertexAttribArray(attr.index);
-		glVertexAttribPointer(attr.index, attr.size, GL_FLOAT, attr.normalized ? GL_TRUE : GL_FALSE, vertexStride, (const void*)(intptr_t)attr.offset);
+		glVertexAttribPointer(attr.index, attr.size, VertexAttributeTypeToOpenGLType(attr.attributeType), attr.normalized ? GL_TRUE : GL_FALSE, vertexStride, (const void*)(intptr_t)attr.offset);
 	}
 	_vertexBuffer = buffer;
 }

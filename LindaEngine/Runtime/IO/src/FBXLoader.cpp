@@ -1,4 +1,4 @@
-#include "FBXLoader.h"
+ï»¿#include "FBXLoader.h"
 #include "Entity.h"
 #include "AssimpGLMHelpers.h"
 #include "Mesh.h"
@@ -7,71 +7,83 @@
 #include "assimp\scene.h"
 #include "assimp\postprocess.h"
 
-#include <iostream>
-#include <map>
-
 using namespace LindaEngine;
 
-std::vector<Ref<Entity>> FBXLoader::LoadFBX(std::string path)
+Ref<FBXResources> FBXLoader::LoadFBX(std::string path)
 {
 	Assimp::Importer importer;
-	//aiProcess_Triangulate			Èç¹ûÄ£ÐÍ²»ÊÇ£¨È«²¿£©ÓÉÈý½ÇÐÎ×é³É£¬ËüÐèÒª½«Ä£ÐÍËùÓÐµÄÍ¼ÔªÐÎ×´±ä»»ÎªÈý½ÇÐÎ
-	//aiProcess_FlipUVs				ÔÚ´¦ÀíµÄÊ±ºò·­×ªyÖáµÄÎÆÀí×ø±ê
-	//aiProcess_GenNormals			Èç¹ûÄ£ÐÍ²»°üº¬·¨ÏòÁ¿µÄ»°£¬¾ÍÎªÃ¿¸ö¶¥µã´´½¨·¨Ïß
-	//aiProcess_SplitLargeMeshes	½«±È½Ï´óµÄÍø¸ñ·Ö¸î³É¸üÐ¡µÄ×ÓÍø¸ñ£¬Èç¹ûÄãµÄäÖÈ¾ÓÐ×î´ó¶¥µãÊýÏÞÖÆ£¬Ö»ÄÜäÖÈ¾½ÏÐ¡µÄÍø¸ñ£¬ÄÇÃ´Ëü»á·Ç³£ÓÐÓÃ
-	//aiProcess_OptimizeMeshes		ºÍÉÏ¸öÑ¡ÏîÏà·´£¬Ëü»á½«¶à¸öÐ¡Íø¸ñÆ´½ÓÎªÒ»¸ö´óµÄÍø¸ñ£¬¼õÉÙ»æÖÆµ÷ÓÃ´Ó¶ø½øÐÐÓÅ»¯
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+	//aiProcess_Triangulate			å¦‚æžœæ¨¡åž‹ä¸æ˜¯ï¼ˆå…¨éƒ¨ï¼‰ç”±ä¸‰è§’å½¢ç»„æˆï¼Œå®ƒéœ€è¦å°†æ¨¡åž‹æ‰€æœ‰çš„å›¾å…ƒå½¢çŠ¶å˜æ¢ä¸ºä¸‰è§’å½¢
+	//aiProcess_FlipUVs				åœ¨å¤„ç†çš„æ—¶å€™ç¿»è½¬yè½´çš„çº¹ç†åæ ‡
+	//aiProcess_GenNormals			å¦‚æžœæ¨¡åž‹ä¸åŒ…å«æ³•å‘é‡çš„è¯ï¼Œå°±ä¸ºæ¯ä¸ªé¡¶ç‚¹åˆ›å»ºæ³•çº¿
+	//aiProcess_SplitLargeMeshes	å°†æ¯”è¾ƒå¤§çš„ç½‘æ ¼åˆ†å‰²æˆæ›´å°çš„å­ç½‘æ ¼ï¼Œå¦‚æžœä½ çš„æ¸²æŸ“æœ‰æœ€å¤§é¡¶ç‚¹æ•°é™åˆ¶ï¼Œåªèƒ½æ¸²æŸ“è¾ƒå°çš„ç½‘æ ¼ï¼Œé‚£ä¹ˆå®ƒä¼šéžå¸¸æœ‰ç”¨
+	//aiProcess_OptimizeMeshes		å’Œä¸Šä¸ªé€‰é¡¹ç›¸åï¼Œå®ƒä¼šå°†å¤šä¸ªå°ç½‘æ ¼æ‹¼æŽ¥ä¸ºä¸€ä¸ªå¤§çš„ç½‘æ ¼ï¼Œå‡å°‘ç»˜åˆ¶è°ƒç”¨ä»Žè€Œè¿›è¡Œä¼˜åŒ–
+	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_PopulateArmatureData);
 
-	//mFlags	·µ»ØµÄÊý¾ÝÊÇ²»ÊÇ²»ÍêÕûµÄ
+	//mFlags	è¿”å›žçš„æ•°æ®æ˜¯ä¸æ˜¯ä¸å®Œæ•´çš„
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
-		return std::vector<Ref<Entity>>();
+		return nullptr;
 	}
 
-	FBXModel model;
-	ParseAssimpFBX(nullptr, model.hierarchy, scene->mRootNode, scene, model);
+	Ref<AssimpNodeData> dataPointer = CreateRef<AssimpNodeData>();
+	AssimpNodeData& data = *dataPointer.get();
+	int index = 0;
+	ParseAssimpFBX(nullptr, data, scene->mRootNode, scene, index);
+	SetHashBoneInfoMap(data, data);
 
-	return std::vector<Ref<Entity>>();
+	Ref<FBXResources> res = CreateRef<FBXResources>();
+	ConvertFBXResources(res, data);
+
+	return res;
 }
 
-void FBXLoader::ParseAssimpFBX(void* mat, AssimpNodeData& dest, aiNode* node, const aiScene* scene, FBXModel& model)
+void FBXLoader::ParseAssimpFBX(void* mat, AssimpNodeData& dest, aiNode* node, const aiScene* scene, int& index)
 {
 	aiMatrix4x4 nodeTransformation = node->mTransformation;
 	if (nullptr != mat)
 		nodeTransformation = *reinterpret_cast<aiMatrix4x4*>(mat) * node->mTransformation;
+	index++;
 
 	std::string tempName = node->mName.data;
 	if (tempName.find("_$AssimpFbx$_") != std::string::npos)
 	{
-		ParseAssimpFBX(&nodeTransformation, dest, node->mChildren[0], scene, model);
+		ParseAssimpFBX(&nodeTransformation, dest, node->mChildren[0], scene, index);
 	}
 	else
 	{
 		dest.name = tempName;
 		dest.transformation = AssimpGLMHelpers::ConvertMatrixToGLMFormat(nodeTransformation);
 		dest.childrenCount = node->mNumChildren;
+		dest.nativeNode = node;
+
+		std::hash<std::string> hasher;
+		std::string path = std::to_string(index);
+		ParseAssimpNodePath(node, path);
+		std::stringstream hexStream;
+		hexStream << std::hex << std::setfill('0') << std::setw(16) << hasher(path);
+		dest.hashCode = hexStream.str();
+
+		if (node->mNumMeshes > 0)
+			dest.hasMesh = true;
 
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
-			ParseAssimpMesh(&nodeTransformation, aiMesh, scene, model);
+			ParseAssimpMesh(&nodeTransformation, aiMesh, scene, dest);
 		}
 
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
 		{
-			aiNode* temp = node->mChildren[i];
-			if (temp->mNumMeshes > 0)
-				model.meshs.push_back(FBXMesh());
 			AssimpNodeData newData;
-			ParseAssimpFBX(nullptr, newData, node->mChildren[i], scene, model);
+			ParseAssimpFBX(nullptr, newData, node->mChildren[i], scene, index);
 			dest.children.push_back(newData);
 		}
 	}
 
 }
 
-void FBXLoader::ParseAssimpMesh(void* mat, aiMesh* aiMesh, const aiScene* scene, FBXModel& model)
+void FBXLoader::ParseAssimpMesh(void* mat, aiMesh* aiMesh, const aiScene* scene, AssimpNodeData& node)
 {
 	if (aiMesh->mNumVertices < 3)
 		return;
@@ -143,10 +155,13 @@ void FBXLoader::ParseAssimpMesh(void* mat, aiMesh* aiMesh, const aiScene* scene,
 			indices.push_back(face.mIndices[j]);
 	}
 
-	ExtractBoneWeightForVertices(vertices, aiMesh, scene);
-
-	FBXMesh& mesh = model.meshs[model.meshs.size() - 1];
+	FBXMesh& mesh = node.mesh;
 	mesh.vertices.push_back(meshData);
+	if (aiMesh->mNumBones > 0)
+	{
+		ExtractBoneWeightForVertices(vertices, aiMesh, scene, mesh);
+		mesh.isSkinMesh = true;
+	}
 }
 
 void FBXLoader::FillVertexUV(glm::vec2& dest, int uvIndex, int vertexIndex, aiMesh* aiMesh)
@@ -160,31 +175,31 @@ void FBXLoader::FillVertexUV(glm::vec2& dest, int uvIndex, int vertexIndex, aiMe
 	}
 }
 
-void FBXLoader::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene)
+void FBXLoader::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene, FBXMesh& fbxMesh)
 {
-	std::map<std::string, BoneInfo> boneInfoMap;
-	int boneCount = 0;
+	std::map<aiNode*, BoneInfo>& boneInfoMap = fbxMesh.boneInfoMap;
+	int& boneCount = fbxMesh.boneCount;
 
 	for (unsigned int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
 	{
+		aiBone* bone = mesh->mBones[boneIndex];
 		int boneID = -1;
-		std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
-		if (boneInfoMap.find(boneName) == boneInfoMap.end())
+		if (boneInfoMap.find(bone->mNode) == boneInfoMap.end())
 		{
 			BoneInfo newBoneInfo;
 			newBoneInfo.id = boneCount;
-			newBoneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(mesh->mBones[boneIndex]->mOffsetMatrix);
-			boneInfoMap[boneName] = newBoneInfo;
+			newBoneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(bone->mOffsetMatrix);
+			boneInfoMap[bone->mNode] = newBoneInfo;
 			boneID = boneCount;
 			boneCount++;
 		}
 		else
 		{
-			boneID = boneInfoMap[boneName].id;
+			boneID = boneInfoMap[bone->mNode].id;
 		}
 		assert(boneID != -1);
-		auto weights = mesh->mBones[boneIndex]->mWeights;
-		int numWeights = mesh->mBones[boneIndex]->mNumWeights;
+		auto weights = bone->mWeights;
+		int numWeights = bone->mNumWeights;
 
 		for (int weightIndex = 0; weightIndex < numWeights; ++weightIndex)
 		{
@@ -195,6 +210,36 @@ void FBXLoader::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMe
 		}
 	}
 
+}
+
+void FBXLoader::SetHashBoneInfoMap(AssimpNodeData& root, AssimpNodeData& nodeData)
+{
+	if (nodeData.hasMesh && nodeData.mesh.isSkinMesh)
+	{
+		std::map<aiNode*, BoneInfo>& temp = nodeData.mesh.boneInfoMap;
+		for (auto& go : temp)
+		{
+			go.second.hashCode = GetNodeByNativeNode(root, go.first);
+		}
+	}
+	for (auto& go : nodeData.children)
+	{
+		SetHashBoneInfoMap(root, go);
+	}
+}
+
+std::string FBXLoader::GetNodeByNativeNode(AssimpNodeData& root, aiNode* nativeNode)
+{
+	if (root.nativeNode == nativeNode)
+		return root.hashCode;
+
+	for (auto& go : root.children)
+	{
+		std::string temp = GetNodeByNativeNode(go, nativeNode);
+		if (temp != "") return temp;
+	}
+
+	return "";
 }
 
 void FBXLoader::SetVertexBoneData(Vertex& vertex, int boneID, float weight)
@@ -217,4 +262,144 @@ void FBXLoader::SetVertexBoneDataToDefault(Vertex& vertex)
 		vertex.boneID[i] = -1;
 		vertex.boneWeight[i] = 0.0f;
 	}
+}
+
+void FBXLoader::ParseAssimpNodePath(aiNode* node, std::string& path)
+{
+	if (node == nullptr)
+		return;
+	path += "/";
+	path += node->mName.data;
+	ParseAssimpNodePath(node->mParent, path);
+}
+
+void FBXLoader::ConvertFBXResources(Ref<FBXResources> res, AssimpNodeData& data)
+{
+	glm::vec3 skew;
+	glm::vec4 m;
+	glm::decompose(data.transformation, res->localScale, res->localRotation, res->localPosition, skew, m);
+
+	res->hashCode = data.hashCode;
+	res->name = data.name;
+	if (data.hasMesh)
+	{
+		Ref<Mesh> mesh = CreateRef<Mesh>();
+		for (auto& go : data.mesh.vertices)
+		{
+			Mesh::Data& meshData = mesh->AddMeshData(Mesh::Data());
+			for (auto& attr : go.attributes)
+			{
+				meshData.AddAttribute(attr);
+			}
+			int index = 0;
+			meshData.vertexData.resize(((size_t)meshData.vertexStride / 4) * ((size_t)go.vertices.size()));
+			for (auto& vertex : go.vertices)
+			{
+				meshData.vertexData[index++] = vertex.position.x;
+				meshData.vertexData[index++] = vertex.position.y;
+				meshData.vertexData[index++] = vertex.position.z;
+				mesh->UpdateBoundingBox(vertex.position.x, vertex.position.y, vertex.position.z);
+
+				if (HasAttribute(go.attributes, VertexAttributeType::Normal))
+				{
+					meshData.vertexData[index++] = vertex.normal.x;
+					meshData.vertexData[index++] = vertex.normal.y;
+					meshData.vertexData[index++] = vertex.normal.z;
+				}
+
+				if (HasAttribute(go.attributes, VertexAttributeType::Tangent))
+				{
+					meshData.vertexData[index++] = vertex.tangent.x;
+					meshData.vertexData[index++] = vertex.tangent.y;
+					meshData.vertexData[index++] = vertex.tangent.z;
+				}
+
+				if (HasAttribute(go.attributes, VertexAttributeType::UV0))
+				{
+					meshData.vertexData[index++] = vertex.texCoord0.x;
+					meshData.vertexData[index++] = vertex.texCoord0.y;
+				}
+
+				if (HasAttribute(go.attributes, VertexAttributeType::UV1))
+				{
+					meshData.vertexData[index++] = vertex.texCoord1.x;
+					meshData.vertexData[index++] = vertex.texCoord1.y;
+				}
+
+				if (HasAttribute(go.attributes, VertexAttributeType::UV2))
+				{
+					meshData.vertexData[index++] = vertex.texCoord2.x;
+					meshData.vertexData[index++] = vertex.texCoord2.y;
+				}
+
+				if (HasAttribute(go.attributes, VertexAttributeType::UV3))
+				{
+					meshData.vertexData[index++] = vertex.texCoord3.x;
+					meshData.vertexData[index++] = vertex.texCoord3.y;
+				}
+
+				if (HasAttribute(go.attributes, VertexAttributeType::UV4))
+				{
+					meshData.vertexData[index++] = vertex.texCoord4.x;
+					meshData.vertexData[index++] = vertex.texCoord4.y;
+				}
+
+				if (HasAttribute(go.attributes, VertexAttributeType::UV5))
+				{
+					meshData.vertexData[index++] = vertex.texCoord5.x;
+					meshData.vertexData[index++] = vertex.texCoord5.y;
+				}
+
+				if (HasAttribute(go.attributes, VertexAttributeType::UV6))
+				{
+					meshData.vertexData[index++] = vertex.texCoord6.x;
+					meshData.vertexData[index++] = vertex.texCoord6.y;
+				}
+
+				if (HasAttribute(go.attributes, VertexAttributeType::UV7))
+				{
+					meshData.vertexData[index++] = vertex.texCoord7.x;
+					meshData.vertexData[index++] = vertex.texCoord7.y;
+				}
+
+				if (HasAttribute(go.attributes, VertexAttributeType::Color))
+				{
+					meshData.vertexData[index++] = vertex.color.r;
+					meshData.vertexData[index++] = vertex.color.g;
+					meshData.vertexData[index++] = vertex.color.b;
+					meshData.vertexData[index++] = vertex.color.a;
+				}
+
+				if (HasAttribute(go.attributes, VertexAttributeType::BoneID1))
+				{
+					meshData.vertexData[index++] = (float)vertex.boneID[0];
+					meshData.vertexData[index++] = (float)vertex.boneID[1];
+					meshData.vertexData[index++] = (float)vertex.boneID[2];
+					meshData.vertexData[index++] = (float)vertex.boneID[3];
+
+					meshData.vertexData[index++] = vertex.boneWeight[0];
+					meshData.vertexData[index++] = vertex.boneWeight[1];
+					meshData.vertexData[index++] = vertex.boneWeight[2];
+					meshData.vertexData[index++] = vertex.boneWeight[3];
+				}
+			}
+			
+		}
+		res->mesh = mesh;
+	}
+
+	for (auto& go : data.children)
+	{
+		Ref<FBXResources> child = CreateRef<FBXResources>();
+		ConvertFBXResources(child, go);
+		res->children.push_back(child);
+	}
+}
+
+bool FBXLoader::HasAttribute(std::vector<VertexAttributeType>& attributes, VertexAttributeType attr)
+{
+	auto itr = std::find(attributes.begin(), attributes.end(), attr);
+	if (itr != attributes.end())
+		return true;
+	return false;
 }
