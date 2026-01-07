@@ -33,7 +33,7 @@ Ref<FBXResources> FBXLoader::LoadFBX(std::string path)
 	SetHashBoneInfoMap(data, data);
 
 	Ref<FBXResources> res = CreateRef<FBXResources>();
-	ConvertFBXResources(res, data);
+	ConvertFBXResources(res, data, path);
 
 	return res;
 }
@@ -273,7 +273,7 @@ void FBXLoader::ParseAssimpNodePath(aiNode* node, std::string& path)
 	ParseAssimpNodePath(node->mParent, path);
 }
 
-void FBXLoader::ConvertFBXResources(Ref<FBXResources> res, AssimpNodeData& data)
+void FBXLoader::ConvertFBXResources(Ref<FBXResources> res, AssimpNodeData& data, std::string& path)
 {
 	glm::vec3 skew;
 	glm::vec4 m;
@@ -284,6 +284,8 @@ void FBXLoader::ConvertFBXResources(Ref<FBXResources> res, AssimpNodeData& data)
 	if (data.hasMesh)
 	{
 		Ref<Mesh> mesh = CreateRef<Mesh>();
+		mesh->SetHashCode(data.hashCode);
+		mesh->SetPath(path);
 		for (auto& go : data.mesh.vertices)
 		{
 			Mesh::Data& meshData = mesh->AddMeshData(Mesh::Data());
@@ -384,6 +386,7 @@ void FBXLoader::ConvertFBXResources(Ref<FBXResources> res, AssimpNodeData& data)
 				}
 			}
 			
+			meshData.indexData = go.indices;
 		}
 		res->mesh = mesh;
 	}
@@ -391,7 +394,7 @@ void FBXLoader::ConvertFBXResources(Ref<FBXResources> res, AssimpNodeData& data)
 	for (auto& go : data.children)
 	{
 		Ref<FBXResources> child = CreateRef<FBXResources>();
-		ConvertFBXResources(child, go);
+		ConvertFBXResources(child, go, path);
 		res->children.push_back(child);
 	}
 }

@@ -24,7 +24,7 @@
 #include "SceneManager.h"
 #include "ComponentSystem.h"
 #include "Renderer.h"
-#include "MeshManager.h"
+#include "FBXManager.h"
 #include "MaterialManager.h"
 #include "MaterialManagerEditor.h"
 #include "CameraController.h"
@@ -75,30 +75,6 @@ void SerializeMaterial()
 
 	//Material::overrideMat = mat;
 	//YamlSerializer::SerializeMaterial("Assets/Materials/test.mat");
-}
-
-void SerializeScene0()
-{
-	Ref<Scene> scene = SceneManagerEditor::GetCurrentNode()->scene;
-
-	Entity* entity = scene->CreateEntity("test1");
-	entity->GetTransform()->Tick();
-
-	Entity* entity2 = scene->CreateEntity("test2");
-	entity2->GetTransform()->SetParent(entity->GetTransform());
-	entity2->GetTransform()->SetLocalEulerAngles(glm::vec3(10, 10, 10));
-	entity2->GetTransform()->Tick();
-	entity2->SetActive(false);
-	PerspectiveCamera* camera = entity2->AddComponent<PerspectiveCamera>();
-
-	Entity* entity3 = scene->CreateEntity("test3");
-	MeshRenderer* renderer = entity3->AddComponent<MeshRenderer>();
-	renderer->SetMesh(MeshManager::GetMesh("Sphere"));
-	renderer->SetMesh(MeshManager::GetMesh("Assets/Meshs/rock.obj"));
-	renderer->AddMaterial(0, MaterialManager::GetMaterial("Assets/Materials/test.mat"));
-
-	SceneManagerEditor::SaveScene();//"Assets/Scenes/All0.scene"
-	SceneManagerEditor::AddToBuild(0, SceneManagerEditor::GetCurrentNode());
 }
 
 void SerializeTexture()

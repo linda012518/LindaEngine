@@ -6,7 +6,7 @@
 #include "ComponentSystem.h"
 #include "BehaviorSystem.h"
 #include "TextureManager.h"
-#include "MeshManager.h"
+#include "FBXManager.h"
 #include "MaterialManager.h"
 #include "ShaderManager.h"
 
@@ -93,7 +93,7 @@ Ref<Scene> SceneManager::LoadSceneFromPath(std::string& path)
 	RenderTextureManager::Clear();
 	MaterialManager::Clear();
 	ShaderManager::Clear();
-	MeshManager::Clear();
+	FBXManager::Clear();
 
 	YAML::Node data;
 	try

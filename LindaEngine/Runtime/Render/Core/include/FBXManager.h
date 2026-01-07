@@ -17,11 +17,12 @@ namespace LindaEngine
 		static void DestoryFBX(std::string fbxPath);
 		static void Clear();
 
-		static Ref<Mesh> LoadSkybox();
-		static Ref<Mesh> LoadEmpty();
+		static Ref<Mesh> GetSkybox();
+		static Ref<Mesh> GetEmpty();
 
 	private:
 		static Ref<Mesh> GetMeshFromFBX(Ref<FBXResources> res, std::string hashCode);
+		static void ClearFBX(Ref<FBXResources> res);
 
 	private:
 		static std::unordered_map<std::string, Ref<FBXResources>> _map;

@@ -26,13 +26,7 @@ Ref<Mesh> FBXManager::GetMesh(std::string fbxPath, std::string hashCode)
 {
     try
     {
-		Ref<Mesh> mesh = GetMeshFromFBX(GetFBX(fbxPath), hashCode);
-		if (nullptr != mesh)
-		{
-			mesh->SetPath(fbxPath);
-			mesh->SetHashCode(hashCode);
-		}
-		return mesh;
+		return GetMeshFromFBX(GetFBX(fbxPath), hashCode);
     }
     catch (const std::exception&)
     {
@@ -42,8 +36,11 @@ Ref<Mesh> FBXManager::GetMesh(std::string fbxPath, std::string hashCode)
 
 void FBXManager::DestoryFBX(std::string fbxPath)
 {
-    if (_map.find(fbxPath) != _map.end())
+	if (_map.find(fbxPath) != _map.end())
+	{
+		ClearFBX(_map[fbxPath]);
         _map.erase(fbxPath);
+	}
 }
 
 void FBXManager::Clear()
@@ -67,7 +64,18 @@ Ref<Mesh> FBXManager::GetMeshFromFBX(Ref<FBXResources> res, std::string hashCode
     return nullptr;
 }
 
-Ref<Mesh> FBXManager::LoadSkybox()
+void FBXManager::ClearFBX(Ref<FBXResources> res)
+{
+	FBXResources* temp = res.get();
+	for (auto& go : temp->children)
+	{
+		ClearFBX(go);
+	}
+	temp = nullptr;
+	res = nullptr;
+}
+
+Ref<Mesh> FBXManager::GetSkybox()
 {
 	Ref<Mesh> mesh = CreateRef<Mesh>();
 
@@ -120,7 +128,7 @@ Ref<Mesh> FBXManager::LoadSkybox()
 	return mesh;
 }
 
-Ref<Mesh> FBXManager::LoadEmpty()
+Ref<Mesh> FBXManager::GetEmpty()
 {
 	Ref<Mesh> mesh = CreateRef<Mesh>();
 	Mesh::Data& data = mesh->AddMeshData(Mesh::Data());

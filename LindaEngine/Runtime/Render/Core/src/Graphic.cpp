@@ -5,7 +5,7 @@
 #include "Material.h"
 #include "Texture.h"
 #include "TextureManager.h"
-#include "MeshManager.h"
+#include "FBXManager.h"
 #include "GraphicsContext.h"
 
 using namespace LindaEngine;
@@ -56,7 +56,7 @@ void Graphic::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref<Material
 	Material::overrideLightMode = "Color";
 	mat->SetTexture("mainTexture", go, pass);
 	mat->Bind(pass, nullptr, std::vector<VertexAttribute>());
-	MeshManager::GetEmpty()->Draw();
+	FBXManager::GetEmpty()->Draw();
 }
 
 void Graphic::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest)

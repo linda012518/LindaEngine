@@ -1,10 +1,8 @@
 #include "Renderer.h"
 #include "Transform.h"
 #include "YamlSerializer.h"
-#include "Mesh.h"
 #include "Material.h"
 #include "FBXManager.h"
-#include "MeshManager.h"
 #include "MaterialManager.h"
 #include "ComponentImplement.inl"
 #include "Entity.h"
@@ -248,7 +246,7 @@ bool SkinMeshRenderer::Deserialize(YAML::Node& node)
 SkyboxRenderer::SkyboxRenderer(Entity& entity, bool enable) : Renderer(entity, enable)
 {
 	_type = RenderComponentType::Skybox;
-	_mesh = MeshManager::GetSkybox();
+	_mesh = FBXManager::GetSkybox();
 	_shadowCast = false;
 	_receiveShadow = false;
 

@@ -192,7 +192,7 @@
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\Image.cpp" />
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\ProgressBar.cpp" />
     <ClCompile Include="Editor\Core\src\EventSystemEditor.cpp" />
-    <ClCompile Include="Runtime\IO\src\FBXManager.cpp" />
+    <ClCompile Include="Runtime\Render\Core\src\FBXManager.cpp" />
     <ClCompile Include="Runtime\IO\src\FBXLoader.cpp" />
     <ClCompile Include="Runtime\Core\src\ApplicationRuntime.cpp" />
     <ClCompile Include="Editor\Core\src\ApplicationEditor.cpp" />
@@ -239,8 +239,6 @@
     <ClCompile Include="Runtime\IO\src\Path.cpp" />
     <ClCompile Include="Runtime\IO\src\SerializeMaterial.cpp" />
     <ClCompile Include="Runtime\IO\src\SerializeTexture.cpp" />
-    <ClCompile Include="Runtime\Render\Core\src\MeshManager.cpp" />
-    <ClCompile Include="Runtime\IO\src\MeshLoader.cpp" />
     <ClCompile Include="External\yaml-cpp\src\binary.cpp" />
     <ClCompile Include="External\yaml-cpp\src\contrib\graphbuilder.cpp" />
     <ClCompile Include="External\yaml-cpp\src\contrib\graphbuilderadapter.cpp" />
@@ -318,6 +316,8 @@
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Layout\Spacing.cpp" />
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Sliders\SliderSingleScalar.cpp" />
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\Separator.cpp" />
+    <ClCompile Include="Temp\MeshLoader.cpp" />
+    <ClCompile Include="Temp\MeshManager.cpp" />
     <ClCompile Include="Temp\TestECSEvent.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderer.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderPipeline.cpp" />
@@ -410,7 +410,7 @@
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\Image.h" />
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\ProgressBar.h" />
     <ClInclude Include="Editor\Core\include\EventSystemEditor.h" />
-    <ClInclude Include="Runtime\IO\include\FBXManager.h" />
+    <ClInclude Include="Runtime\Render\Core\include\FBXManager.h" />
     <ClInclude Include="Runtime\IO\include\AssimpGLMHelpers.h" />
     <ClInclude Include="Runtime\IO\include\FBXLoader.h" />
     <ClInclude Include="Runtime\Core\include\ApplicationRuntime.h" />
@@ -419,6 +419,7 @@
     <ClInclude Include="Runtime\Core\include\EventCallback.h" />
     <ClInclude Include="Runtime\Core\include\LSemaphore.h" />
     <ClInclude Include="Runtime\Core\include\LThread.h" />
+    <ClInclude Include="Runtime\Render\Core\include\FBXResources.h" />
     <ClInclude Include="Runtime\Render\PostProcess\include\GrayPostProcess.h" />
     <ClInclude Include="Runtime\Core\include\ClassFactory.h" />
     <ClInclude Include="Runtime\Render\PostProcess\include\PostProcessEffectRenderer.h" />
@@ -504,8 +505,6 @@
     <ClInclude Include="External\assimp\assimp\version.h" />
     <ClInclude Include="Editor\Core\include\NodeEditor.h" />
     <ClInclude Include="Runtime\IO\include\Path.h" />
-    <ClInclude Include="Runtime\Render\Core\include\MeshManager.h" />
-    <ClInclude Include="Runtime\IO\include\MeshLoader.h" />
     <ClInclude Include="External\yaml-cpp\include\yaml-cpp\anchor.h" />
     <ClInclude Include="External\yaml-cpp\include\yaml-cpp\binary.h" />
     <ClInclude Include="External\yaml-cpp\include\yaml-cpp\contrib\anchordict.h" />
@@ -916,6 +915,8 @@
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderMultipleScalars.h" />
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderSingleScalar.h" />
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\Separator.h" />
+    <ClInclude Include="Temp\MeshLoader.h" />
+    <ClInclude Include="Temp\MeshManager.h" />
     <ClInclude Include="Temp\TestECSEvent.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\UniversalRenderer.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\UniversalRenderPipeline.h" />

@@ -6,8 +6,10 @@
 #include "Renderer.h"
 #include "Material.h"
 #include "MaterialManager.h"
+#include "FBXManager.h"
 #include "ComponentSystem.h"
 #include "BehaviorSystem.h"
+#include "Renderer.h"
 
 #include <fstream>
 #include <iostream>
@@ -20,6 +22,18 @@ Entity* Scene::CreateEntity(const char* name, bool active)
 	Ref<Entity> e = CreateRef<Entity>(name, active);
 	_entitys.push_back(e);
 	return e.get();
+}
+
+Entity* Scene::InstantiatePrefab(std::string path)
+{
+	return nullptr;
+}
+
+Entity* Scene::InstantiateFBX(std::string path)
+{
+	Ref<FBXResources> res = FBXManager::GetFBX(path);
+
+	return CreateEntityFromFBX(res, nullptr);
 }
 
 void Scene::DestroyEntity(Entity* entity)
@@ -81,6 +95,34 @@ void Scene::DestroyEntityIncludeChild(Entity* entity)
 		_entitys.erase(iter);
 		break;
 	}
+}
+
+Entity* Scene::CreateEntityFromFBX(Ref<FBXResources> res, Transform* parent)
+{
+	Entity* entity = CreateEntity(res->name.c_str());
+
+	Transform* transform = entity->GetTransform();
+	transform->SetLocalPosition(res->localPosition);
+	transform->SetLocalRotation(res->localRotation);
+	transform->SetLocalScale(res->localScale);
+	transform->SetParent(parent);
+
+	if (nullptr != res->mesh)
+	{
+		MeshRenderer* renderer = entity->AddComponent<MeshRenderer>();
+		renderer->SetMesh(res->mesh);
+		int index = 0;
+		for (auto& data : res->mesh->GetAllMeshData())
+		{
+			renderer->AddMaterial(index++, MaterialManager::GetMaterial("Assets/Materials/test.mat"));
+		}
+	}
+	for (auto& node : res->children)
+	{
+		CreateEntityFromFBX(node, transform);
+	}
+
+	return entity;
 }
 
 void Scene::Destroy()

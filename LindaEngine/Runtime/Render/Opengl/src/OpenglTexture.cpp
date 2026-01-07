@@ -6,7 +6,7 @@
 #include "Entity.h"
 #include "Camera.h"
 #include "Mesh.h"
-#include "MeshManager.h"
+#include "FBXManager.h"
 #include "GraphicsContext.h"
 
 #include <iostream>
@@ -86,10 +86,10 @@ void OpenglTexture::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
 	for (unsigned int i = 0; i < 6; ++i)
 	{
 		material->SetMat4("viewProjection", camera->GetVPMatrix(i));
-		material->Bind(0, nullptr, MeshManager::GetSkybox()->GetMeshAttributes());
+		material->Bind(0, nullptr, FBXManager::GetSkybox()->GetMeshAttributes());
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, dest->nativeColorID, 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		MeshManager::GetSkybox()->Draw();
+		FBXManager::GetSkybox()->Draw();
 	}
 
 	if (dest->mipmapCount > 1)
