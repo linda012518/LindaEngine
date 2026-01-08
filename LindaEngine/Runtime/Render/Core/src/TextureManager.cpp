@@ -11,7 +11,7 @@ using namespace LindaEngine;
 std::unordered_map<std::string, Ref<Texture>> TextureManager::_textureMap;
 std::vector<Ref<RenderTexture>> RenderTextureManager::_renderTextures;
 
-Ref<Texture> TextureManager::GetTexture(std::string& path)
+Ref<Texture> TextureManager::GetTexture(std::string path)
 {
     try
     {
@@ -38,6 +38,37 @@ Ref<Texture> TextureManager::GetTexture(std::string& path)
     {
         return nullptr;
     }
+}
+
+Ref<Texture> TextureManager::GetTextureDirect(std::string path)
+{
+    try
+    {
+        auto itr = _textureMap.find(path);
+        if (itr == _textureMap.end())
+        {
+            if (path == "white" || path == "black" || path == "gray" || path == "bump")
+            {
+                _textureMap[path] = TextureLoader::Load(path);
+            }
+            else
+            {
+                Ref<Texture2D> texture = CreateRef<Texture2D>();
+                if (nullptr == texture)
+                    return nullptr;
+                texture->path = path;
+                TextureLoader::Load(texture);
+                _textureMap[path] = texture;
+            }
+        }
+
+        return _textureMap[path];
+    }
+    catch (const std::exception&)
+    {
+        return nullptr;
+    }
+
 }
 
 void TextureManager::DeleteTexture(Ref<Texture> texture)

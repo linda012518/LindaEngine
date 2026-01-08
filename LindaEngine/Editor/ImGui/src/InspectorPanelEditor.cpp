@@ -83,8 +83,10 @@ static void DrawComponent(T* component, Entity* entity, UIFunction uiFunction)
 		ImGui::BeginDisabled();
 
 	std::string go = "##" + std::string((const char *)component);
-	bool ret = true;
+	bool ret = component->GetEnable();
 	ImGui::Checkbox(go.c_str(), &ret);
+	if (component->GetEnable() != ret)
+		component->SetEnable(ret);
 
 	ImGui::PopStyleVar(1);
 	ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, 1);
@@ -158,22 +160,22 @@ void InspectorPanelEditor::DrawComponents()
 		if (nullptr != pointer)
 		{
 			DrawComponent<Transform>(pointer, _selectionEntity, [](auto& com)
-				{
-					//ImGui::Separator();
-					glm::vec3& pos = com->GetLocalPosition();
-					DrawVec3Control("Position", pos);
-					com->SetLocalPosition(pos);
+			{
+				//ImGui::Separator();
+				glm::vec3& pos = com->GetLocalPosition();
+				DrawVec3Control("Position", pos);
+				com->SetLocalPosition(pos);
 
-					ImGui::Spacing();
-					glm::vec3& angles = com->GetLocalEulerAngles();
-					DrawVec3Control("Angles", angles);
-					com->SetLocalEulerAngles(angles);
+				ImGui::Spacing();
+				glm::vec3& angles = com->GetLocalEulerAngles();
+				DrawVec3Control("Angles", angles);
+				com->SetLocalEulerAngles(angles);
 
-					ImGui::Spacing();
-					glm::vec3& scale = com->GetLocalScale();
-					DrawVec3Control("Scale", scale, 1.0f);
-					com->SetLocalScale(scale);
-				});
+				ImGui::Spacing();
+				glm::vec3& scale = com->GetLocalScale();
+				DrawVec3Control("Scale", scale, 1.0f);
+				com->SetLocalScale(scale);
+			});
 		}
 		else
 		{

@@ -238,6 +238,25 @@ void HierarchyPanelEditor::DrawContextMenu()
 		{
 			SceneManagerEditor::GetCurrentNode()->scene->CreateEntity("Empty Entity");
 		}
+		if (ImGui::BeginMenu("Create 3D Object"))
+		{
+			if (ImGui::MenuItem("Cube"))
+			{
+				SceneManagerEditor::GetCurrentNode()->scene->InstantiateCube();
+			}
+
+			if (ImGui::MenuItem("Sphere"))
+			{
+				SceneManagerEditor::GetCurrentNode()->scene->InstantiateSphere();
+			}
+
+			if (ImGui::MenuItem("Plane"))
+			{
+				SceneManagerEditor::GetCurrentNode()->scene->InstantiatePlane();
+			}
+
+			ImGui::EndMenu();
+		}
 		ImGui::EndPopup();
 	}
 

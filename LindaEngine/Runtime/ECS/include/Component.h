@@ -27,6 +27,7 @@ namespace LindaEngine
 		bool IsEnable() const;
 		bool LastEnbale();
 		void SetEnable(bool enable);
+		bool GetEnable() { return _enable; }
 
 		virtual void Tick() {}
 		virtual void Destroy() {}

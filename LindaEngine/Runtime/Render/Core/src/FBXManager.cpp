@@ -3,6 +3,8 @@
 using namespace LindaEngine;
 
 std::unordered_map<std::string, Ref<FBXResources>> FBXManager::_map;
+Ref<Mesh> FBXManager::_skybox = nullptr;
+Ref<Mesh> FBXManager::_empty = nullptr;
 
 Ref<FBXResources> FBXManager::GetFBX(std::string fbxPath)
 {
@@ -77,9 +79,12 @@ void FBXManager::ClearFBX(Ref<FBXResources> res)
 
 Ref<Mesh> FBXManager::GetSkybox()
 {
-	Ref<Mesh> mesh = CreateRef<Mesh>();
+	if (nullptr != _skybox)
+		return _skybox;
 
-	Mesh::Data& data = mesh->AddMeshData(Mesh::Data());
+	_skybox = CreateRef<Mesh>();
+
+	Mesh::Data& data = _skybox->AddMeshData(Mesh::Data());
 
 	data.AddAttribute(VertexAttributeType::Position);
 
@@ -125,13 +130,16 @@ Ref<Mesh> FBXManager::GetSkybox()
 	data.vertexData.insert(data.vertexData.end(), { -1.0f, -1.0f,  1.0f });
 	data.vertexData.insert(data.vertexData.end(), {  1.0f, -1.0f,  1.0f });
 
-	return mesh;
+	return _skybox;
 }
 
 Ref<Mesh> FBXManager::GetEmpty()
 {
-	Ref<Mesh> mesh = CreateRef<Mesh>();
-	Mesh::Data& data = mesh->AddMeshData(Mesh::Data());
-	return mesh;
+	if (nullptr != _empty)
+		return _empty;
+
+	_empty = CreateRef<Mesh>();
+	Mesh::Data& data = _empty->AddMeshData(Mesh::Data());
+	return _empty;
 }
 

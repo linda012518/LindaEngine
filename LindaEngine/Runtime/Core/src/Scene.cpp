@@ -24,6 +24,21 @@ Entity* Scene::CreateEntity(const char* name, bool active)
 	return e.get();
 }
 
+Entity* Scene::InstantiateCube()
+{
+	return InstantiateFBX("BuiltInAssets/Meshs/Cube.FBX");
+}
+
+Entity* Scene::InstantiateSphere()
+{
+	return InstantiateFBX("BuiltInAssets/Meshs/Sphere.FBX");
+}
+
+Entity* Scene::InstantiatePlane()
+{
+	return InstantiateFBX("BuiltInAssets/Meshs/Plane.FBX");
+}
+
 Entity* Scene::InstantiatePrefab(std::string path)
 {
 	return nullptr;

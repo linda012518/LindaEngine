@@ -18,6 +18,9 @@ namespace LindaEngine
 		friend class SceneManager;
 	public:
 		Entity* CreateEntity(const char* name, bool active = true);
+		Entity* InstantiateCube();
+		Entity* InstantiateSphere();
+		Entity* InstantiatePlane();
 		Entity* InstantiatePrefab(std::string path);
 		Entity* InstantiateFBX(std::string path);
 		void DestroyEntity(Entity* entity); 

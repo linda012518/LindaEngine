@@ -1,5 +1,6 @@
 #include "Component.h"
 #include "Entity.h"
+#include "Transform.h"
 
 using namespace LindaEngine;
 
@@ -49,6 +50,10 @@ bool Component::LastEnbale()
 
 void Component::SetEnable(bool enable)
 {
+	Transform* pointer = dynamic_cast<Transform*>(this);
+	if (nullptr != pointer)
+		return;
+
 	if (_enable == enable)
 		return;
 	_enable = enable;

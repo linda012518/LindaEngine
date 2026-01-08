@@ -26,5 +26,7 @@ namespace LindaEngine
 
 	private:
 		static std::unordered_map<std::string, Ref<FBXResources>> _map;
+		static Ref<Mesh> _skybox;
+		static Ref<Mesh> _empty;
 	};
 }

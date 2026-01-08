@@ -45,6 +45,8 @@ void TextureLoader::Delete(Ref<Texture> texture)
 
 TextureLoader::TextureTempData TextureLoader::LoadToMemory(const char* path)
 {
+    stbi_set_flip_vertically_on_load(true);
+
     void* data = nullptr;
     int width, height, channels, bitCount;
 

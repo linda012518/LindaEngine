@@ -55,7 +55,12 @@ void EventSystem::Dispatch(IEventHandler* sender, int code, Event& eventData)
 
         IEventHandler* temp = *it;
         if (nullptr != temp)
+        {
+            Component* com = dynamic_cast<Component*>(temp);
+            if (nullptr != com && false == com->IsEnable())
+                continue;
             temp->OnEvent(sender, code, eventData);
+        }
     }
 }
 

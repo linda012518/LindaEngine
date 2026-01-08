@@ -18,9 +18,9 @@ Scene:
       Active: true
       Components:
         - Name: Transform
-          worldPosition: [0, 0, 3.0]
+          worldPosition: [0, 0, 3]
           worldScale: [1, 1, 1]
-          worldRotation: [0, 0, 0, 1]
+          worldRotation: [0.105457023, -0.27480647, 0.0303389356, 0.955217183]
           parent: 0617baa2-a444-1829-0000-000000000001
         - enable: true
           hdrEnable: false
@@ -30,7 +30,7 @@ Scene:
           layerMask: 16
           msaa: 4
           clearType: 0
-          clearColor: [0, 0.3, 0, 1]
+          clearColor: [0, 0.300000012, 0, 1]
           PostProcess:
             - Name: GrayPostProcess
               enable: true
@@ -54,6 +54,83 @@ Scene:
           Mesh:
             FilePath: BuiltInAssets/Meshs/Cube.FBX
             HashCode: 35f8d1cbbe28c261
+          Material:
+            - FilePath: Assets/Materials/test.mat
+          Name: MeshRenderer
+    - Name: RootNode
+      Layer: -1
+      ID: 75b4e50d-0ea5-15a6-0000-000000000007
+      Active: true
+      Components:
+        - Name: Transform
+          worldPosition: [0, 0, 0]
+          worldScale: [1, 1, 1]
+          worldRotation: [0, 0, 0, 1]
+          parent: ""
+    - Name: Plane001
+      Layer: -1
+      ID: 3ac70f74-d8db-cd57-0000-000000000008
+      Active: true
+      Components:
+        - Name: Transform
+          worldPosition: [0, -0.800000012, 0]
+          worldScale: [1, 0.999999881, 0.999999881]
+          worldRotation: [0, 0, 0, 1]
+          parent: 75b4e50d-0ea5-15a6-0000-000000000007
+        - enable: true
+          ShadowCast: true
+          ReceiveShadow: true
+          Mesh:
+            FilePath: BuiltInAssets/Meshs/Plane.FBX
+            HashCode: 6e04f7e65c233f05
+          Material:
+            - FilePath: Assets/Materials/test.mat
+          Name: MeshRenderer
+    - Name: RootNode
+      Layer: -1
+      ID: 1cad3326-7826-9649-0000-000000000009
+      Active: true
+      Components:
+        - Name: Transform
+          worldPosition: [1.89999998, 0, 0]
+          worldScale: [1, 1, 1]
+          worldRotation: [0, 0, 0, 1]
+          parent: ""
+    - Name: Box002
+      Layer: -1
+      ID: c7f8897f-ce9a-d01d-0000-00000000000a
+      Active: true
+      Components:
+        - Name: Transform
+          worldPosition: [1.89999998, 0.49999997, -2.18556924e-08]
+          worldScale: [1, 0.999999881, 0.999999881]
+          worldRotation: [-0.70710665, 0, 0, 0.707106888]
+          parent: 1cad3326-7826-9649-0000-000000000009
+        - enable: true
+          ShadowCast: true
+          ReceiveShadow: true
+          Mesh:
+            FilePath: BuiltInAssets/Meshs/Cube.FBX
+            HashCode: 35f8d1cbbe28c261
+          Material:
+            - FilePath: Assets/Materials/test.mat
+          Name: MeshRenderer
+    - Name: Sphere001
+      Layer: -1
+      ID: edeab1f5-1303-7412-0000-00000000000c
+      Active: true
+      Components:
+        - Name: Transform
+          worldPosition: [-0.899999976, 1, 0]
+          worldScale: [1, 0.999999881, 0.999999881]
+          worldRotation: [-0.70710665, 0, 0, 0.707106948]
+          parent: ""
+        - enable: true
+          ShadowCast: true
+          ReceiveShadow: true
+          Mesh:
+            FilePath: BuiltInAssets/Meshs/Sphere.FBX
+            HashCode: f42cf300c719f1d5
           Material:
             - FilePath: Assets/Materials/test.mat
           Name: MeshRenderer

@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "AssimpGLMHelpers.h"
 #include "Mesh.h"
+#include "Path.h"
 
 #include "assimp\Importer.hpp"
 #include "assimp\scene.h"
@@ -34,7 +35,7 @@ Ref<FBXResources> FBXLoader::LoadFBX(std::string path)
 
 	Ref<FBXResources> res = CreateRef<FBXResources>();
 	ConvertFBXResources(res, data, path);
-
+	res->name = Path::GetFileNameNoExtension(path);
 	return res;
 }
 
