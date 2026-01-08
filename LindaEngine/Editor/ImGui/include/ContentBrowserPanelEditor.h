@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "ImGuiPanelEditor.h"
 
@@ -12,12 +12,12 @@ namespace LindaEditor
 		Folder, Scene, Material, FBX, Prefab, Texture, RenderTexture, Shader, ShaderLibrary, Text, Font, Other
 	};
 
-	struct FileSystem
+	struct FileNode
 	{
 		std::string path;
 		std::string name;
 		FileType type = FileType::Other;
-		std::vector<FileSystem> children;
+		std::vector<FileNode> children;
 	};
 
 	class ContentBrowserPanelEditor : public ImGuiPanelEditor
@@ -28,15 +28,27 @@ namespace LindaEditor
 		void OnImGuiRender();
 
 	private:
-		void DrawContent(FileSystem& fs);
-		void DrawIcon(FileType type);
-		void CollectFileFolder(FileSystem& fs);
+		void DrawContent(FileNode& fs);
+		void DrawIcon(FileType type, float offsetX);
+		void CollectFileFolder(FileNode& fs);
+		void SortFileFolder(FileNode& fs);
 		void ReloadResources();
 		FileType CheckFileType(std::string fileName);
 
+		void DrawBlankAreaDropTarget();
+		void DragNodes(FileNode* fs);
+		bool IsFileNodeSelected(FileNode* fs);
+		void HandleNodeSelection(FileNode* node, bool isCtrlDown);
+		void DeselectEntity(FileNode* node);
+		void SelectSingle();
+
 	private:
 		bool _resDirty = true;
-		FileSystem _fileSystem;
+		FileNode _fileSystem;
+		FileNode* _selectedNode;
+		FileNode* _hoveredNode;
+		std::vector<FileNode*> _selectionNodes;
+		ImVec2 _mouseDownPos;
 	};
 }
 

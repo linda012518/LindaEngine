@@ -24,31 +24,31 @@ Entity* Scene::CreateEntity(const char* name, bool active)
 	return e.get();
 }
 
-Entity* Scene::InstantiateCube()
+Entity* Scene::InstantiateCube(Transform* parent)
 {
-	return InstantiateFBX("BuiltInAssets/Meshs/Cube.FBX");
+	return InstantiateFBX("BuiltInAssets/Meshs/Cube.FBX", parent);
 }
 
-Entity* Scene::InstantiateSphere()
+Entity* Scene::InstantiateSphere(Transform* parent)
 {
-	return InstantiateFBX("BuiltInAssets/Meshs/Sphere.FBX");
+	return InstantiateFBX("BuiltInAssets/Meshs/Sphere.FBX", parent);
 }
 
-Entity* Scene::InstantiatePlane()
+Entity* Scene::InstantiatePlane(Transform* parent)
 {
-	return InstantiateFBX("BuiltInAssets/Meshs/Plane.FBX");
+	return InstantiateFBX("BuiltInAssets/Meshs/Plane.FBX", parent);
 }
 
-Entity* Scene::InstantiatePrefab(std::string path)
+Entity* Scene::InstantiatePrefab(std::string path, Transform* parent)
 {
 	return nullptr;
 }
 
-Entity* Scene::InstantiateFBX(std::string path)
+Entity* Scene::InstantiateFBX(std::string path, Transform* parent)
 {
 	Ref<FBXResources> res = FBXManager::GetFBX(path);
 
-	return CreateEntityFromFBX(res, nullptr);
+	return CreateEntityFromFBX(res, parent);
 }
 
 void Scene::DestroyEntity(Entity* entity)
@@ -137,6 +137,7 @@ Entity* Scene::CreateEntityFromFBX(Ref<FBXResources> res, Transform* parent)
 		CreateEntityFromFBX(node, transform);
 	}
 
+	transform->SetParent(parent);
 	return entity;
 }
 

@@ -31,6 +31,7 @@ namespace LindaEditor
 
 		void SelectNone();
 		void SelectSingle();
+		void SendSwitchEntityMessage();
 
 	private:
 		LindaEngine::Entity* _selectionEntity;
@@ -39,6 +40,5 @@ namespace LindaEditor
 		bool _firstRename = false;
 		std::vector<LindaEngine::Entity*> _selectionEntityArray;
 		ImVec2 _mouseDownPos;
-		bool _isDrag = false;
 	};
 }

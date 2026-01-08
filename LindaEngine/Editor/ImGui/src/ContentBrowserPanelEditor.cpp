@@ -1,4 +1,4 @@
-#include "ContentBrowserPanelEditor.h"
+﻿#include "ContentBrowserPanelEditor.h"
 #include "Path.h"
 #include "TextureManager.h"
 #include "Texture.h"
@@ -31,12 +31,12 @@ void ContentBrowserPanelEditor::OnImGuiRender()
 	ImGui::End();
 }
 
-void ContentBrowserPanelEditor::DrawContent(FileSystem& fs)
+void ContentBrowserPanelEditor::DrawContent(FileNode& fs)
 {
-	std::vector<FileSystem>& children = fs.children;
+	std::vector<FileNode>& children = fs.children;
 	bool hasChildren = children.size() > 0;
 
-	bool isSelected = false;
+    bool isSelected = IsFileNodeSelected(&fs);
 	ImGuiTreeNodeFlags flags = (isSelected ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_SpanAvailWidth;
 
 	if (hasChildren)
@@ -54,14 +54,70 @@ void ContentBrowserPanelEditor::DrawContent(FileSystem& fs)
 		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.20f, 0.50f, 0.80f, 1.00f));
 	}
 
-    DrawIcon(fs.type);
+    
+    float original_cursor_x = ImGui::GetCursorPosX();
+    if (hasChildren == false)
+        ImGui::SetCursorPosX(original_cursor_x);
+    else
+        ImGui::SetCursorPosX(original_cursor_x + 27);
 
 	bool opened = ImGui::TreeNodeEx((void*)&fs, flags, fs.name.c_str());
+
+    if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left))
+    {
+        _mouseDownPos = ImGui::GetMousePos();
+    }
+
+    DragNodes(&fs);
 
 	if (isSelected)
 	{
 		ImGui::PopStyleColor(2);
 	}
+
+    // 检查是否点击了展开三角区域
+    bool clickedOnArrow = false;
+    if (hasChildren && ImGui::IsItemHovered())
+    {
+        // 获取树节点的矩形区域
+        ImVec2 rectMin = ImGui::GetItemRectMin();
+        ImVec2 rectMax = ImGui::GetItemRectMax();
+        // 获取鼠标位置
+        ImVec2 mousePos = ImGui::GetMousePos();
+
+        // 计算展开三角的近似区域（在ImGui中，箭头区域通常在左侧）
+        float arrowWidth = ImGui::GetFrameHeight();
+        ImRect arrowRect = ImRect(rectMin.x, rectMin.y, rectMin.x + arrowWidth, rectMax.y);
+
+        // 检查鼠标是否在箭头区域内
+        if (arrowRect.Contains(mousePos))
+        {
+            clickedOnArrow = true;
+        }
+    }
+
+    if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+    {
+        ImVec2 mouseDelta = ImVec2(
+            ImGui::GetMousePos().x - _mouseDownPos.x,
+            ImGui::GetMousePos().y - _mouseDownPos.y
+        );
+
+        float dragThreshold = 5.0f;
+        bool isDragging = std::abs(mouseDelta.x) > dragThreshold || std::abs(mouseDelta.y) > dragThreshold;
+
+        if (false == isDragging && false == clickedOnArrow)
+        {
+            HandleNodeSelection(&fs, ImGui::GetIO().KeyCtrl);
+        }
+    }
+
+    if (ImGui::IsItemHovered() && _hoveredNode != &fs)
+    {
+        _hoveredNode = &fs;
+    }
+
+    DrawIcon(fs.type, original_cursor_x);
 
 	if (opened)
 	{
@@ -77,7 +133,7 @@ void ContentBrowserPanelEditor::DrawContent(FileSystem& fs)
 
 }
 
-void ContentBrowserPanelEditor::DrawIcon(FileType type)
+void ContentBrowserPanelEditor::DrawIcon(FileType type, float offsetX)
 {
     unsigned int nativeColorID = 0;
     switch (type)
@@ -96,29 +152,32 @@ void ContentBrowserPanelEditor::DrawIcon(FileType type)
     case FileType::Other: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Other.png")->nativeColorID; break;
     }
 
-    // ��ȡ��ǰ�еĸ߶ȣ�ͨ��ʹ���ı��иߣ�
-    float line_height = ImGui::GetTextLineHeightWithSpacing(); // �����м��
-    // ����ʹ�ã�float line_height = ImGui::GetFrameHeight(); // ��ȡ��ť/�����߶�
+    ImGui::SameLine();
 
-    // ����ͼ���С�����и�СһЩ��
-    float image_size = 20; // 70% ���и�
+    // 获取当前行的高度（通常使用文本行高）
+    float line_height = ImGui::GetTextLineHeightWithSpacing(); // 包含行间距
+    // 或者使用：float line_height = ImGui::GetFrameHeight(); // 获取按钮/输入框高度
 
-    // ���㴹ֱƫ�ƣ�ʹͼ�������м�
+    // 设置图像大小（比行高小一些）
+    float image_size = 20;
+
+    // 计算垂直偏移，使图像在行中间
     float image_offset_y = (line_height - image_size) * 0.5f;
 
-    // ���浱ǰ���Yλ��
+    // 保存当前光标Y位置
     float original_cursor_y = ImGui::GetCursorPosY();
 
-    // ����Yλ��ʹͼ��ֱ����
+    // 调整Y位置使图像垂直居中
     ImGui::SetCursorPosY(original_cursor_y + image_offset_y);
+    ImGui::SetCursorPosX(offsetX);
 
     ImGui::Image(reinterpret_cast<void*>(nativeColorID), ImVec2(18, 18), ImVec2(0, 1), ImVec2(1, 0));
 
-    ImGui::SameLine();
-    ImGui::SetCursorPosY(original_cursor_y);
+    //ImGui::SameLine();
+    //ImGui::SetCursorPosY(original_cursor_y);
 }
 
-void ContentBrowserPanelEditor::CollectFileFolder(FileSystem& fs)
+void ContentBrowserPanelEditor::CollectFileFolder(FileNode& fs)
 {
     for (const auto& entry : std::filesystem::directory_iterator(fs.path)) {
 
@@ -131,7 +190,7 @@ void ContentBrowserPanelEditor::CollectFileFolder(FileSystem& fs)
             pos = str.find(toReplace, pos + 1);
         }
 
-        FileSystem go;
+        FileNode go;
         go.path = str;
         go.name = Path::GetFileNameNoExtension(go.path);
         
@@ -146,6 +205,17 @@ void ContentBrowserPanelEditor::CollectFileFolder(FileSystem& fs)
     }
 }
 
+void ContentBrowserPanelEditor::SortFileFolder(FileNode& fs)
+{
+    std::sort(fs.children.begin(), fs.children.end(), [](FileNode& a, FileNode& b) {
+        return a.type < b.type; });
+
+    for (auto& go : fs.children)
+    {
+        SortFileFolder(go);
+    }
+}
+
 void ContentBrowserPanelEditor::ReloadResources()
 {
     if (_resDirty == false)
@@ -157,7 +227,7 @@ void ContentBrowserPanelEditor::ReloadResources()
     _fileSystem.name = Path::GetFileNameNoExtension(_fileSystem.path);
     _fileSystem.type = FileType::Folder;
     CollectFileFolder(_fileSystem);
-    int a = 0;
+    SortFileFolder(_fileSystem);
 }
 
 FileType ContentBrowserPanelEditor::CheckFileType(std::string fileName)
@@ -190,4 +260,94 @@ FileType ContentBrowserPanelEditor::CheckFileType(std::string fileName)
     else  return FileType::Other;
 
     return FileType::Folder;
+}
+
+void ContentBrowserPanelEditor::DrawBlankAreaDropTarget()
+{
+
+}
+
+void ContentBrowserPanelEditor::DragNodes(FileNode* fs)
+{
+    if (ImGui::BeginDragDropSource())
+    {
+        if (_selectionNodes.size() > 1 && IsFileNodeSelected(fs))
+        {
+            std::vector<FileNode*> draggingList(_selectionNodes.begin(), _selectionNodes.end());
+            ImGui::SetDragDropPayload("FILENODE_DRAG_MULTI", draggingList.data(), draggingList.size() * sizeof(FileNode*));
+            ImGui::Text("Dragging");
+        }
+        else
+        {
+            SelectSingle();
+            ImGui::SetDragDropPayload("FILENODE_DRAG", &_selectedNode, sizeof(FileNode*));
+            ImGui::Text("Dragging");
+        }
+        ImGui::EndDragDropSource();
+    }
+
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG"))
+        {
+            // 单个实体拖拽
+            FileNode* draggedNode = *(FileNode**)payload->Data;
+            printf("BeginDragDropTarget Single \n");
+        }
+        else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG_MULTI"))
+        {
+            int count = payload->DataSize / sizeof(FileNode*);
+            FileNode** draggedNodes = (FileNode**)payload->Data;
+            printf("BeginDragDropTarget Multi \n");
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+}
+
+bool ContentBrowserPanelEditor::IsFileNodeSelected(FileNode* fs)
+{
+    return std::find(_selectionNodes.begin(), _selectionNodes.end(), fs) != _selectionNodes.end();
+}
+
+void ContentBrowserPanelEditor::HandleNodeSelection(FileNode* node, bool isCtrlDown)
+{
+    if (isCtrlDown)
+    {
+        if (IsFileNodeSelected(node))
+        {
+            DeselectEntity(node);
+            if (_selectedNode == node && !_selectionNodes.empty())
+            {
+                _selectedNode = _selectionNodes.back();
+            }
+            else if (_selectedNode == node && _selectionNodes.empty())
+            {
+                _selectedNode = nullptr;
+            }
+        }
+        else
+        {
+            _selectionNodes.push_back(node);
+        }
+    }
+    else
+    {
+        SelectSingle();
+    }
+
+}
+
+void ContentBrowserPanelEditor::DeselectEntity(FileNode* node)
+{
+    auto itr = std::find(_selectionNodes.begin(), _selectionNodes.end(), node);
+    if (itr != _selectionNodes.end())
+        _selectionNodes.erase(itr);
+}
+
+void ContentBrowserPanelEditor::SelectSingle()
+{
+    _selectionNodes.clear();
+    _selectedNode = _hoveredNode;
+    _selectionNodes.push_back(_selectedNode);
 }

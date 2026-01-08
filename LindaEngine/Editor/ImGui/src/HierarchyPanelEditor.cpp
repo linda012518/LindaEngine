@@ -7,6 +7,7 @@
 #include "EventSystemEditor.h"
 #include "EventEditor.h"
 #include "EventCodeEditor.h"
+#include "ContentBrowserPanelEditor.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -266,9 +267,6 @@ void HierarchyPanelEditor::DrawContextMenu()
 
 void HierarchyPanelEditor::DrawBlankAreaDropTarget()
 {
-	if (false == _isDrag)
-		return;
-	
 	// 为这个按钮添加拖放目标
 	if (ImGui::BeginDragDropTargetCustom(ImGui::GetCurrentWindow()->WorkRect, ImGui::GetID("##FullWindowDropTarget")))
 	{
@@ -283,7 +281,6 @@ void HierarchyPanelEditor::DrawBlankAreaDropTarget()
 			{
 				draggedEntity->GetTransform()->SetParent(nullptr);
 			}
-			_isDrag = false;
 		}
 		else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG_MULTI", target_flags))
 		{
@@ -298,7 +295,24 @@ void HierarchyPanelEditor::DrawBlankAreaDropTarget()
 					draggedEntities[i]->GetTransform()->SetParent(nullptr);
 				}
 			}
-			_isDrag = false;
+		}
+		else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG_MULTI", target_flags))
+		{
+			int count = payload->DataSize / sizeof(FileNode*);
+			FileNode** draggedNodes = (FileNode**)payload->Data;
+
+			for (int i = 0; i < count; i++)
+			{
+				SceneManagerEditor::GetCurrentNode()->scene->InstantiateFBX(draggedNodes[i]->path);
+			}
+		}
+		else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG", target_flags))
+		{
+			FileNode* draggedNode = *(FileNode**)payload->Data;
+			if (draggedNode->type == FileType::FBX)
+			{
+				SceneManagerEditor::GetCurrentNode()->scene->InstantiateFBX(draggedNode->path);
+			}
 		}
 
 		ImGui::EndDragDropTarget();
@@ -309,7 +323,6 @@ void HierarchyPanelEditor::DragEntitys(Entity* entity)
 {
 	if (ImGui::BeginDragDropSource())
 	{
-		_isDrag = true;
 		if (_selectionEntityArray.size() > 1 && IsEntitySelected(entity))
 		{
 			std::vector<Entity*> draggingList(_selectionEntityArray.begin(), _selectionEntityArray.end());
@@ -338,7 +351,6 @@ void HierarchyPanelEditor::DragEntitys(Entity* entity)
 				Transform* childTransform = draggedEntity->GetTransform();
 				childTransform->SetParent(parentTransform);
 			}
-			_isDrag = false;
 		}
 		else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG_MULTI"))
 		{
@@ -366,8 +378,26 @@ void HierarchyPanelEditor::DragEntitys(Entity* entity)
 					}
 				}
 			}
-			_isDrag = false;
 		}
+		else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG_MULTI"))
+		{
+			int count = payload->DataSize / sizeof(FileNode*);
+			FileNode** draggedNodes = (FileNode**)payload->Data;
+
+			for (int i = 0; i < count; i++)
+			{
+				SceneManagerEditor::GetCurrentNode()->scene->InstantiateFBX(draggedNodes[i]->path, entity->GetTransform());
+			}
+		}
+		else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG"))
+		{
+			FileNode* draggedNode = *(FileNode**)payload->Data;
+			if (draggedNode->type == FileType::FBX)
+			{
+				SceneManagerEditor::GetCurrentNode()->scene->InstantiateFBX(draggedNode->path, entity->GetTransform());
+			}
+		}
+
 		ImGui::EndDragDropTarget();
 	}
 }
@@ -386,10 +416,12 @@ void HierarchyPanelEditor::HandleEntitySelection(Entity* entity, bool isCtrlDown
 			if (_selectionEntity == entity && !_selectionEntityArray.empty())
 			{
 				_selectionEntity = _selectionEntityArray.back();
+				SendSwitchEntityMessage();
 			}
 			else if (_selectionEntity == entity && _selectionEntityArray.empty())
 			{
 				_selectionEntity = nullptr;
+				SendSwitchEntityMessage();
 			}
 		}
 		else
@@ -453,9 +485,7 @@ void HierarchyPanelEditor::SelectNone()
 	_selectionEntity = nullptr;
 	_selectionEntityArray.clear();
 
-	SwitchSelectEntityEditor ssee;
-	ssee.selectionEntity = nullptr;
-	EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchSelectEntity, ssee);
+	SendSwitchEntityMessage();
 }
 
 void HierarchyPanelEditor::SelectSingle()
@@ -464,6 +494,11 @@ void HierarchyPanelEditor::SelectSingle()
 	_selectionEntity = _hoveredEntity;
 	_selectionEntityArray.push_back(_selectionEntity);
 
+	SendSwitchEntityMessage();
+}
+
+void HierarchyPanelEditor::SendSwitchEntityMessage()
+{
 	SwitchSelectEntityEditor ssee;
 	ssee.selectionEntity = _selectionEntity;
 	EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchSelectEntity, ssee);
