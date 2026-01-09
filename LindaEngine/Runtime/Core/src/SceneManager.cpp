@@ -104,6 +104,8 @@ Ref<Scene> SceneManager::LoadSceneFromPath(std::string& path)
 
 		ComponentSystem::OnDeserializeFinish();
 		BehaviorSystem::OnDeserializeFinish();
+
+		_currentScene->ResetSceneUUID();
 	}
 	catch (const std::exception&)
 	{

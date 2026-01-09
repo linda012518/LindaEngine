@@ -33,10 +33,17 @@ namespace LindaEngine
 		void SetSkyboxMaterial(Ref<Material> material);
 		std::vector<Ref<Entity>>& GetEntitys() { return _entitys; }
 
+		void ResetSceneUUID();
+		void DuplicateEntity(Entity* entity);
+
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
+		bool SerializePrefab(std::string path, Entity* entity);
+		Entity* DeserializePrefab(std::string path, Transform* parent = nullptr);
 
 	private:
+		void ResetUUID(std::vector<Ref<Entity>>& entitys);
+		void SerializeHierarchyPrefab(Entity* entity);
 		void DestroyEntity();
 		void UpdateEntityComponents();
 		void DestroyEntityIncludeChild(Entity* entity);

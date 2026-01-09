@@ -18,6 +18,7 @@ namespace LindaEngine
 		static void Remove(Transform* trans);
 		static void Clear();
 		static Transform* Get(std::string& uuid);
+		static Transform* Get(std::vector<Transform*>& list, std::string& uuid);
 
 	private:
 		static std::vector<Transform*> _components;

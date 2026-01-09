@@ -140,8 +140,7 @@ void Transform::SetParent(Transform* parent)
 	if (_parent == parent)
 		return;
 
-	if (_localChange)
-		UpdateWhenLocalChange();
+	UpdateWhenLocalChange();
 	_worldChange = true;
 
 	if (_parent)

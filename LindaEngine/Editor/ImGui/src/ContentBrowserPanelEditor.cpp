@@ -2,6 +2,10 @@
 #include "Path.h"
 #include "TextureManager.h"
 #include "Texture.h"
+#include "Entity.h"
+#include "SceneManagerEditor.h"
+#include "NodeEditor.h"
+#include "Scene.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -27,6 +31,18 @@ void ContentBrowserPanelEditor::OnImGuiRender()
 	{
 		DrawContent(go);
 	}
+
+    DrawBlankAreaDropTarget();
+
+    if (ImGui::IsWindowHovered() && !ImGui::IsAnyItemHovered())
+    {
+        _hoveredNode = nullptr;
+        if (ImGui::IsMouseDown(ImGuiMouseButton_Left))
+        {
+            _selectedNode = nullptr;
+            _selectionNodes.clear();
+        }
+    }
 
 	ImGui::End();
 }
@@ -62,6 +78,16 @@ void ContentBrowserPanelEditor::DrawContent(FileNode& fs)
         ImGui::SetCursorPosX(original_cursor_x + 27);
 
 	bool opened = ImGui::TreeNodeEx((void*)&fs, flags, fs.name.c_str());
+
+    if (fs.type == FileType::Scene && ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && _doubleClicked == false)
+    {
+        SceneManagerEditor::LoadScene(fs.path);
+        _doubleClicked = true;
+    }
+    else if (!ImGui::IsMouseDown(ImGuiMouseButton_Left))
+    {
+        _doubleClicked = false;
+    }
 
     if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left))
     {
@@ -135,7 +161,7 @@ void ContentBrowserPanelEditor::DrawContent(FileNode& fs)
 
 void ContentBrowserPanelEditor::DrawIcon(FileType type, float offsetX)
 {
-    unsigned int nativeColorID = 0;
+    uint64_t nativeColorID = 0;
     switch (type)
     {
     case FileType::Folder: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Folder.png")->nativeColorID; break;
@@ -264,6 +290,33 @@ FileType ContentBrowserPanelEditor::CheckFileType(std::string fileName)
 
 void ContentBrowserPanelEditor::DrawBlankAreaDropTarget()
 {
+    if (ImGui::BeginDragDropTargetCustom(ImGui::GetCurrentWindow()->WorkRect, ImGui::GetID("##FullWindowDropTarget")))
+    {
+        ImGuiDragDropFlags target_flags = 0;
+        target_flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG", target_flags))
+        {
+            // 单个实体拖拽
+            FileNode* draggedNode = *(FileNode**)payload->Data;
+            printf("BeginDragDropTarget Single \n");
+        }
+        else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG_MULTI", target_flags))
+        {
+            int count = payload->DataSize / sizeof(FileNode*);
+            FileNode** draggedNodes = (FileNode**)payload->Data;
+            printf("BeginDragDropTarget Multi \n");
+        }
+        else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG", target_flags))
+        {
+            Entity* draggedEntity = *(Entity**)payload->Data;
+            std::string prefabPath = "Assets/" + draggedEntity->GetName() + ".prefab";
+            SceneManagerEditor::GetCurrentNode()->scene->SerializePrefab(prefabPath, draggedEntity);
+            AddNode(FileType::Prefab, prefabPath);
+        }
+
+        ImGui::EndDragDropTarget();
+    }
 
 }
 
@@ -300,6 +353,20 @@ void ContentBrowserPanelEditor::DragNodes(FileNode* fs)
             FileNode** draggedNodes = (FileNode**)payload->Data;
             printf("BeginDragDropTarget Multi \n");
         }
+        else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
+        {
+            Entity* draggedEntity = *(Entity**)payload->Data;
+            std::string prefabPath;
+            if (fs->type == FileType::Folder)
+                prefabPath = fs->path + "/";
+            else
+                prefabPath = Path::GetFilePath(fs->path);
+            prefabPath += draggedEntity->GetName();
+            prefabPath += ".prefab";
+            SceneManagerEditor::GetCurrentNode()->scene->SerializePrefab(prefabPath, draggedEntity);
+            AddNode(FileType::Prefab, prefabPath);
+        }
+
         ImGui::EndDragDropTarget();
     }
 
@@ -350,4 +417,31 @@ void ContentBrowserPanelEditor::SelectSingle()
     _selectionNodes.clear();
     _selectedNode = _hoveredNode;
     _selectionNodes.push_back(_selectedNode);
+}
+
+FileNode* ContentBrowserPanelEditor::GetFolderNode(FileNode* root, std::string path)
+{
+    if (root->type == FileType::Folder && Path::GetFilePath(path) == root->path + "/")
+        return root;
+
+    for (auto& go : root->children)
+    {
+        FileNode* temp = GetFolderNode(&go, path);
+        if (temp != nullptr) return temp;
+    }
+
+    return nullptr;
+}
+
+void ContentBrowserPanelEditor::AddNode(FileType type, std::string path)
+{
+    FileNode* root = GetFolderNode(&_fileSystem, path);
+    if (nullptr == root)
+        return;
+
+    FileNode node;
+    node.type = type;
+    node.path = path;
+    node.name = Path::GetFileNameNoExtension(node.path);
+    root->children.push_back(node);
 }

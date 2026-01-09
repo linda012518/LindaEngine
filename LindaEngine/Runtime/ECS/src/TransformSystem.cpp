@@ -57,7 +57,12 @@ void TransformSystem::Clear()
 
 Transform* TransformSystem::Get(std::string& uuid)
 {
-	for (auto& com : _components) {
+	return Get(_components, uuid);
+}
+
+Transform* TransformSystem::Get(std::vector<Transform*>& list, std::string& uuid)
+{
+	for (auto& com : list) {
 		if (com->GetEntity().GetUUID() != uuid)
 			continue;
 		return com;

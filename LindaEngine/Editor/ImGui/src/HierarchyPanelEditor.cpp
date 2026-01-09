@@ -49,7 +49,7 @@ void HierarchyPanelEditor::OnImGuiRender()
 void HierarchyPanelEditor::DrawEntitys()
 {
 	int index = 0;
-	std::vector<Ref<Entity>>& entitys = SceneManagerEditor::GetCurrentNode()->scene->GetEntitys();
+	std::vector<Ref<Entity>> entitys = SceneManagerEditor::GetCurrentNode()->scene->GetEntitys();
 
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4.0f, 0.0f));
 
@@ -303,7 +303,14 @@ void HierarchyPanelEditor::DrawBlankAreaDropTarget()
 
 			for (int i = 0; i < count; i++)
 			{
-				SceneManagerEditor::GetCurrentNode()->scene->InstantiateFBX(draggedNodes[i]->path);
+				if (draggedNodes[i]->type == FileType::FBX)
+				{
+					SceneManagerEditor::GetCurrentNode()->scene->InstantiateFBX(draggedNodes[i]->path);
+				}
+				else if (draggedNodes[i]->type == FileType::Prefab)
+				{
+					SceneManagerEditor::GetCurrentNode()->scene->InstantiatePrefab(draggedNodes[i]->path);
+				}
 			}
 		}
 		else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG", target_flags))
@@ -312,6 +319,10 @@ void HierarchyPanelEditor::DrawBlankAreaDropTarget()
 			if (draggedNode->type == FileType::FBX)
 			{
 				SceneManagerEditor::GetCurrentNode()->scene->InstantiateFBX(draggedNode->path);
+			}
+			else if (draggedNode->type == FileType::Prefab)
+			{
+				SceneManagerEditor::GetCurrentNode()->scene->InstantiatePrefab(draggedNode->path);
 			}
 		}
 
@@ -386,7 +397,14 @@ void HierarchyPanelEditor::DragEntitys(Entity* entity)
 
 			for (int i = 0; i < count; i++)
 			{
-				SceneManagerEditor::GetCurrentNode()->scene->InstantiateFBX(draggedNodes[i]->path, entity->GetTransform());
+				if (draggedNodes[i]->type == FileType::FBX)
+				{
+					SceneManagerEditor::GetCurrentNode()->scene->InstantiateFBX(draggedNodes[i]->path, entity->GetTransform());
+				}
+				else if (draggedNodes[i]->type == FileType::Prefab)
+				{
+					SceneManagerEditor::GetCurrentNode()->scene->InstantiatePrefab(draggedNodes[i]->path, entity->GetTransform());
+				}
 			}
 		}
 		else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG"))
@@ -395,6 +413,10 @@ void HierarchyPanelEditor::DragEntitys(Entity* entity)
 			if (draggedNode->type == FileType::FBX)
 			{
 				SceneManagerEditor::GetCurrentNode()->scene->InstantiateFBX(draggedNode->path, entity->GetTransform());
+			}
+			else if (draggedNode->type == FileType::Prefab)
+			{
+				SceneManagerEditor::GetCurrentNode()->scene->InstantiatePrefab(draggedNode->path, entity->GetTransform());
 			}
 		}
 

@@ -42,8 +42,12 @@ namespace LindaEditor
 		void DeselectEntity(FileNode* node);
 		void SelectSingle();
 
+		FileNode* GetFolderNode(FileNode* root, std::string path);
+		void AddNode(FileType type, std::string path);
+
 	private:
 		bool _resDirty = true;
+		bool _doubleClicked = false;
 		FileNode _fileSystem;
 		FileNode* _selectedNode;
 		FileNode* _hoveredNode;

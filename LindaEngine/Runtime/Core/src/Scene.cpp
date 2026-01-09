@@ -9,7 +9,8 @@
 #include "FBXManager.h"
 #include "ComponentSystem.h"
 #include "BehaviorSystem.h"
-#include "Renderer.h"
+#include "TransformSystem.h"
+#include "UUID.h"
 
 #include <fstream>
 #include <iostream>
@@ -41,7 +42,7 @@ Entity* Scene::InstantiatePlane(Transform* parent)
 
 Entity* Scene::InstantiatePrefab(std::string path, Transform* parent)
 {
-	return nullptr;
+	return DeserializePrefab(path, parent);
 }
 
 Entity* Scene::InstantiateFBX(std::string path, Transform* parent)
@@ -169,6 +170,29 @@ void Scene::SetSkyboxMaterial(Ref<Material> material)
 	Renderer::SetSkyboxMaterial(material);
 }
 
+void Scene::ResetUUID(std::vector<Ref<Entity>>& entitys)
+{
+	for (auto& go : entitys)
+	{
+		std::string uuid = UUID::Get();
+		go->SetUUID(uuid);
+		for (auto& child : go->GetTransform()->GetChildren())
+		{
+			child->SetParentID(uuid);
+		}
+	}
+}
+
+void Scene::ResetSceneUUID()
+{
+	ResetUUID(_entitys);
+}
+
+void Scene::DuplicateEntity(Entity* entity)
+{
+
+}
+
 bool Scene::Serialize()
 {
 	YAML::Emitter out;
@@ -225,5 +249,100 @@ bool Scene::Deserialize(YAML::Node& node)
 	}
 
 	return true;
+
+}
+
+bool Scene::SerializePrefab(std::string path, Entity* entity)
+{
+	YAML::Emitter out;
+	YamlSerializer::out = &out;
+	out << YAML::BeginMap;
+
+	out << YAML::Key << "Root";
+	out << YAML::Value << entity->GetUUID();
+
+	out << YAML::Key << "Entitys";
+	out << YAML::Value << YAML::BeginSeq;
+	entity->Serialize();
+	SerializeHierarchyPrefab(entity);
+	out << YAML::EndSeq;
+	out << YAML::EndMap;
+
+	try
+	{
+		std::ofstream fout(path);
+		fout << out.c_str();
+		YamlSerializer::out = nullptr;
+		return true;
+	}
+	catch (const std::exception&)
+	{
+		YamlSerializer::out = nullptr;
+		std::cout << "Scene::SerializePrefab Error" << path << "\n" << std::endl;
+		return false;
+	}
+
+}
+
+void Scene::SerializeHierarchyPrefab(Entity* entity)
+{
+	for (auto& trans : entity->GetTransform()->GetChildren())
+	{
+		Entity& go = trans->GetEntity();
+		go.Serialize();
+		SerializeHierarchyPrefab(&go);
+	}
+}
+
+Entity* Scene::DeserializePrefab(std::string path, Transform* parent)
+{
+	YAML::Node data;
+	try
+	{
+		std::vector<Transform*> list;
+		std::vector<Ref<Entity>> entityArray;
+
+		data = YAML::LoadFile(path);
+		
+		std::string root = data["Root"].as<std::string>();
+		auto entitys = data["Entitys"];
+		for (auto entity : entitys)
+		{
+			std::string entityName = entity["Name"].as<std::string>();
+			Ref<Entity> e = CreateRef<Entity>(entityName.c_str(), entity["Active"].as<bool>());
+			e->Deserialize(entity);
+			_entitys.push_back(e);
+			list.push_back(e->GetTransform());
+			entityArray.push_back(e);
+		}
+
+		Transform* ret = nullptr;
+		for (auto& go : list)
+		{
+			if (nullptr == go)
+				continue;
+
+			if (go->GetEntity().GetUUID() == root)
+			{
+				go->SetParent(parent);
+				ret = go;
+			}
+			else
+			{
+				go->SetParent(TransformSystem::Get(list, go->GetParentID()));
+			}
+			go->CalculateLocalMatrix();
+		}
+		ResetUUID(entityArray);
+		if (nullptr != ret)
+			return &ret->GetEntity();
+		else
+			return nullptr;
+	}
+	catch (const std::exception&)
+	{
+		std::cout << "Scene::DeserializePrefab Error" << path << "\n" << std::endl;
+		return nullptr;
+	}
 
 }
