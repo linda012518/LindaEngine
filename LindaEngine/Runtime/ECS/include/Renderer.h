@@ -25,7 +25,6 @@ namespace LindaEngine
 
 		void SetMesh(Ref<Mesh> mesh);
 		void AddMaterial(int index, Ref<Material> mat);
-		void Render();
 		void TransformDirty();
 		bool IsSkybox() { return _type == RenderComponentType::Skybox; }
 		bool CanRender(int index, int minQueue, int maxQueue);
@@ -34,10 +33,13 @@ namespace LindaEngine
 		float GetDistanceToCamera() { return _distanceToCamera; }
 		Ref<Drawable> GetDrawable(int index) { return _drawables[index]; }
 
-		static Renderer* GetSkyboxRenderer();
+		static Drawable& GetSkyboxRenderer();
 		static void SetSkyboxMaterial(Ref<Material> material);
 		static Ref<Material> GetSkyboxMaterial();
 		static void RenderSkybox();
+
+		static Renderer* GetBoundingBoxRenderer();
+		static void RenderBoundingBox(Renderer* src);
 
 		Mesh* GetMesh() { return _mesh.get(); }
 		RenderComponentType GetType() { return _type; }
@@ -78,17 +80,5 @@ namespace LindaEngine
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
-	};
-
-	class SkyboxRenderer : public Renderer
-	{
-	public:
-		DECLARE_DYNAMIC_CREATE()
-		SkyboxRenderer(Entity& entity, bool enable = true);
-		virtual ~SkyboxRenderer();
-
-		bool Serialize();
-		bool Deserialize(YAML::Node& node);
-
 	};
 }

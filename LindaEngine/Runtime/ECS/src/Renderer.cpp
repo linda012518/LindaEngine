@@ -13,7 +13,6 @@ using namespace LindaEngine;
 
 DYNAMIC_CREATE(MeshRenderer)
 DYNAMIC_CREATE(SkinMeshRenderer)
-DYNAMIC_CREATE(SkyboxRenderer)
 
 Renderer::Renderer(Entity& entity, bool enable) : Component(entity, enable)
 {
@@ -97,27 +96,10 @@ void Renderer::AddMaterial(int index, Ref<Material> mat)
 	_drawables[index]->material = mat;
 }
 
-void Renderer::Render()
-{
-	int index = 0;
-	for (auto& material : _materialList)
-	{
-		std::vector<Ref<MaterialPass>> go = material->GetPassByLightMode(Material::overrideLightMode);
-		if (go.size() <= 0)
-			continue;
-		for (auto& pass : go)
-		{
-			material->Bind(pass, _transform, _mesh->GetMeshAttributes(index));
-			_mesh->Draw(index);
-		}
-		index++;
-	}
-}
-
 void Renderer::TransformDirty()
 {
-	_aabb.min = glm::vec4(_mesh->GetBoundingBox().min, 1.0f) * _transform->GetLocalToWorldMat();
-	_aabb.max = glm::vec4(_mesh->GetBoundingBox().max, 1.0f) * _transform->GetLocalToWorldMat();
+	_aabb.min = _transform->GetLocalToWorldMat() * glm::vec4(_mesh->GetBoundingBox().min, 1.0f);
+	_aabb.max = _transform->GetLocalToWorldMat() * glm::vec4(_mesh->GetBoundingBox().max, 1.0f);
 	_aabb.CalculateCenterSize();
 }
 
@@ -138,28 +120,37 @@ bool Renderer::InLayerMask(int layer)
 	return _entity.GetLayer() & layer;
 }
 
-Renderer* Renderer::GetSkyboxRenderer()
+Drawable& Renderer::GetSkyboxRenderer()
 {
-	static Entity entity("SkyboxRendererEntity");
-	static SkyboxRenderer renderer(entity);
-	return &renderer;
+	static Drawable drawable;
+	drawable.meshData = FBXManager::GetSkybox()->GetMeshData();
+	drawable.transform = nullptr;
+	return drawable;
 }
 
 void Renderer::SetSkyboxMaterial(Ref<Material> material)
 {
-	GetSkyboxRenderer()->GetMaterials().clear();
-	GetSkyboxRenderer()->AddMaterial(0, material);
+	GetSkyboxRenderer().material = material;
 }
 
 Ref<Material> Renderer::GetSkyboxMaterial()
 {
-	return GetSkyboxRenderer()->GetMaterials()[0];
+	return GetSkyboxRenderer().material;
 }
 
 void Renderer::RenderSkybox()
 {
 	Material::overrideLightMode = "Skybox";
-	GetSkyboxRenderer()->Render();
+	GetSkyboxRenderer().Draw();
+}
+
+Renderer* Renderer::GetBoundingBoxRenderer()
+{
+	return nullptr;
+}
+
+void Renderer::RenderBoundingBox(Renderer* src)
+{
 }
 
 void Renderer::FillDrawables()
@@ -241,36 +232,4 @@ bool SkinMeshRenderer::Deserialize(YAML::Node& node)
 	return true;
 }
 
-/////////////////////////////////////////////////////////////////////
-
-SkyboxRenderer::SkyboxRenderer(Entity& entity, bool enable) : Renderer(entity, enable)
-{
-	_type = RenderComponentType::Skybox;
-	_mesh = FBXManager::GetSkybox();
-	_shadowCast = false;
-	_receiveShadow = false;
-
-	RendererSystem::Remove(this);
-}
-
-SkyboxRenderer::~SkyboxRenderer()
-{
-}
-
-bool SkyboxRenderer::Serialize()
-{
-	Renderer::Serialize();
-
-	YAML::Emitter& out = *YamlSerializer::out;
-	out << YAML::Key << "Name" << YAML::Value << "SkyboxRenderer";
-	out << YAML::EndMap;
-
-	return true;
-}
-
-bool SkyboxRenderer::Deserialize(YAML::Node& node)
-{
-	Renderer::Deserialize(node);
-	return true;
-}
 

@@ -49,6 +49,8 @@ int ApplicationEditor::Initialize()
 
     _imgui.Initialize();
 
+    SceneManagerEditor::LoadScene("BuiltInAssets/Scenes/Default.scene");
+
     return ret;
 }
 
