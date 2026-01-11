@@ -118,10 +118,10 @@ Entity* Scene::CreateEntityFromFBX(Ref<FBXResources> res, Transform* parent)
 	Entity* entity = CreateEntity(res->name.c_str());
 
 	Transform* transform = entity->GetTransform();
+	transform->SetParent(parent);
 	transform->SetLocalPosition(res->localPosition);
 	transform->SetLocalRotation(res->localRotation);
 	transform->SetLocalScale(res->localScale);
-	transform->SetParent(parent);
 
 	if (nullptr != res->mesh)
 	{

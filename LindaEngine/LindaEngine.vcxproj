@@ -122,7 +122,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include;./Runtime/Render/RenderPipeline/include;./Runtime/Render/PostProcess/include;./Editor/IO/include;./Editor/Tools/include;./Editor/ImGui/UICore/Core;./Editor/ImGui/UICore/Widgets;./Editor/ImGui/UICore/Plugins;./Editor/ImGui/UICore/Panel</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include;./Runtime/Render/RenderPipeline/include;./Runtime/Render/PostProcess/include;./Editor/IO/include;./Editor/Tools/include;./Editor/ImGui/UICore/Core;./Editor/ImGui/UICore/Widgets;./Editor/ImGui/UICore/Plugins;./Editor/ImGui/UICore/Panel;./Runtime/Render/Animation/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\Render\Animation\src\AnimationClip.cpp" />
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\Bullet.cpp" />
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\CheckBox.cpp" />
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\ColorEdit.cpp" />
@@ -336,6 +337,7 @@
     <ClCompile Include="Editor\Core\src\UniversalRendererEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Render\Animation\include\AnimationClip.h" />
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\Bullet.h" />
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\CheckBox.h" />
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\ColorEdit.h" />
@@ -419,7 +421,6 @@
     <ClInclude Include="Runtime\Core\include\EventCallback.h" />
     <ClInclude Include="Runtime\Core\include\LSemaphore.h" />
     <ClInclude Include="Runtime\Core\include\LThread.h" />
-    <ClInclude Include="Runtime\Render\Core\include\FBXResources.h" />
     <ClInclude Include="Runtime\Render\PostProcess\include\GrayPostProcess.h" />
     <ClInclude Include="Runtime\Core\include\ClassFactory.h" />
     <ClInclude Include="Runtime\Render\PostProcess\include\PostProcessEffectRenderer.h" />

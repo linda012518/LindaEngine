@@ -3,6 +3,7 @@
 #include "AssimpGLMHelpers.h"
 #include "Mesh.h"
 #include "Path.h"
+#include "AnimationClip.h"
 
 #include "assimp\Importer.hpp"
 #include "assimp\scene.h"
@@ -178,25 +179,31 @@ void FBXLoader::FillVertexUV(glm::vec2& dest, int uvIndex, int vertexIndex, aiMe
 
 void FBXLoader::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene, FBXMesh& fbxMesh)
 {
-	std::map<aiNode*, BoneInfo>& boneInfoMap = fbxMesh.boneInfoMap;
 	int& boneCount = fbxMesh.boneCount;
+	std::vector<BoneInfo>& boneArray = fbxMesh.bones;
 
 	for (unsigned int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
 	{
 		aiBone* bone = mesh->mBones[boneIndex];
 		int boneID = -1;
-		if (boneInfoMap.find(bone->mNode) == boneInfoMap.end())
+
+		for (auto& go : boneArray)
+		{
+			if (go.nativeNode != bone->mNode)
+				continue;
+			boneID = go.id;
+		}
+
+		if (boneID == -1)
 		{
 			BoneInfo newBoneInfo;
 			newBoneInfo.id = boneCount;
 			newBoneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(bone->mOffsetMatrix);
-			boneInfoMap[bone->mNode] = newBoneInfo;
+			newBoneInfo.name = bone->mName.data;
+			newBoneInfo.nativeNode = bone->mNode;
+			boneArray.push_back(newBoneInfo);
 			boneID = boneCount;
 			boneCount++;
-		}
-		else
-		{
-			boneID = boneInfoMap[bone->mNode].id;
 		}
 		assert(boneID != -1);
 		auto weights = bone->mWeights;
@@ -210,17 +217,16 @@ void FBXLoader::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMe
 			SetVertexBoneData(vertices[vertexId], boneID, weight);
 		}
 	}
-
 }
 
 void FBXLoader::SetHashBoneInfoMap(AssimpNodeData& root, AssimpNodeData& nodeData)
 {
 	if (nodeData.hasMesh && nodeData.mesh.isSkinMesh)
 	{
-		std::map<aiNode*, BoneInfo>& temp = nodeData.mesh.boneInfoMap;
+		std::vector<BoneInfo>& temp = nodeData.mesh.bones;
 		for (auto& go : temp)
 		{
-			go.second.hashCode = GetNodeByNativeNode(root, go.first);
+			go.hashCode = GetNodeByNativeNode(root, go.nativeNode);
 		}
 	}
 	for (auto& go : nodeData.children)
@@ -390,6 +396,18 @@ void FBXLoader::ConvertFBXResources(Ref<FBXResources> res, AssimpNodeData& data,
 			meshData.indexData = go.indices;
 		}
 		res->mesh = mesh;
+
+		res->boneCount = data.mesh.boneCount;
+
+		for (auto& go : data.mesh.bones)
+		{
+			BoneData bone;
+			bone.id = go.id;
+			bone.name = go.name;
+			bone.hashCode = go.hashCode;
+			bone.offset = go.offset;
+			res->bones.push_back(bone);
+		}
 	}
 
 	for (auto& go : data.children)
@@ -406,4 +424,60 @@ bool FBXLoader::HasAttribute(std::vector<VertexAttributeType>& attributes, Verte
 	if (itr != attributes.end())
 		return true;
 	return false;
+}
+
+void FBXLoader::ParseAnimationClip(aiScene* scene)
+{
+	if (scene->mNumAnimations <= 0)
+		return;
+
+	aiAnimation* animation = scene->mAnimations[0];
+
+	int size = animation->mNumChannels;
+
+	AnimationClip clip;
+	clip.duration = (float)animation->mDuration;
+	clip.ticksPerSecond = (float)animation->mTicksPerSecond;
+
+	for (int i = 0; i < size; i++)
+	{
+		aiNodeAnim* channel = animation->mChannels[i];
+		BoneTrack track;
+
+		int numPositions = channel->mNumPositionKeys;
+		for (int positionIndex = 0; positionIndex < numPositions; ++positionIndex)
+		{
+			aiVector3D aiPosition = channel->mPositionKeys[positionIndex].mValue;
+			float timeStamp = (float)channel->mPositionKeys[positionIndex].mTime;
+			AnimationPosePosition data;
+			data.data = glm::vec3(aiPosition.x, aiPosition.y, aiPosition.z);
+			data.timeStamp = timeStamp;
+			track.tracksPosition.push_back(data);
+		}
+
+		int numRotations = channel->mNumRotationKeys;
+		for (int rotationIndex = 0; rotationIndex < numRotations; ++rotationIndex)
+		{
+			aiQuaternion aiOrientation = channel->mRotationKeys[rotationIndex].mValue;
+			float timeStamp = (float)channel->mRotationKeys[rotationIndex].mTime;
+			AnimationPoseRotation data;
+			data.data = glm::quat(aiOrientation.x, aiOrientation.y, aiOrientation.z, aiOrientation.w);
+			data.timeStamp = timeStamp;
+			track.tracksRotation.push_back(data);
+		}
+
+		int numScalings = channel->mNumScalingKeys;
+		for (int keyIndex = 0; keyIndex < numScalings; ++keyIndex)
+		{
+			aiVector3D scale = channel->mScalingKeys[keyIndex].mValue;
+			float timeStamp = (float)channel->mScalingKeys[keyIndex].mTime;
+			AnimationPoseScale data;
+			data.data = glm::vec3(scale.x, scale.y, scale.z);
+			data.timeStamp = timeStamp;
+			track.tracksScale.push_back(data);
+		}
+
+		clip.tracks.push_back(track);
+	}
+
 }

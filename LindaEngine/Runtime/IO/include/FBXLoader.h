@@ -2,7 +2,6 @@
 
 #include "AutoPtr.h"
 #include "Mesh.h"
-#include "FBXResources.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtx/matrix_decompose.hpp"
@@ -31,8 +30,12 @@ namespace LindaEngine
 		/*offset matrix transforms vertex from model space to bone space*/
 		glm::mat4 offset;
 
-		/*transform node hashCode*/
+		/*fbx node hashCode*/
 		std::string hashCode;
+
+		std::string name;
+
+		aiNode* nativeNode;
 	};
 
 	struct Vertex {
@@ -66,7 +69,7 @@ namespace LindaEngine
 	{
 		std::vector<FBXMeshData> vertices;
 		bool isSkinMesh = false;
-		std::map<aiNode*, BoneInfo> boneInfoMap;
+		std::vector<BoneInfo> bones;
 		int boneCount = 0;
 	};
 
@@ -80,6 +83,34 @@ namespace LindaEngine
 		bool hasMesh = false;
 		std::string hashCode;
 		aiNode* nativeNode;
+	};
+
+	struct BoneData
+	{
+		/*id is index in finalBoneMatrices*/
+		int id;
+
+		/*offset matrix transforms vertex from model space to bone space*/
+		glm::mat4 offset;
+
+		/*fbx node hashCode*/
+		std::string hashCode;
+
+		std::string name;
+	};
+
+	struct FBXResources
+	{
+		glm::vec3 localPosition;
+		glm::quat localRotation;
+		glm::vec3 localScale;
+		std::string name;
+		std::vector<Ref<FBXResources>> children;
+		Ref<Mesh> mesh = nullptr;
+		std::string hashCode;
+
+		std::vector<BoneData> bones;
+		int boneCount = 0;
 	};
 
 	class FBXLoader
@@ -100,5 +131,7 @@ namespace LindaEngine
 
 		static void ConvertFBXResources(Ref<FBXResources> res, AssimpNodeData& data, std::string& path);
 		static bool HasAttribute(std::vector<VertexAttributeType>& attributes, VertexAttributeType attr);
+
+		static void ParseAnimationClip(aiScene* scene);
 	};
 }
