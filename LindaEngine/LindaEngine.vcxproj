@@ -318,6 +318,7 @@
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Layout\Spacing.cpp" />
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Sliders\SliderSingleScalar.cpp" />
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\Separator.cpp" />
+    <ClCompile Include="Temp\FrustumCuller.cpp" />
     <ClCompile Include="Temp\MeshLoader.cpp" />
     <ClCompile Include="Temp\MeshManager.cpp" />
     <ClCompile Include="Temp\TestECSEvent.cpp" />
@@ -918,6 +919,7 @@
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderMultipleScalars.h" />
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Sliders\SliderSingleScalar.h" />
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\Separator.h" />
+    <ClInclude Include="Temp\FrustumCuller.h" />
     <ClInclude Include="Temp\MeshLoader.h" />
     <ClInclude Include="Temp\MeshManager.h" />
     <ClInclude Include="Temp\TestECSEvent.h" />

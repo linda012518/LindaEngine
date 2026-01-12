@@ -45,32 +45,6 @@ void AABBBoundingBox::CalculateCenterSize()
 	size.z = max.z - min.z;
 }
 
-AABBBoundingBox AABBBoundingBox::ConvertNewAABB()
-{
-	AABBBoundingBox temp;
-	glm::vec3 point;
-
-	point = glm::vec3(max.x, max.y, max.z);
-	temp.AddVertex(point);
-	point = glm::vec3(max.x, max.y, min.z);
-	temp.AddVertex(point);
-	point = glm::vec3(max.x, min.y, max.z);
-	temp.AddVertex(point);
-	point = glm::vec3(min.x, max.y, max.z);
-	temp.AddVertex(point);
-
-	point = glm::vec3(min.x, min.y, min.z);
-	temp.AddVertex(point);
-	point = glm::vec3(min.x, min.y, max.z);
-	temp.AddVertex(point);
-	point = glm::vec3(min.x, max.y, min.z);
-	temp.AddVertex(point);
-	point = glm::vec3(max.x, min.y, min.z);
-	temp.AddVertex(point);
-
-	return temp;
-}
-
 AABBBoundingBox AABBBoundingBox::Merge(const AABBBoundingBox& a, const AABBBoundingBox& b)
 {
 	AABBBoundingBox aabb;

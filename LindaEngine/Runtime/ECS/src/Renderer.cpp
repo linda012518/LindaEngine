@@ -98,8 +98,32 @@ void Renderer::AddMaterial(int index, Ref<Material> mat)
 
 void Renderer::TransformDirty()
 {
-	_aabb.min = _transform->GetLocalToWorldMat() * glm::vec4(_mesh->GetBoundingBox().min, 1.0f);
-	_aabb.max = _transform->GetLocalToWorldMat() * glm::vec4(_mesh->GetBoundingBox().max, 1.0f);
+	glm::vec3 min = _mesh->GetBoundingBox().min;
+	glm::vec3 max = _mesh->GetBoundingBox().max;
+
+	std::vector<glm::vec3> vertices = {
+		glm::vec3(min.x, min.y, min.z),
+		glm::vec3(max.x, min.y, min.z),
+		glm::vec3(min.x, max.y, min.z),
+		glm::vec3(max.x, max.y, min.z),
+		glm::vec3(min.x, min.y, max.z),
+		glm::vec3(max.x, min.y, max.z),
+		glm::vec3(min.x, max.y, max.z),
+		glm::vec3(max.x, max.y, max.z)
+	};
+
+	const glm::mat4& transform = _transform->GetLocalToWorldMat();
+
+	for (const auto& vertex : vertices) {
+		glm::vec4 transformed = transform * glm::vec4(vertex, 1.0f);
+		glm::vec3 pos = glm::vec3(transformed) / transformed.w;
+
+		_aabb.min = glm::min(_aabb.min, pos);
+		_aabb.max = glm::max(_aabb.max, pos);
+	}
+
+	//_aabb.min = _transform->GetLocalToWorldMat() * glm::vec4(_mesh->GetBoundingBox().min, 1.0f);
+	//_aabb.max = _transform->GetLocalToWorldMat() * glm::vec4(_mesh->GetBoundingBox().max, 1.0f);
 	_aabb.CalculateCenterSize();
 }
 

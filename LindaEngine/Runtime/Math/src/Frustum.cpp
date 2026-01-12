@@ -52,9 +52,6 @@ void Frustum::UpdateFrustum(Camera* cam)
 
 bool Frustum::AABBInside(AABBBoundingBox& aabb)
 {
-	//TODO 现在每帧更新，可移到渲染组件
-	AABBBoundingBox temp = aabb.ConvertNewAABB();
-
 	// 对每个视锥体平面进行测试
 	for (int i = 0; i < 6; i++)
 	{
@@ -66,9 +63,9 @@ bool Frustum::AABBInside(AABBBoundingBox& aabb)
 		// 如果法向量指向正方向，选择max；如果指向负方向，选择min
 		glm::vec3 nVertex;
 
-		nVertex.x = (N.x >= 0.0f) ? temp.max.x : temp.min.x;
-		nVertex.y = (N.y >= 0.0f) ? temp.max.y : temp.min.y;
-		nVertex.z = (N.z >= 0.0f) ? temp.max.z : temp.min.z;
+		nVertex.x = (N.x >= 0.0f) ? aabb.max.x : aabb.min.x;
+		nVertex.y = (N.y >= 0.0f) ? aabb.max.y : aabb.min.y;
+		nVertex.z = (N.z >= 0.0f) ? aabb.max.z : aabb.min.z;
 
 		// 计算N-vertex到平面的距离
 		// 如果距离 < 0，说明 AABB 完全在平面负侧（视锥体外），可以剔除
