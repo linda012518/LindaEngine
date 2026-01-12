@@ -3,6 +3,7 @@
 #include "SkyboxPass.h"
 #include "DrawObjectsPass.h"
 #include "PostProcessPasses.h"
+#include "AdjunctPass.h"
 
 using namespace LindaEditor;
 using namespace LindaEngine;
@@ -11,6 +12,7 @@ void UniversalRendererEditor::CollectRenderPass()
 {
     AddRenderPass(CreateRef<SkyboxPass>());
     AddRenderPass(CreateRef<PostProcessPass>());
+    AddRenderPass(CreateRef<AdjunctPass>());
 
     DrawingSettings settings;
     settings.lightMode = "Color";

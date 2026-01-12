@@ -5,6 +5,7 @@ using namespace LindaEngine;
 std::unordered_map<std::string, Ref<FBXResources>> FBXManager::_map;
 Ref<Mesh> FBXManager::_skybox = nullptr;
 Ref<Mesh> FBXManager::_empty = nullptr;
+Ref<Mesh> FBXManager::_boundingBox = nullptr;
 
 Ref<FBXResources> FBXManager::GetFBX(std::string fbxPath)
 {
@@ -141,5 +142,54 @@ Ref<Mesh> FBXManager::GetEmpty()
 	_empty = CreateRef<Mesh>();
 	Mesh::Data& data = _empty->AddMeshData(Mesh::Data());
 	return _empty;
+}
+
+Ref<Mesh> FBXManager::GetBoundingBox()
+{
+	if (nullptr != _boundingBox)
+		return _boundingBox;
+
+	_boundingBox = CreateRef<Mesh>();
+	Mesh::Data& data = _boundingBox->AddMeshData(Mesh::Data());
+	data.AddAttribute(VertexAttributeType::Position);
+	data.drawType = DrawType::LINES;
+
+	data.vertexData.insert(data.vertexData.end(), {  0.5f,  0.5f,  0.5f });
+	data.vertexData.insert(data.vertexData.end(), { -0.5f,  0.5f,  0.5f });
+
+	data.vertexData.insert(data.vertexData.end(), { -0.5f,  0.5f,  0.5f });
+	data.vertexData.insert(data.vertexData.end(), { -0.5f, -0.5f,  0.5f });
+
+	data.vertexData.insert(data.vertexData.end(), { -0.5f, -0.5f,  0.5f });
+	data.vertexData.insert(data.vertexData.end(), {  0.5f, -0.5f,  0.5f });
+
+	data.vertexData.insert(data.vertexData.end(), {  0.5f, -0.5f,  0.5f });
+	data.vertexData.insert(data.vertexData.end(), {  0.5f,  0.5f,  0.5f });
+	//////////////////////////////////////////////////////////////////////////////
+	data.vertexData.insert(data.vertexData.end(), {  0.5f,  0.5f, -0.5f });
+	data.vertexData.insert(data.vertexData.end(), { -0.5f,  0.5f, -0.5f });
+
+	data.vertexData.insert(data.vertexData.end(), { -0.5f,  0.5f, -0.5f });
+	data.vertexData.insert(data.vertexData.end(), { -0.5f, -0.5f, -0.5f });
+
+	data.vertexData.insert(data.vertexData.end(), { -0.5f, -0.5f, -0.5f });
+	data.vertexData.insert(data.vertexData.end(), {  0.5f, -0.5f, -0.5f });
+
+	data.vertexData.insert(data.vertexData.end(), {  0.5f, -0.5f, -0.5f });
+	data.vertexData.insert(data.vertexData.end(), {  0.5f,  0.5f, -0.5f });
+	//////////////////////////////////////////////////////////////////////////////
+	data.vertexData.insert(data.vertexData.end(), {  0.5f,  0.5f,   0.5f });
+	data.vertexData.insert(data.vertexData.end(), {  0.5f,  0.5f,  -0.5f });
+
+	data.vertexData.insert(data.vertexData.end(), { -0.5f,  0.5f,   0.5f });
+	data.vertexData.insert(data.vertexData.end(), { -0.5f,  0.5f,  -0.5f });
+
+	data.vertexData.insert(data.vertexData.end(), { -0.5f, -0.5f,   0.5f });
+	data.vertexData.insert(data.vertexData.end(), { -0.5f, -0.5f,  -0.5f });
+
+	data.vertexData.insert(data.vertexData.end(), {  0.5f, -0.5f,   0.5f });
+	data.vertexData.insert(data.vertexData.end(), {  0.5f, -0.5f,  -0.5f });
+
+	return _boundingBox;
 }
 

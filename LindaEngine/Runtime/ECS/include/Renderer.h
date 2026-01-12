@@ -38,8 +38,8 @@ namespace LindaEngine
 		static Ref<Material> GetSkyboxMaterial();
 		static void RenderSkybox();
 
-		static Renderer* GetBoundingBoxRenderer();
-		static void RenderBoundingBox(Renderer* src);
+		static Drawable& GetBoundingBoxRenderer();
+		void RenderBoundingBox();
 
 		Mesh* GetMesh() { return _mesh.get(); }
 		RenderComponentType GetType() { return _type; }

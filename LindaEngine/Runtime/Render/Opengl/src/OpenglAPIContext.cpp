@@ -17,6 +17,9 @@ void OpenglAPIContext::Initialize()
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+	glLineWidth(1.0f);
+	glPointSize(2.0f);
+
 	glDisable(GL_STENCIL_TEST);
 	glStencilMask(0xFF);
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);

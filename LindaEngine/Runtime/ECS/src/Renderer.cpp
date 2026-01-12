@@ -122,9 +122,14 @@ bool Renderer::InLayerMask(int layer)
 
 Drawable& Renderer::GetSkyboxRenderer()
 {
+	static bool isLoaded = false;
 	static Drawable drawable;
-	drawable.meshData = FBXManager::GetSkybox()->GetMeshData();
-	drawable.transform = nullptr;
+	if (isLoaded == false)
+	{
+		drawable.meshData = FBXManager::GetSkybox()->GetMeshData();
+		drawable.transform = nullptr;
+		isLoaded = true;
+	}
 	return drawable;
 }
 
@@ -144,13 +149,35 @@ void Renderer::RenderSkybox()
 	GetSkyboxRenderer().Draw();
 }
 
-Renderer* Renderer::GetBoundingBoxRenderer()
+Drawable& Renderer::GetBoundingBoxRenderer()
 {
-	return nullptr;
+	static bool isLoaded = false;
+	static Drawable drawable;
+	if (isLoaded == false)
+	{
+		drawable.meshData = FBXManager::GetBoundingBox()->GetMeshData();
+		static Entity root("BoundingBox-Root"); root.SetDontDestory(true);
+		static Entity child("BoundingBox-Child"); child.SetDontDestory(true);
+		child.GetTransform()->SetParent(root.GetTransform());
+		drawable.transform = child.GetTransform();
+		drawable.material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/BoundingBox.shader");
+		isLoaded = true;
+	}
+	return drawable;
 }
 
-void Renderer::RenderBoundingBox(Renderer* src)
+void Renderer::RenderBoundingBox()
 {
+	Material::overrideLightMode = "Adjunct";
+	Drawable& drawable = GetBoundingBoxRenderer();
+	drawable.transform->SetLocalPosition(_mesh->GetBoundingBox().center);
+	drawable.transform->SetWorldScale(_transform->GetWorldScale() * _mesh->GetBoundingBox().size);
+	drawable.transform->Tick();
+	Transform* parent = (Transform*)drawable.transform->GetParent();
+	parent->SetWorldPosition(_transform->GetWorldPosition());
+	parent->SetWorldRotation(_transform->GetWorldRotation());
+	parent->Tick();
+	drawable.Draw();
 }
 
 void Renderer::FillDrawables()

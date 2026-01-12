@@ -582,6 +582,9 @@
     <ClCompile Include="Runtime\Render\Animation\src\AnimationClip.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\AdjunctPass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -2373,6 +2376,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Render\Animation\include\AnimationClip.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\AdjunctPass.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

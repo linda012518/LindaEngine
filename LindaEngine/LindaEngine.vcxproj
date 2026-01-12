@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\AdjunctPass.cpp" />
     <ClCompile Include="Runtime\Render\Animation\src\AnimationClip.cpp" />
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Visual\Bullet.cpp" />
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Selection\CheckBox.cpp" />
@@ -337,6 +338,7 @@
     <ClCompile Include="Editor\Core\src\UniversalRendererEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\AdjunctPass.h" />
     <ClInclude Include="Runtime\Render\Animation\include\AnimationClip.h" />
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Visual\Bullet.h" />
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Selection\CheckBox.h" />

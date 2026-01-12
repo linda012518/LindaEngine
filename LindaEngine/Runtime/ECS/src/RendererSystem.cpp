@@ -1,4 +1,4 @@
-#include "RendererSystem.h"
+ï»¿#include "RendererSystem.h"
 #include "Renderer.h"
 #include "Settings.h"
 #include "Material.h"
@@ -86,9 +86,16 @@ void RendererSystem::DrawSkybox()
 	Renderer::RenderSkybox();
 }
 
+void RendererSystem::DrawAdjunct()
+{
+	for (auto& com : _components) {
+		com->RenderBoundingBox();
+	}
+}
+
 void RendererSystem::Cull(Camera* camera, DrawingSettings* settings)
 {
-	//TODO ¾àÀëÌÞ³ý ÊÓ×¶²Ã¼ô ÕÚµ²ÌÞ³ý ¿É¼ûµÆ¹â ¿É¼û·´ÉäCubemap ¿É¼ûSH
+	//TODO è·ç¦»å‰”é™¤ è§†é”¥è£å‰ª é®æŒ¡å‰”é™¤ å¯è§ç¯å…‰ å¯è§åå°„Cubemap å¯è§SH
 	Frustum& frustum = camera->GetFrustum();
 	glm::vec3& cameraPos = (glm::vec3&)camera->GetTransform()->GetWorldPosition();
 	float far = camera->GetFar();

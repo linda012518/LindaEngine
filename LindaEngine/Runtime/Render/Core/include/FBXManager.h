@@ -20,6 +20,8 @@ namespace LindaEngine
 		static Ref<Mesh> GetSkybox();
 		static Ref<Mesh> GetEmpty();
 
+		static Ref<Mesh> GetBoundingBox();
+
 	private:
 		static Ref<Mesh> GetMeshFromFBX(Ref<FBXResources> res, std::string hashCode);
 		static void ClearFBX(Ref<FBXResources> res);
@@ -28,5 +30,6 @@ namespace LindaEngine
 		static std::unordered_map<std::string, Ref<FBXResources>> _map;
 		static Ref<Mesh> _skybox;
 		static Ref<Mesh> _empty;
+		static Ref<Mesh> _boundingBox;
 	};
 }
