@@ -588,6 +588,9 @@
     <ClCompile Include="Temp\FrustumCuller.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="SandboxApp\src\Startup.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -2385,6 +2388,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Temp\FrustumCuller.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SandboxApp\include\Startup.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

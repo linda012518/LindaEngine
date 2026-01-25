@@ -7,7 +7,7 @@
 
 #define IMPLEMENT_BEHAVIOR(className) \
 	DYNAMIC_CREATE(className) \
-	className::className(Entity& entity, bool enable) : Behavior(entity, enable) \
+	className::className(LindaEngine::Entity& entity, bool enable) : LindaEngine::Behavior(entity, enable) \
 	{ \
 	} \
 	className::~className() \
@@ -15,26 +15,26 @@
 	} \
 	void className::Initialize() \
 	{ \
-		BehaviorSystem::AddAwake(this, OVERRIDE(Behavior, className, Awake)); \
-		BehaviorSystem::AddOnEnable(this, OVERRIDE(Behavior, className, OnEnable)); \
-		BehaviorSystem::AddStart(this, OVERRIDE(Behavior, className, Start)); \
-		BehaviorSystem::AddFixUpdate(this, OVERRIDE(Behavior, className, FixUpdate)); \
-		BehaviorSystem::AddOnTriggerEvent(this, OVERRIDE(Behavior, className, OnTriggerEvent)); \
-		BehaviorSystem::AddOnCollisionEvent(this, OVERRIDE(Behavior, className, OnCollisionEvent)); \
-		BehaviorSystem::AddOnMouseEvent(this, OVERRIDE(Behavior, className, OnMouseEvent)); \
-		BehaviorSystem::AddUpdate(this, OVERRIDE(Behavior, className, Update)); \
-		BehaviorSystem::AddLateUpdate(this, OVERRIDE(Behavior, className, LateUpdate)); \
-		BehaviorSystem::AddOnPreCull(this, OVERRIDE(Behavior, className, OnPreCull)); \
-		BehaviorSystem::AddOnPreRender(this, OVERRIDE(Behavior, className, OnPreRender)); \
-		BehaviorSystem::AddOnRenderObject(this, OVERRIDE(Behavior, className, OnRenderObject)); \
-		BehaviorSystem::AddOnPostRender(this, OVERRIDE(Behavior, className, OnPostRender)); \
-		BehaviorSystem::AddOnApplicationPause(this, OVERRIDE(Behavior, className, OnApplicationPause)); \
-		BehaviorSystem::AddOnApplicationQuit(this, OVERRIDE(Behavior, className, OnApplicationQuit)); \
-		BehaviorSystem::AddOnDisable(this, OVERRIDE(Behavior, className, OnDisable)); \
+		LindaEngine::BehaviorSystem::AddAwake(this, OVERRIDE(LindaEngine::Behavior, className, Awake)); \
+		LindaEngine::BehaviorSystem::AddOnEnable(this, OVERRIDE(LindaEngine::Behavior, className, OnEnable)); \
+		LindaEngine::BehaviorSystem::AddStart(this, OVERRIDE(LindaEngine::Behavior, className, Start)); \
+		LindaEngine::BehaviorSystem::AddFixUpdate(this, OVERRIDE(LindaEngine::Behavior, className, FixUpdate)); \
+		LindaEngine::BehaviorSystem::AddOnTriggerEvent(this, OVERRIDE(LindaEngine::Behavior, className, OnTriggerEvent)); \
+		LindaEngine::BehaviorSystem::AddOnCollisionEvent(this, OVERRIDE(LindaEngine::Behavior, className, OnCollisionEvent)); \
+		LindaEngine::BehaviorSystem::AddOnMouseEvent(this, OVERRIDE(LindaEngine::Behavior, className, OnMouseEvent)); \
+		LindaEngine::BehaviorSystem::AddUpdate(this, OVERRIDE(LindaEngine::Behavior, className, Update)); \
+		LindaEngine::BehaviorSystem::AddLateUpdate(this, OVERRIDE(LindaEngine::Behavior, className, LateUpdate)); \
+		LindaEngine::BehaviorSystem::AddOnPreCull(this, OVERRIDE(LindaEngine::Behavior, className, OnPreCull)); \
+		LindaEngine::BehaviorSystem::AddOnPreRender(this, OVERRIDE(LindaEngine::Behavior, className, OnPreRender)); \
+		LindaEngine::BehaviorSystem::AddOnRenderObject(this, OVERRIDE(LindaEngine::Behavior, className, OnRenderObject)); \
+		LindaEngine::BehaviorSystem::AddOnPostRender(this, OVERRIDE(LindaEngine::Behavior, className, OnPostRender)); \
+		LindaEngine::BehaviorSystem::AddOnApplicationPause(this, OVERRIDE(LindaEngine::Behavior, className, OnApplicationPause)); \
+		LindaEngine::BehaviorSystem::AddOnApplicationQuit(this, OVERRIDE(LindaEngine::Behavior, className, OnApplicationQuit)); \
+		LindaEngine::BehaviorSystem::AddOnDisable(this, OVERRIDE(LindaEngine::Behavior, className, OnDisable)); \
 	} \
 	bool className::Serialize() \
 	{ \
-		YAML::Emitter& out = *YamlSerializer::out; \
+		YAML::Emitter& out = *LindaEngine::YamlSerializer::out; \
 		out << YAML::Value << YAML::BeginMap; \
 		out << YAML::Key << "enable" << YAML::Value << _enable; \
 		out << YAML::Key << "Name" << YAML::Value << #className; \
