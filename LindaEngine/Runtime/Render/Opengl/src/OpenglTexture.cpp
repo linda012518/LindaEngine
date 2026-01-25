@@ -1,4 +1,4 @@
-#include "OpenglTexture.h"
+ï»¿#include "OpenglTexture.h"
 #include "Texture.h"
 #include "glad/glad.h"
 #include "Material.h"
@@ -50,7 +50,7 @@ void OpenglTexture::CreateCube(Ref<Texture> texture, void* right, void* left, vo
 
 void OpenglTexture::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
 {
-	//TODO srcÊÇÈ«¾°Í¼ destÊÇcubemap
+	//TODO srcæ˜¯å…¨æ™¯å›¾ destæ˜¯cubemap
 	FramebufferTextureSpecification color;
 	color.colorFormat = TextureFormat::RGBA8;
 
@@ -88,6 +88,8 @@ void OpenglTexture::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
 		material->SetMat4("viewProjection", camera->GetVPMatrix(i));
 		material->Bind(0, nullptr, FBXManager::GetSkybox()->GetMeshAttributes());
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, dest->nativeColorID, 0);
+		if (depth.isRenderBuffer == false) // å¦‚æžœä¸ç”¨RenderBufferï¼Œéœ€è¦ç»‘å®šçº¹ç†
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GetRenderTextureDepthAttachment(depth.colorFormat), GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, rt->depthNativeID, 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		FBXManager::GetSkybox()->Draw();
 	}
@@ -172,7 +174,7 @@ void OpenglTexture::CreateRenderTexture(Ref<RenderTexture> rt)
 
 void OpenglTexture::DeleteRenderTexture(Ref<RenderTexture> rt)
 {
-	glDeleteFramebuffers(1, &rt->nativeColorID);//ÕâÀïÊÇFBOµÄID
+	glDeleteFramebuffers(1, &rt->nativeColorID);//è¿™é‡Œæ˜¯FBOçš„ID
 	glDeleteTextures((int)rt->nativeIDs.size(), rt->nativeIDs.data());
 	glDeleteTextures(1, &rt->depthNativeID);
 	glDeleteRenderbuffers((int)rt->renderBuffers.size(), rt->renderBuffers.data());
