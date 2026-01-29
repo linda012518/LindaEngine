@@ -8,6 +8,7 @@ using namespace LindaEngine;
 int ComponentFactory::RegisterObj(const std::string& className, std::function<Ref<Component>(Entity&, bool)> objCreator)
 {
     GetMap()[className] = objCreator;
+    CollectComponents(className);
     return 0;
 }
 
@@ -26,6 +27,17 @@ std::unordered_map<std::string, std::function<Ref<Component>(Entity&, bool)>>& C
 {
     static std::unordered_map<std::string, std::function<Ref<Component>(Entity&, bool)>> map;
     return map;
+}
+
+std::vector<std::string>& ComponentFactory::GetComponents()
+{
+    static std::vector<std::string> components;
+    return components;
+}
+
+void ComponentFactory::CollectComponents(const std::string& className)
+{
+    GetComponents().push_back(className);
 }
 
 

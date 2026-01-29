@@ -53,6 +53,8 @@ namespace LindaEngine
 		template <typename TComponent>
 		TComponent* GetComponent();
 
+		Component* AddComponent(std::string className);
+
 		void RemoveComponent(Component* com);
 		void RemoveComponentImmediately(Component* com);
 

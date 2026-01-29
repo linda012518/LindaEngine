@@ -2393,6 +2393,12 @@
     <ClInclude Include="SandboxApp\include\Startup.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="External\nlohmann\nlohmann\json.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\nlohmann\nlohmann\json_fwd.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="External\glm\glm\detail\func_common.inl">

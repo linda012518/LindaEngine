@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <string>
 #include <functional>
+#include <vector>
 
 namespace LindaEngine
 {
@@ -20,9 +21,12 @@ namespace LindaEngine
 
 		static Ref<Component> CreateComponent(const std::string& className, Entity& entity, bool enable = true);
 
+		static std::vector<std::string>& GetComponents();
+
 	private:
 		static std::unordered_map<std::string, std::function<Ref<Component>(Entity&, bool)>>& GetMap();
 
+		static void CollectComponents(const std::string& className);
 	//private:
 	//	static std::unordered_map<std::string, std::function<Ref<Component>(Entity&, bool)>> _componentMap;
 

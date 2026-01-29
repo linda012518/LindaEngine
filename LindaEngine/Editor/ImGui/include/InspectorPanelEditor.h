@@ -23,6 +23,7 @@ namespace LindaEditor
 
 	private:
 		void DrawComponents();
+		void DrawSundry();
 
 	private:
 		LindaEngine::Entity* _selectionEntity = nullptr;

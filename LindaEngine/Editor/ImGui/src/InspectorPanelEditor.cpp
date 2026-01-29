@@ -1,10 +1,11 @@
-#include "InspectorPanelEditor.h"
+﻿#include "InspectorPanelEditor.h"
 #include "EventSystemEditor.h"
 #include "Entity.h"
 #include "EventCodeEditor.h"
 #include "glm/glm.hpp"
 #include "Transform.h"
 #include "Component.h"
+#include "ComponentFactory.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -137,6 +138,7 @@ void InspectorPanelEditor::OnImGuiRender()
 	}
 
 	DrawComponents();
+	DrawSundry();
 
 	ImGui::End();
 }
@@ -192,15 +194,15 @@ void InspectorPanelEditor::DrawComponents()
 		ImGui::PopStyleColor(1);
 	}
 
-	ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));       // �˵�������
-	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));            // �ı���ɫ
-	ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));         // �����˵�����
-	ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));          // ѡ��״̬���Ӳ˵���ʱ��
+	ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));       // 菜单栏背景
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));            // 文本颜色
+	ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));         // 弹出菜单背景
+	ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));          // 选中状态（子菜单打开时）
 
-	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.75f, 0.75f, 0.75f, 1.0f));   // ��ͣ����
-	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));    // �����
-	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));          // �߿���ɫ
-	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));       // �ָ�����ɫ
+	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.75f, 0.75f, 0.75f, 1.0f));   // 悬停背景
+	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));    // 激活背景
+	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));          // 边框颜色
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));       // 分隔线颜色
 
 	if (ImGui::BeginPopupContextWindow(0, ImGuiPopupFlags_MouseButtonRight))
 	{
@@ -217,6 +219,63 @@ void InspectorPanelEditor::DrawComponents()
 	}
 
 	ImGui::PopStyleColor(8);
+}
+
+void InspectorPanelEditor::DrawSundry()
+{
+	std::vector<std::string>& names = ComponentFactory::GetComponents();
+
+	static bool show_popup = false;
+
+	if (ImGui::Button("Add Component", ImVec2(-1, 0))) {
+		show_popup = true;
+	}
+
+	if (false == show_popup)
+		return;
+
+	ImGui::SetNextWindowPos(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMax().y));
+
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // 背景色：深蓝灰
+	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // 边框色：蓝色
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // 字体色：浅灰
+
+	ImGui::Begin("##Dropdown", &show_popup,
+		ImGuiWindowFlags_NoTitleBar |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_AlwaysAutoResize);
+
+	// 检测点击外部区域
+	bool popup_hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup |
+		ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+	bool button_hovered = ImGui::IsItemHovered();
+
+	// 如果没有悬停在弹出框或按钮上，且鼠标被点击，则关闭弹出框
+	if (ImGui::IsMouseClicked(0) && !popup_hovered && !button_hovered) {
+		show_popup = false;
+	}
+
+	if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+		show_popup = false;
+	}
+
+	ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // 选中项背景
+	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f)); // 悬停背景
+	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));  // 点击背景
+
+	for (int i = 0; i < (int)names.size(); i++)
+	{
+		if (ImGui::Selectable(names[i].c_str()))
+		{
+			show_popup = false;
+			_selectionEntity->AddComponent(names[i]);
+		}
+	}
+
+	ImGui::PopStyleColor(3);
+	ImGui::End();
+	ImGui::PopStyleColor(3);
 }
 
 

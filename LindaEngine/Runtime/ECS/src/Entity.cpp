@@ -156,6 +156,14 @@ void Entity::ClearDirty()
 	_activeDirty = false;
 }
 
+Component* Entity::AddComponent(std::string className)
+{
+	Ref<Component> pointer = ComponentFactory::CreateComponent(className, *this, true);
+	_components.push_back(pointer);
+	OnComponentAdded(pointer.get());
+	return pointer.get();
+}
+
 void Entity::RemoveComponent(Component* com)
 {
 	static_assert(!std::is_same<Transform, Component>::value, "You can't remove a Transform from an actor");
@@ -221,10 +229,12 @@ bool Entity::Deserialize(YAML::Node& node)
 		}
 		else
 		{
-			Ref<Component> pointer = ComponentFactory::CreateComponent(comName, *this, com["enable"].as<bool>());
+			//Ref<Component> pointer = ComponentFactory::CreateComponent(comName, *this, com["enable"].as<bool>());
+			//pointer->Deserialize(com);
+			//_components.push_back(pointer);
+			//OnComponentAdded(pointer.get());
+			Component* pointer = AddComponent(comName);
 			pointer->Deserialize(com);
-			_components.push_back(pointer);
-			OnComponentAdded(pointer.get());
 		}
 	}
 
