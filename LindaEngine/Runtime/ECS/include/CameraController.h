@@ -26,6 +26,7 @@ namespace LindaEngine
 		void PanningEvent(MouseEvent& event);
 		void RotateEvent(MouseEvent& event);
 		void LookRoundEvent(MouseEvent& event);
+		void LookAtEntity(Entity* entity);
 
 	private:
 		Camera* _camera = nullptr;

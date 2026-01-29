@@ -5,6 +5,7 @@
 #include "EventCode.h"
 #include "Camera.h"
 #include "Transform.h"
+#include "Renderer.h"
 
 using namespace LindaEngine;
 
@@ -217,5 +218,18 @@ void CameraController::LookRoundEvent(MouseEvent& event)
 	_transform->GetWorldDir(forward, up, right);
 	_transform->SetWorldPosition(forward * distance + _lookRoundPos);
 
+}
+
+void CameraController::LookAtEntity(Entity* entity)
+{
+	Renderer* render = entity->GetComponent<Renderer>();
+	glm::vec3 target = render->GetBoundingBox().center;
+
+	glm::vec3 front, up, right;
+	_transform->GetWorldDir(front, up, right);
+
+	target += (front * -10.0f);
+
+	_transform->SetWorldPosition(target);
 }
 
