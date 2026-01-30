@@ -192,7 +192,7 @@ void CameraController::PanningEvent(MouseEvent& event)
 	float adaptiveSpeed = _panSpeed * distanceToTarget;
 	glm::vec3 front, up, right;
 	_transform->GetWorldDir(front, up, right);
-	glm::vec3 moveVector = (right * mouseDelta.x + up * -mouseDelta.y) * adaptiveSpeed;
+	glm::vec3 moveVector = (right * -mouseDelta.x + up * -mouseDelta.y) * adaptiveSpeed;
 	_transform->SetWorldPosition(_transform->GetWorldPosition() + moveVector);
 
 	_lookAtPos += moveVector;
