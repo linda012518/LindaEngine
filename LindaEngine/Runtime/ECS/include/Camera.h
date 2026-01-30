@@ -111,6 +111,9 @@ namespace LindaEngine
 		PerspectiveCamera(Entity& entity, bool enable = true);
 		virtual ~PerspectiveCamera();
 
+		float GetAspectRatio() { return _aspectRatio; }
+		float GetFOV() { return _fov; }
+
 		virtual void MakeProjectionMatrix();
 
 		void SetProjectionData(float fov, float ratio, float near, float far, float dontCare = -1.0f);

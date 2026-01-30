@@ -5,7 +5,7 @@
 
 namespace LindaEngine
 {
-	class Camera;
+	class PerspectiveCamera;
 	struct MouseEvent;
 
 	class CameraController : public Behavior
@@ -26,10 +26,10 @@ namespace LindaEngine
 		void PanningEvent(MouseEvent& event);
 		void RotateEvent(MouseEvent& event);
 		void LookRoundEvent(MouseEvent& event);
-		void LookAtEntity(Entity* entity);
+		void LookAtEntity();
 
 	private:
-		Camera* _camera = nullptr;
+		PerspectiveCamera* _camera = nullptr;
 		float _mouseWheelSpeed = 0.001f;
 		float _stanardWheelDelta = 120.0f;
 
@@ -37,12 +37,14 @@ namespace LindaEngine
 		bool _isPanning = false;
 
 		glm::vec2 _lastMousePos;
-		glm::vec3 _lookRoundPos;
+		glm::vec3 _lookAtPos;
+		float _lookAtPosDistance;
 
 		bool _leftHeld = false;
 		bool _rightHeld = false;
 		float _rotateSpeed = 0.1f;
 
+		Entity* _selectedEntity = nullptr;
 	};
 
 }

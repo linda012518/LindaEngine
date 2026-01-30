@@ -1,4 +1,4 @@
-#include "Transform.h"
+﻿#include "Transform.h"
 #include "Entity.h"
 #include "YamlSerializer.h"
 #include "YamlCustomType.h"
@@ -397,7 +397,7 @@ void Transform::UpdateChildren()
 
 void Transform::NotifyChange()
 {
-	//֪ͨ����ϵͳ���
+	//通知其它系统变更
 	_entity.TransformDirty();
 }
 
@@ -405,19 +405,24 @@ void Transform::GetDir(glm::quat& rotation, glm::vec3& forward, glm::vec3& up, g
 {
 	Tick();
 
-	glm::mat4 temp = glm::mat4_cast(rotation);
+	forward = glm::rotate(rotation, glm::vec3(0, 0, 1));
+	up = glm::rotate(rotation, glm::vec3(0, 1, 0));
+	right = glm::cross(forward, up);
+	up = glm::cross(right, forward); // 重新正交化
 
-	right.x = temp[0][0];
-	right.y = temp[1][0];
-	right.z = temp[2][0];
+	//glm::mat4 temp = glm::mat4_cast(glm::normalize(rotation));
 
-	up.x = temp[0][1];
-	up.y = temp[1][1];
-	up.z = temp[2][1];
+	//right.x = temp[0][0];
+	//right.y = temp[1][0];
+	//right.z = temp[2][0];
 
-	forward.x = temp[0][2];
-	forward.y = temp[1][2];
-	forward.z = temp[2][2];
+	//up.x = temp[0][1];
+	//up.y = temp[1][1];
+	//up.z = temp[2][1];
+
+	//forward.x = temp[0][2];
+	//forward.y = temp[1][2];
+	//forward.z = temp[2][2];
 }
 
 bool Transform::Serialize()

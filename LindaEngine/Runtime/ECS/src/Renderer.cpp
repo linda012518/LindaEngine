@@ -8,6 +8,7 @@
 #include "Entity.h"
 #include "RendererSystem.h"
 #include "Drawable.h"
+#include "Mathf.h"
 
 using namespace LindaEngine;
 
@@ -113,6 +114,9 @@ void Renderer::TransformDirty()
 	};
 
 	const glm::mat4& transform = _transform->GetLocalToWorldMat();
+
+	_aabb.min = glm::vec3(Mathf::MaxValue);
+	_aabb.max = glm::vec3(Mathf::MinValue);
 
 	for (const auto& vertex : vertices) {
 		glm::vec4 transformed = transform * glm::vec4(vertex, 1.0f);

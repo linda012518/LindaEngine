@@ -1,4 +1,4 @@
-#include "CameraController.h"
+Ôªø#include "CameraController.h"
 #include "BehaviorImplement.inl"
 #include "Entity.h"
 #include "Event.h"
@@ -6,14 +6,23 @@
 #include "Camera.h"
 #include "Transform.h"
 #include "Renderer.h"
+#include "EventSystemEditor.h"
+#include "EventCodeEditor.h"
+#include "EventEditor.h"
 
+using namespace LindaEditor;
 using namespace LindaEngine;
 
 IMPLEMENT_BEHAVIOR(CameraController)
 
 void CameraController::Awake()
 {
-	_camera = _entity.GetComponent<Camera>();
+	_camera = _entity.GetComponent<PerspectiveCamera>();
+	glm::vec3 front, up, right;
+	_transform->GetWorldDir(front, up, right);
+	_lookAtPosDistance = _camera->GetFar() * 0.2f;
+	_lookAtPos = _transform->GetWorldPosition() + front * _lookAtPosDistance;
+
 	Bind(EventCode::MouseWheel);
 	Bind(EventCode::MouseWheelDown);
 	Bind(EventCode::MouseWheelUp);
@@ -25,6 +34,8 @@ void CameraController::Awake()
 	Bind(EventCode::MouseLeave);
 	Bind(EventCode::KeyDown);
 	Bind(EventCode::KeyUp);
+
+	EventSystemEditor::Bind(EventCodeEditor::SwitchSelectEntity, this);
 }
 
 void CameraController::Update()
@@ -45,17 +56,25 @@ void CameraController::OnDestroy()
 	Unbind(EventCode::MouseLeave);
 	Unbind(EventCode::KeyDown);
 	Unbind(EventCode::KeyUp);
+
+	EventSystemEditor::Unbind(EventCodeEditor::SwitchSelectEntity, this);
 }
 
 void CameraController::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
 {
 	ProcessMouseEvent(eventCode, eventData);
 	ProcessKeyEvent(eventCode, eventData);
+
+	if (eventCode == EventCodeEditor::SwitchSelectEntity)
+	{
+		SwitchSelectEntityEditor& event = dynamic_cast<SwitchSelectEntityEditor&>(eventData);
+		_selectedEntity = event.selectionEntity;
+	}
 }
 
 void CameraController::ProcessMouseEvent(int eventCode, Event& eventData)
 {
-	if (eventCode == EventCode::KeyDown || eventCode == EventCode::KeyUp)
+	if (eventCode == EventCode::KeyDown || eventCode == EventCode::KeyUp || eventCode == EventCodeEditor::SwitchSelectEntity)
 		return;
 
 	MouseEvent& event = dynamic_cast<MouseEvent&>(eventData);
@@ -80,7 +99,7 @@ void CameraController::ProcessMouseEvent(int eventCode, Event& eventData)
 	break;
 	case EventCode::LeftMouseButtonDown:
 	{
-		//TODO _lookRoundPos ‘⁄’‚¿Ô≥ı ºªØ
+		//TODO _lookRoundPos Âú®ËøôÈáåÂàùÂßãÂåñ
 		_leftHeld = true;
 		_lastMousePos.x = (float)event.x;
 		_lastMousePos.y = (float)event.y;
@@ -131,9 +150,9 @@ void CameraController::ProcessKeyEvent(int eventCode, Event& eventData)
 	case EventCode::KeyDown:
 	{
 		std::cout << "	KeyDown  " << static_cast<int>(event.key) << "\n" << std::endl;
-		if (event.key == KeyCode::CONTROL)
+		if (event.key == KeyCode::F)
 		{
-
+			LookAtEntity();
 		}
 	}
 	break;
@@ -156,8 +175,10 @@ void CameraController::ScaleEvent(MouseEvent& event)
 	//glm::vec3 eyePos = _transform->GetWorldPosition();
 	//glm::vec3 dir = glm::normalize(far - eyePos);
 	//glm::vec3 worldPos = dir * glm::abs(far.y - eyePos.y);
-	glm::vec3 ppp = _transform->GetWorldPosition() + far * (event.wheel / _stanardWheelDelta) * _mouseWheelSpeed;
-	_transform->SetWorldPosition(ppp);
+	glm::vec3 moveVector = far * (event.wheel / _stanardWheelDelta) * _mouseWheelSpeed;
+	_transform->SetWorldPosition(_transform->GetWorldPosition() + moveVector);
+
+	_lookAtPos += moveVector;
 }
 
 void CameraController::PanningEvent(MouseEvent& event)
@@ -167,12 +188,14 @@ void CameraController::PanningEvent(MouseEvent& event)
 	glm::vec2 mouseDelta = _lastMousePos - glm::vec2(event.x, event.y);
 	_lastMousePos.x = (float)event.x;
 	_lastMousePos.y = (float)event.y;
-	float distanceToTarget = glm::length(_transform->GetWorldPosition());//’‚¿Ôø…“‘–ﬁ∏ƒŒ™œ‡ª˙µΩ÷∏œÚŒÔÃÂæ‡¿Î
+	float distanceToTarget = glm::length(_transform->GetWorldPosition());//ËøôÈáåÂèØ‰ª•‰øÆÊîπ‰∏∫Áõ∏Êú∫Âà∞ÊåáÂêëÁâ©‰ΩìË∑ùÁ¶ª
 	float adaptiveSpeed = _panSpeed * distanceToTarget;
 	glm::vec3 front, up, right;
 	_transform->GetWorldDir(front, up, right);
 	glm::vec3 moveVector = (right * mouseDelta.x + up * -mouseDelta.y) * adaptiveSpeed;
 	_transform->SetWorldPosition(_transform->GetWorldPosition() + moveVector);
+
+	_lookAtPos += moveVector;
 }
 
 void CameraController::RotateEvent(MouseEvent& event)
@@ -191,12 +214,16 @@ void CameraController::RotateEvent(MouseEvent& event)
 	angle.x += yoffset;
 	angle.y += xoffset;
 	_transform->SetLocalEulerAngles(angle);
+
+	glm::vec3 front, up, right;
+	_transform->GetWorldDir(front, up, right);
+	_lookAtPos = _transform->GetWorldPosition() + front * _lookAtPosDistance;
 }
 
 void CameraController::LookRoundEvent(MouseEvent& event)
 {
 	return;
-	//TODO Œ¥≤‚ ‘ _lookRoundPos Œ¥…Ë÷√
+	//TODO Êú™ÊµãËØï _lookRoundPos Êú™ËÆæÁΩÆ
 	if (false == _leftHeld)
 		return;
 	float xoffset = event.x - _lastMousePos.x;
@@ -213,22 +240,41 @@ void CameraController::LookRoundEvent(MouseEvent& event)
 	angle.x += yoffset;
 	_transform->SetLocalEulerAngles(angle);
 
-	float distance = glm::length(_lookRoundPos - _transform->GetWorldPosition());
+	float distance = glm::length(_lookAtPos - _transform->GetWorldPosition());
 	glm::vec3 forward, up, right;
 	_transform->GetWorldDir(forward, up, right);
-	_transform->SetWorldPosition(forward * distance + _lookRoundPos);
+	_transform->SetWorldPosition(forward * distance + _lookAtPos);
 
 }
 
-void CameraController::LookAtEntity(Entity* entity)
+void CameraController::LookAtEntity()
 {
-	Renderer* render = entity->GetComponent<Renderer>();
+	if (_selectedEntity == nullptr)
+		return;
+
+	Renderer* render = _selectedEntity->GetComponent<Renderer>();
+	if (render == nullptr)
+		return;
+
 	glm::vec3 target = render->GetBoundingBox().center;
+	float aabbRadius = glm::length(render->GetBoundingBox().size * 0.5f);
+
+	float fov = glm::radians(_camera->GetFOV());
+	float verticalTan = glm::tan(fov * 0.5f);
+	float distance = aabbRadius / verticalTan;
+	if (_camera->GetAspectRatio() < 1)
+	{
+		//Ê∞¥Âπ≥FOV = 2 √ó arctan( tan(ÂûÇÁõ¥FOV / 2) √ó (ÂÆΩÈ´òÊØî) )
+		fov = 2 * glm::atan(verticalTan * _camera->GetAspectRatio());
+		distance = aabbRadius / glm::tan(fov * 0.5f);
+	}
+	float far = _camera->GetFar() * 0.6f;
+	distance = distance > far ? far : distance;
 
 	glm::vec3 front, up, right;
-	_transform->GetWorldDir(front, up, right);
+	_transform->GetLocalDir(front, up, right);
 
-	target += (front * -10.0f);
+	target += (front * distance * 1.5f);
 
 	_transform->SetWorldPosition(target);
 }
