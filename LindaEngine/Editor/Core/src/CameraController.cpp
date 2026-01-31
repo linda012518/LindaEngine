@@ -9,6 +9,7 @@
 #include "EventSystemEditor.h"
 #include "EventCodeEditor.h"
 #include "EventEditor.h"
+#include "EditViewPanelEditor.h"
 
 using namespace LindaEditor;
 using namespace LindaEngine;
@@ -62,6 +63,9 @@ void CameraController::OnDestroy()
 
 void CameraController::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
 {
+	if (EditViewPanelEditor::hovered == false)
+		return;
+	
 	ProcessMouseEvent(eventCode, eventData);
 	ProcessKeyEvent(eventCode, eventData);
 

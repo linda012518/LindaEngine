@@ -20,5 +20,8 @@ namespace LindaEditor
 	private:
 		Ref<LindaEngine::RenderTexture> _renderTexture;
 		std::vector<LindaEngine::FramebufferTextureSpecification> _fboSpecs;
+
+	public:
+		static bool hovered;
 	};
 }

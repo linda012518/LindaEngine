@@ -8,6 +8,7 @@
 #include "Transform.h"
 #include "LightSystem.h"
 #include "Light.h"
+#include "CameraController.h"
 
 using namespace LindaEditor;
 using namespace LindaEngine;
@@ -17,8 +18,8 @@ int RenderPipelineEditor::Initialize()
     _entity = CreateRef<Entity>("EditorModeMainCamera");
     _entity->SetDontDestory(true);
     _activeCamera = _entity->AddComponent<PerspectiveCamera>();
-    _activeCamera->GetTransform()->SetWorldPosition(glm::vec3(0.0f, 0.0f, 3.0f));
     _entity->AddComponent<OrthoCamera>();
+    _entity->AddComponent<CameraController>();
 
     RenderPipeline::Initialize();
     _urpEditor.Initialize();

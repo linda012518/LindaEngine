@@ -223,7 +223,7 @@
     <ClCompile Include="Runtime\Window\src\WindowsInput.cpp" />
     <ClCompile Include="Runtime\Core\src\Timestamp.cpp" />
     <ClCompile Include="Runtime\ECS\src\Light.cpp" />
-    <ClCompile Include="Runtime\ECS\src\CameraController.cpp" />
+    <ClCompile Include="Editor\Core\src\CameraController.cpp" />
     <ClCompile Include="Runtime\ECS\src\BehaviorSystem.cpp" />
     <ClCompile Include="Editor\Core\src\MaterialManagerEditor.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\TextureContext.cpp" />
@@ -457,7 +457,7 @@
     <ClInclude Include="Runtime\Window\include\Input.h" />
     <ClInclude Include="Runtime\Core\include\Timestamp.h" />
     <ClInclude Include="Runtime\ECS\include\Light.h" />
-    <ClInclude Include="Runtime\ECS\include\CameraController.h" />
+    <ClInclude Include="Editor\Core\include\CameraController.h" />
     <ClInclude Include="Runtime\ECS\include\BehaviorSystem.h" />
     <ClInclude Include="Editor\Core\include\MaterialManagerEditor.h" />
     <ClInclude Include="Runtime\Render\Core\include\TextureContext.h" />

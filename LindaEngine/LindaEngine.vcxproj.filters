@@ -282,7 +282,7 @@
     <ClCompile Include="Runtime\ECS\src\BehaviorSystem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime\ECS\src\CameraController.cpp">
+    <ClCompile Include="Editor\Core\src\CameraController.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\ECS\src\Light.cpp">
@@ -1949,7 +1949,7 @@
     <ClInclude Include="Runtime\ECS\include\BehaviorSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\ECS\include\CameraController.h">
+    <ClInclude Include="Editor\Core\include\CameraController.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\ECS\include\Light.h">

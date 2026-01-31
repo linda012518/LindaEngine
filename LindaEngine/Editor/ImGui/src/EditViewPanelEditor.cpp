@@ -10,6 +10,8 @@
 using namespace LindaEditor;
 using namespace LindaEngine;
 
+bool EditViewPanelEditor::hovered = false;
+
 DYNAMIC_CREATE_CLASS(EditViewPanelEditor, ImGuiPanelEditor)
 
 EditViewPanelEditor::EditViewPanelEditor()
@@ -30,6 +32,8 @@ void EditViewPanelEditor::OnImGuiRender()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(1, 1));
 	ImGui::Begin("Edit View");
+
+	hovered = ImGui::IsWindowHovered();
 
 	ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
