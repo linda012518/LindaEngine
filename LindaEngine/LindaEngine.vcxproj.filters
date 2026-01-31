@@ -591,6 +591,21 @@
     <ClCompile Include="SandboxApp\src\Startup.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="External\ImGuizmo\ImGuizmo\GraphEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="External\ImGuizmo\ImGuizmo\ImCurveEdit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="External\ImGuizmo\ImGuizmo\ImGradient.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="External\ImGuizmo\ImGuizmo\ImGuizmo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="External\ImGuizmo\ImGuizmo\ImSequencer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -2397,6 +2412,27 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="External\nlohmann\nlohmann\json_fwd.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\ImGuizmo\ImGuizmo\GraphEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\ImGuizmo\ImGuizmo\ImCurveEdit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\ImGuizmo\ImGuizmo\ImGradient.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\ImGuizmo\ImGuizmo\ImGuizmo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\ImGuizmo\ImGuizmo\ImLightRig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\ImGuizmo\ImGuizmo\ImSequencer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="External\ImGuizmo\ImGuizmo\ImZoomSlider.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
