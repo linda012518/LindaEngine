@@ -37,8 +37,8 @@ namespace LindaEngine
 		bool _isPanning = false;
 
 		glm::vec2 _lastMousePos;
-		glm::vec3 _lookAtPos;
-		float _lookAtPosDistance;
+		glm::vec3 _LookRoundTarget;
+		float _LookRoundDistance;
 
 		bool _leftHeld = false;
 		bool _rightHeld = false;

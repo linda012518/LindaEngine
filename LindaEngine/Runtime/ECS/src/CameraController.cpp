@@ -20,8 +20,8 @@ void CameraController::Awake()
 	_camera = _entity.GetComponent<PerspectiveCamera>();
 	glm::vec3 front, up, right;
 	_transform->GetWorldDir(front, up, right);
-	_lookAtPosDistance = _camera->GetFar() * 0.2f;
-	_lookAtPos = _transform->GetWorldPosition() + front * _lookAtPosDistance;
+	_LookRoundDistance = 20.0f;
+	_LookRoundTarget = _transform->GetWorldPosition() - front * _LookRoundDistance;
 
 	Bind(EventCode::MouseWheel);
 	Bind(EventCode::MouseWheelDown);
@@ -99,7 +99,6 @@ void CameraController::ProcessMouseEvent(int eventCode, Event& eventData)
 	break;
 	case EventCode::LeftMouseButtonDown:
 	{
-		//TODO _lookRoundPos 在这里初始化
 		_leftHeld = true;
 		_lastMousePos.x = (float)event.x;
 		_lastMousePos.y = (float)event.y;
@@ -178,7 +177,7 @@ void CameraController::ScaleEvent(MouseEvent& event)
 	glm::vec3 moveVector = far * (event.wheel / _stanardWheelDelta) * _mouseWheelSpeed;
 	_transform->SetWorldPosition(_transform->GetWorldPosition() + moveVector);
 
-	_lookAtPos += moveVector;
+	_LookRoundTarget += moveVector;
 }
 
 void CameraController::PanningEvent(MouseEvent& event)
@@ -195,7 +194,7 @@ void CameraController::PanningEvent(MouseEvent& event)
 	glm::vec3 moveVector = (right * -mouseDelta.x + up * -mouseDelta.y) * adaptiveSpeed;
 	_transform->SetWorldPosition(_transform->GetWorldPosition() + moveVector);
 
-	_lookAtPos += moveVector;
+	_LookRoundTarget += moveVector;
 }
 
 void CameraController::RotateEvent(MouseEvent& event)
@@ -217,13 +216,11 @@ void CameraController::RotateEvent(MouseEvent& event)
 
 	glm::vec3 front, up, right;
 	_transform->GetWorldDir(front, up, right);
-	_lookAtPos = _transform->GetWorldPosition() + front * _lookAtPosDistance;
+	_LookRoundTarget = _transform->GetWorldPosition() - front * _LookRoundDistance;
 }
 
 void CameraController::LookRoundEvent(MouseEvent& event)
 {
-	return;
-	//TODO 未测试 _lookRoundPos 未设置
 	if (false == _leftHeld)
 		return;
 	float xoffset = event.x - _lastMousePos.x;
@@ -236,14 +233,12 @@ void CameraController::LookRoundEvent(MouseEvent& event)
 
 	glm::vec3 angle = _transform->GetLocalEulerAngles();
 	angle.y += xoffset;
-	_transform->SetLocalEulerAngles(angle);
 	angle.x += yoffset;
 	_transform->SetLocalEulerAngles(angle);
 
-	float distance = glm::length(_lookAtPos - _transform->GetWorldPosition());
-	glm::vec3 forward, up, right;
-	_transform->GetWorldDir(forward, up, right);
-	_transform->SetWorldPosition(forward * distance + _lookAtPos);
+	glm::vec3 front, up, right;
+	_transform->GetLocalDir(front, up, right);
+	_transform->SetWorldPosition(front * _LookRoundDistance + _LookRoundTarget);
 
 }
 
@@ -274,8 +269,9 @@ void CameraController::LookAtEntity()
 	glm::vec3 front, up, right;
 	_transform->GetLocalDir(front, up, right);
 
-	target += (front * distance * 1.5f);
+	_LookRoundDistance = distance * 1.5f;
+	_LookRoundTarget = target;
 
-	_transform->SetWorldPosition(target);
+	_transform->SetWorldPosition(target + front * _LookRoundDistance);
 }
 
