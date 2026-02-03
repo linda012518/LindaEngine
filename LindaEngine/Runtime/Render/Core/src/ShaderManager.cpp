@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "Path.h"
 #include "yaml-cpp/yaml.h"
+#include "Application.h"
 
 using namespace LindaEngine;
 
@@ -14,6 +15,10 @@ std::vector<std::string> ShaderManager::defaultAttributeNames;
 std::string ShaderManager::defaultShaderUniformBlack;
 std::string ShaderManager::defaultShaderUniform;
 std::string ShaderManager::defaultShaderVersion;
+std::string ShaderManager::PickVertexUniform;
+std::string ShaderManager::PickVertexOut;
+std::string ShaderManager::PickFragmentUniform;
+std::string ShaderManager::PickFragmentOut;
 
 bool _isLoadDefault = false;
 
@@ -21,11 +26,7 @@ Ref<ShaderSource> ShaderManager::GetShaderSource(const char* path)
 {
     try
     {
-        if (false == _isLoadDefault)
-        {
-            Initialize();
-            _isLoadDefault = true;
-        }
+        Initialize();
 
         auto itr = _shaderSrcMap.find(path);
         if (itr == _shaderSrcMap.end())
@@ -75,6 +76,12 @@ Ref<Shader> ShaderManager::CompileShader(Ref<ShaderSourceCode> sss, std::vector<
         index++;
     }
 
+    if (Application::module == AppModule::Editor)
+    {
+        std::string uniform = "uniform int entityID;\n out flat int outID;\n";
+        std::string outValue = "out flat int outID;\n";
+    }
+
     std::string tempVertex = defaultShaderVersion + defaultShaderUniformBlack + kw + layout + defaultShaderUniform + sss->vertex;
     std::string tempFragment = defaultShaderVersion + defaultShaderUniformBlack + kw + defaultShaderUniform + sss->fragment;
     return CreateRef<Shader>(tempVertex.c_str(), tempFragment.c_str());
@@ -82,6 +89,10 @@ Ref<Shader> ShaderManager::CompileShader(Ref<ShaderSourceCode> sss, std::vector<
 
 bool ShaderManager::Initialize()
 {
+    if (true == _isLoadDefault)
+        return true;
+    _isLoadDefault = true;
+
     YAML::Node data;
     try
     {
@@ -91,6 +102,10 @@ bool ShaderManager::Initialize()
         if (!data)
             return false;
 
+        PickVertexUniform = TextLoader::Load(data["PickVertexUniform"].as<std::string>().c_str());
+        PickVertexOut = TextLoader::Load(data["PickVertexOut"].as<std::string>().c_str());
+        PickFragmentUniform = TextLoader::Load(data["PickFragmentUniform"].as<std::string>().c_str());
+        PickFragmentOut = TextLoader::Load(data["PickFragmentOut"].as<std::string>().c_str());
         defaultShaderUniform = TextLoader::Load(data["BuiltInUniform"].as<std::string>().c_str());
         defaultShaderUniformBlack = TextLoader::Load(data["GlobalUniformBlock"].as<std::string>().c_str());
         defaultShaderVersion = TextLoader::Load(data["ShaderVersion"].as<std::string>().c_str());

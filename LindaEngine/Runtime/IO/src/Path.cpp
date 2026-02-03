@@ -9,7 +9,7 @@ using namespace LindaEngine;
 const char* Path::overridePath;
 const char* Path::graphicsConfig = "Assets/Config/GraphicsConfig";
 const char* Path::sceneConfig = "Assets/Config/SceneConfig";
-const char* Path::shaderConfig = "Assets/Config/ShaderConfig";
+const char* Path::shaderConfig = "BuiltInAssets/Config/ShaderConfig";
 
 std::vector<std::string> Path::GetFileDirectorys(const char* path)
 {

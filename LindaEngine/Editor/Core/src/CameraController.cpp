@@ -63,17 +63,17 @@ void CameraController::OnDestroy()
 
 void CameraController::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
 {
-	if (EditViewPanelEditor::hovered == false)
-		return;
-	
-	ProcessMouseEvent(eventCode, eventData);
-	ProcessKeyEvent(eventCode, eventData);
-
 	if (eventCode == EventCodeEditor::SwitchSelectEntity)
 	{
 		SwitchSelectEntityEditor& event = dynamic_cast<SwitchSelectEntityEditor&>(eventData);
 		_selectedEntity = event.selectionEntity;
 	}
+
+	if (EditViewPanelEditor::hovered == false)
+		return;
+	
+	ProcessMouseEvent(eventCode, eventData);
+	ProcessKeyEvent(eventCode, eventData);
 }
 
 void CameraController::ProcessMouseEvent(int eventCode, Event& eventData)
