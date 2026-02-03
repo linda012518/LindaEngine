@@ -19,6 +19,9 @@ EditViewPanelEditor::EditViewPanelEditor()
 	FramebufferTextureSpecification color;
 	color.colorFormat = TextureFormat::RGBA8;
 	_fboSpecs.push_back(color);
+	FramebufferTextureSpecification color2;
+	color2.colorFormat = TextureFormat::R32;
+	_fboSpecs.push_back(color2);
 	FramebufferTextureSpecification depth;
 	depth.colorFormat = TextureFormat::Depth16;
 	depth.filter = FilterMode::Point;

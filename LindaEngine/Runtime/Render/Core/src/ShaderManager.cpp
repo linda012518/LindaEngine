@@ -15,6 +15,7 @@ std::vector<std::string> ShaderManager::defaultAttributeNames;
 std::string ShaderManager::defaultShaderUniformBlack;
 std::string ShaderManager::defaultShaderUniform;
 std::string ShaderManager::defaultShaderVersion;
+std::string ShaderManager::FragmentOut;
 std::string ShaderManager::PickVertexUniform;
 std::string ShaderManager::PickVertexOut;
 std::string ShaderManager::PickFragmentUniform;
@@ -76,14 +77,19 @@ Ref<Shader> ShaderManager::CompileShader(Ref<ShaderSourceCode> sss, std::vector<
         index++;
     }
 
+    std::string vertexShader = sss->vertex;
+    std::string fragmentShader = sss->fragment;
+
     if (Application::module == AppModule::Editor)
     {
-        std::string uniform = "uniform int entityID;\n out flat int outID;\n";
-        std::string outValue = "out flat int outID;\n";
+        vertexShader = PickVertexUniform + vertexShader;
+        ShaderLoader::AddPickOut(PickVertexOut, vertexShader);
+        fragmentShader = "layout (location = " + std::to_string(sss->outColorCount) +") " + PickFragmentUniform + fragmentShader;
+        ShaderLoader::AddPickOut(PickFragmentOut, fragmentShader);
     }
 
-    std::string tempVertex = defaultShaderVersion + defaultShaderUniformBlack + kw + layout + defaultShaderUniform + sss->vertex;
-    std::string tempFragment = defaultShaderVersion + defaultShaderUniformBlack + kw + defaultShaderUniform + sss->fragment;
+    std::string tempVertex = defaultShaderVersion + defaultShaderUniformBlack + kw + layout + defaultShaderUniform + vertexShader;
+    std::string tempFragment = defaultShaderVersion + defaultShaderUniformBlack + kw + defaultShaderUniform + FragmentOut + fragmentShader;
     return CreateRef<Shader>(tempVertex.c_str(), tempFragment.c_str());
 }
 
@@ -106,6 +112,7 @@ bool ShaderManager::Initialize()
         PickVertexOut = TextLoader::Load(data["PickVertexOut"].as<std::string>().c_str());
         PickFragmentUniform = TextLoader::Load(data["PickFragmentUniform"].as<std::string>().c_str());
         PickFragmentOut = TextLoader::Load(data["PickFragmentOut"].as<std::string>().c_str());
+        FragmentOut = TextLoader::Load(data["FragmentOut"].as<std::string>().c_str());
         defaultShaderUniform = TextLoader::Load(data["BuiltInUniform"].as<std::string>().c_str());
         defaultShaderUniformBlack = TextLoader::Load(data["GlobalUniformBlock"].as<std::string>().c_str());
         defaultShaderVersion = TextLoader::Load(data["ShaderVersion"].as<std::string>().c_str());

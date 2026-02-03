@@ -100,6 +100,14 @@ void ShaderLoader::ProcessInclude(std::string& tex, std::vector<std::string>& pa
 
 }
 
+void ShaderLoader::AddPickOut(std::string& str, std::string& shaderCode)
+{
+	size_t pos = shaderCode.rfind('}');
+	if (pos == std::string::npos)
+		return;
+	shaderCode.insert(pos, str);
+}
+
 void ShaderLoader::DeleteShaderFrame(std::string& tex)
 {
 	size_t attrPos = tex.find("Shader");
@@ -317,6 +325,16 @@ void ShaderLoader::CollectShaderCode(std::string& tex, Ref<ShaderSourceCode> pas
 	lastPos = tex.rfind('}');
 
 	std::string fragment = tex.substr(firstPos + 1, lastPos - firstPos - 1);
+
+	std::regex pattern(R"(layout\s*\(\s*location\s*=\s*(\d+)\s*\)\s*out\s+(\w+)\s+(\w+)\s*;)");
+	std::smatch matches;
+	std::string::const_iterator searchStart = fragment.cbegin();
+	int outColorCount = 0;
+	while (std::regex_search(searchStart, fragment.cend(), matches, pattern)) {
+		outColorCount++;
+		searchStart = matches.suffix().first;
+	}
+	passState->outColorCount = outColorCount == 0 ? 1 : outColorCount;
 
 	size_t attrPos = vertex.find("AttributeNameArray");
 	if (attrPos != std::string::npos)

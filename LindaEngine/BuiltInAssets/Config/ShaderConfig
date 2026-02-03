@@ -3,6 +3,7 @@ ShaderConfig:
   BuiltInUniform: BuiltInAssets/Shaders/ShaderLibrary/BuiltInUniform.glsl
   GlobalUniformBlock: BuiltInAssets/Shaders/ShaderLibrary/GlobalUniformBlock.glsl
   ShaderVersion: BuiltInAssets/Shaders/ShaderLibrary/ShaderVersion.glsl
+  FragmentOut: BuiltInAssets/Shaders/ShaderLibrary/FragmentOut.glsl
   PickVertexUniform: BuiltInAssets/Shaders/ShaderLibrary/PickVertexUniform.glsl
   PickVertexOut: BuiltInAssets/Shaders/ShaderLibrary/PickVertexOut.glsl
   PickFragmentUniform: BuiltInAssets/Shaders/ShaderLibrary/PickFragmentUniform.glsl

@@ -151,6 +151,9 @@ void InspectorPanelEditor::OnEvent(IEventHandler* sender, int eventCode, Event& 
 
 void InspectorPanelEditor::DrawComponents()
 {
+	if (nullptr == _selectionEntity)
+		return;
+
 	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
 	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
 	ImGui::PopStyleColor(1);

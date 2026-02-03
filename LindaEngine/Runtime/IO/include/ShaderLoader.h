@@ -18,6 +18,7 @@ namespace LindaEngine
 		static Ref<ShaderSource> Load(const char* path);
 		static void DeleteShaderFrame(std::string& tex);
 		static void ProcessInclude(std::string& tex, std::vector<std::string>& paths);
+		static void AddPickOut(std::string& str, std::string& shaderCode);
 
 	private:
 		static RenderType GetRenderType(std::string& tex);

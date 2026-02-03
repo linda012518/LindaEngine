@@ -1,2 +1,2 @@
 out int pickIDColor;
-int flat int vEntityID;
+flat in int vEntityID;

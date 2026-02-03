@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "Graphic.h"
+#include "Application.h"
 
 #define IMPLEMENT_SETUNIFORM(dataType, UniformClass) \
 template<> \
@@ -102,7 +103,13 @@ void MaterialPass::Bind(Transform* transform)
 	{
 		_shader->SetMat4("_localToWorld", transform->GetLocalToWorldMat());
 		_shader->SetMat4("_worldToLocal", transform->GetWorldToLocalMat());
+
+		if (Application::module == AppModule::Editor)
+		{
+			_shader->SetInt("entityID", transform->GetID());
+		}
 	}
+
 	UpdateUniforms();
 }
 

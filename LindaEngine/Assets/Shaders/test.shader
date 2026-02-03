@@ -54,8 +54,6 @@ Shader
 		
 		Fragment
 		{
-			out vec4 FragColor;
-
 			in vec2 uv;
 			in vec3 worldNormal;
 

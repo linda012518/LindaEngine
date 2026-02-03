@@ -14,6 +14,7 @@ namespace LindaEngine
 		std::string properties;
 		std::string vertex;
 		std::string fragment;
+		int outColorCount;
 		MaterialPassState passState;
 	};
 
@@ -42,6 +43,7 @@ namespace LindaEngine
 		static std::string defaultShaderUniformBlack;
 		static std::string defaultShaderVersion;
 		static std::string defaultShaderUniform;
+		static std::string FragmentOut;
 		static std::string PickVertexUniform;
 		static std::string PickVertexOut;
 		static std::string PickFragmentUniform;

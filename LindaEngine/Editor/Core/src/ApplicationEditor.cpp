@@ -39,13 +39,13 @@ int ApplicationEditor::Initialize()
         return ret;
     }
 
-    module = AppModule::Editor;
-    _editorRP = RenderPipeline::Create();
-    _editorRP->Initialize();
-
     module = AppModule::Runtime;
     _runtimeRP = RenderPipeline::Create();
     _runtimeRP->Initialize();
+
+    module = AppModule::Editor;
+    _editorRP = RenderPipeline::Create();
+    _editorRP->Initialize();
 
     _imgui.Initialize();
 

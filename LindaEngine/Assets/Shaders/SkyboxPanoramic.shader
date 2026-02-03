@@ -36,8 +36,6 @@ Shader
 		
 		Fragment
 		{
-			out vec4 FragColor;
-
 			in vec3 worldNormal;
 
 			vec2 SampleSphericalMap(vec3 v)

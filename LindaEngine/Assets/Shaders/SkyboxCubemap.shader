@@ -35,8 +35,6 @@ Shader
 		
 		Fragment
 		{
-			out vec4 FragColor;
-
 			in vec3 worldNormal;
 
 			void main()

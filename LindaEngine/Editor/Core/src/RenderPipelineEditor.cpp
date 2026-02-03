@@ -131,7 +131,7 @@ void RenderPipelineEditor::Render()
     RenderTextureManager::SetRenderTarget(RenderTexture::finalRT);
 
     Graphic::SetViewport(0, 0, width, height);
-    Graphic::SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    Graphic::SetClearColor(1.0f, 0.0f, 0.0f, 1.0f);
     Graphic::Clear(true, true, true);
 
     _urpEditor.Render(_activeCamera);
