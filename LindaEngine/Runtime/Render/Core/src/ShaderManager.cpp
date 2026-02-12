@@ -6,6 +6,7 @@
 #include "Path.h"
 #include "yaml-cpp/yaml.h"
 #include "Application.h"
+#include "Material.h"
 
 using namespace LindaEngine;
 
@@ -80,16 +81,22 @@ Ref<Shader> ShaderManager::CompileShader(Ref<ShaderSourceCode> sss, std::vector<
     std::string vertexShader = sss->vertex;
     std::string fragmentShader = sss->fragment;
 
+    std::string fragmentOut = FragmentOut;
+
     if (Application::module == AppModule::Editor)
     {
         vertexShader = PickVertexUniform + vertexShader;
         ShaderLoader::AddPickOut(PickVertexOut, vertexShader);
         fragmentShader = "layout (location = " + std::to_string(sss->outColorCount) +") " + PickFragmentUniform + fragmentShader;
         ShaderLoader::AddPickOut(PickFragmentOut, fragmentShader);
+
+        if (Material::overrideLightMode == "BlitPickColor")
+            fragmentOut = "";
     }
 
+    
     std::string tempVertex = defaultShaderVersion + defaultShaderUniformBlack + kw + layout + defaultShaderUniform + vertexShader;
-    std::string tempFragment = defaultShaderVersion + defaultShaderUniformBlack + kw + defaultShaderUniform + FragmentOut + fragmentShader;
+    std::string tempFragment = defaultShaderVersion + defaultShaderUniformBlack + kw + defaultShaderUniform + fragmentOut + fragmentShader;
     return CreateRef<Shader>(tempVertex.c_str(), tempFragment.c_str());
 }
 
