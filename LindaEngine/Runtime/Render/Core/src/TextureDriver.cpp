@@ -50,6 +50,11 @@ void TextureDriver::CopyRenderTexture(Ref<RenderTexture> src, Ref<RenderTexture>
 	_context->CopyColor(src, dest, type);
 }
 
+void* TextureDriver::ReadPixed(Ref<RenderTexture> src, int xStart, int yStart, int width, int height, uint32_t attachmentIndex)
+{
+	return _context->ReadPixed(src, xStart, yStart, width, height, attachmentIndex);
+}
+
 void TextureDriver::Initialize()
 {
 	_context = TextureContext::Create();

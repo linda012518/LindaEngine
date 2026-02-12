@@ -34,7 +34,8 @@ namespace LindaEngine
 
 	enum class TextureFormat
 	{
-		None, R8, R16, R32, RG8, RG16, RG32, RGB8, RGB16, RGB32, RGBA8, RGBA16, RGBA32, Depth16, Depth24, Depth32, SRGB8, SRGBA8, Depth24Stencil8, Depth32Stencil8
+		None, R8, R16, R32, RG8, RG16, RG32, RGB8, RGB16, RGB32, RGBA8, RGBA16, RGBA32, Depth16, Depth24, Depth32, SRGB8, SRGBA8, Depth24Stencil8, Depth32Stencil8,
+		R32I
 	};
 
 	enum class TextureWrapMode

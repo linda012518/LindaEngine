@@ -18,6 +18,7 @@ namespace LindaEngine
 		void CreateRenderTexture(Ref<RenderTexture> rt);
 		void DeleteRenderTexture(Ref<RenderTexture> rt);
 		void CopyColor(Ref<RenderTexture> src, Ref<RenderTexture> dest, ColorType type = ColorType::Color);
+		void* ReadPixed(Ref<RenderTexture> src, int xStart, int yStart, int width, int height, uint32_t attachmentIndex);
 
 	private:
 		unsigned int CreateOpenglTexture2D(int width, int height, unsigned int dataFormat, unsigned int internalFormat, unsigned int dataType, FilterMode filter = FilterMode::Bilinear, TextureWrapMode warpU = TextureWrapMode::Clamp, TextureWrapMode warpV = TextureWrapMode::Clamp, int mipmapCount = 1, int anisotropy = 0, void* data = nullptr);

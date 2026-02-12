@@ -20,8 +20,13 @@ namespace LindaEditor
 	private:
 		Ref<LindaEngine::RenderTexture> _renderTexture;
 		std::vector<LindaEngine::FramebufferTextureSpecification> _fboSpecs;
+		LindaEngine::FramebufferTextureSpecification _pickSpec;
+		bool _isLeftPressed = false;
+		bool _isLeftFirst = true;
+		ImVec2 _firstPos;
 
 	public:
 		static bool hovered;
+		static Ref<LindaEngine::RenderTexture> pickRT;
 	};
 }

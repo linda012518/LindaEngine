@@ -196,6 +196,37 @@ void OpenglTexture::CopyColor(Ref<RenderTexture> src, Ref<RenderTexture> dest, C
 	glBlitFramebuffer(0, 0, src->width, src->height, 0, 0, dest->width, dest->height, copyType, GL_LINEAR);
 }
 
+void* OpenglTexture::ReadPixed(Ref<RenderTexture> src, int xStart, int yStart, int width, int height, uint32_t attachmentIndex)
+{
+	Ref<RenderTexture> temp = RenderTexture::active;
+	BindRenderTarget(src);
+	TextureFormat format = src->colorAttachments[attachmentIndex].colorFormat;
+	int size = width * height;
+	void* data = nullptr;
+	switch (format)
+	{
+	case TextureFormat::R8: data = new unsigned char[size * 1]; break;
+	case TextureFormat::RG8: data = new unsigned char[size * 2]; break;
+	case TextureFormat::RGB8: data = new unsigned char[size * 3]; break;
+	case TextureFormat::RGBA8: data = new unsigned char[size * 4]; break;
+	case TextureFormat::R16: data = new unsigned short[size * 1]; break;
+	case TextureFormat::RG16: data = new unsigned short[size * 2]; break;
+	case TextureFormat::RGB16: data = new unsigned short[size * 3]; break;
+	case TextureFormat::RGBA16: data = new unsigned short[size * 4]; break;
+	case TextureFormat::R32: data = new float[size * 1]; break;
+	case TextureFormat::RG32: data = new float[size * 2]; break;
+	case TextureFormat::RGB32: data = new float[size * 3]; break;
+	case TextureFormat::RGBA32: data = new float[size * 4]; break;
+	case TextureFormat::SRGB8: data = new char[size * 3]; break;
+	case TextureFormat::SRGBA8: data = new char[size * 4]; break;
+	case TextureFormat::R32I: data = new int[size]; break;
+	}
+	glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+	glReadPixels(xStart, yStart, width, height, GetRenderTextureDataFormat(format), GetRenderTextureDataType(format), data);
+	BindRenderTarget(temp);
+	return data;
+}
+
 unsigned int OpenglTexture::CreateOpenglTexture2D(int width, int height, unsigned int dataFormat, unsigned int internalFormat, unsigned int dataType, FilterMode filter, TextureWrapMode warpU, TextureWrapMode warpV, int mipmapCount, int anisotropy, void* data)
 {
 	unsigned int nativeID;
@@ -521,6 +552,7 @@ unsigned int OpenglTexture::GetRenderTextureInternalFormat(TextureFormat& format
 	case TextureFormat::Depth32: return GL_DEPTH_COMPONENT32;
 	case TextureFormat::Depth24Stencil8: return GL_DEPTH24_STENCIL8;
 	case TextureFormat::Depth32Stencil8: return GL_DEPTH32F_STENCIL8;
+	case TextureFormat::R32I: return GL_R32I;
 	}
 	return GL_RGBA8;
 }
@@ -552,6 +584,8 @@ unsigned int OpenglTexture::GetRenderTextureDataFormat(TextureFormat& format)
 	case TextureFormat::Depth24Stencil8:
 	case TextureFormat::Depth32Stencil8:
 		return GL_DEPTH_STENCIL;
+	case TextureFormat::R32I: 
+		return GL_RED_INTEGER;
 	}
 	return GL_RGBA8;
 }
@@ -580,6 +614,8 @@ unsigned int OpenglTexture::GetRenderTextureDataType(TextureFormat& format)
 		return GL_FLOAT;
 	case TextureFormat::Depth24Stencil8: return GL_UNSIGNED_INT_24_8;
 	case TextureFormat::Depth32Stencil8: return GL_FLOAT_32_UNSIGNED_INT_24_8_REV;
+	case TextureFormat::R32I:
+		return GL_INT;
 	}
 	return GL_UNSIGNED_BYTE;
 }

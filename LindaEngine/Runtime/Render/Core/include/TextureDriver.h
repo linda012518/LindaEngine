@@ -21,6 +21,7 @@ namespace LindaEngine
 		static void CreateRenderTexture(Ref<RenderTexture> rt);
 		static void DeleteRenderTexture(Ref<RenderTexture> rt);
 		static void CopyRenderTexture(Ref<RenderTexture> src, Ref<RenderTexture> dest, ColorType type = ColorType::Color);
+		static void* ReadPixed(Ref<RenderTexture> src, int xStart, int yStart, int width, int height, uint32_t attachmentIndex = 0);
 
 		static void Initialize();
 

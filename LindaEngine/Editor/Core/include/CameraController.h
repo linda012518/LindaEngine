@@ -42,6 +42,7 @@ namespace LindaEngine
 
 		bool _leftHeld = false;
 		bool _rightHeld = false;
+		bool _ctrlHeld = false;
 		float _rotateSpeed = 0.1f;
 
 		Entity* _selectedEntity = nullptr;

@@ -8,6 +8,7 @@
 #include "Material.h"
 #include "Graphic.h"
 #include "Application.h"
+#include "Entity.h"
 
 #define IMPLEMENT_SETUNIFORM(dataType, UniformClass) \
 template<> \
@@ -106,7 +107,7 @@ void MaterialPass::Bind(Transform* transform)
 
 		if (Application::module == AppModule::Editor)
 		{
-			_shader->SetInt("entityID", transform->GetID());
+			_shader->SetInt("entityID", transform->GetEntity().GetEntityID());
 		}
 	}
 

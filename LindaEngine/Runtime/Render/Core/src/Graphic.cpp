@@ -34,7 +34,7 @@ void Graphic::Clear(bool color, bool depth, bool stencil)
 	_renderContext->Clear(color, depth, stencil);
 }
 
-void Graphic::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref<Material> mat, int pass)
+void Graphic::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref<Material> mat, int pass, int srcAttachment)
 {
 	Ref<RenderTexture> go = nullptr;
 	if (src->msaa > 1)
@@ -54,7 +54,7 @@ void Graphic::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref<Material
 		SetViewport(0, 0, dest->width, dest->height);
 	Clear(true, true, true);
 	Material::overrideLightMode = "Color";
-	mat->SetTexture("mainTexture", go, pass);
+	mat->SetTexture("mainTexture", go, pass, srcAttachment);
 	mat->Bind(pass, nullptr, std::vector<VertexAttribute>());
 	FBXManager::GetEmpty()->Draw();
 }
@@ -62,6 +62,11 @@ void Graphic::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref<Material
 void Graphic::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest)
 {
 	RenderTextureManager::BlitRenderTexture(src, dest);
+}
+
+void* Graphic::ReadPixed(Ref<RenderTexture> src, int xStart, int yStart, int width, int height, uint32_t attachmentIndex)
+{
+	return TextureDriver::ReadPixed(src, xStart, yStart, width, height, attachmentIndex);
 }
 
 void Graphic::CheckRenderState(RenderState& state, RenderState& materialState)

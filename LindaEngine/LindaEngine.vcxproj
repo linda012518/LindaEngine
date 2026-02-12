@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\BlitPickColorPass.cpp" />
     <ClCompile Include="External\ImGuizmo\ImGuizmo\GraphEditor.cpp" />
     <ClCompile Include="External\ImGuizmo\ImGuizmo\ImCurveEdit.cpp" />
     <ClCompile Include="External\ImGuizmo\ImGuizmo\ImGradient.cpp" />
@@ -345,6 +346,7 @@
     <ClCompile Include="Editor\Core\src\UniversalRendererEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\BlitPickColorPass.h" />
     <ClInclude Include="External\ImGuizmo\ImGuizmo\GraphEditor.h" />
     <ClInclude Include="External\ImGuizmo\ImGuizmo\ImCurveEdit.h" />
     <ClInclude Include="External\ImGuizmo\ImGuizmo\ImGradient.h" />

@@ -70,7 +70,12 @@ void CameraController::OnEvent(IEventHandler* sender, int eventCode, Event& even
 	}
 
 	if (EditViewPanelEditor::hovered == false)
+	{
+		_isPanning = false;
+		_leftHeld = false;
+		_rightHeld = false;
 		return;
+	}
 	
 	ProcessMouseEvent(eventCode, eventData);
 	ProcessKeyEvent(eventCode, eventData);
@@ -153,6 +158,10 @@ void CameraController::ProcessKeyEvent(int eventCode, Event& eventData)
 	case EventCode::KeyDown:
 	{
 		std::cout << "	KeyDown  " << static_cast<int>(event.key) << "\n" << std::endl;
+		if (event.key == KeyCode::CONTROL)
+		{
+			_ctrlHeld = true;
+		}
 		if (event.key == KeyCode::F)
 		{
 			LookAtEntity();
@@ -161,6 +170,11 @@ void CameraController::ProcessKeyEvent(int eventCode, Event& eventData)
 	break;
 	case EventCode::KeyUp:
 	{
+		std::cout << "	KeyUp  " << static_cast<int>(event.key) << "\n" << std::endl;
+		if (event.key == KeyCode::CONTROL)
+		{
+			_ctrlHeld = false;
+		}
 
 	}
 	break;
@@ -225,7 +239,7 @@ void CameraController::RotateEvent(MouseEvent& event)
 
 void CameraController::LookRoundEvent(MouseEvent& event)
 {
-	if (false == _leftHeld)
+	if (false == _leftHeld || false == _ctrlHeld)
 		return;
 	float xoffset = event.x - _lastMousePos.x;
 	float yoffset = event.y - _lastMousePos.y;

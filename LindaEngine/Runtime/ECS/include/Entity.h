@@ -40,6 +40,7 @@ namespace LindaEngine
 		bool GetDontDestory() { return _isDontDestory; }
 		void SetIndex(int index) { _hierarchyIndex = index; }
 		int GetIndex() { return _hierarchyIndex; }
+		int GetEntityID() { return _entityID; }
 
 		void Destroy();
 		void TransformDirty();
@@ -86,6 +87,9 @@ namespace LindaEngine
 		std::vector<Behavior*> _behaviors;
 		bool _isDontDestory;
 		int _hierarchyIndex;
+
+		static int _id;
+		int _entityID;
 	};
 }
 

@@ -14,8 +14,13 @@
 
 using namespace LindaEngine;
 
+int Entity::_id = 0;
+
 Entity::Entity(const char* name, bool active)
 {
+	_id++;
+	_entityID = _id;
+
 	_layer = 0xFFFFFFFF;
 	_name = name;
 	_active = active;

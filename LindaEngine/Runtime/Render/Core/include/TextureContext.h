@@ -20,6 +20,7 @@ namespace LindaEngine
 		virtual void CreateRenderTexture(Ref<RenderTexture> rt) = 0;
 		virtual void DeleteRenderTexture(Ref<RenderTexture> rt) = 0;
 		virtual void CopyColor(Ref<RenderTexture> src, Ref<RenderTexture> dest, ColorType type) = 0;
+		virtual void* ReadPixed(Ref<RenderTexture> src, int xStart, int yStart, int width, int height, uint32_t attachmentIndex) = 0;
 
 		static Ref<TextureContext> Create();
 	};
