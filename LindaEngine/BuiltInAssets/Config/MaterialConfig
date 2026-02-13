@@ -1,0 +1,5 @@
+MaterialConfig:
+  - BuiltInAssets/Shaders/BoundingBox.shader
+  - BuiltInAssets/Shaders/CopyIntColor.shader
+  - BuiltInAssets/Shaders/Error.shader
+  - BuiltInAssets/Shaders/CopyColor.shader

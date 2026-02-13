@@ -5,6 +5,7 @@
 #include "PostProcessPasses.h"
 #include "AdjunctPass.h"
 #include "BlitPickColorPass.h"
+#include "DrawErrorPass.h"
 
 using namespace LindaEditor;
 using namespace LindaEngine;
@@ -15,6 +16,7 @@ void UniversalRendererEditor::CollectRenderPass()
     AddRenderPass(CreateRef<PostProcessPass>());
     AddRenderPass(CreateRef<AdjunctPass>());
     AddRenderPass(CreateRef<BlitPickColorPass>());
+    AddRenderPass(CreateRef<DrawErrorPass>());
 
     DrawingSettings settings;
     settings.lightMode = "Color";

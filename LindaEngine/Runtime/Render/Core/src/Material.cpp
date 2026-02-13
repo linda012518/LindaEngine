@@ -76,7 +76,7 @@ void Material::SetMat4(const std::string& name, const glm::mat4& mat, int count,
 
 void Material::Bind(Ref<MaterialPass> pass, Transform* transform, const std::vector<VertexAttribute>& attributes)
 {
-	pass->CompileShader(_state.shaderPath, attributes);
+	_hasError = pass->CompileShader(_state.shaderPath, attributes);
 	pass->Bind(transform);
 }
 
@@ -104,7 +104,7 @@ bool Material::Deserialize(YAML::Node& node)
 
 bool Material::CanRender(std::string& lightMode, int minQueue, int maxQueue)
 {
-	return _state.renderQueue >= minQueue && _state.renderQueue <= maxQueue && HasLightMode(lightMode);
+	return false == _hasError && _state.renderQueue >= minQueue && _state.renderQueue <= maxQueue && HasLightMode(lightMode);
 }
 
 bool Material::HasLightMode(std::string& lightMode)

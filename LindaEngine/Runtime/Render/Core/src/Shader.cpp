@@ -35,7 +35,7 @@ Shader::Shader(const char* vs, const char* fs)
 	_vs = vs;
 	_fs = fs;
 
-	CompileShader();
+	_noError = CompileShader();
 	glUniformBlockBinding(_program, glGetUniformBlockIndex(_program, "globalUniform"), 0);
 }
 

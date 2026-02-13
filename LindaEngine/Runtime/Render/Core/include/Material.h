@@ -52,11 +52,13 @@ namespace LindaEngine
 		bool HasLightMode(std::string& lightMode);
 		std::vector<Ref<MaterialPass>> GetPassByLightMode(std::string& lightMode);
 		int GetRenderQueue() { return _state.renderQueue; }
+		bool HasError() { return _hasError; }
 
 	private:
 		MaterialState _state;
 		//std::unordered_map<std::string, Ref<MaterialPass>> _passes;
 		std::vector<Ref<MaterialPass>> _passes;
+		bool _hasError = false;
 
 	public:
 		static Ref<Material> overrideMat;

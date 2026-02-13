@@ -28,6 +28,7 @@ namespace LindaEngine
 		void TransformDirty();
 		bool IsSkybox() { return _type == RenderComponentType::Skybox; }
 		bool CanRender(int index, int minQueue, int maxQueue);
+		bool HasError(int index);
 		bool InLayerMask(int layer);
 		void SetDistanceToCamera(float distance) { _distanceToCamera = distance; }
 		float GetDistanceToCamera() { return _distanceToCamera; }

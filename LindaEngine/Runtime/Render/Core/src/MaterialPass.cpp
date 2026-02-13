@@ -9,6 +9,7 @@
 #include "Graphic.h"
 #include "Application.h"
 #include "Entity.h"
+#include "MaterialManager.h"
 
 #define IMPLEMENT_SETUNIFORM(dataType, UniformClass) \
 template<> \
@@ -71,10 +72,10 @@ void MaterialPass::AddKeyword(std::string& key)
 		_state.keywords.push_back(key);
 }
 
-void MaterialPass::CompileShader(std::string shaderPath, const std::vector<VertexAttribute>& attributes)
+bool MaterialPass::CompileShader(std::string shaderPath, const std::vector<VertexAttribute>& attributes)
 {
 	if (nullptr != _shader)
-		return;
+		return _shader->HasError();
 
 	Ref<ShaderSource> ssVector = ShaderManager::GetShaderSource(shaderPath.c_str());
 
@@ -85,6 +86,8 @@ void MaterialPass::CompileShader(std::string shaderPath, const std::vector<Verte
 		_shader = ShaderManager::CompileShader(ss, _state.keywords, attributes);
 		break;
 	}
+
+	return _shader->HasError();
 }
 
 void MaterialPass::Bind(Transform* transform)

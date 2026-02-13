@@ -24,7 +24,7 @@ namespace LindaEngine
 
 	public:
 		void AddKeyword(std::string& key);
-		void CompileShader(std::string shaderPath, const std::vector<VertexAttribute>& attributes);
+		bool CompileShader(std::string shaderPath, const std::vector<VertexAttribute>& attributes);
 		bool IsCompiled() { return nullptr != _shader; }
 		void Bind(Transform* transform);
 

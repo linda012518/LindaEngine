@@ -18,5 +18,6 @@ namespace LindaEngine
 		static const char* graphicsConfig;
 		static const char* sceneConfig;
 		static const char* shaderConfig;
+		static const char* materialConfig;
 	};
 }

@@ -27,8 +27,8 @@ namespace LindaEngine
 		virtual ~Shader();
 
 		void Begin();
-
 		void End();
+		bool HasError() { return !_noError; }
 
 		void SetInt(const std::string& name, int value);
 		void SetFloat(const std::string& name, float value);
@@ -43,6 +43,7 @@ namespace LindaEngine
 
 	private:
 		GLint	_program = -1;
+		bool	_noError = false;
 
 		const char* _vs = nullptr;
 		const char* _tes = nullptr;

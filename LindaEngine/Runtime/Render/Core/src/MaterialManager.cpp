@@ -3,6 +3,7 @@
 #include "Material.h"
 #include "MaterialPass.h"
 #include "ShaderManager.h"
+#include "Path.h"
 
 using namespace LindaEngine;
 
@@ -62,15 +63,49 @@ Ref<MaterialPass> MaterialManager::GetDefaultMaterialPass(const char* lightMode)
     return _defaultPass[lightMode];
 }
 
-Ref<Material> MaterialManager::GetDefaultMaterial(const char* path)
+Ref<Material> MaterialManager::GetDefaultMaterial(std::string path)
 {
+    if (false == _isLoadDefault)
+    {
+        MaterialManager::LoadDefaultMaterial();
+        _isLoadDefault = true;
+    }
+
     if (_defaultMaterial.find(path) == _defaultMaterial.end())
         return nullptr;
+
     return _defaultMaterial[path];
 }
 
 bool MaterialManager::LoadDefaultMaterial()
 {
     //TODO 加载默认材质和默认Pass
-    return true;
+    if (true == _isLoadDefault)
+        return true;
+    _isLoadDefault = true;
+
+    YAML::Node data;
+    try
+    {
+        data = YAML::LoadFile(Path::materialConfig);
+
+        data = data["MaterialConfig"];
+        if (!data)
+            return false;
+
+        for (std::size_t i = 0; i < data.size(); i++) 
+        {
+            std::string shaderPath = data[i].as<std::string>();
+            auto pass = GetMaterialByShader(shaderPath);
+            if (nullptr != pass)
+                _defaultMaterial[shaderPath] = pass;
+        }
+
+        return true;
+    }
+    catch (const std::exception&)
+    {
+        return false;
+    }
+
 }

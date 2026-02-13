@@ -10,6 +10,7 @@ const char* Path::overridePath;
 const char* Path::graphicsConfig = "Assets/Config/GraphicsConfig";
 const char* Path::sceneConfig = "Assets/Config/SceneConfig";
 const char* Path::shaderConfig = "BuiltInAssets/Config/ShaderConfig";
+const char* Path::materialConfig = "BuiltInAssets/Config/MaterialConfig";
 
 std::vector<std::string> Path::GetFileDirectorys(const char* path)
 {

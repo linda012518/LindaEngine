@@ -7,6 +7,7 @@
 #include "Transform.h"
 #include "CullTool.h"
 #include "Drawable.h"
+#include "MaterialManager.h"
 
 #include <algorithm>
 
@@ -90,6 +91,30 @@ void RendererSystem::DrawAdjunct()
 {
 	for (auto& com : _components) {
 		com->RenderBoundingBox();
+	}
+}
+
+void RendererSystem::DrawErrorRenderer()
+{
+	static bool isLoaded = false;
+	static Drawable drawable;
+	if (isLoaded == false)
+	{
+		drawable.material = MaterialManager::GetDefaultMaterial("BuiltInAssets/Shaders/Error.shader");
+		isLoaded = true;
+	}
+
+	for (auto& renderer : _components)
+	{
+		int count = (int)renderer->GetMesh()->GetAllMeshData().size();
+		for (int i = 0; i < count; i++)
+		{
+			if (false == renderer->HasError(i))
+				continue;
+			drawable.meshData = renderer->GetMesh()->GetMeshData(i);
+			drawable.transform = renderer->GetTransform();
+			drawable.Draw();
+		}
 	}
 }
 

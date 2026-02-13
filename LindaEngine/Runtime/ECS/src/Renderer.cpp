@@ -139,6 +139,11 @@ bool Renderer::CanRender(int index, int minQueue, int maxQueue)
 	return _materialList[index]->CanRender(Material::overrideLightMode, minQueue, maxQueue);
 }
 
+bool Renderer::HasError(int index)
+{
+	return _materialList[index]->HasError();
+}
+
 bool Renderer::InLayerMask(int layer)
 {
 	if (-1 == layer)
@@ -188,7 +193,7 @@ Drawable& Renderer::GetBoundingBoxRenderer()
 		static Entity child("BoundingBox-Child"); child.SetDontDestory(true);
 		child.GetTransform()->SetParent(root.GetTransform());
 		drawable.transform = child.GetTransform();
-		drawable.material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/BoundingBox.shader");
+		drawable.material = MaterialManager::GetDefaultMaterial("BuiltInAssets/Shaders/BoundingBox.shader");
 		isLoaded = true;
 	}
 	return drawable;
