@@ -4,6 +4,7 @@
 #include "EditViewPanelEditor.h"
 #include "MaterialManager.h"
 #include "Material.h"
+#include "TextureManager.h"
 
 using namespace LindaEngine;
 using namespace LindaEditor;
@@ -20,6 +21,6 @@ void BlitPickColorPass::Render(Camera* camera)
 	Ref<RenderTexture> src = RenderTexture::active;
 	Ref<Material> material = MaterialManager::GetDefaultMaterial("BuiltInAssets/Shaders/CopyIntColor.shader");
 	Graphic::Blit(src, EditViewPanelEditor::pickRT, material, 0, 1);
-	RenderTexture::active = src;
+	RenderTextureManager::SetRenderTarget(src);
 	Material::isPickPass = false;
 }

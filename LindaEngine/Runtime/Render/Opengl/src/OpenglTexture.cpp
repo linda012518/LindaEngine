@@ -215,7 +215,6 @@ void OpenglTexture::CopyColor(Ref<RenderTexture> src, Ref<RenderTexture> dest, C
 
 void* OpenglTexture::ReadPixed(Ref<RenderTexture> src, int xStart, int yStart, int width, int height, uint32_t attachmentIndex)
 {
-	Ref<RenderTexture> temp = RenderTexture::active;
 	BindRenderTarget(src);
 	TextureFormat format = src->colorAttachments[attachmentIndex].colorFormat;
 	int size = width * height;
@@ -240,7 +239,6 @@ void* OpenglTexture::ReadPixed(Ref<RenderTexture> src, int xStart, int yStart, i
 	}
 	glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
 	glReadPixels(xStart, yStart, width, height, GetRenderTextureDataFormat(format), GetRenderTextureDataType(format), data);
-	BindRenderTarget(temp);
 	return data;
 }
 

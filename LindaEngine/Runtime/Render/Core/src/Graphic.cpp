@@ -66,7 +66,10 @@ void Graphic::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest)
 
 void* Graphic::ReadPixed(Ref<RenderTexture> src, int xStart, int yStart, int width, int height, uint32_t attachmentIndex)
 {
-	return TextureDriver::ReadPixed(src, xStart, yStart, width, height, attachmentIndex);
+	Ref<RenderTexture> temp = RenderTexture::active;
+	void* data = TextureDriver::ReadPixed(src, xStart, yStart, width, height, attachmentIndex);
+	RenderTextureManager::SetRenderTarget(temp);
+	return data;
 }
 
 void Graphic::CheckRenderState(RenderState& state, RenderState& materialState)
