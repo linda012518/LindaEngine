@@ -31,6 +31,7 @@ namespace LindaEngine
 
 		void SetActive(bool active);
 		bool IsActive();
+		bool IsActiveSelf() { return _active; }
 		bool IsDirty();
 		void ClearDirty();
 

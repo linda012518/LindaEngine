@@ -54,9 +54,15 @@ void Entity::SetActive(bool active)
 {
 	if (_active == active)
 		return;
+
+	bool activeLast = IsActive();
 	_active = active;
-	_activeDirty = true;
-	UpdateChildrenDirty(_transform);
+
+	if (activeLast)
+	{
+		_activeDirty = true;
+		UpdateChildrenDirty(_transform);
+	}
 }
 
 bool Entity::IsActive()
@@ -72,6 +78,8 @@ void Entity::Destroy()
 		OnComponentRemoved(com.get());
 	}
 	_components.clear();
+	_behaviors.clear();
+	_dirtyComponents.clear();
 	_transform = nullptr;
 }
 

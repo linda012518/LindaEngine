@@ -198,7 +198,7 @@ void Renderer::RenderBoundingBox()
 {
 	Material::overrideLightMode = "Adjunct";
 	Drawable& drawable = GetBoundingBoxRenderer();
-	drawable.transform->SetLocalPosition(_mesh->GetBoundingBox().center);
+	drawable.transform->SetLocalPosition(_transform->GetWorldScale() * _mesh->GetBoundingBox().center);
 	drawable.transform->SetWorldScale(_transform->GetWorldScale() * _mesh->GetBoundingBox().size);
 	drawable.transform->Tick();
 	Transform* parent = (Transform*)drawable.transform->GetParent();

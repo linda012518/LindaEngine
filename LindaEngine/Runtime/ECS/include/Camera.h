@@ -71,6 +71,9 @@ namespace LindaEngine
 
 		glm::vec3 ScreenToWorldPosition(glm::vec3& screenPos);
 
+	protected:
+		static CameraClearType GetClearTypeByString(std::string str);
+
 	public:
 		static Camera* currentRenderCamera;
 
@@ -123,6 +126,8 @@ namespace LindaEngine
 
 		void OnEvent(IEventHandler* sender, int eventCode, Event& eventData);
 
+		void OnImguiRender();
+
 	private:
 		float _fov;
 		float _aspectRatio;
@@ -141,6 +146,8 @@ namespace LindaEngine
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
+
+		void OnImguiRender();
 
 	private:
 		float _left;

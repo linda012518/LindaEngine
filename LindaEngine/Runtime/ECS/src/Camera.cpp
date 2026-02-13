@@ -11,6 +11,8 @@
 #include "ClassFactory.h"
 #include "TextureManager.h"
 
+#include "imgui/imgui.h"
+
 using namespace LindaEngine;
 
 DYNAMIC_CREATE(PerspectiveCamera)
@@ -193,6 +195,15 @@ glm::vec3 Camera::ScreenToWorldPosition(glm::vec3& screenPos)
 	return v;
 }
 
+CameraClearType Camera::GetClearTypeByString(std::string str)
+{
+	if (str == "Skybox") return CameraClearType::Skybox;
+	else if (str == "SolidColor") return CameraClearType::SolidColor;
+	else if (str == "DepthOnly") return CameraClearType::DepthOnly;
+	else if (str == "DontClear") return CameraClearType::DontClear;
+	return CameraClearType::Skybox;
+}
+
 /////////////////////////////////////////////////////////////////////
 
 PerspectiveCamera::PerspectiveCamera(Entity& entity, bool enable) : Camera(entity, enable)
@@ -269,6 +280,152 @@ void PerspectiveCamera::OnEvent(IEventHandler* sender, int eventCode, Event& eve
 	}
 }
 
+void PerspectiveCamera::OnImguiRender()
+{
+	float firstWidth = 100.0f;
+
+	if (ImGui::BeginTable("FOVTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("FOV");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::DragFloat("##FOV", &_fov, 0.5f, 0.0f, 180.0f);
+		ImGui::EndTable();
+	}
+
+	if (ImGui::BeginTable("NearTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("Near");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::DragFloat("##Near", &_zNear, 0.5f);
+		ImGui::EndTable();
+	}
+
+	if (ImGui::BeginTable("FarTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("Far");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::DragFloat("##Far", &_zFar, 0.5f);
+		ImGui::EndTable();
+	}
+
+	if (ImGui::BeginTable("DepthTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("Depth");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::DragInt("##Depth", &_depth, 1);
+		ImGui::EndTable();
+	}
+
+	if (ImGui::BeginTable("MSAATable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("MSAA");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::DragInt("##MSAA", &_msaa, 1, 0, 8);
+		ImGui::EndTable();
+		//TODO 这里要清掉有前的RT
+	}
+
+	if (ImGui::BeginTable("ClearColorTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("ClearColor");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::ColorEdit4("##ClearColor", (float*)&_clearColor);
+		ImGui::EndTable();
+	}
+
+	if (ImGui::BeginTable("HDRTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("HDR");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::Checkbox("##HDR", &_hdrEnable);
+		ImGui::EndTable();
+		//TODO 这里要清掉有前的RT
+	}
+
+	static bool show_popup = false;
+	if (ImGui::Button("Clear Type", ImVec2(-1, 0))) {
+		show_popup = true;
+	}
+	if (show_popup)
+	{
+		ImGui::SetNextWindowPos(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMax().y));
+
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // 背景色：深蓝灰
+		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // 边框色：蓝色
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // 字体色：浅灰
+
+		ImGui::Begin("##Dropdown", &show_popup,
+			ImGuiWindowFlags_NoTitleBar |
+			ImGuiWindowFlags_NoResize |
+			ImGuiWindowFlags_NoMove |
+			ImGuiWindowFlags_AlwaysAutoResize);
+
+		// 检测点击外部区域
+		bool popup_hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup |
+			ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+		bool button_hovered = ImGui::IsItemHovered();
+
+		// 如果没有悬停在弹出框或按钮上，且鼠标被点击，则关闭弹出框
+		if (ImGui::IsMouseClicked(0) && !popup_hovered && !button_hovered) {
+			show_popup = false;
+		}
+
+		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+			show_popup = false;
+		}
+
+		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // 选中项背景
+		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f)); // 悬停背景
+		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));  // 点击背景
+
+		static std::vector<std::string> names = { "Skybox", "SolidColor", "DepthOnly", "DontClear" };
+
+		for (int i = 0; i < (int)names.size(); i++)
+		{
+			if (ImGui::Selectable(names[i].c_str()))
+			{
+				show_popup = false;
+				_clearType = GetClearTypeByString(names[i]);
+			}
+		}
+
+		ImGui::PopStyleColor(3);
+		ImGui::End();
+		ImGui::PopStyleColor(3);
+
+	}
+
+
+}
+
 /////////////////////////////////////////////////////////////////////
 
 OrthoCamera::OrthoCamera(Entity& entity, bool enable) : Camera(entity, enable)
@@ -334,6 +491,151 @@ bool OrthoCamera::Deserialize(YAML::Node& node)
 	_bottom = node["bottom"].as<float>();
 	_top = node["top"].as<float>();
 	return true;
+}
+
+void OrthoCamera::OnImguiRender()
+{
+	float firstWidth = 100.0f;
+
+	if (ImGui::BeginTable("NearTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("Near");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::DragFloat("##Near", &_zNear, 0.5f);
+		ImGui::EndTable();
+	}
+
+	if (ImGui::BeginTable("FarTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("Far");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::DragFloat("##Far", &_zFar, 0.5f);
+		ImGui::EndTable();
+	}
+
+	//if (ImGui::BeginTable("SizeTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+	//	ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+	//	ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+	//	ImGui::TableNextRow();
+	//	ImGui::TableSetColumnIndex(0);
+	//	ImGui::Text("Size");
+	//	ImGui::TableSetColumnIndex(1);
+	//	ImGui::SetNextItemWidth(-FLT_MIN);
+	//	ImGui::DragFloat("##Size", &_left, 0.5f);
+	//	ImGui::EndTable();
+	//	// TODO 缩放投影
+	//}
+
+	if (ImGui::BeginTable("DepthTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("Depth");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::DragInt("##Depth", &_depth, 1);
+		ImGui::EndTable();
+	}
+
+	if (ImGui::BeginTable("MSAATable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("MSAA");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::DragInt("##MSAA", &_msaa, 1, 0, 8);
+		ImGui::EndTable();
+		//TODO 这里要清掉有前的RT
+	}
+
+	if (ImGui::BeginTable("ClearColorTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("ClearColor");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::ColorEdit4("##ClearColor", (float*)&_clearColor);
+		ImGui::EndTable();
+	}
+
+	if (ImGui::BeginTable("HDRTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("HDR");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::Checkbox("##HDR", &_hdrEnable);
+		ImGui::EndTable();
+	}
+
+	static bool show_popup = false;
+	if (ImGui::Button("Clear Type", ImVec2(-1, 0))) {
+		show_popup = true;
+	}
+	if (show_popup)
+	{
+		ImGui::SetNextWindowPos(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMax().y));
+
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // 背景色：深蓝灰
+		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // 边框色：蓝色
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // 字体色：浅灰
+
+		ImGui::Begin("##Dropdown", &show_popup,
+			ImGuiWindowFlags_NoTitleBar |
+			ImGuiWindowFlags_NoResize |
+			ImGuiWindowFlags_NoMove |
+			ImGuiWindowFlags_AlwaysAutoResize);
+
+		// 检测点击外部区域
+		bool popup_hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup |
+			ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+		bool button_hovered = ImGui::IsItemHovered();
+
+		// 如果没有悬停在弹出框或按钮上，且鼠标被点击，则关闭弹出框
+		if (ImGui::IsMouseClicked(0) && !popup_hovered && !button_hovered) {
+			show_popup = false;
+		}
+
+		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+			show_popup = false;
+		}
+
+		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // 选中项背景
+		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f)); // 悬停背景
+		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));  // 点击背景
+
+		static std::vector<std::string> names = { "Skybox", "SolidColor", "DepthOnly", "DontClear" };
+
+		for (int i = 0; i < (int)names.size(); i++)
+		{
+			if (ImGui::Selectable(names[i].c_str()))
+			{
+				show_popup = false;
+				_clearType = GetClearTypeByString(names[i]);
+			}
+		}
+
+		ImGui::PopStyleColor(3);
+		ImGui::End();
+		ImGui::PopStyleColor(3);
+
+	}
+
 }
 
 /////////////////////////////////////////////////////////////////////

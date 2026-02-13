@@ -32,6 +32,7 @@ namespace LindaEngine
 		virtual void Tick() {}
 		virtual void Destroy() {}
 		virtual void TransformDirty() {}
+		virtual void OnImguiRender() {}
 
 		virtual bool Serialize() = 0;
 		virtual bool Deserialize(YAML::Node& node) = 0;

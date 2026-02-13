@@ -137,6 +137,23 @@ void InspectorPanelEditor::OnImGuiRender()
 		return;
 	}
 
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+	ImGui::PopStyleColor(1);
+
+	bool ret = _selectionEntity->IsActiveSelf();
+	ImGui::Checkbox(std::string("##" + _selectionEntity->GetName()).c_str(), &ret);
+	if (_selectionEntity->IsActiveSelf() != ret)
+		_selectionEntity->SetActive(ret);
+
+	ImGui::SameLine();
+	static char name[256] = "";
+	auto go = _selectionEntity->GetName().c_str();
+	strncpy_s(name, go, 256);
+	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 18.0f);
+	ImGui::SetNextItemWidth(-FLT_MIN);
+	ImGui::InputText("##Name", name, IM_ARRAYSIZE(name));
+
 	DrawComponents();
 	DrawSundry();
 
@@ -186,6 +203,7 @@ void InspectorPanelEditor::DrawComponents()
 		{
 			DrawComponent<Component>(go.get(), _selectionEntity, [=](auto& com)
 			{
+				go->OnImguiRender();
 				if (ImGui::IsItemHovered())
 				{
 					_component = go.get();
