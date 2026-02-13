@@ -18,12 +18,16 @@ namespace LindaEditor
 		Ref<LindaEngine::RenderTexture> GetRenderTexture() { return _renderTexture; }
 
 	private:
+		void ProcessPick(ImVec2& viewportPanelSize, ImVec2& windowPos);
+		void DrawRect(ImVec2& windowPos);
+
+	private:
 		Ref<LindaEngine::RenderTexture> _renderTexture;
 		std::vector<LindaEngine::FramebufferTextureSpecification> _fboSpecs;
 		LindaEngine::FramebufferTextureSpecification _pickSpec;
 		bool _isLeftPressed = false;
 		bool _isLeftFirst = true;
-		ImVec2 _firstPos;
+		glm::ivec2 _firstPos;
 
 	public:
 		static bool hovered;

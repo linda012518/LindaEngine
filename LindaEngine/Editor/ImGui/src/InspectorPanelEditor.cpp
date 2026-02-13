@@ -1,6 +1,7 @@
 ﻿#include "InspectorPanelEditor.h"
 #include "EventSystemEditor.h"
 #include "Entity.h"
+#include "EventEditor.h"
 #include "EventCodeEditor.h"
 #include "glm/glm.hpp"
 #include "Transform.h"

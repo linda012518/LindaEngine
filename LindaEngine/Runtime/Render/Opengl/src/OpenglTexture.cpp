@@ -50,7 +50,6 @@ void OpenglTexture::CreateCube(Ref<Texture> texture, void* right, void* left, vo
 
 void OpenglTexture::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
 {
-	//TODO src是全景图 dest是cubemap
 	FramebufferTextureSpecification color;
 	color.colorFormat = TextureFormat::RGBA8;
 
@@ -64,7 +63,7 @@ void OpenglTexture::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
 	rt->isCube = true;
 	rt->isGammaCorrection = false;
 	rt->msaa = 1;
-	rt->mipmapCount = 6;
+	rt->mipmapCount = 1;
 	rt->anisotropy = 1;
 	rt->colorAttachments.push_back(color);
 	rt->depthAttachment = depth;
@@ -94,13 +93,15 @@ void OpenglTexture::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
 		FBXManager::GetSkybox()->Draw();
 	}
 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	if (dest->mipmapCount > 1)
 	{
 		glBindTexture(GL_TEXTURE_CUBE_MAP, dest->nativeColorID);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, dest->mipmapCount);
 		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 	}
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDeleteFramebuffers(1, &rt->nativeColorID);
 	glDeleteRenderbuffers((int)rt->renderBuffers.size(), rt->renderBuffers.data());
 
@@ -185,6 +186,10 @@ void OpenglTexture::CopyColor(Ref<RenderTexture> src, Ref<RenderTexture> dest, C
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, src->nativeColorID);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dest->nativeColorID);
 
+	// 只读取第一个纹理
+	glReadBuffer(GL_COLOR_ATTACHMENT0);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0);
+
 	unsigned int copyType = 0;
 	switch (type)
 	{
@@ -194,6 +199,18 @@ void OpenglTexture::CopyColor(Ref<RenderTexture> src, Ref<RenderTexture> dest, C
 	}
 
 	glBlitFramebuffer(0, 0, src->width, src->height, 0, 0, dest->width, dest->height, copyType, GL_LINEAR);
+
+	Ref<RenderTexture> temp = RenderTexture::active;
+	BindRenderTarget(dest);
+	int index = 0;
+	std::vector<GLenum> buffers;
+	for (int n = 0; n < dest->colorAttachments.size(); n++)
+	{
+		buffers.push_back(GL_COLOR_ATTACHMENT0 + index);
+		index++;
+	}
+	glDrawBuffers((int)dest->colorAttachments.size(), &buffers[0]);
+	BindRenderTarget(temp);
 }
 
 void* OpenglTexture::ReadPixed(Ref<RenderTexture> src, int xStart, int yStart, int width, int height, uint32_t attachmentIndex)
@@ -235,7 +252,10 @@ unsigned int OpenglTexture::CreateOpenglTexture2D(int width, int height, unsigne
 	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, dataFormat, dataType, data);
 
 	if (mipmapCount > 1)
+	{
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, mipmapCount);
 		glGenerateMipmap(GL_TEXTURE_2D);
+	}
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GetWrapMode(warpU));
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GetWrapMode(warpV));
@@ -260,13 +280,16 @@ unsigned int OpenglTexture::CreateOpenglCubemap(int width, int height, unsigned 
 	glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, internalFormat, width, height, 0, dataFormat, dataType, back);
 
 	if (mipmapCount > 1)
+	{
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, mipmapCount);
 		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	}
 
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GetWrapMode(warpU));
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GetWrapMode(warpV));
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GetWrapMode(warpW));
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GetFilterMode(filter, mipmapCount));
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GetFilterMode(filter, mipmapCount));
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GetFilterMode(filter, 1));
 
 	if (anisotropy > 1)
 		glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_ANISOTROPY_EXT, (float)anisotropy);

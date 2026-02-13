@@ -74,6 +74,16 @@ Entity* Scene::GetEntity(const char* name)
 	return nullptr;
 }
 
+Entity* Scene::GetEntity(int id)
+{
+	for (auto& e : _entitys) {
+		if (e->_entityID != id)
+			continue;
+		return e.get();
+	}
+	return nullptr;
+}
+
 void Scene::DestroyEntity()
 {
 	for (auto& e : _dirtyEntitys) 

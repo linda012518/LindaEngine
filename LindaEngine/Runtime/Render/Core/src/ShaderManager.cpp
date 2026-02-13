@@ -83,16 +83,16 @@ Ref<Shader> ShaderManager::CompileShader(Ref<ShaderSourceCode> sss, std::vector<
 
     std::string fragmentOut = FragmentOut;
 
-    //if (Application::module == AppModule::Editor)
-    //{
-    //    vertexShader = PickVertexUniform + vertexShader;
-    //    ShaderLoader::AddPickOut(PickVertexOut, vertexShader);
-    //    fragmentShader = "layout (location = " + std::to_string(sss->outColorCount) +") " + PickFragmentUniform + fragmentShader;
-    //    ShaderLoader::AddPickOut(PickFragmentOut, fragmentShader);
+    if (Application::module == AppModule::Editor)
+    {
+        vertexShader = PickVertexUniform + vertexShader;
+        ShaderLoader::AddPickOut(PickVertexOut, vertexShader);
+        fragmentShader = "layout (location = " + std::to_string(sss->outColorCount) +") " + PickFragmentUniform + fragmentShader;
+        ShaderLoader::AddPickOut(PickFragmentOut, fragmentShader);
 
-    //    if (true == Material::isPickPass)
-    //        fragmentOut = "";
-    //}
+        if (true == Material::isPickPass)
+            fragmentOut = "";
+    }
 
     
     std::string tempVertex = defaultShaderVersion + defaultShaderUniformBlack + kw + layout + defaultShaderUniform + vertexShader;

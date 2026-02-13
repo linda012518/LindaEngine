@@ -19,6 +19,11 @@ static char renameBuffer[256] = "";
 
 DYNAMIC_CREATE_CLASS(HierarchyPanelEditor, ImGuiPanelEditor)
 
+HierarchyPanelEditor::HierarchyPanelEditor()
+{
+	EventSystemEditor::Bind(EventCodeEditor::PickEntityID, this);
+}
+
 void HierarchyPanelEditor::OnImGuiRender()
 {
 	bool close = true;
@@ -44,6 +49,26 @@ void HierarchyPanelEditor::OnImGuiRender()
 	DrawContextMenu();
 
 	ImGui::End();
+}
+
+void HierarchyPanelEditor::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
+{
+	PickEntityIDEditor& event = dynamic_cast<PickEntityIDEditor&>(eventData);
+	auto& ids = event.selectID;
+
+	_selectionEntityArray.clear();
+	for (auto& pair : ids)
+	{
+		Entity* go = SceneManagerEditor::GetCurrentNode()->scene->GetEntity(pair.first);
+		if (nullptr == go)
+			continue;
+		_selectionEntityArray.push_back(go);
+	}
+	if (_selectionEntityArray.size() > 0)
+		_selectionEntity = _selectionEntityArray[0];
+	else
+		_selectionEntity = nullptr;
+	SendSwitchEntityMessage();
 }
 
 void HierarchyPanelEditor::DrawEntitys()

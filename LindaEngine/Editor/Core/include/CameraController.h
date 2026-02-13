@@ -37,8 +37,8 @@ namespace LindaEngine
 		bool _isPanning = false;
 
 		glm::vec2 _lastMousePos;
-		glm::vec3 _LookRoundTarget;
-		float _LookRoundDistance;
+		glm::vec3 _lookRoundTarget;
+		float _lookRoundDistance;
 
 		bool _leftHeld = false;
 		bool _rightHeld = false;
@@ -46,6 +46,9 @@ namespace LindaEngine
 		float _rotateSpeed = 0.1f;
 
 		Entity* _selectedEntity = nullptr;
+
+	public:
+		static bool isLookRound;
 	};
 
 }

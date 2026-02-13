@@ -14,6 +14,8 @@
 using namespace LindaEditor;
 using namespace LindaEngine;
 
+bool CameraController::isLookRound = false;
+
 IMPLEMENT_BEHAVIOR(CameraController)
 
 void CameraController::Awake()
@@ -21,8 +23,8 @@ void CameraController::Awake()
 	_camera = _entity.GetComponent<PerspectiveCamera>();
 	glm::vec3 front, up, right;
 	_transform->GetWorldDir(front, up, right);
-	_LookRoundDistance = 20.0f;
-	_LookRoundTarget = _transform->GetWorldPosition() - front * _LookRoundDistance;
+	_lookRoundDistance = 20.0f;
+	_lookRoundTarget = _transform->GetWorldPosition() - front * _lookRoundDistance;
 
 	Bind(EventCode::MouseWheel);
 	Bind(EventCode::MouseWheelDown);
@@ -74,6 +76,8 @@ void CameraController::OnEvent(IEventHandler* sender, int eventCode, Event& even
 		_isPanning = false;
 		_leftHeld = false;
 		_rightHeld = false;
+		_ctrlHeld = false;
+		isLookRound = false;
 		return;
 	}
 	
@@ -116,6 +120,7 @@ void CameraController::ProcessMouseEvent(int eventCode, Event& eventData)
 	case EventCode::LeftMouseButtonUp:
 	{
 		_leftHeld = false;
+		isLookRound = false;
 	}
 	break;
 	case EventCode::RightMouseButtonDown:
@@ -140,6 +145,8 @@ void CameraController::ProcessMouseEvent(int eventCode, Event& eventData)
 		_isPanning = false;
 		_leftHeld = false;
 		_rightHeld = false;
+		_ctrlHeld = false;
+		isLookRound = false;
 	}
 	break;
 	}
@@ -174,6 +181,7 @@ void CameraController::ProcessKeyEvent(int eventCode, Event& eventData)
 		if (event.key == KeyCode::CONTROL)
 		{
 			_ctrlHeld = false;
+			isLookRound = false;
 		}
 
 	}
@@ -195,7 +203,7 @@ void CameraController::ScaleEvent(MouseEvent& event)
 	glm::vec3 moveVector = far * (event.wheel / _stanardWheelDelta) * _mouseWheelSpeed;
 	_transform->SetWorldPosition(_transform->GetWorldPosition() + moveVector);
 
-	_LookRoundTarget += moveVector;
+	_lookRoundTarget += moveVector;
 }
 
 void CameraController::PanningEvent(MouseEvent& event)
@@ -212,7 +220,7 @@ void CameraController::PanningEvent(MouseEvent& event)
 	glm::vec3 moveVector = (right * -mouseDelta.x + up * -mouseDelta.y) * adaptiveSpeed;
 	_transform->SetWorldPosition(_transform->GetWorldPosition() + moveVector);
 
-	_LookRoundTarget += moveVector;
+	_lookRoundTarget += moveVector;
 }
 
 void CameraController::RotateEvent(MouseEvent& event)
@@ -234,13 +242,15 @@ void CameraController::RotateEvent(MouseEvent& event)
 
 	glm::vec3 front, up, right;
 	_transform->GetWorldDir(front, up, right);
-	_LookRoundTarget = _transform->GetWorldPosition() - front * _LookRoundDistance;
+	_lookRoundTarget = _transform->GetWorldPosition() - front * _lookRoundDistance;
 }
 
 void CameraController::LookRoundEvent(MouseEvent& event)
 {
 	if (false == _leftHeld || false == _ctrlHeld)
 		return;
+	isLookRound = true;
+
 	float xoffset = event.x - _lastMousePos.x;
 	float yoffset = event.y - _lastMousePos.y;
 	_lastMousePos.x = (float)event.x;
@@ -256,7 +266,7 @@ void CameraController::LookRoundEvent(MouseEvent& event)
 
 	glm::vec3 front, up, right;
 	_transform->GetLocalDir(front, up, right);
-	_transform->SetWorldPosition(front * _LookRoundDistance + _LookRoundTarget);
+	_transform->SetWorldPosition(front * _lookRoundDistance + _lookRoundTarget);
 
 }
 
@@ -287,9 +297,9 @@ void CameraController::LookAtEntity()
 	glm::vec3 front, up, right;
 	_transform->GetLocalDir(front, up, right);
 
-	_LookRoundDistance = distance * 1.5f;
-	_LookRoundTarget = target;
+	_lookRoundDistance = distance * 1.5f;
+	_lookRoundTarget = target;
 
-	_transform->SetWorldPosition(target + front * _LookRoundDistance);
+	_transform->SetWorldPosition(target + front * _lookRoundDistance);
 }
 

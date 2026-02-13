@@ -26,6 +26,7 @@ namespace LindaEngine
 		void DestroyEntity(Entity* entity); 
 		void DestroyEntityImmediately(Entity* entity);
 		Entity* GetEntity(const char* name);
+		Entity* GetEntity(int id);
 		void SetIndex(int index) { _index = index; }
 		std::string& GetPath() { return _path; }
 		void SetPath(std::string path) { _path = path; }

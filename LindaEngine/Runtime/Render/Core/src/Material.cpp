@@ -9,7 +9,6 @@ using namespace LindaEngine;
 
 Ref<Material> Material::overrideMat = nullptr;
 std::string Material::overrideLightMode = "Color";
-bool Material::isPostProcess = false;
 bool Material::isPickPass = false;
 
 Material::Material()

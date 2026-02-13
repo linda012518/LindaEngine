@@ -61,7 +61,6 @@ namespace LindaEngine
 	public:
 		static Ref<Material> overrideMat;
 		static std::string overrideLightMode;
-		static bool isPostProcess;
 		static bool isPickPass;
 	};
 }

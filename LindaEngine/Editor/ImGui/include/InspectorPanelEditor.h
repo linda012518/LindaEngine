@@ -2,7 +2,6 @@
 
 #include "ImGuiPanelEditor.h"
 #include "IEventHandler.h"
-#include "EventEditor.h"
 
 namespace LindaEngine
 {
