@@ -69,24 +69,19 @@ void EditViewPanelEditor::OnImGuiRender()
 		{
 			_isLeftFirst = false;
 			_isLeftPressed = true;
-			//if (_isLeftPressed)
 
-				ImVec2 mousePos = ImGui::GetMousePos();
-				ImVec2 windowPos = ImGui::GetWindowPos();
-				_firstPos = ImVec2(mousePos.x - windowPos.x, mousePos.y - windowPos.y);
-				printf("x %f  y %f\n", _firstPos.x, _firstPos.y);
+			ImVec2 mousePos = ImGui::GetMousePos();
+			ImVec2 windowPos = ImGui::GetWindowPos();
+			_firstPos = ImVec2(mousePos.x - windowPos.x, mousePos.y - windowPos.y);
 		}
-
 	}
 	if (hovered && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
 	{
 		_isLeftPressed = false;
 		_isLeftFirst = true;
-		//if (!_isLeftPressed)
-		//printf("2222\n");
+
 		ImVec2 mousePos = ImGui::GetMousePos();
 		ImVec2 windowPos = ImGui::GetWindowPos();
-		//ImVec2 relativePos = mousePos - relativePos;
 		ImVec2 relativePos = ImVec2(mousePos.x - windowPos.x, mousePos.y - windowPos.y);
 		int xStart = _firstPos.x < relativePos.x ? _firstPos.x : relativePos.x;
 		int yStart = _firstPos.y < relativePos.y ? _firstPos.y : relativePos.y;
@@ -94,13 +89,15 @@ void EditViewPanelEditor::OnImGuiRender()
 		int yEnd = _firstPos.y > relativePos.y ? _firstPos.y : relativePos.y;
 		int width = xEnd - xStart;
 		int height = yEnd - yStart;
+		width = width > 0 ? width : 1;
+		height = height > 0 ? height : 1;
 
-		int* data = (int*)Graphic::ReadPixed(pickRT, xStart, yStart, width, height);
-		for (int n = 0; n < width * height; n++)
-		{
-			printf("%d\n", data[n]);
-		}
-		delete[] data;
+		//int* data = (int*)Graphic::ReadPixed(pickRT, xStart, yStart, width, height);
+		//for (int n = 0; n < width * height; n++)
+		//{
+		//	printf("%d\n", data[n]);
+		//}
+		//delete[] data;
 	}
 
 	ImGui::End();

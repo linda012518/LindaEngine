@@ -272,7 +272,7 @@ void ShaderLoader::CollectProperties(std::string& tex, Ref<ShaderSourceCode> pas
 				uniform->value = c;
 				passState->passState.uniformNameMap[name] = uniform;
 			}
-			else if (type == "sampler2D" || type == "samplerCube")
+			else if (type == "sampler2D" || type == "samplerCube" || type == "isampler2D" || type == "usampler2D")
 			{
 				Ref<TextureUniformData> uniform = CreateRef<TextureUniformData>();
 				uniform->name = name;

@@ -14,7 +14,7 @@ void UniversalRendererEditor::CollectRenderPass()
     AddRenderPass(CreateRef<SkyboxPass>());
     AddRenderPass(CreateRef<PostProcessPass>());
     AddRenderPass(CreateRef<AdjunctPass>());
-    AddRenderPass(CreateRef<BlitPickColorPass>());
+    //AddRenderPass(CreateRef<BlitPickColorPass>());
 
     DrawingSettings settings;
     settings.lightMode = "Color";

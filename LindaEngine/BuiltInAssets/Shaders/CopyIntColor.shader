@@ -2,11 +2,9 @@ Shader
 {
 	Pass
 	{
-		LightMode "BlitPickColor"
-
 		Properties
 		{
-			uniform sampler2D mainTexture = white;
+			uniform isampler2D mainTexture = white;
 		}
 
 		Vertex

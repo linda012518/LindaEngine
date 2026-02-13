@@ -53,7 +53,7 @@ void Graphic::Blit(Ref<RenderTexture> src, Ref<RenderTexture> dest, Ref<Material
 	else
 		SetViewport(0, 0, dest->width, dest->height);
 	Clear(true, true, true);
-	//Material::overrideLightMode = "Color";
+	Material::overrideLightMode = "Color";
 	mat->SetTexture("mainTexture", go, pass, srcAttachment);
 	mat->Bind(pass, nullptr, std::vector<VertexAttribute>());
 	FBXManager::GetEmpty()->Draw();

@@ -15,9 +15,10 @@ BlitPickColorPass::BlitPickColorPass()
 
 void BlitPickColorPass::Render(Camera* camera)
 {
-	Material::overrideLightMode = "BlitPickColor";
+	Material::isPickPass = true;
 	Ref<RenderTexture> src = RenderTexture::active;
 	Ref<Material> material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/CopyIntColor.shader");
 	Graphic::Blit(src, EditViewPanelEditor::pickRT, material, 0, 1);
 	RenderTexture::active = src;
+	Material::isPickPass = false;
 }
