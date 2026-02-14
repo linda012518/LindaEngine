@@ -56,6 +56,8 @@ namespace LindaEngine
 		bool HasPostProcess() { return _postStack.size() > 0; }
 		glm::vec4& GetClearColor() { return _clearColor; }
 
+		void AddPostProcess(Ref<PostProcessEffectRenderer> postProcess);
+		Ref<PostProcessEffectRenderer> AddPostProcess(std::string postProcess);
 		void SetCameraType(CameraType type) { _cameraType = type; }
 		void SetClearType(CameraClearType type) { _clearType = type; }
 		void SetDepth(int depth) { _depth = depth; }

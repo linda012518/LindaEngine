@@ -99,6 +99,19 @@ void Camera::TransformDirty()
 	_viewDirty = true;
 }
 
+void Camera::AddPostProcess(Ref<PostProcessEffectRenderer> postProcess)
+{
+	if (nullptr != postProcess)
+		_postStack.push_back(postProcess);
+}
+
+Ref<PostProcessEffectRenderer> Camera::AddPostProcess(std::string postProcess)
+{
+	Ref<PostProcessEffectRenderer> renderer = ClassFactory<PostProcessEffectRenderer>::CreateObj(postProcess);
+	AddPostProcess(renderer);
+	return renderer;
+}
+
 void Camera::SetNearFar(float near, float far, float dontCare)
 {
 	_projectDirty = true;
@@ -166,9 +179,8 @@ bool Camera::Deserialize(YAML::Node& node)
 	for (auto pass : postStack)
 	{
 		std::string name = pass["Name"].as<std::string>();
-		Ref<PostProcessEffectRenderer> renderer = ClassFactory<PostProcessEffectRenderer>::CreateObj(name);
+		Ref<PostProcessEffectRenderer> renderer = AddPostProcess(name);
 		renderer->Deserialize(pass);
-		_postStack.push_back(renderer);
 	}
 
 	return true;

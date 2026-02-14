@@ -151,6 +151,16 @@ void MaterialPass::UpdateUniforms()
 			Ref<TexturePointerUniformData> tud = DynamicCastRef(TexturePointerUniformData, pair.second);
 			TextureManager::Bind(tud->value, acitveChannel, tud->renderTextureColorIndex);
 			_shader->SetInt(pair.first, acitveChannel++);
+			std::string texelSize = pair.first + texelSizeSuffix;
+			if (_state.uniformNameMap.find(texelSize) != _state.uniformNameMap.end())
+			{
+				glm::vec4 size;
+				size.x = (float)tud->value->width;
+				size.y = (float)tud->value->height;
+				size.z = 1.0f / size.x;
+				size.w = 1.0f / size.y;
+				_shader->SetVec4(texelSize, size);
+			}
 		}
 		break;
 		case UniformType::INT:

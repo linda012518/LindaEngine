@@ -20,6 +20,7 @@ namespace LindaEditor
 		void OnImGuiRender();
 
 		void OnEvent(LindaEngine::IEventHandler* sender, int eventCode, LindaEngine::Event& eventData);
+		static std::vector<LindaEngine::Entity*>& GetSelectedEntity() { return _selectionEntityArray; }
 
 	private:
 		void DrawEntitys();
@@ -42,7 +43,7 @@ namespace LindaEditor
 		LindaEngine::Entity* _hoveredEntity = nullptr;
 		LindaEngine::Entity* _renameEntity = nullptr;
 		bool _firstRename = false;
-		std::vector<LindaEngine::Entity*> _selectionEntityArray;
 		ImVec2 _mouseDownPos;
+		static std::vector<LindaEngine::Entity*> _selectionEntityArray;
 	};
 }

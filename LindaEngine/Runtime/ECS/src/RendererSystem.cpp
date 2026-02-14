@@ -82,6 +82,19 @@ void RendererSystem::DrawRenderers(Camera* camera, DrawingSettings* settings)
 	}
 }
 
+void RendererSystem::DrawRenderer(Renderer* renderer, Ref<Material> material)
+{
+	int count = (int)renderer->GetMesh()->GetAllMeshData().size();
+	for (int i = 0; i < count; i++)
+	{
+		Drawable da;
+		da.material = material;
+		da.meshData = renderer->GetMesh()->GetMeshData(i);
+		da.transform = renderer->GetTransform();
+		da.Draw();
+	}
+}
+
 void RendererSystem::DrawSkybox()
 {
 	Renderer::RenderSkybox();

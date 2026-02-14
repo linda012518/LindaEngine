@@ -9,6 +9,7 @@ namespace LindaEngine
 {
 	class Renderer;
 	class Camera;
+	class Material;
 	struct DrawingSettings;
 	struct Drawable;
 
@@ -23,6 +24,7 @@ namespace LindaEngine
 		static void Clear();
 
 		static void DrawRenderers(Camera* camera, DrawingSettings* settings);
+		static void DrawRenderer(Renderer* renderer, Ref<Material> material);
 		static void DrawSkybox();
 		static void DrawAdjunct();
 		static void DrawErrorRenderer();

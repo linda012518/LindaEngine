@@ -16,6 +16,7 @@ using namespace LindaEditor;
 using namespace LindaEngine;
 
 static char renameBuffer[256] = "";
+std::vector<LindaEngine::Entity*> HierarchyPanelEditor::_selectionEntityArray;
 
 DYNAMIC_CREATE_CLASS(HierarchyPanelEditor, ImGuiPanelEditor)
 

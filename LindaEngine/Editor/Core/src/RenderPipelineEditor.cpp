@@ -18,6 +18,7 @@ int RenderPipelineEditor::Initialize()
     _entity = CreateRef<Entity>("EditorModeMainCamera");
     _entity->SetDontDestory(true);
     _activeCamera = _entity->AddComponent<PerspectiveCamera>();
+    _activeCamera->AddPostProcess("OutLinePostProcess");
     _entity->AddComponent<OrthoCamera>();
     _entity->AddComponent<CameraController>();
 
