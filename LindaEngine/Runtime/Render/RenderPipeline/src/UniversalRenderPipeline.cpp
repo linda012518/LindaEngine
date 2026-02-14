@@ -13,6 +13,7 @@
 #include "MaterialManager.h"
 #include "Light.h"
 #include "LightSystem.h"
+#include "Timestamp.h"
 
 #include <algorithm>
 
@@ -53,7 +54,8 @@ void UniversalRenderPipeline::SetupShaderParameters(Camera* camera)
 
     SetupCameraShaderParameters(camera, block);
     SetupLightListShaderParameters(camera, block);
-    block.time = glm::vec4(1.0);
+    double second = Timestamp::GetElapsedSecond();
+    block.time = glm::vec4(second / 2.0, second, second * 2.0, second * 3.0);
 
     _uniformGlobal->SetUniformBufferData();
 }

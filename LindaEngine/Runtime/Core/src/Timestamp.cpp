@@ -19,7 +19,7 @@ void Timestamp::Tick()
 
 double Timestamp::GetElapsedSecond()
 {
-	return GetElapsedMilliSecond() * 0.000001;
+	return GetElapsedMilliSecond() * 0.001;
 }
 
 double Timestamp::GetElapsedMilliSecond()
@@ -34,7 +34,7 @@ long long Timestamp::GetElapsedMicroSecond()
 
 double Timestamp::GetDeltaSecond()
 {
-	return GetDeltaMilliSecond() * 0.000001;
+	return GetDeltaMilliSecond() * 0.001;
 }
 
 double Timestamp::GetDeltaMilliSecond()
