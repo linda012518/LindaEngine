@@ -21,6 +21,9 @@ constexpr Ref<T> CreateRef(Args&& ... args) //constexpr 将运算尽量放在编译阶段
 	return std::make_shared<T>(std::forward<Args>(args)...);
 }
 
+template<typename T>
+using Weak = std::weak_ptr<T>;
+
 #define StaticCastRef(type, pointer) std::static_pointer_cast<type>(pointer)
 #define DynamicCastRef(type, pointer) std::dynamic_pointer_cast<type>(pointer)
 	
