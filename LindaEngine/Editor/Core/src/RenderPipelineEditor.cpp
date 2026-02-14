@@ -13,12 +13,14 @@
 using namespace LindaEditor;
 using namespace LindaEngine;
 
+LindaEngine::Camera* RenderPipelineEditor::activeCamera = nullptr;
+
 int RenderPipelineEditor::Initialize()
 {
     _entity = CreateRef<Entity>("EditorModeMainCamera");
     _entity->SetDontDestory(true);
-    _activeCamera = _entity->AddComponent<PerspectiveCamera>();
-    _activeCamera->AddPostProcess("OutLinePostProcess");
+    activeCamera = _entity->AddComponent<PerspectiveCamera>();
+    activeCamera->AddPostProcess("OutLinePostProcess");
     _entity->AddComponent<OrthoCamera>();
     _entity->AddComponent<CameraController>();
 
@@ -121,7 +123,7 @@ void RenderPipelineEditor::SetupCameraShaderParameters(Camera* camera, UniformDa
 
 void RenderPipelineEditor::Render()
 {
-    Camera* camera = _activeCamera;
+    Camera* camera = activeCamera;
 
     camera->SetRenderTarget(RenderTexture::finalRT);
     SetupShaderParameters(camera);
@@ -135,7 +137,7 @@ void RenderPipelineEditor::Render()
     Graphic::SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     Graphic::Clear(true, true, true);
 
-    _urpEditor.Render(_activeCamera);
+    _urpEditor.Render(activeCamera);
 
 }
 

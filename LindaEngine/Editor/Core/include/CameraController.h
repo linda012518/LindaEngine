@@ -18,6 +18,7 @@ namespace LindaEngine
 		void OnDestroy();
 
 		void OnEvent(IEventHandler* sender, int eventCode, Event& eventData);
+		std::pair<float, glm::vec3> CalculateLookAtData(Entity* entity);
 
 	private:
 		void ProcessMouseEvent(int eventCode, Event& eventData);

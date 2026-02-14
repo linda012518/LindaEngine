@@ -28,7 +28,9 @@ namespace LindaEditor
 	private:
 		UniversalRendererEditor _urpEditor;
 		Ref<LindaEngine::Entity> _entity = nullptr;
-		LindaEngine::Camera* _activeCamera = nullptr;
+
+	public:
+		static LindaEngine::Camera* activeCamera;
 	};
 }
 

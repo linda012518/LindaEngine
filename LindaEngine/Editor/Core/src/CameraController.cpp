@@ -275,9 +275,26 @@ void CameraController::LookAtEntity()
 	if (_selectedEntity == nullptr)
 		return;
 
-	Renderer* render = _selectedEntity->GetComponent<Renderer>();
+	auto pair = CalculateLookAtData(_selectedEntity);
+
+	glm::vec3 front, up, right;
+	_transform->GetLocalDir(front, up, right);
+
+	_lookRoundDistance = pair.first;
+	_lookRoundTarget = pair.second;
+
+	_transform->SetWorldPosition(pair.second + front * _lookRoundDistance);
+}
+
+std::pair<float, glm::vec3> CameraController::CalculateLookAtData(Entity* entity)
+{
+	float defaultDis = 6.6f;
+	if (entity == nullptr)
+		return { defaultDis, glm::vec3(0.0f)};
+	
+	Renderer* render = entity->GetComponent<Renderer>();
 	if (render == nullptr)
-		return;
+		return { defaultDis, entity->GetTransform()->GetWorldPosition() };
 
 	glm::vec3 target = render->GetBoundingBox().center;
 	float aabbRadius = glm::length(render->GetBoundingBox().size * 0.5f);
@@ -294,12 +311,6 @@ void CameraController::LookAtEntity()
 	float far = _camera->GetFar() * 0.6f;
 	distance = distance > far ? far : distance;
 
-	glm::vec3 front, up, right;
-	_transform->GetLocalDir(front, up, right);
-
-	_lookRoundDistance = distance * 1.5f;
-	_lookRoundTarget = target;
-
-	_transform->SetWorldPosition(target + front * _lookRoundDistance);
+	return { distance * 1.5f, target };
 }
 

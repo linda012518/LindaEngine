@@ -8,6 +8,8 @@
 namespace LindaEngine
 {
 	class Entity;
+	class CameraController;
+	class Transform;
 }
 
 namespace LindaEditor
@@ -38,10 +40,13 @@ namespace LindaEditor
 		void SelectSingle();
 		void SendSwitchEntityMessage();
 
+		void SetEntityPosition(LindaEngine::Entity* entity, LindaEngine::Transform* parent);
+
 	private:
 		LindaEngine::Entity* _selectionEntity = nullptr;
 		LindaEngine::Entity* _hoveredEntity = nullptr;
 		LindaEngine::Entity* _renameEntity = nullptr;
+		LindaEngine::CameraController* _cameraCtrl = nullptr;
 		bool _firstRename = false;
 		ImVec2 _mouseDownPos;
 		static std::vector<LindaEngine::Entity*> _selectionEntityArray;

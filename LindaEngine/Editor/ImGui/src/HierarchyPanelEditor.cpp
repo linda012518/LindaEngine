@@ -8,6 +8,9 @@
 #include "EventEditor.h"
 #include "EventCodeEditor.h"
 #include "ContentBrowserPanelEditor.h"
+#include "RenderPipelineEditor.h"
+#include "CameraController.h"
+#include "Camera.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -23,6 +26,7 @@ DYNAMIC_CREATE_CLASS(HierarchyPanelEditor, ImGuiPanelEditor)
 HierarchyPanelEditor::HierarchyPanelEditor()
 {
 	EventSystemEditor::Bind(EventCodeEditor::PickEntityID, this);
+	_cameraCtrl = RenderPipelineEditor::activeCamera->GetEntity().GetComponent<CameraController>();
 }
 
 void HierarchyPanelEditor::OnImGuiRender()
@@ -261,25 +265,31 @@ void HierarchyPanelEditor::DrawContextMenu()
 			ImGui::Separator();
 		}
 
+		Transform* parent = _selectionEntity != nullptr ? _selectionEntity->GetTransform() : nullptr;
+
 		if (ImGui::MenuItem("Create Empty Entity"))
 		{
-			SceneManagerEditor::GetCurrentNode()->scene->CreateEntity("Empty Entity");
+			Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->CreateEntity("Empty Entity");
+			SetEntityPosition(entity, parent);
 		}
 		if (ImGui::BeginMenu("Create 3D Object"))
 		{
 			if (ImGui::MenuItem("Cube"))
 			{
-				SceneManagerEditor::GetCurrentNode()->scene->InstantiateCube();
+				Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiateCube(parent);
+				SetEntityPosition(entity, parent);
 			}
 
 			if (ImGui::MenuItem("Sphere"))
 			{
-				SceneManagerEditor::GetCurrentNode()->scene->InstantiateSphere();
+				Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiateSphere(parent);
+				SetEntityPosition(entity, parent);
 			}
 
 			if (ImGui::MenuItem("Plane"))
 			{
-				SceneManagerEditor::GetCurrentNode()->scene->InstantiatePlane();
+				Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiatePlane(parent);
+				SetEntityPosition(entity, parent);
 			}
 
 			ImGui::EndMenu();
@@ -550,5 +560,17 @@ void HierarchyPanelEditor::SendSwitchEntityMessage()
 	SwitchSelectEntityEditor ssee;
 	ssee.selectionEntity = _selectionEntity;
 	EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchSelectEntity, ssee);
+}
+
+void HierarchyPanelEditor::SetEntityPosition(Entity* entity, Transform* parent)
+{
+	if (nullptr != parent)
+		return;
+
+	Transform* cameraTransform = _cameraCtrl->GetTransform();
+	glm::vec3 front, up, right;
+	cameraTransform->GetLocalDir(front, up, right);
+	auto pair = _cameraCtrl->CalculateLookAtData(entity);
+	entity->GetTransform()->SetWorldPosition(cameraTransform->GetWorldPosition() - front * pair.first);
 }
 
