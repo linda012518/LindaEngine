@@ -24,6 +24,14 @@ constexpr Ref<T> CreateRef(Args&& ... args) //constexpr 将运算尽量放在编译阶段
 template<typename T>
 using Weak = std::weak_ptr<T>;
 
+template<typename To, typename From>
+std::weak_ptr<To> DynamicCastWeak(const std::weak_ptr<From>& from) {
+	if (auto sp = from.lock()) {
+		return std::dynamic_pointer_cast<To>(sp);
+	}
+	return std::weak_ptr<To>();
+}
+
 #define StaticCastRef(type, pointer) std::static_pointer_cast<type>(pointer)
 #define DynamicCastRef(type, pointer) std::dynamic_pointer_cast<type>(pointer)
-	
+
