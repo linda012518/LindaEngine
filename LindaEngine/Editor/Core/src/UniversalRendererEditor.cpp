@@ -13,9 +13,9 @@ using namespace LindaEngine;
 void UniversalRendererEditor::CollectRenderPass()
 {
     AddRenderPass(CreateRef<SkyboxPass>());
+    AddRenderPass(CreateRef<DrawErrorPass>());
     AddRenderPass(CreateRef<PostProcessPass>());
     AddRenderPass(CreateRef<AdjunctPass>());
-    AddRenderPass(CreateRef<DrawErrorPass>());
     AddRenderPass(CreateRef<BlitPickColorPass>());
 
     DrawingSettings settings;

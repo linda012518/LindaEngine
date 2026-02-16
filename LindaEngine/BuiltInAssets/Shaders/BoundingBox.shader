@@ -6,8 +6,7 @@ Shader
 		
 		RenderState
 		{
-			DepthState (depthFunc= LEQUAL)
-			PolygonModeState(LINE)
+			DepthState (depthWrite=false;depthFunc= LEQUAL)
 		}
 
 		Vertex

@@ -5,7 +5,7 @@ using namespace LindaEngine;
 
 AdjunctPass::AdjunctPass()
 {
-	_renderPassEvent = RenderPassEvent::BeforeRenderingOpaques;
+	_renderPassEvent = RenderPassEvent::AfterRenderingTransparents;
 }
 
 void AdjunctPass::Render(Camera* camera)
