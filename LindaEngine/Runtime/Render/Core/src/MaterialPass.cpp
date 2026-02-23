@@ -178,7 +178,6 @@ void MaterialPass::UpdateUniforms()
 				_shader->SetVec4(pair.first, DynamicCastRef(Float4UniformData, pair.second)->value);
 		}
 		break;
-
 		case UniformType::INTARRAY:
 		{
 			Ref<IntArrayUniformData> intArray = DynamicCastRef(IntArrayUniformData, pair.second);
@@ -189,6 +188,18 @@ void MaterialPass::UpdateUniforms()
 		{
 			Ref<FloatArrayUniformData> floatArray = DynamicCastRef(FloatArrayUniformData, pair.second);
 			_shader->SetFloatArray(pair.first, floatArray->arraySize, floatArray->value);
+		}
+		break;
+		case UniformType::INT4ARRAY:
+		{
+			Ref<Int4ArrayUniformData> int4Array = DynamicCastRef(Int4ArrayUniformData, pair.second);
+			_shader->SetIVec4Array(pair.first, int4Array->value, int4Array->arraySize);
+		}
+		break;
+		case UniformType::FLOAT4ARRAY:
+		{
+			Ref<Float4ArrayUniformData> float4Array = DynamicCastRef(Float4ArrayUniformData, pair.second);
+			_shader->SetVec4Array(pair.first, float4Array->value, float4Array->arraySize);
 		}
 		break;
 		case UniformType::MAT2:
@@ -212,19 +223,19 @@ void MaterialPass::UpdateUniforms()
 		case UniformType::MAT2ARRAY:
 		{
 			Ref<Mat2ArrayUniformData> mat2Array = DynamicCastRef(Mat2ArrayUniformData, pair.second);
-			//TODO
+			_shader->SetMat2Array(pair.first, mat2Array->value, mat2Array->arraySize);
 		}
 		break;
 		case UniformType::MAT3ARRAY:
 		{
 			Ref<Mat3ArrayUniformData> mat3Array = DynamicCastRef(Mat3ArrayUniformData, pair.second);
-			//TODO
+			_shader->SetMat3Array(pair.first, mat3Array->value, mat3Array->arraySize);
 		}
 		break;
 		case UniformType::MAT4ARRAY:
 		{
 			Ref<Mat4ArrayUniformData> mat4Array = DynamicCastRef(Mat4ArrayUniformData, pair.second);
-			//TODO
+			_shader->SetMat4Array(pair.first, mat4Array->value, mat4Array->arraySize);
 		}
 		break;
 		}
@@ -246,11 +257,11 @@ void MaterialPass::LoadTextures()
 	}
 }
 
-IMPLEMENT_SETUNIFORM(int, IntUniformData)
-IMPLEMENT_SETUNIFORM(float, FloatUniformData)
-IMPLEMENT_SETUNIFORM(glm::vec4, Float4UniformData)
-IMPLEMENT_SETUNIFORM(glm::ivec4, Int4UniformData)
-IMPLEMENT_SETUNIFORM(const char*, TextureUniformData)
+IMPLEMENT_SETUNIFORMMATRIX(int, IntUniformData)
+IMPLEMENT_SETUNIFORMMATRIX(float, FloatUniformData)
+IMPLEMENT_SETUNIFORMMATRIX(glm::vec4, Float4UniformData)
+IMPLEMENT_SETUNIFORMMATRIX(glm::ivec4, Int4UniformData)
+IMPLEMENT_SETUNIFORMMATRIX(const char*, TextureUniformData)
 
 IMPLEMENT_SETUNIFORMMATRIX(glm::mat2, Mat2UniformData)
 IMPLEMENT_SETUNIFORMMATRIX(glm::mat3, Mat3UniformData)

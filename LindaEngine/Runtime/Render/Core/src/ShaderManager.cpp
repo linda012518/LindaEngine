@@ -21,6 +21,7 @@ std::string ShaderManager::PickVertexUniform;
 std::string ShaderManager::PickVertexOut;
 std::string ShaderManager::PickFragmentUniform;
 std::string ShaderManager::PickFragmentOut;
+std::string ShaderManager::SkinVertexFunc;
 
 bool _isLoadDefault = false;
 
@@ -73,6 +74,13 @@ Ref<Shader> ShaderManager::CompileShader(Ref<ShaderSourceCode> sss, std::vector<
     int index = 0;
     for (auto& attr : attributes)
     {
+        if (attr.attributeType == VertexAttributeType::Position)
+            kw += "#define _Vertex_Input_Position_ \n";
+        else if (attr.attributeType == VertexAttributeType::Normal)
+            kw += "#define _Vertex_Input_Normal_ \n";
+        else if (attr.attributeType == VertexAttributeType::Tangent)
+            kw += "#define _Vertex_Input_Tangent_ \n";
+
         std::string type = VertexAttribute::GetVertexDataTypeName(attr.dateType);
         layout += "layout (location = " + std::to_string(index) + ") in " + type + attr.attributeName + ";\n";
         index++;
@@ -81,14 +89,15 @@ Ref<Shader> ShaderManager::CompileShader(Ref<ShaderSourceCode> sss, std::vector<
     std::string vertexShader = sss->vertex;
     std::string fragmentShader = sss->fragment;
 
+    ShaderLoader::AddStartCode(SkinVertexFunc, vertexShader);
     std::string fragmentOut = FragmentOut;
 
     if (Application::module == AppModule::Editor)
     {
         vertexShader = PickVertexUniform + vertexShader;
-        ShaderLoader::AddPickOut(PickVertexOut, vertexShader);
+        ShaderLoader::AddEndCode(PickVertexOut, vertexShader);
         fragmentShader = "layout (location = " + std::to_string(sss->outColorCount) +") " + PickFragmentUniform + fragmentShader;
-        ShaderLoader::AddPickOut(PickFragmentOut, fragmentShader);
+        ShaderLoader::AddEndCode(PickFragmentOut, fragmentShader);
 
         if (true == Material::isPickPass)
             fragmentOut = "";
@@ -115,12 +124,19 @@ bool ShaderManager::Initialize()
         if (!data)
             return false;
 
+        SkinVertexFunc = TextLoader::Load(data["SkinVertexFunc"].as<std::string>().c_str());
         PickVertexUniform = TextLoader::Load(data["PickVertexUniform"].as<std::string>().c_str());
         PickVertexOut = TextLoader::Load(data["PickVertexOut"].as<std::string>().c_str());
         PickFragmentUniform = TextLoader::Load(data["PickFragmentUniform"].as<std::string>().c_str());
         PickFragmentOut = TextLoader::Load(data["PickFragmentOut"].as<std::string>().c_str());
         FragmentOut = TextLoader::Load(data["FragmentOut"].as<std::string>().c_str());
-        defaultShaderUniform = TextLoader::Load(data["BuiltInUniform"].as<std::string>().c_str());
+
+        std::string uniformPath = data["BuiltInUniform"].as<std::string>();
+        defaultShaderUniform = TextLoader::Load(uniformPath.c_str());
+        std::vector<std::string> paths = Path::GetFileDirectorys(uniformPath.c_str());
+        ShaderLoader::ProcessInclude(defaultShaderUniform, paths);
+        //defaultShaderUniform = TextLoader::Load(data["BuiltInUniform"].as<std::string>().c_str());
+
         defaultShaderUniformBlack = TextLoader::Load(data["GlobalUniformBlock"].as<std::string>().c_str());
         defaultShaderVersion = TextLoader::Load(data["ShaderVersion"].as<std::string>().c_str());
         std::string names = TextLoader::Load(data["AttributeNames"].as<std::string>().c_str());

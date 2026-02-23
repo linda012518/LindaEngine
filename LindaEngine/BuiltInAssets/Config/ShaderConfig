@@ -8,3 +8,5 @@ ShaderConfig:
   PickVertexOut: BuiltInAssets/Shaders/ShaderLibrary/PickVertexOut.glsl
   PickFragmentUniform: BuiltInAssets/Shaders/ShaderLibrary/PickFragmentUniform.glsl
   PickFragmentOut: BuiltInAssets/Shaders/ShaderLibrary/PickFragmentOut.glsl
+  SkinBonesUniform: BuiltInAssets/Shaders/ShaderLibrary/SkinBonesUniform.glsl
+  SkinVertexFunc: BuiltInAssets/Shaders/ShaderLibrary/SkinVertexFunc.glsl

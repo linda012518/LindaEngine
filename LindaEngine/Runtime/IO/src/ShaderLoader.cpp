@@ -100,12 +100,27 @@ void ShaderLoader::ProcessInclude(std::string& tex, std::vector<std::string>& pa
 
 }
 
-void ShaderLoader::AddPickOut(std::string& str, std::string& shaderCode)
+void ShaderLoader::AddStartCode(std::string& code, std::string& src)
 {
-	size_t pos = shaderCode.rfind('}');
+	size_t firstPos = std::string::npos;
+
+	std::regex pattern(R"(void\s+main\s*\(\s*(void\s*)?\))");
+	std::smatch match;
+	if (std::regex_search(src, match, pattern)) {
+		firstPos = match.position();
+		size_t pos = src.find('{', firstPos + 1);
+		if (pos == std::string::npos)
+			return;
+		src.insert(pos + 1, code);
+	}
+}
+
+void ShaderLoader::AddEndCode(std::string& code, std::string& src)
+{
+	size_t pos = src.rfind('}');
 	if (pos == std::string::npos)
 		return;
-	shaderCode.insert(pos, str);
+	src.insert(pos, code);
 }
 
 void ShaderLoader::DeleteShaderFrame(std::string& tex)

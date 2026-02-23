@@ -41,6 +41,12 @@ namespace LindaEngine
 		void SetMat3(const std::string& name, const glm::mat3& mat, int count = 1);
 		void SetMat4(const std::string& name, const glm::mat4& mat, int count = 1);
 
+		void SetIVec4Array(const std::string& name, const glm::ivec4* value, int count);
+		void SetVec4Array(const std::string& name, const glm::vec4* value, int count);
+		void SetMat2Array(const std::string& name, const glm::mat2* value, int count);
+		void SetMat3Array(const std::string& name, const glm::mat3* value, int count);
+		void SetMat4Array(const std::string& name, const glm::mat4* value, int count);
+
 	private:
 		GLint	_program = -1;
 		bool	_noError = false;

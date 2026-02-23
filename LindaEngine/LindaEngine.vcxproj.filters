@@ -609,6 +609,18 @@
     <ClCompile Include="Runtime\Render\RenderPipeline\src\BlitPickColorPass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Render\PostProcess\src\OutLinePostProcess.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\DrawErrorPass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\ECS\src\Animation.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\ECS\src\AnimationSystem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -2439,6 +2451,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Render\RenderPipeline\include\BlitPickColorPass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\PostProcess\include\OutLinePostProcess.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\DrawErrorPass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\ECS\include\Animation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\ECS\include\AnimationSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -77,10 +77,21 @@ const Transform* Transform::Find(std::string path) const
 {
 	std::list<Transform*> list = _children;
 	std::vector<std::string> directorys = Path::GetFileDirectorys(path.c_str());
+
+	bool hasPath = directorys[0] == _entity.GetName();
+	if (false == hasPath)
+		return nullptr;
+	directorys.erase(directorys.begin());
+
 	int index = 0;
 	int lastIndex = (int)directorys.size() - 1;
 	for (auto& directory : directorys)
 	{
+		if (true == hasPath)
+			hasPath = false;
+		else
+			return nullptr;
+
 		for (auto& child : list)
 		{
 			if (child->GetEntity().GetName() != directory)
@@ -88,9 +99,26 @@ const Transform* Transform::Find(std::string path) const
 			if (index == lastIndex)
 				return child;
 			list = child->_children;
+			hasPath = true;
 			break;
 		}
 		index++;
+	}
+	return nullptr;
+}
+
+Transform* Transform::GetChildByName(Transform* parent, std::string name)
+{
+	for (auto& go : parent->GetChildren())
+	{
+		if (go->GetEntity().GetName() == name)
+			return go;
+		else
+		{
+			Transform* ret = GetChildByName(go, name);
+			if (nullptr != ret)
+				return ret;
+		}
 	}
 	return nullptr;
 }

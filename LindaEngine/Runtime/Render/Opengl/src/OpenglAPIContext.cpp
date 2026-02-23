@@ -1,4 +1,4 @@
-#include "OpenglAPIContext.h"
+Ôªø#include "OpenglAPIContext.h"
 #include "glad/glad.h"
 #include "RenderState.h"
 
@@ -128,7 +128,7 @@ void OpenglAPIContext::CheckPolygonModeState(RenderState& state, RenderState& ma
 		//state.polygonModeState.smoothLine = _renderState.polygonModeState.smoothLine;
 		//if (state.polygonModeState.smoothLine)
 		//{
-		//	glEnable(GL_LINE_SMOOTH); //∆Ù”√
+		//	glEnable(GL_LINE_SMOOTH); //ÂêØÁî®
 		//	glHint(GL_LINE_SMOOTH, GL_NICEST);
 		//}
 		glLineWidth(state.polygonModeState.lineWidth);
@@ -139,7 +139,7 @@ void OpenglAPIContext::CheckPolygonModeState(RenderState& state, RenderState& ma
 		//state.polygonModeState.smoothPoint = _renderState.polygonModeState.smoothPoint;
 		//if (state.polygonModeState.smoothPoint)
 		//{
-		//	glEnable(GL_POINT_SMOOTH); //∆Ù”√
+		//	glEnable(GL_POINT_SMOOTH); //ÂêØÁî®
 		//	glHint(GL_POINT_SMOOTH, GL_NICEST);
 
 		//}

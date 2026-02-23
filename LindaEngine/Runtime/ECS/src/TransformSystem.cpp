@@ -6,7 +6,7 @@ using namespace LindaEngine;
 
 std::vector<Transform*> TransformSystem::_components;
 
-void TransformSystem::Tick()
+void TransformSystem::Tick(float deltaTime)
 {
 	for (auto& com : _components) {
 		if (false == com->IsEnable())

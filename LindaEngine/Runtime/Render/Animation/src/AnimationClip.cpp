@@ -5,17 +5,6 @@
 
 using namespace LindaEngine;
 
-glm::vec3 AnimationClip::Tick(float time)
-{
-	for (auto& go : tracks)
-	{
-		go.TickPosition(time);
-		go.TickRotation(time);
-		go.TickScale(time);
-	}
-	return glm::vec3(1.0f);
-}
-
 glm::vec3 BoneTrack::TickPosition(float time)
 {
 	if (0 == tracksPosition.size())

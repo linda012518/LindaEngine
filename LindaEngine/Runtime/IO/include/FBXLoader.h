@@ -132,6 +132,6 @@ namespace LindaEngine
 		static void ConvertFBXResources(Ref<FBXResources> res, AssimpNodeData& data, std::string& path);
 		static bool HasAttribute(std::vector<VertexAttributeType>& attributes, VertexAttributeType attr);
 
-		static void ParseAnimationClip(aiScene* scene);
+		static void ParseAnimationClip(const aiScene* scene);
 	};
 }

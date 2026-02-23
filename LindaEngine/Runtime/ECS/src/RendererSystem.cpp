@@ -17,7 +17,7 @@ std::vector<Renderer*> RendererSystem::_components;
 std::vector<Renderer*> RendererSystem::_tempRenderables;
 std::vector<Ref<Drawable>> RendererSystem::_drawables;
 
-void RendererSystem::Tick()
+void RendererSystem::Tick(float deltaTime)
 {
 	for (auto& com : _components) {
 		if (false == com->IsEnable())

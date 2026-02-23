@@ -50,7 +50,6 @@ namespace LindaEngine
 		float duration;
 		float ticksPerSecond;
 		std::vector<BoneTrack> tracks;
-
-		glm::vec3 Tick(float time);
+		std::string name;
 	};
 }

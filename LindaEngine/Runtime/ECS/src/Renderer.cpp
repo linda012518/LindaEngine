@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include "Transform.h"
+#include "TransformSystem.h"
 #include "YamlSerializer.h"
 #include "Material.h"
 #include "FBXManager.h"
@@ -70,11 +71,12 @@ bool Renderer::Deserialize(YAML::Node& node)
 		_mesh->Deserialize(mesh);
 	}
 
+	int index = 0;
 	for (auto mat : materials)
 	{
 		Ref<Material> pointer = MaterialManager::GetMaterial(mat["FilePath"].as<std::string>().c_str());
-		_materialList.push_back(pointer);
 		pointer->Deserialize(mat);
+		AddMaterial(index++, pointer);
 	}
 
 	FillDrawables();
@@ -275,12 +277,51 @@ SkinMeshRenderer::~SkinMeshRenderer()
 {
 }
 
+void SkinMeshRenderer::Tick()
+{
+	int size1 = (int)_bonesData.size();
+	int size2 = (int)_bones.size();
+	if (size1 <= 0 || size2 <= 0 || size1 != size2)
+		return;
+
+	_boneMatrices.clear();
+	for (int n = 0; n < size1; n++)
+	{
+		_boneMatrices.push_back(_bones[n]->GetLocalToWorldMat() * _bonesData[n].offset);
+	}
+	for (auto& mat : _materialList)
+	{
+		mat->SetUniformValue<glm::mat4*>("bonesMatrices", _boneMatrices.data(), (int)_boneMatrices.size());
+	}
+}
+
 bool SkinMeshRenderer::Serialize()
 {
 	Renderer::Serialize();
 
 	YAML::Emitter& out = *YamlSerializer::out;
 	out << YAML::Key << "Name" << YAML::Value << "SkinMeshRenderer";
+
+	out << YAML::Key << "Bones";
+	out << YAML::Value << YAML::BeginSeq;
+	for (auto& bone : _bones)
+	{
+		if (nullptr == bone)
+			continue;
+		out << bone->GetEntity().GetUUID();
+	}
+	out << YAML::EndSeq;
+
+	//out << YAML::Key << "BonesData";
+	//out << YAML::Value << YAML::BeginSeq;
+	//for (auto& bone : _bonesData)
+	//{
+	//	if (nullptr == bone)
+	//		continue;
+	//	out << bone->GetEntity().GetUUID();
+	//}
+	//out << YAML::EndSeq;
+
 	out << YAML::EndMap;
 
 	return true;
@@ -289,7 +330,55 @@ bool SkinMeshRenderer::Serialize()
 bool SkinMeshRenderer::Deserialize(YAML::Node& node)
 {
 	Renderer::Deserialize(node);
+	auto bones = node["Bones"];
+	if (bones)
+	{
+		for (std::size_t i = 0; i < bones.size(); i++)
+		{
+			std::string uuid = bones[i].as<std::string>();
+			auto ptr = TransformSystem::Get(uuid);
+			if (nullptr == ptr)
+				continue;
+			_bones.push_back(ptr);
+		}
+	}
 	return true;
+}
+
+void SkinMeshRenderer::AddMaterial(int index, Ref<Material> mat)
+{
+	Renderer::AddMaterial(index, mat);
+	mat->AddKeyword("_Skin_Vertex_");
+}
+
+void SkinMeshRenderer::SetBones(std::vector<Transform*> bones)
+{
+	_bones = bones;
+}
+
+std::vector<Transform*>& SkinMeshRenderer::GetBones()
+{
+	return _bones;
+}
+
+void SkinMeshRenderer::SetRootBone(Transform* root)
+{
+	_rootBone = root;
+}
+
+Transform* SkinMeshRenderer::GetRootBone()
+{
+	return _rootBone;
+}
+
+void SkinMeshRenderer::SetBonesData(std::vector<BoneData> data)
+{
+	_bonesData = data;
+}
+
+std::vector<BoneData>& SkinMeshRenderer::GetBonesData()
+{
+	return _bonesData;
 }
 
 

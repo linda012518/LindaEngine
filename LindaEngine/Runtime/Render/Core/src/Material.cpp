@@ -5,6 +5,16 @@
 #include "MaterialManager.h"
 #include "Mesh.h"
 
+#define IMPLEMENT_SETMATERIALUNIFORM(dataType) \
+template<> \
+void Material::SetUniformValue<dataType>(const char* name, dataType val, int count) \
+{ \
+	for (auto& pass : _passes) \
+	{ \
+		pass->SetUniformValue<dataType>(name, val, count); \
+	} \
+}
+
 using namespace LindaEngine;
 
 Ref<Material> Material::overrideMat = nullptr;
@@ -83,6 +93,33 @@ void Material::Bind(Ref<MaterialPass> pass, Transform* transform, const std::vec
 void Material::Bind(int pass, Transform* transform, const std::vector<VertexAttribute>& attributes)
 {
 	Bind(_passes[pass], transform, attributes);
+}
+
+IMPLEMENT_SETMATERIALUNIFORM(int)
+IMPLEMENT_SETMATERIALUNIFORM(float)
+IMPLEMENT_SETMATERIALUNIFORM(glm::vec4)
+IMPLEMENT_SETMATERIALUNIFORM(glm::ivec4)
+IMPLEMENT_SETMATERIALUNIFORM(const char*)
+
+IMPLEMENT_SETMATERIALUNIFORM(glm::mat2)
+IMPLEMENT_SETMATERIALUNIFORM(glm::mat3)
+IMPLEMENT_SETMATERIALUNIFORM(glm::mat4)
+
+IMPLEMENT_SETMATERIALUNIFORM(int*)
+IMPLEMENT_SETMATERIALUNIFORM(float*)
+IMPLEMENT_SETMATERIALUNIFORM(glm::vec4*)
+IMPLEMENT_SETMATERIALUNIFORM(glm::ivec4*)
+IMPLEMENT_SETMATERIALUNIFORM(glm::mat2*)
+IMPLEMENT_SETMATERIALUNIFORM(glm::mat3*)
+IMPLEMENT_SETMATERIALUNIFORM(glm::mat4*)
+IMPLEMENT_SETMATERIALUNIFORM(Ref<Texture>)
+
+void Material::AddKeyword(std::string key)
+{
+	for (auto& pass : _passes)
+	{
+		pass->AddKeyword(key);
+	}
 }
 
 bool Material::Serialize()

@@ -26,7 +26,7 @@ static GLenum VertexAttributeTypeToOpenGLType(VertexAttributeType type)
 		return GL_FLOAT;
 	case VertexAttributeType::BoneID1:
 	case VertexAttributeType::BoneID2:
-		return GL_INT;
+		return GL_FLOAT;
 	}
 	return 0;
 }

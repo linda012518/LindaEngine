@@ -9,7 +9,7 @@ namespace LindaEngine
 	class CameraSystem
 	{
 	public:
-		static void Tick();
+		static void Tick(float deltaTime);
 		static void OnDeserializeFinish();
 
 		static void Add(Camera* camera);

@@ -6,7 +6,7 @@ using namespace LindaEngine;
 
 std::vector<Camera*> CameraSystem::_components;
 
-void CameraSystem::Tick()
+void CameraSystem::Tick(float deltaTime)
 {
 	for (auto& com : _components) {
 		if (false == com->IsEnable())

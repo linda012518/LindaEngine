@@ -49,7 +49,27 @@ Entity* Scene::InstantiateFBX(std::string path, Transform* parent)
 {
 	Ref<FBXResources> res = FBXManager::GetFBX(path);
 
-	return CreateEntityFromFBX(res, parent);
+	Entity* entity = CreateEntityFromFBX(res, parent);
+
+	std::vector<Transform*> transforms;
+	std::vector<SkinMeshRenderer*> renderers;
+	CollectBonesComponents(entity, transforms, renderers);
+
+	std::vector<Transform*> bones;
+	for (auto& renderer : renderers)
+	{
+		bones.clear();
+
+		std::vector<BoneData>& data = renderer->GetBonesData();
+		for (auto& boneData : data)
+		{
+			Transform* bone = GetTransformByBoneName(transforms, boneData.name);
+			bones.push_back(bone);
+		}
+		renderer->SetBones(bones);
+	}
+
+	return entity;
 }
 
 void Scene::DestroyEntity(Entity* entity)
@@ -135,7 +155,15 @@ Entity* Scene::CreateEntityFromFBX(Ref<FBXResources> res, Transform* parent)
 
 	if (nullptr != res->mesh)
 	{
-		MeshRenderer* renderer = entity->AddComponent<MeshRenderer>();
+		Renderer* renderer = nullptr;
+		if (res->boneCount > 0)
+		{
+			SkinMeshRenderer* skinRenderer = entity->AddComponent<SkinMeshRenderer>();
+			skinRenderer->SetBonesData(res->bones);
+			renderer = skinRenderer;
+		}
+		else
+			renderer = entity->AddComponent<MeshRenderer>();
 		renderer->SetMesh(res->mesh);
 		int index = 0;
 		for (auto& data : res->mesh->GetAllMeshData())
@@ -150,6 +178,37 @@ Entity* Scene::CreateEntityFromFBX(Ref<FBXResources> res, Transform* parent)
 
 	transform->SetParent(parent);
 	return entity;
+}
+
+void Scene::CollectBonesComponents(Entity* entity, std::vector<Transform*>& transforms, std::vector<SkinMeshRenderer*>& renderers)
+{
+	Renderer* renderer = entity->GetComponent<Renderer>();
+	if (nullptr == renderer)
+	{
+		transforms.push_back(entity->GetTransform());
+	}
+	else
+	{
+		SkinMeshRenderer* skinPtr = dynamic_cast<SkinMeshRenderer*>(renderer);
+		if (nullptr != skinPtr)
+			renderers.push_back(skinPtr);
+	}
+
+	for (auto& go : entity->GetTransform()->GetChildren())
+	{
+		CollectBonesComponents(&go->GetEntity(), transforms, renderers);
+	}
+}
+
+Transform* Scene::GetTransformByBoneName(std::vector<Transform*>& transforms, std::string name)
+{
+	for (auto& t : transforms)
+	{
+		if (t->GetEntity().GetName() != name)
+			continue;
+		return t;
+	}
+	return nullptr;
 }
 
 void Scene::Destroy()

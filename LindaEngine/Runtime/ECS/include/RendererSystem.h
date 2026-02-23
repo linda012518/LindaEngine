@@ -16,7 +16,7 @@ namespace LindaEngine
 	class RendererSystem
 	{
 	public:
-		static void Tick();
+		static void Tick(float deltaTime);
 		static void OnDeserializeFinish();
 
 		static void Add(Renderer* renderer);

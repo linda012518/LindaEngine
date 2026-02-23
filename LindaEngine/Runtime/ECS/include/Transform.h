@@ -57,6 +57,7 @@ namespace LindaEngine
 		const Transform* GetParent() const;
 		const std::list<Transform*>& GetChildren() const;
 		const Transform* Find(std::string path) const;
+		static Transform* GetChildByName(Transform* parent, std::string name);
 
 		glm::vec3& GetLocalPosition();
 		glm::vec3& GetLocalEulerAngles();

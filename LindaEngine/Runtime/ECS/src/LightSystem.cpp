@@ -8,7 +8,7 @@ using namespace LindaEngine;
 
 std::vector<Light*> LightSystem::_components;
 
-void LightSystem::Tick()
+void LightSystem::Tick(float deltaTime)
 {
 	for (auto& com : _components) {
 		if (false == com->IsEnable())

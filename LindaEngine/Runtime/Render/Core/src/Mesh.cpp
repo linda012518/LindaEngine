@@ -19,9 +19,9 @@ const char* VertexAttribute::GetAttributeName(VertexAttributeType attrType)
 {
 	switch (attrType)
 	{
-	case VertexAttributeType::Position:		return "aPosition";
-	case VertexAttributeType::Normal:		return "aNormal";
-	case VertexAttributeType::Tangent:		return "aTangent";
+	case VertexAttributeType::Position:		return "aPosition_";
+	case VertexAttributeType::Normal:		return "aNormal_";
+	case VertexAttributeType::Tangent:		return "aTangent_";
 	case VertexAttributeType::UV0:			return "aUV0";
 	case VertexAttributeType::UV1:			return "aUV1";
 	case VertexAttributeType::UV2:			return "aUV2";
@@ -70,8 +70,8 @@ VertexDataType VertexAttribute::GetAttributeDataType(VertexAttributeType attrTyp
 	case VertexAttributeType::UV6:			return VertexDataType::Float2;
 	case VertexAttributeType::UV7:			return VertexDataType::Float2;
 	case VertexAttributeType::Color:		return VertexDataType::Float4;
-	case VertexAttributeType::BoneID1:		return VertexDataType::Int4;
-	case VertexAttributeType::BoneID2:		return VertexDataType::Int4;
+	case VertexAttributeType::BoneID1:		return VertexDataType::Float4;
+	case VertexAttributeType::BoneID2:		return VertexDataType::Float4;
 	case VertexAttributeType::BoneWeights1: return VertexDataType::Float4;
 	case VertexAttributeType::BoneWeights2: return VertexDataType::Float4;
 	}

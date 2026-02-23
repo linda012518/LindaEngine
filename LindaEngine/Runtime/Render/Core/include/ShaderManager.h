@@ -48,6 +48,7 @@ namespace LindaEngine
 		static std::string PickVertexOut;
 		static std::string PickFragmentUniform;
 		static std::string PickFragmentOut;
+		static std::string SkinVertexFunc;
 		
 	private:
 		static std::unordered_map<std::string, Ref<ShaderSource>> _shaderSrcMap;

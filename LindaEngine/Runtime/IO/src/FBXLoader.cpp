@@ -37,6 +37,8 @@ Ref<FBXResources> FBXLoader::LoadFBX(std::string path)
 	Ref<FBXResources> res = CreateRef<FBXResources>();
 	ConvertFBXResources(res, data, path);
 	res->name = Path::GetFileNameNoExtension(path);
+
+	ParseAnimationClip(scene);
 	return res;
 }
 
@@ -158,12 +160,12 @@ void FBXLoader::ParseAssimpMesh(void* mat, aiMesh* aiMesh, const aiScene* scene,
 	}
 
 	FBXMesh& mesh = node.mesh;
-	mesh.vertices.push_back(meshData);
 	if (aiMesh->mNumBones > 0)
 	{
 		ExtractBoneWeightForVertices(vertices, aiMesh, scene, mesh);
 		mesh.isSkinMesh = true;
 	}
+	mesh.vertices.push_back(meshData);
 }
 
 void FBXLoader::FillVertexUV(glm::vec2& dest, int uvIndex, int vertexIndex, aiMesh* aiMesh)
@@ -426,7 +428,7 @@ bool FBXLoader::HasAttribute(std::vector<VertexAttributeType>& attributes, Verte
 	return false;
 }
 
-void FBXLoader::ParseAnimationClip(aiScene* scene)
+void FBXLoader::ParseAnimationClip(const aiScene* scene)
 {
 	if (scene->mNumAnimations <= 0)
 		return;
@@ -438,11 +440,13 @@ void FBXLoader::ParseAnimationClip(aiScene* scene)
 	AnimationClip clip;
 	clip.duration = (float)animation->mDuration;
 	clip.ticksPerSecond = (float)animation->mTicksPerSecond;
+	clip.name = animation->mName.C_Str();
 
 	for (int i = 0; i < size; i++)
 	{
 		aiNodeAnim* channel = animation->mChannels[i];
 		BoneTrack track;
+		track.name = channel->mNodeName.C_Str();
 
 		int numPositions = channel->mNumPositionKeys;
 		for (int positionIndex = 0; positionIndex < numPositions; ++positionIndex)

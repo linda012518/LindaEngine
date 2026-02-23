@@ -11,6 +11,7 @@ namespace LindaEngine
 	class Entity;
 	class Material;
 	class Transform;
+	class SkinMeshRenderer;
 	struct FBXResources;
 
 	class Scene : public LObject, public ISerializable
@@ -49,6 +50,8 @@ namespace LindaEngine
 		void UpdateEntityComponents();
 		void DestroyEntityIncludeChild(Entity* entity);
 		Entity* CreateEntityFromFBX(Ref<FBXResources> res, Transform* parent);
+		void CollectBonesComponents(Entity* entity, std::vector<Transform*>& transforms, std::vector<SkinMeshRenderer*>& renderers);
+		Transform* GetTransformByBoneName(std::vector<Transform*>& transforms, std::string name);
 
 	private:
 		std::vector<Ref<Entity>> _entitys;

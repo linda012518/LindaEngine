@@ -13,6 +13,7 @@ namespace LindaEngine
 	class Mesh;
 	class Transform;
 	struct Drawable;
+	struct BoneData;
 
 	class Renderer : public Component
 	{
@@ -24,7 +25,7 @@ namespace LindaEngine
 		bool Deserialize(YAML::Node& node);
 
 		void SetMesh(Ref<Mesh> mesh);
-		void AddMaterial(int index, Ref<Material> mat);
+		virtual void AddMaterial(int index, Ref<Material> mat);
 		void TransformDirty();
 		bool IsSkybox() { return _type == RenderComponentType::Skybox; }
 		bool CanRender(int index, int minQueue, int maxQueue);
@@ -79,7 +80,25 @@ namespace LindaEngine
 		SkinMeshRenderer(Entity& entity, bool enable = true);
 		virtual ~SkinMeshRenderer();
 
+		void Tick();
+
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
+
+		void AddMaterial(int index, Ref<Material> mat) override;
+
+		void SetBones(std::vector<Transform*> bones);
+		std::vector<Transform*>& GetBones();
+		void SetRootBone(Transform* root);
+		Transform* GetRootBone();
+
+		void SetBonesData(std::vector<BoneData> data);
+		std::vector<BoneData>& GetBonesData();
+
+	private:
+		Transform* _rootBone = nullptr;
+		std::vector<Transform*> _bones;
+		std::vector<BoneData> _bonesData;
+		std::vector<glm::mat4> _boneMatrices;
 	};
 }

@@ -144,6 +144,31 @@ void Shader::SetMat4(const std::string& name, const glm::mat4& mat, int count)
 	//}
 }
 
+void Shader::SetIVec4Array(const std::string& name, const glm::ivec4* value, int count)
+{
+	IMPLEMENT_UNIFORM(glUniform4iv(addr, count, (const GLint*)value))
+}
+
+void Shader::SetVec4Array(const std::string& name, const glm::vec4* value, int count)
+{
+	IMPLEMENT_UNIFORM(glUniform4fv(addr, count, (const GLfloat*)value))
+}
+
+void Shader::SetMat2Array(const std::string& name, const glm::mat2* value, int count)
+{
+	IMPLEMENT_UNIFORM(glUniformMatrix2fv(addr, count, GL_FALSE, (const GLfloat*)value))
+}
+
+void Shader::SetMat3Array(const std::string& name, const glm::mat3* value, int count)
+{
+	IMPLEMENT_UNIFORM(glUniformMatrix3fv(addr, count, GL_FALSE, (const GLfloat*)value))
+}
+
+void Shader::SetMat4Array(const std::string& name, const glm::mat4* value, int count)
+{
+	IMPLEMENT_UNIFORM(glUniformMatrix4fv(addr, count, GL_FALSE, (const GLfloat*)value))
+}
+
 GLint Shader::GetUniform(const std::string& name)
 {
 	if (_uniformMap.find(name) != _uniformMap.end())

@@ -45,6 +45,9 @@ namespace LindaEngine
 		void Bind(Ref<MaterialPass> pass, Transform* transform, const std::vector<VertexAttribute>& attributes);
 		void Bind(int pass, Transform* transform, const std::vector<VertexAttribute>& attributes);
 
+		template <typename T>
+		void SetUniformValue(const char* name, T val, int count = 1);
+		void AddKeyword(std::string key);
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
