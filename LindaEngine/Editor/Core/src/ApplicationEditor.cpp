@@ -15,6 +15,7 @@ using namespace LindaEngine;
 int ApplicationEditor::Initialize()
 {
     state = AppState::Loading;
+    SetFrameRate(60);
 
     YamlSerializer::DeSerializeGraphicsConfig(Path::graphicsConfig);
 
