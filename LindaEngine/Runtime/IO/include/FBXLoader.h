@@ -120,9 +120,9 @@ namespace LindaEngine
 
 	private:
 		static void ParseAssimpFBX(void* mat, AssimpNodeData& dest, aiNode* node, const aiScene* scene, int& index);
-		static void ParseAssimpMesh(void* mat, aiMesh* aiMesh, const aiScene* scene, AssimpNodeData& node);
+		static void ParseAssimpMesh(aiMesh* aiMesh, AssimpNodeData& node);
 		static void FillVertexUV(glm::vec2& dest, int uvIndex, int vertexIndex, aiMesh* aiMesh);
-		static void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene, FBXMesh& fbxMesh);
+		static void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, FBXMesh& fbxMesh);
 		static void SetHashBoneInfoMap(AssimpNodeData& root, AssimpNodeData& nodeData);
 		static std::string GetNodeByNativeNode(AssimpNodeData& root, aiNode* nativeNode);
 		static void SetVertexBoneData(Vertex& vertex, int boneID, float weight);

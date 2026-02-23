@@ -284,10 +284,28 @@ void SkinMeshRenderer::Tick()
 	if (size1 <= 0 || size2 <= 0 || size1 != size2)
 		return;
 
-	_boneMatrices.clear();
+	int maxBoneId = -1;
+	for (int n = 0; n < size1; n++)
+		maxBoneId = std::max(maxBoneId, _bonesData[n].id);
+	if (maxBoneId < 0)
+		return;
+
+	const glm::mat4& meshWorldToLocal = _transform->GetWorldToLocalMat();
+
+	_boneMatrices.assign((size_t)maxBoneId + 1, glm::mat4(1.0f));
 	for (int n = 0; n < size1; n++)
 	{
-		_boneMatrices.push_back(_bones[n]->GetLocalToWorldMat() * _bonesData[n].offset);
+		Transform* bone = _bones[n];
+		if (bone == nullptr)
+			continue;
+
+		int boneId = _bonesData[n].id;
+		if (boneId < 0 || boneId > maxBoneId)
+			continue;
+
+		// Convert bone world transform into skinned-mesh local space,
+		// then apply inverse bind pose (offset) to get final skin matrix.
+		_boneMatrices[(size_t)boneId] = meshWorldToLocal * bone->GetLocalToWorldMat() * _bonesData[n].offset;
 	}
 	for (auto& mat : _materialList)
 	{

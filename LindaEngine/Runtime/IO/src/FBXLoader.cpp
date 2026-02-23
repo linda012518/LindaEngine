@@ -1,4 +1,4 @@
-﻿#include "FBXLoader.h"
+#include "FBXLoader.h"
 #include "Entity.h"
 #include "AssimpGLMHelpers.h"
 #include "Mesh.h"
@@ -74,7 +74,7 @@ void FBXLoader::ParseAssimpFBX(void* mat, AssimpNodeData& dest, aiNode* node, co
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
-			ParseAssimpMesh(&nodeTransformation, aiMesh, scene, dest);
+			ParseAssimpMesh(aiMesh, dest);
 		}
 
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -87,7 +87,7 @@ void FBXLoader::ParseAssimpFBX(void* mat, AssimpNodeData& dest, aiNode* node, co
 
 }
 
-void FBXLoader::ParseAssimpMesh(void* mat, aiMesh* aiMesh, const aiScene* scene, AssimpNodeData& node)
+void FBXLoader::ParseAssimpMesh(aiMesh* aiMesh, AssimpNodeData& node)
 {
 	if (aiMesh->mNumVertices < 3)
 		return;
@@ -114,22 +114,20 @@ void FBXLoader::ParseAssimpMesh(void* mat, aiMesh* aiMesh, const aiScene* scene,
 		meshData.attributes.push_back(VertexAttributeType::BoneWeights1);
 	}
 
-	aiMatrix4x4 meshTransformation;
-	if (nullptr != mat)
-		meshTransformation = *reinterpret_cast<aiMatrix4x4*>(mat);
-
 	for (unsigned int i = 0; i < aiMesh->mNumVertices; i++)
 	{
 		Vertex vertex;
 
 		SetVertexBoneDataToDefault(vertex);
 
-		vertex.position = AssimpGLMHelpers::GetGLMVec(meshTransformation * aiMesh->mVertices[i]);
+		// Keep vertices in mesh local/bind-pose space.
+		// Node transforms are represented by the scene graph (Entity/Transform) at runtime.
+		vertex.position = AssimpGLMHelpers::GetGLMVec(aiMesh->mVertices[i]);
 
 		if (NULL != aiMesh->mNormals)
-			vertex.normal = AssimpGLMHelpers::GetGLMVec(meshTransformation * aiMesh->mNormals[i]);
+			vertex.normal = AssimpGLMHelpers::GetGLMVec(aiMesh->mNormals[i]);
 		if (NULL != aiMesh->mTangents)
-			vertex.tangent = AssimpGLMHelpers::GetGLMVec(meshTransformation * aiMesh->mTangents[i]);
+			vertex.tangent = AssimpGLMHelpers::GetGLMVec(aiMesh->mTangents[i]);
 
 		FillVertexUV(vertex.texCoord0, 0, i, aiMesh);
 		FillVertexUV(vertex.texCoord1, 1, i, aiMesh);
@@ -162,7 +160,7 @@ void FBXLoader::ParseAssimpMesh(void* mat, aiMesh* aiMesh, const aiScene* scene,
 	FBXMesh& mesh = node.mesh;
 	if (aiMesh->mNumBones > 0)
 	{
-		ExtractBoneWeightForVertices(vertices, aiMesh, scene, mesh);
+		ExtractBoneWeightForVertices(vertices, aiMesh, mesh);
 		mesh.isSkinMesh = true;
 	}
 	mesh.vertices.push_back(meshData);
@@ -179,7 +177,7 @@ void FBXLoader::FillVertexUV(glm::vec2& dest, int uvIndex, int vertexIndex, aiMe
 	}
 }
 
-void FBXLoader::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene, FBXMesh& fbxMesh)
+void FBXLoader::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, FBXMesh& fbxMesh)
 {
 	int& boneCount = fbxMesh.boneCount;
 	std::vector<BoneInfo>& boneArray = fbxMesh.bones;
