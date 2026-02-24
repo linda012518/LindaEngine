@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <unordered_map>
 #include <string>
@@ -13,8 +13,8 @@ namespace LindaEngine
 	class MaterialManager
 	{
 	public:
-		static Ref<Material> GetMaterial(std::string path);
-		static Ref<Material> GetMaterialByShader(std::string path); //ĞèÒªÊ¹ÓÃÕß¹ÜÀíÄÚ´æ
+		static Ref<Material> GetMaterial(std::string path, bool isSkin = false);
+		static Ref<Material> GetMaterialByShader(std::string path); //éœ€è¦ä½¿ç”¨è€…ç®¡ç†å†…å­˜
 		static void Clear();
 		static Ref<MaterialPass> GetDefaultMaterialPass(const char* lightMode);
 		static Ref<Material> GetDefaultMaterial(std::string path);

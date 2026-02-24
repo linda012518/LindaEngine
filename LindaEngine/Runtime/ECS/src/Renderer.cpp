@@ -71,10 +71,11 @@ bool Renderer::Deserialize(YAML::Node& node)
 		_mesh->Deserialize(mesh);
 	}
 
+	bool isSkin = _type == RenderComponentType::SkinMesh;
 	int index = 0;
 	for (auto mat : materials)
 	{
-		Ref<Material> pointer = MaterialManager::GetMaterial(mat["FilePath"].as<std::string>().c_str());
+		Ref<Material> pointer = MaterialManager::GetMaterial(mat["FilePath"].as<std::string>().c_str(), isSkin);
 		pointer->Deserialize(mat);
 		AddMaterial(index++, pointer);
 	}
@@ -319,6 +320,7 @@ bool SkinMeshRenderer::Serialize()
 
 	YAML::Emitter& out = *YamlSerializer::out;
 	out << YAML::Key << "Name" << YAML::Value << "SkinMeshRenderer";
+	out << YAML::Key << "RootBone" << YAML::Value << _rootBone->GetEntity().GetUUID();
 
 	out << YAML::Key << "Bones";
 	out << YAML::Value << YAML::BeginSeq;
@@ -330,16 +332,6 @@ bool SkinMeshRenderer::Serialize()
 	}
 	out << YAML::EndSeq;
 
-	//out << YAML::Key << "BonesData";
-	//out << YAML::Value << YAML::BeginSeq;
-	//for (auto& bone : _bonesData)
-	//{
-	//	if (nullptr == bone)
-	//		continue;
-	//	out << bone->GetEntity().GetUUID();
-	//}
-	//out << YAML::EndSeq;
-
 	out << YAML::EndMap;
 
 	return true;
@@ -348,6 +340,8 @@ bool SkinMeshRenderer::Serialize()
 bool SkinMeshRenderer::Deserialize(YAML::Node& node)
 {
 	Renderer::Deserialize(node);
+	std::string rootBoneID = node["RootBone"].as<std::string>();
+	_rootBone = TransformSystem::Get(rootBoneID);
 	auto bones = node["Bones"];
 	if (bones)
 	{
@@ -359,6 +353,11 @@ bool SkinMeshRenderer::Deserialize(YAML::Node& node)
 				continue;
 			_bones.push_back(ptr);
 		}
+	}
+
+	if (nullptr != _mesh)
+	{
+		_bonesData = FBXManager::GetMeshBoneData(_mesh->GetPath(), _mesh->GetHashCode());
 	}
 	return true;
 }

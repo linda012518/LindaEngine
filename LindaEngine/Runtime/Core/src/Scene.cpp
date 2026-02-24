@@ -168,7 +168,7 @@ Entity* Scene::CreateEntityFromFBX(Ref<FBXResources> res, Transform* parent)
 		int index = 0;
 		for (auto& data : res->mesh->GetAllMeshData())
 		{
-			renderer->AddMaterial(index++, MaterialManager::GetMaterial("Assets/Materials/test.mat"));
+			renderer->AddMaterial(index++, MaterialManager::GetMaterial("Assets/Materials/test.mat", res->boneCount > 0));
 		}
 	}
 	for (auto& node : res->children)

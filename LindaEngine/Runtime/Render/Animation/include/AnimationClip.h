@@ -51,5 +51,8 @@ namespace LindaEngine
 		float ticksPerSecond;
 		std::vector<BoneTrack> tracks;
 		std::string name;
+		float fadeIn;
+		float fadeOut;
+		bool isLoop = true;
 	};
 }

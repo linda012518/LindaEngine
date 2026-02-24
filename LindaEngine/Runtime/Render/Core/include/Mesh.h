@@ -75,6 +75,7 @@ namespace LindaEngine
 		void UpdateBoundingBox(float x, float y, float z);
 		const std::vector<VertexAttribute>& GetMeshAttributes(int index = 0) { return _data[index].attributes; }
 		const int GetMeshCount() { return _meshCount; }
+		std::string& GetPath() { return _path; }
 		void SetPath(std::string path) { _path = path; }
 		void SetHashCode(std::string hash) { _hashCode = hash; }
 		std::string GetHashCode() { return _hashCode; }

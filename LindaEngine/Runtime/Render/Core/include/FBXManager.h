@@ -14,6 +14,7 @@ namespace LindaEngine
 	public:
 		static Ref<FBXResources> GetFBX(std::string fbxPath);
 		static Ref<Mesh> GetMesh(std::string fbxPath, std::string hashCode);
+		static std::vector<BoneData>& GetMeshBoneData(std::string fbxPath, std::string hashCode);
 		static void DestoryFBX(std::string fbxPath);
 		static void Clear();
 
@@ -23,7 +24,7 @@ namespace LindaEngine
 		static Ref<Mesh> GetBoundingBox();
 
 	private:
-		static Ref<Mesh> GetMeshFromFBX(Ref<FBXResources> res, std::string hashCode);
+		static Ref<FBXResources> GetFBXResources(Ref<FBXResources> res, std::string hashCode);
 		static void ClearFBX(Ref<FBXResources> res);
 
 	private:

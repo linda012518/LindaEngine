@@ -83,7 +83,8 @@ void Animation::TickAnimation(float deltaTime)
 	if (nullptr == _currentClip)
 		return;
 	_currentTime += _currentClip->ticksPerSecond * deltaTime;
-	_currentTime = glm::modf(_currentTime, _currentClip->duration);
+	if (_currentClip->isLoop)
+		_currentTime = glm::modf(_currentTime, _currentClip->duration);
 
 	for (auto& track : _currentClip->tracks)
 	{

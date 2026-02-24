@@ -12,17 +12,18 @@ std::unordered_map<std::string, Ref<Material>> MaterialManager::_defaultMaterial
 std::unordered_map<std::string, Ref<MaterialPass>> MaterialManager::_defaultPass;
 bool MaterialManager::_isLoadDefault = false;
 
-Ref<Material> MaterialManager::GetMaterial(std::string path)
+Ref<Material> MaterialManager::GetMaterial(std::string path, bool isSkin)
 {
     try
     {
-        auto itr = _materialMap.find(path);
+        std::string key = isSkin ? path + "isSkin" : path;
+        auto itr = _materialMap.find(key);
         if (itr == _materialMap.end())
         {
-            _materialMap[path] = YamlSerializer::DeSerializeMaterial(path.c_str());
-            _materialMap[path]->SetPath(path.c_str());
+            _materialMap[key] = YamlSerializer::DeSerializeMaterial(path.c_str());
+            _materialMap[key]->SetPath(path.c_str());
         }
-        return _materialMap[path];
+        return _materialMap[key];
     }
     catch (const std::exception&)
     {

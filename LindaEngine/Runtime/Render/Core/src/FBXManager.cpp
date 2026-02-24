@@ -29,12 +29,31 @@ Ref<Mesh> FBXManager::GetMesh(std::string fbxPath, std::string hashCode)
 {
     try
     {
-		return GetMeshFromFBX(GetFBX(fbxPath), hashCode);
+		Ref<FBXResources> resNode = GetFBXResources(GetFBX(fbxPath), hashCode);
+		if (nullptr == resNode)
+			return nullptr;
+		return resNode->mesh;
     }
     catch (const std::exception&)
     {
         return nullptr;
     }
+}
+
+std::vector<BoneData>& FBXManager::GetMeshBoneData(std::string fbxPath, std::string hashCode)
+{
+	std::vector<BoneData> data;
+	try
+	{
+		Ref<FBXResources> resNode = GetFBXResources(GetFBX(fbxPath), hashCode);
+		if (nullptr == resNode)
+			return data;
+		return resNode->bones;
+	}
+	catch (const std::exception&)
+	{
+		return data;
+	}
 }
 
 void FBXManager::DestoryFBX(std::string fbxPath)
@@ -51,20 +70,20 @@ void FBXManager::Clear()
 	_map.clear();
 }
 
-Ref<Mesh> FBXManager::GetMeshFromFBX(Ref<FBXResources> res, std::string hashCode)
+Ref<FBXResources> FBXManager::GetFBXResources(Ref<FBXResources> res, std::string hashCode)
 {
-    if (nullptr == res) return nullptr;
+	if (nullptr == res) return nullptr;
 
-    if (res->hashCode == hashCode)
-        return res->mesh;
+	if (res->hashCode == hashCode)
+		return res;
 
-    for (auto& go : res->children)
-    {
-        Ref<Mesh> temp = GetMeshFromFBX(go, hashCode);
-        if (nullptr != temp) return temp;
-    }
+	for (auto& go : res->children)
+	{
+		Ref<FBXResources> temp = GetFBXResources(go, hashCode);
+		if (nullptr != temp) return temp;
+	}
 
-    return nullptr;
+	return nullptr;
 }
 
 void FBXManager::ClearFBX(Ref<FBXResources> res)
