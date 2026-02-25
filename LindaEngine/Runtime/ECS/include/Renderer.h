@@ -95,6 +95,8 @@ namespace LindaEngine
 		void SetBonesData(std::vector<BoneData> data);
 		std::vector<BoneData>& GetBonesData();
 
+		std::vector<glm::mat4>& GetFinalBoneMatrix() { return _boneMatrices; }
+
 	private:
 		Transform* _rootBone = nullptr;
 		std::vector<Transform*> _bones;

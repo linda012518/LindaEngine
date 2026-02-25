@@ -29,6 +29,7 @@ OutLinePostProcess::~OutLinePostProcess()
 void OutLinePostProcess::Initialize()
 {
 	_maskMaterial = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/PostProcess/OutLine/OutLineMask.shader");
+	_maskMaterialSkin = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/PostProcess/OutLine/OutLineMask.shader", true);
 	_edgeDetectionMaterial = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/PostProcess/OutLine/EdgeDetection.shader");
 	_blurMaterial = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/PostProcess/OutLine/SeparableBlur.shader");
 	_overlayMaterial = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/PostProcess/OutLine/OutLineOverlay.shader");
@@ -74,7 +75,15 @@ void OutLinePostProcess::Render(Ref<RenderTexture> src, Ref<RenderTexture> dest)
 		Renderer* render = entity->GetComponent<Renderer>();
 		if (nullptr == render)
 			continue;
-		RendererSystem::DrawRenderer(render, _maskMaterial);
+		Ref<Material> mat = _maskMaterial;
+		SkinMeshRenderer* skinPtr = dynamic_cast<SkinMeshRenderer*>(render);
+		if (nullptr != skinPtr)
+		{
+			mat = _maskMaterialSkin;
+			std::vector<glm::mat4>& matrices = skinPtr->GetFinalBoneMatrix();
+			mat->SetUniformValue<glm::mat4*>("bonesMatrices", matrices.data(), (int)matrices.size());
+		}
+		RendererSystem::DrawRenderer(render, mat);
 	}
 	Graphic::Blit(maskBuffer, maskDownSampleBuffer);
 	Graphic::Blit(maskDownSampleBuffer, edgeBuffer1, _edgeDetectionMaterial);

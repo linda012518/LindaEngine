@@ -31,7 +31,7 @@ Ref<Material> MaterialManager::GetMaterial(std::string path, bool isSkin)
     }
 }
 
-Ref<Material> MaterialManager::GetMaterialByShader(std::string path)
+Ref<Material> MaterialManager::GetMaterialByShader(std::string path, bool isSkin)
 {
     Ref<ShaderSource> ss = ShaderManager::GetShaderSource(path.c_str());
     Ref<Material> material = CreateRef<Material>();
@@ -42,6 +42,8 @@ Ref<Material> MaterialManager::GetMaterialByShader(std::string path)
         matPass->_state = pass->passState;
         material->_passes.push_back(matPass);
     }
+    if (isSkin)
+        material->AddKeyword("_Skin_Vertex_");
     return material;
 }
 

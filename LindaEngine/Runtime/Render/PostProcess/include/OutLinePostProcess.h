@@ -24,6 +24,7 @@ namespace LindaEngine
 
 	private:
 		Ref<Material> _maskMaterial;
+		Ref<Material> _maskMaterialSkin;
 		Ref<Material> _edgeDetectionMaterial;
 		Ref<Material> _blurMaterial;
 		Ref<Material> _overlayMaterial;
