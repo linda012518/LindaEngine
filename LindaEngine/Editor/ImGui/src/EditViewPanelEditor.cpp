@@ -5,9 +5,19 @@
 #include "EventEditor.h"
 #include "EventSystemEditor.h"
 #include "CameraController.h"
+#include "RenderPipelineEditor.h"
+#include "Camera.h"
+#include "Entity.h"
+#include "Transform.h"
+
+#include "glm/gtx/quaternion.hpp"
+#include "glm/gtc/quaternion.hpp"
+#include "glm/gtx/matrix_decompose.hpp"
+#include "glm/gtx/euler_angles.hpp"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
+#include <ImGuizmo/ImGuizmo.h>
 
 #include <unordered_map>
 #include <iostream>
@@ -22,6 +32,8 @@ DYNAMIC_CREATE_CLASS(EditViewPanelEditor, ImGuiPanelEditor)
 
 EditViewPanelEditor::EditViewPanelEditor()
 {
+	EventSystemEditor::Bind(EventCodeEditor::SwitchSelectEntity, this);
+
 	FramebufferTextureSpecification color;
 	color.colorFormat = TextureFormat::RGBA8;
 	_fboSpecs.push_back(color);
@@ -70,6 +82,7 @@ void EditViewPanelEditor::OnImGuiRender()
 	uint64_t textureID = _renderTexture->nativeIDs[0];
 	ImGui::Image(reinterpret_cast<void*>(textureID), viewportPanelSize, ImVec2(0, 1), ImVec2(1, 0));
 
+	RenderGuizmo();
 	DrawRect(windowPos);
 	ProcessPick(viewportPanelSize, windowPos);
 
@@ -77,8 +90,23 @@ void EditViewPanelEditor::OnImGuiRender()
 	ImGui::PopStyleVar();
 }
 
+void EditViewPanelEditor::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
+{
+	SwitchSelectEntityEditor& event = dynamic_cast<SwitchSelectEntityEditor&>(eventData);
+	_selectionEntity = event.selectionEntity;
+}
+
 void EditViewPanelEditor::ProcessPick(ImVec2& viewportPanelSize, ImVec2& windowPos)
 {
+	if (ImGuizmo::IsOver())
+		return;
+	if (true == CameraController::isLookRound)
+	{
+		_isLeftPressed = false;
+		_isLeftFirst = true;
+		return;
+	}
+
 	if (hovered && ImGui::IsMouseDown(ImGuiMouseButton_Left))
 	{
 		if (_isLeftFirst)
@@ -90,7 +118,7 @@ void EditViewPanelEditor::ProcessPick(ImVec2& viewportPanelSize, ImVec2& windowP
 			_firstPos = glm::ivec2(glm::abs(mousePos.x - windowPos.x), glm::abs(mousePos.y - windowPos.y));
 		}
 	}
-	if (hovered && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+	if (hovered && ImGui::IsMouseReleased(ImGuiMouseButton_Left) && _isLeftFirst == false)
 	{
 		_isLeftPressed = false;
 		_isLeftFirst = true;
@@ -127,7 +155,7 @@ void EditViewPanelEditor::ProcessPick(ImVec2& viewportPanelSize, ImVec2& windowP
 
 void EditViewPanelEditor::DrawRect(ImVec2& windowPos)
 {
-	if (false == hovered || false == _isLeftPressed || true == CameraController::isLookRound)
+	if (ImGuizmo::IsOver() || false == hovered || false == _isLeftPressed || true == CameraController::isLookRound)
 		return;
 
 	ImU32 fillColor = IM_COL32(0, 120, 255, 60);      // 半透明蓝色
@@ -157,4 +185,57 @@ void EditViewPanelEditor::DrawRect(ImVec2& windowPos)
 			ImVec2(currentMousePos.x + 15, currentMousePos.y - 25),
 			IM_COL32(255, 255, 255, 255), sizeText);
 	}
+}
+
+void EditViewPanelEditor::RenderGuizmo()
+{
+	if (nullptr == _selectionEntity)
+		return;
+
+	glm::vec2 viewportBounds[2];
+	auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+	auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+	auto viewportOffset = ImGui::GetWindowPos();
+	viewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+	viewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+
+	ImGuizmo::SetOrthographic(false);
+	ImGuizmo::SetDrawlist();
+	ImGuizmo::SetRect(viewportBounds[0].x, viewportBounds[0].y, viewportBounds[1].x - viewportBounds[0].x, viewportBounds[1].y - viewportBounds[0].y);
+
+	const glm::mat4& cameraProjection = RenderPipelineEditor::activeCamera->GetProjectMatrix();
+	const glm::mat4& cameraView = RenderPipelineEditor::activeCamera->GetViewMatrix();
+	glm::mat4 transform = _selectionEntity->GetTransform()->GetLocalToWorldMat();
+
+	// Snapping
+	bool snap = true;
+	float snapValue = 0.5f; // Snap to 0.5m for translation/scale
+	ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE;
+	// Snap to 45 degrees for rotation
+	//if (_gizmoType == ImGuizmo::OPERATION::ROTATE)
+	//	snapValue = 45.0f;
+
+	float snapValues[3] = { snapValue, snapValue, snapValue };
+
+	ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+		operation, ImGuizmo::LOCAL, glm::value_ptr(transform),
+		nullptr, snap ? snapValues : nullptr);
+
+	if (ImGuizmo::IsUsing())
+	{
+		_isLeftPressed = false;
+
+		glm::vec3 translation, scale;
+		glm::quat rotation;
+		glm::vec3 skew;
+		glm::vec4 m;
+		glm::decompose(transform, scale, rotation, translation, skew, m);
+
+		glm::quat origin = _selectionEntity->GetTransform()->GetWorldRotation();
+		glm::quat deltaRotation = rotation - origin;
+		_selectionEntity->GetTransform()->SetWorldPosition(translation);
+		_selectionEntity->GetTransform()->SetWorldScale(scale);
+		_selectionEntity->GetTransform()->SetWorldRotation(origin + deltaRotation);
+	}
+
 }

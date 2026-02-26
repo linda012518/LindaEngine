@@ -25,6 +25,8 @@
 #include "imgui/imgui_impl_win32.h"
 #include "imgui/imgui_impl_opengl3.h"
 
+#include "ImGuizmo/ImGuizmo.h"
+
 using namespace LindaEditor;
 using namespace LindaEngine;
 
@@ -176,7 +178,7 @@ void ImGuiContextEditor::Begin()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	//ImGuizmo::BeginFrame();
+	ImGuizmo::BeginFrame();
 }
 
 void ImGuiContextEditor::End()
