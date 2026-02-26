@@ -81,7 +81,7 @@ void ApplicationEditor::Tick()
             LThread::Sleep(1);
             continue;
         }
-        float deltaTime = currentInterval * 0.001;
+        double deltaTime = currentInterval * 0.001;
         currentInterval = 0.0;
 
         SceneManager::Tick();
@@ -96,7 +96,7 @@ void ApplicationEditor::Tick()
         _window->Tick();
 
         BehaviorSystem::DoOnMouseEvent();
-        ComponentSystem::Tick(deltaTime);
+        ComponentSystem::Tick((float)deltaTime);
         BehaviorSystem::DoUpdate();
         BehaviorSystem::DoLateUpdate();
 
