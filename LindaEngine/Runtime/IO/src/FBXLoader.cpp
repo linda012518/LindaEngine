@@ -47,9 +47,16 @@ Ref<AnimationClip> FBXLoader::LoadAnimationClip(std::string path)
 	const aiScene* scene = importer.ReadFile(path, aiProcess_PopulateArmatureData);
 
 	//mFlags	返回的数据是不是不完整的
-	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	if (!scene || !scene->mRootNode)
 	{
 		std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
+		return nullptr;
+	}
+
+	// 如果场景标记为不完整，但包含动画数据，则仍视为有效
+	if ((scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) && scene->mNumAnimations == 0)
+	{
+		std::cout << "FBXLoader::LoadAnimationClip None Animations !!" << std::endl;
 		return nullptr;
 	}
 

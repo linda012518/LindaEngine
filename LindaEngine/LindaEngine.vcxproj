@@ -348,6 +348,7 @@
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextSelectable.cpp" />
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextWrapped.cpp" />
     <ClCompile Include="Editor\Core\src\UniversalRendererEditor.cpp" />
+    <ClCompile Include="SandboxApp\src\TestAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Runtime\ECS\include\AnimationSystem.h" />
@@ -964,6 +965,7 @@
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextSelectable.h" />
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextWrapped.h" />
     <ClInclude Include="Editor\Core\include\UniversalRendererEditor.h" />
+    <ClInclude Include="SandboxApp\include\TestAnimation.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External\assimp\assimp\color4.inl" />
