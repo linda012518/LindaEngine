@@ -25,7 +25,10 @@ namespace LindaEngine
 		void PlayAnimation(std::string name);
 		void PlayAnimation(Ref<AnimationClip> clip);
 
-		void SetClip(Ref<AnimationClip> clip, int index);
+		void SetClip(Ref<AnimationClip> clip);
+		void DeleteClip(Ref<AnimationClip> clip);
+		void DeleteClip(int index);
+		void DeleteClip(std::string name);
 		Ref<AnimationClip> GetClip(int index);
 		Ref<AnimationClip> GetClip(std::string name);
 

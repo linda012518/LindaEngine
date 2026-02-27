@@ -10,8 +10,8 @@ namespace LindaEngine
 		static void Tick(float deltaTime);
 		static void OnDeserializeFinish();
 
-		static void Add(Animation* light);
-		static void Remove(Animation* light);
+		static void Add(Animation* anim);
+		static void Remove(Animation* anim);
 		static void Clear();
 
 	private:

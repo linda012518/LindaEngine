@@ -7,6 +7,8 @@
 
 #include "glm/glm.hpp"
 
+#include <ImGuizmo/ImGuizmo.h>
+
 namespace LindaEngine
 {
 	class Entity;
@@ -29,6 +31,7 @@ namespace LindaEditor
 		void ProcessPick(ImVec2& viewportPanelSize, ImVec2& windowPos);
 		void DrawRect(ImVec2& windowPos);
 		void RenderGuizmo();
+		void RenderGuizmoButton(ImVec2& viewportPanelSize);
 
 	private:
 		Ref<LindaEngine::RenderTexture> _renderTexture;
@@ -38,6 +41,9 @@ namespace LindaEditor
 		bool _isLeftFirst = true;
 		glm::ivec2 _firstPos;
 
+		bool _gizmoSnap = true;
+		ImGuizmo::OPERATION _gizmoType = ImGuizmo::TRANSLATE;
+		ImGuizmo::MODE _gizmoMode = ImGuizmo::LOCAL;
 		LindaEngine::Entity* _selectionEntity = nullptr;
 
 	public:

@@ -21,6 +21,7 @@ struct aiMesh;
 namespace LindaEngine
 {
 	class Entity;
+	struct AnimationClip;
 
 	struct BoneInfo
 	{
@@ -117,6 +118,7 @@ namespace LindaEngine
 	{
 	public:
 		static Ref<FBXResources> LoadFBX(std::string path);
+		static Ref<AnimationClip> LoadAnimationClip(std::string path);
 
 	private:
 		static void ParseAssimpFBX(void* mat, AssimpNodeData& dest, aiNode* node, const aiScene* scene, int& index);
@@ -132,6 +134,6 @@ namespace LindaEngine
 		static void ConvertFBXResources(Ref<FBXResources> res, AssimpNodeData& data, std::string& path);
 		static bool HasAttribute(std::vector<VertexAttributeType>& attributes, VertexAttributeType attr);
 
-		static void ParseAnimationClip(const aiScene* scene);
+		static Ref<AnimationClip> ParseAnimationClip(const aiScene* scene);
 	};
 }

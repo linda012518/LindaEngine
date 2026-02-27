@@ -4,6 +4,7 @@
 #include "YamlSerializer.h"
 #include "Transform.h"
 #include "Renderer.h"
+#include "AnimationSystem.h"
 #include "glm/glm.hpp"
 
 using namespace LindaEngine;
@@ -12,7 +13,7 @@ DYNAMIC_CREATE(Animation)
 
 Animation::Animation(Entity& entity, bool enable) : Component(entity, enable)
 {
-
+	AnimationSystem::Add(this);
 }
 
 Animation::~Animation()
@@ -54,11 +55,40 @@ void Animation::PlayAnimation(Ref<AnimationClip> clip)
 	UpdateBoneMap();
 }
 
-void Animation::SetClip(Ref<AnimationClip> clip, int index)
+void Animation::SetClip(Ref<AnimationClip> clip)
 {
-	if (index > _clips.size() - 1)
+	_clips.push_back(clip);
+}
+
+void Animation::DeleteClip(Ref<AnimationClip> clip)
+{
+	for (auto itr = _clips.begin(); itr != _clips.end();)
+	{
+		Ref<AnimationClip> c = *itr;
+		if (c != clip)
+			continue;
+		_clips.erase(itr);
+		break;
+	}
+}
+
+void Animation::DeleteClip(int index)
+{
+	if (index > (int)_clips.size() - 1)
 		return;
-	_clips[index] = clip;
+	_clips.erase(_clips.begin() + index);
+}
+
+void Animation::DeleteClip(std::string name)
+{
+	for (auto itr = _clips.begin(); itr != _clips.end();)
+	{
+		Ref<AnimationClip> c = *itr;
+		if (c->name != name)
+			continue;
+		_clips.erase(itr);
+		break;
+	}
 }
 
 Ref<AnimationClip> Animation::GetClip(int index)
@@ -83,8 +113,11 @@ void Animation::TickAnimation(float deltaTime)
 	if (nullptr == _currentClip)
 		return;
 	_currentTime += _currentClip->ticksPerSecond * deltaTime;
-	if (_currentClip->isLoop)
-		_currentTime = glm::modf(_currentTime, _currentClip->duration);
+	_currentTime = fmod(_currentTime, _currentClip->duration);
+	//if (_currentClip->isLoop && _currentTime > _currentClip->duration)
+	//{
+	//	_currentTime = _currentTime - _currentClip->duration;
+	//}
 
 	for (auto& track : _currentClip->tracks)
 	{
@@ -104,6 +137,9 @@ void Animation::UpdateBoneMap()
 	std::vector<BoneTrack>& tracks = _currentClip->tracks;
 	for (auto& track : tracks)
 	{
-		_boneMap[track.name] = Transform::GetChildByName(_transform, track.name);
+		Transform* bone = Transform::GetChildByName(_transform, track.name);
+		if (nullptr == bone)
+			continue;
+		_boneMap[track.name] = bone;
 	}
 }

@@ -17,7 +17,6 @@
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
-#include <ImGuizmo/ImGuizmo.h>
 
 #include <unordered_map>
 #include <iostream>
@@ -82,6 +81,7 @@ void EditViewPanelEditor::OnImGuiRender()
 	uint64_t textureID = _renderTexture->nativeIDs[0];
 	ImGui::Image(reinterpret_cast<void*>(textureID), viewportPanelSize, ImVec2(0, 1), ImVec2(1, 0));
 
+	RenderGuizmoButton(viewportPanelSize);
 	RenderGuizmo();
 	DrawRect(windowPos);
 	ProcessPick(viewportPanelSize, windowPos);
@@ -207,19 +207,15 @@ void EditViewPanelEditor::RenderGuizmo()
 	const glm::mat4& cameraView = RenderPipelineEditor::activeCamera->GetViewMatrix();
 	glm::mat4 transform = _selectionEntity->GetTransform()->GetLocalToWorldMat();
 
-	// Snapping
-	bool snap = true;
-	float snapValue = 0.5f; // Snap to 0.5m for translation/scale
-	ImGuizmo::OPERATION operation = ImGuizmo::TRANSLATE;
-	// Snap to 45 degrees for rotation
-	//if (_gizmoType == ImGuizmo::OPERATION::ROTATE)
-	//	snapValue = 45.0f;
+	float snapValue = 0.01f; // Snap to 0.01m for translation/scale
+	if (_gizmoType == ImGuizmo::OPERATION::ROTATE)
+		snapValue = 1.0f;
 
 	float snapValues[3] = { snapValue, snapValue, snapValue };
 
 	ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-		operation, ImGuizmo::LOCAL, glm::value_ptr(transform),
-		nullptr, snap ? snapValues : nullptr);
+		_gizmoType, _gizmoMode, glm::value_ptr(transform),
+		nullptr, _gizmoSnap ? snapValues : nullptr);
 
 	if (ImGuizmo::IsUsing())
 	{
@@ -238,4 +234,69 @@ void EditViewPanelEditor::RenderGuizmo()
 		_selectionEntity->GetTransform()->SetWorldRotation(origin + deltaRotation);
 	}
 
+}
+
+void EditViewPanelEditor::RenderGuizmoButton(ImVec2& viewportPanelSize)
+{
+	// 如果Edit View窗口太小，不渲染Gizmo面板
+	float minWidth = 700;  // 最小宽度阈值
+	float minHeight = 50;  // 最小高度阈值
+
+	if (viewportPanelSize.x < minWidth || viewportPanelSize.y < minHeight)
+		return;
+
+	// 获取Edit View窗口的位置
+	ImVec2 editViewPos = ImGui::GetWindowPos();
+
+	// 设置Gizmo窗口的位置在Edit View的左上角
+	ImGui::SetNextWindowPos(ImVec2(editViewPos.x + 10, editViewPos.y + 50), ImGuiCond_Always);
+
+	// 创建Gizmo窗口，使用适当的窗口标志
+	ImGuiWindowFlags gizmoWindowFlags =
+		ImGuiWindowFlags_NoMove |           // 不可移动
+		ImGuiWindowFlags_NoTitleBar |        // 无标题栏
+		ImGuiWindowFlags_NoResize |          // 不可调整大小
+		ImGuiWindowFlags_NoScrollbar |		// 无滚动条
+		ImGuiWindowFlags_NoCollapse |         // 不可折叠
+		ImGuiWindowFlags_AlwaysAutoResize;
+
+	// 设置一个半透明的深色背景
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.15f, 0.15f, 0.15f, 0.9f)); // 半透明深色背景
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8)); // 增加内边距让按钮更好看
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 4)); // 按钮内边距
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8, 4)); // 项目间距
+
+	// 固定窗口大小，确保所有按钮都能显示
+	ImGui::SetNextWindowSize(ImVec2(minWidth, minHeight), ImGuiCond_Always);
+
+	// 开始Gizmo窗口
+	ImGui::Begin("Gizmo Controls", nullptr, gizmoWindowFlags);
+
+	// 原有的Gizmo控件代码
+	ImGui::Checkbox("Snap", &_gizmoSnap);
+	ImGui::SameLine();
+	ImGui::Text(" | ");
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Translate", _gizmoType == ImGuizmo::TRANSLATE))
+		_gizmoType = ImGuizmo::TRANSLATE;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Rotate", _gizmoType == ImGuizmo::ROTATE))
+		_gizmoType = ImGuizmo::ROTATE;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Scale", _gizmoType == ImGuizmo::SCALE))
+		_gizmoType = ImGuizmo::SCALE;
+	ImGui::SameLine();
+	ImGui::Text(" | ");
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Local", _gizmoMode == ImGuizmo::LOCAL))
+		_gizmoMode = ImGuizmo::LOCAL;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("World", _gizmoMode == ImGuizmo::WORLD))
+		_gizmoMode = ImGuizmo::WORLD;
+
+	ImGui::End();
+
+	// 恢复样式
+	ImGui::PopStyleVar(3);
+	ImGui::PopStyleColor();
 }

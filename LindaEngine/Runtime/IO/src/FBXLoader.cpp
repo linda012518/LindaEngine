@@ -38,8 +38,22 @@ Ref<FBXResources> FBXLoader::LoadFBX(std::string path)
 	ConvertFBXResources(res, data, path);
 	res->name = Path::GetFileNameNoExtension(path);
 
-	ParseAnimationClip(scene);
 	return res;
+}
+
+Ref<AnimationClip> FBXLoader::LoadAnimationClip(std::string path)
+{
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(path, aiProcess_PopulateArmatureData);
+
+	//mFlags	返回的数据是不是不完整的
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	{
+		std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
+		return nullptr;
+	}
+
+	return ParseAnimationClip(scene);
 }
 
 void FBXLoader::ParseAssimpFBX(void* mat, AssimpNodeData& dest, aiNode* node, const aiScene* scene, int& index)
@@ -426,19 +440,19 @@ bool FBXLoader::HasAttribute(std::vector<VertexAttributeType>& attributes, Verte
 	return false;
 }
 
-void FBXLoader::ParseAnimationClip(const aiScene* scene)
+Ref<AnimationClip> FBXLoader::ParseAnimationClip(const aiScene* scene)
 {
-	if (scene->mNumAnimations <= 0)
-		return;
+	if (nullptr == scene || scene->mNumAnimations <= 0)
+		return nullptr;
 
 	aiAnimation* animation = scene->mAnimations[0];
 
 	int size = animation->mNumChannels;
 
-	AnimationClip clip;
-	clip.duration = (float)animation->mDuration;
-	clip.ticksPerSecond = (float)animation->mTicksPerSecond;
-	clip.name = animation->mName.C_Str();
+	Ref<AnimationClip> clip = CreateRef<AnimationClip>();
+	clip->duration = (float)animation->mDuration * 0.001f;
+	clip->ticksPerSecond = (float)animation->mTicksPerSecond * 0.001f;
+	clip->name = animation->mName.C_Str();
 
 	for (int i = 0; i < size; i++)
 	{
@@ -453,7 +467,7 @@ void FBXLoader::ParseAnimationClip(const aiScene* scene)
 			float timeStamp = (float)channel->mPositionKeys[positionIndex].mTime;
 			AnimationPosePosition data;
 			data.data = glm::vec3(aiPosition.x, aiPosition.y, aiPosition.z);
-			data.timeStamp = timeStamp;
+			data.timeStamp = timeStamp * 0.001f;
 			track.tracksPosition.push_back(data);
 		}
 
@@ -463,8 +477,8 @@ void FBXLoader::ParseAnimationClip(const aiScene* scene)
 			aiQuaternion aiOrientation = channel->mRotationKeys[rotationIndex].mValue;
 			float timeStamp = (float)channel->mRotationKeys[rotationIndex].mTime;
 			AnimationPoseRotation data;
-			data.data = glm::quat(aiOrientation.x, aiOrientation.y, aiOrientation.z, aiOrientation.w);
-			data.timeStamp = timeStamp;
+			data.data = glm::quat(aiOrientation.w, aiOrientation.x, aiOrientation.y, aiOrientation.z);
+			data.timeStamp = timeStamp * 0.001f;
 			track.tracksRotation.push_back(data);
 		}
 
@@ -475,11 +489,12 @@ void FBXLoader::ParseAnimationClip(const aiScene* scene)
 			float timeStamp = (float)channel->mScalingKeys[keyIndex].mTime;
 			AnimationPoseScale data;
 			data.data = glm::vec3(scale.x, scale.y, scale.z);
-			data.timeStamp = timeStamp;
+			data.timeStamp = timeStamp * 0.001f;
 			track.tracksScale.push_back(data);
 		}
 
-		clip.tracks.push_back(track);
+		clip->tracks.push_back(track);
 	}
 
+	return clip;
 }

@@ -22,14 +22,14 @@ void AnimationSystem::OnDeserializeFinish()
 	}
 }
 
-void AnimationSystem::Add(Animation* light)
+void AnimationSystem::Add(Animation* anim)
 {
-	_components.push_back(light);
+	_components.push_back(anim);
 }
 
-void AnimationSystem::Remove(Animation* light)
+void AnimationSystem::Remove(Animation* anim)
 {
-	auto itr = std::find(_components.begin(), _components.end(), light);
+	auto itr = std::find(_components.begin(), _components.end(), anim);
 	if (itr != _components.end())
 		_components.erase(itr);
 }

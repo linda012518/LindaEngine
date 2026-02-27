@@ -67,6 +67,7 @@ Entity* Scene::InstantiateFBX(std::string path, Transform* parent)
 			bones.push_back(bone);
 		}
 		renderer->SetBones(bones);
+		renderer->SetRootBone(entity->GetTransform());
 	}
 
 	return entity;
