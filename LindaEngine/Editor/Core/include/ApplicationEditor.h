@@ -15,7 +15,9 @@ namespace LindaEditor
 	public:
 		int Initialize();
 		void Finalize();
-		void Tick();
+
+	protected:
+		void OnPreRender();
 
 	private:
 		Ref<LindaEngine::RenderPipeline> _editorRP;

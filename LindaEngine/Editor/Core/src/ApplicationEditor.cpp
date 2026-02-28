@@ -1,42 +1,20 @@
 #include "ApplicationEditor.h"
 #include "YamlSerializer.h"
-#include "Path.h"
-#include "ComponentSystem.h"
-#include "BehaviorSystem.h"
-#include "Timestamp.h"
-#include "LThread.h"
 #include "RenderPipeline.h"
 #include "SceneManagerEditor.h"
-#include "SceneManager.h"
 
 using namespace LindaEditor;
 using namespace LindaEngine;
 
 int ApplicationEditor::Initialize()
 {
-    state = AppState::Loading;
-    SetFrameRate(60);
-
-    YamlSerializer::DeSerializeGraphicsConfig(Path::graphicsConfig);
-
-    _window = Window::Create();
-    _graphicContext = GraphicsContext::Create(_window.get());
-
-    int ret = 0;
-
-    if ((ret = _window->Initialize()) != 0) {
-        printf("Window Initialize Failed...");
+    int ret = Application::Initialize();
+    if (ret != 0)
         return ret;
-    }
 
     if ((ret = SceneManagerEditor::Initialize()) != 0)
     {
         printf("SceneManagerEditor Initialize Failed...");
-        return ret;
-    }
-
-    if ((ret = _graphicContext->Initialize()) != 0) {
-        printf("GraphicsContext Initialize Failed...");
         return ret;
     }
 
@@ -58,70 +36,19 @@ int ApplicationEditor::Initialize()
 void ApplicationEditor::Finalize()
 {
     _imgui.Finalize();
-    _graphicContext->Finalize();
-    ComponentSystem::Finalize();
-    BehaviorSystem::Finalize();
-    SceneManager::Finalize();
-    _window->Finalize();
+    Application::Finalize();
 }
 
-void ApplicationEditor::Tick()
+void ApplicationEditor::OnPreRender()
 {
-    Timestamp::Initialize();
-    state = AppState::Running;
+    _imgui.Begin();
+    _imgui.OnImGuiRender();
 
-    double currentInterval = 100.0;
+    _imgui.SetEditRenderTexture();
+    _editorRP->Tick();
+    _imgui.SetPlayRenderTexture();
+    _runtimeRP->Tick();
 
-    while (false == _isQuit)
-    {
-        currentInterval += Timestamp::GetDeltaMilliSecond();
-        Timestamp::Tick();
-        if (currentInterval < _frameInterval)
-        {
-            LThread::Sleep(1);
-            continue;
-        }
-        double deltaTime = currentInterval * 0.001;
-        currentInterval = 0.0;
-
-        SceneManager::Tick();
-        BehaviorSystem::DoAwake();
-        BehaviorSystem::DoOnEnable();
-        BehaviorSystem::DoStart();
-
-        BehaviorSystem::DoFixUpdate();
-        BehaviorSystem::DoOnTriggerEvent();
-        BehaviorSystem::DoOnCollisionEvent();
-
-        _window->Tick();
-
-        BehaviorSystem::DoOnMouseEvent();
-        ComponentSystem::Tick((float)deltaTime);
-        BehaviorSystem::DoUpdate();
-        BehaviorSystem::DoLateUpdate();
-
-        //BehaviorSystem::OnPreCull();
-        BehaviorSystem::DoOnPreRender();
-        //BehaviorSystem::OnRenderObject();
-
-        _imgui.Begin();
-        _imgui.OnImGuiRender();
-
-        _imgui.SetEditRenderTexture();
-        _editorRP->Tick();
-        _imgui.SetPlayRenderTexture();
-        _runtimeRP->Tick();
-
-        _imgui.End();
-
-
-        _graphicContext->Tick();
-
-        BehaviorSystem::DoOnPostRender();
-        BehaviorSystem::DoOnApplicationPause();
-        BehaviorSystem::DoOnApplicationQuit();
-        BehaviorSystem::DoOnDisable();
-        BehaviorSystem::Tick();
-    }
+    _imgui.End();
 }
 

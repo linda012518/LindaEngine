@@ -10,7 +10,6 @@ namespace LindaEngine
 	public:
 		int Initialize();
 		void Finalize();
-		void Tick();
 
 	private:
 		Scope<SceneManager> _sceneManager;

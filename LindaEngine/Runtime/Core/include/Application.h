@@ -11,9 +11,9 @@ namespace LindaEngine
 	class Application : public IRuntimeModule
 	{
 	public:
-		virtual int Initialize() = 0;
-		virtual void Finalize() = 0;
-		virtual void Tick() = 0;
+		virtual int Initialize();
+		virtual void Finalize();
+		virtual void Tick();
 
 		void SetFrameRate(int rate);
 
@@ -21,6 +21,9 @@ namespace LindaEngine
 		static Window& GetWindow() { return *_window; }
 		static AppState state;
 		static AppModule module;
+
+	protected:
+		virtual void OnPreRender() { }
 
 	protected:
 		static bool _isQuit;
