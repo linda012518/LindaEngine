@@ -52,9 +52,7 @@ bool Light::Deserialize(YAML::Node& node)
 
 void Light::TransformDirty()
 {
-	_aabb.min = glm::vec4(_aabb.min, 1.0f) * _transform->GetLocalToWorldMat();
-	_aabb.max = glm::vec4(_aabb.max, 1.0f) * _transform->GetLocalToWorldMat();
-	_aabb.CalculateCenterSize();
+	CalculateAABB();
 }
 
 glm::vec4 Light::GetFinalColor()
@@ -145,15 +143,12 @@ bool SpotLight::Deserialize(YAML::Node& node)
 
 void SpotLight::CalculateAABB()
 {
-	float radius = glm::tan(glm::radians(15.0f)) * _range;
-	glm::vec3 max = glm::vec3(radius, radius, 0);
-	_aabb.AddVertex(max);
-	glm::vec3 min = glm::vec3(-radius, -radius, _range);
-	_aabb.AddVertex(min);
-
-	_aabb.CalculateCenterSize();
-
-	TransformDirty();
+	float radius = glm::tan(glm::radians(_outerAngle * 0.5f)) * _range;
+	glm::vec3 min = glm::vec3(-radius, -radius, 0.0f);
+	glm::vec3 max = glm::vec3(radius, radius, _range);
+	glm::mat4 transform = glm::mat4_cast(_transform->GetWorldRotation());
+	transform = glm::translate(transform, _transform->GetWorldPosition());
+	_aabb = AABBBoundingBox::WorldSpaceAABB(transform, min, max);
 }
 
 //float SpotLight::GetAttenuation()
@@ -203,13 +198,10 @@ bool PointLight::Deserialize(YAML::Node& node)
 
 void PointLight::CalculateAABB()
 {
-	glm::vec3 max = glm::vec3(_range);
-	_aabb.AddVertex(max);
 	glm::vec3 min = glm::vec3(-_range);
-	_aabb.AddVertex(min);
-	_aabb.CalculateCenterSize();
-
-	TransformDirty();
+	glm::vec3 max = glm::vec3(_range);
+	glm::mat4 transform = glm::translate(glm::mat4(1.0f), _transform->GetWorldPosition());
+	_aabb = AABBBoundingBox::WorldSpaceAABB(transform, min, max);
 }
 
 

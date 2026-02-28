@@ -110,10 +110,13 @@ void RendererSystem::DrawAdjunct()
 void RendererSystem::DrawErrorRenderer()
 {
 	static bool isLoaded = false;
+	static Ref<Material> errorDefault = nullptr;
+	static Ref<Material> errorSkin = nullptr;
 	static Drawable drawable;
 	if (isLoaded == false)
 	{
-		drawable.material = MaterialManager::GetDefaultMaterial("BuiltInAssets/Shaders/Error.shader");
+		errorDefault = MaterialManager::GetDefaultMaterial("BuiltInAssets/Shaders/Error.shader");
+		errorSkin = MaterialManager::GetDefaultMaterial("BuiltInAssets/Shaders/Error.shader", true);
 		isLoaded = true;
 	}
 
@@ -124,6 +127,19 @@ void RendererSystem::DrawErrorRenderer()
 		{
 			if (false == renderer->HasError(i))
 				continue;
+
+			SkinMeshRenderer* skinPtr = dynamic_cast<SkinMeshRenderer*>(renderer);
+			if (nullptr != skinPtr)
+			{
+				std::vector<glm::mat4>& matrices = skinPtr->GetFinalBoneMatrix();
+				errorSkin->SetUniformValue<glm::mat4*>("bonesMatrices", matrices.data(), (int)matrices.size());
+				drawable.material = errorSkin;
+			}
+			else
+			{
+				drawable.material = errorDefault;
+			}
+
 			drawable.meshData = renderer->GetMesh()->GetMeshData(i);
 			drawable.transform = renderer->GetTransform();
 			drawable.Draw();

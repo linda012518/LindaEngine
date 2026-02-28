@@ -17,12 +17,8 @@ namespace LindaEditor
 	public:
 		virtual int Initialize();
 		virtual void Finalize();
-		virtual void Tick();
 
-	private:
-		void SetupShaderParameters(LindaEngine::Camera* camera);
-		void SetupLightListShaderParameters(LindaEngine::Camera* camera, LindaEngine::UniformDataGlobal::Data& block);
-		void SetupCameraShaderParameters(LindaEngine::Camera* camera, LindaEngine::UniformDataGlobal::Data& block);
+	protected:
 		void Render();
 
 	private:

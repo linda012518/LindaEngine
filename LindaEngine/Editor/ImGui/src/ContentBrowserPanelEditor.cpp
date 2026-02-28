@@ -271,6 +271,7 @@ FileType ContentBrowserPanelEditor::CheckFileType(std::string fileName)
 
     else if (extension == "FBX") return FileType::FBX;
     else if (extension == "fbx") return FileType::FBX;
+    else if (extension == "dae") return FileType::FBX;
 
     else if (extension == "scene") return FileType::Scene;
 

@@ -17,7 +17,7 @@ namespace LindaEngine
 		static Ref<Material> GetMaterialByShader(std::string path, bool isSkin = false); //需要使用者管理内存
 		static void Clear();
 		static Ref<MaterialPass> GetDefaultMaterialPass(const char* lightMode);
-		static Ref<Material> GetDefaultMaterial(std::string path);
+		static Ref<Material> GetDefaultMaterial(std::string path, bool isSkin = false);
 
 	private:
 		static bool LoadDefaultMaterial();

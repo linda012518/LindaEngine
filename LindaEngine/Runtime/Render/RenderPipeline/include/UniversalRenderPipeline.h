@@ -15,13 +15,8 @@ namespace LindaEngine
 	public:
 		virtual int Initialize();
 		virtual void Finalize();
-		virtual void Tick();
 
-	private:
-		const std::vector<Camera*> CheckCameraList();
-		void SetupShaderParameters(Camera* camera);
-		void SetupLightListShaderParameters(Camera* camera, UniformDataGlobal::Data& block);
-		void SetupCameraShaderParameters(Camera* camera, UniformDataGlobal::Data& block);
+	protected:
 		void Render();
 
 	private:

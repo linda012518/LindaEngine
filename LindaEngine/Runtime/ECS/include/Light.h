@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Component.h"
 #include "BoundingBox.h"
@@ -88,7 +88,7 @@ namespace LindaEngine
 		void CalculateAABB();
 
 	private:
-		float _range;
+		float _range; // 照射前方的距离
 		float _innerAngle;
 		float _outerAngle;
 	};

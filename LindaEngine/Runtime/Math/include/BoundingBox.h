@@ -23,6 +23,7 @@ namespace LindaEngine
 		void AddVertex(glm::vec3& vertex);
 		void CalculateCenterSize();
 
+		static AABBBoundingBox WorldSpaceAABB(const glm::mat4& transform, glm::vec3& min, glm::vec3& max);
 		static AABBBoundingBox Merge(const AABBBoundingBox& a, const AABBBoundingBox& b);
 	};
 

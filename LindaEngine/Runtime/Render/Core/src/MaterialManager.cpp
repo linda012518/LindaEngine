@@ -66,13 +66,16 @@ Ref<MaterialPass> MaterialManager::GetDefaultMaterialPass(const char* lightMode)
     return _defaultPass[lightMode];
 }
 
-Ref<Material> MaterialManager::GetDefaultMaterial(std::string path)
+Ref<Material> MaterialManager::GetDefaultMaterial(std::string path, bool isSkin)
 {
     if (false == _isLoadDefault)
     {
         MaterialManager::LoadDefaultMaterial();
         _isLoadDefault = true;
     }
+
+    if (isSkin)
+        path += "isSkin";
 
     if (_defaultMaterial.find(path) == _defaultMaterial.end())
         return nullptr;
@@ -99,9 +102,17 @@ bool MaterialManager::LoadDefaultMaterial()
         for (std::size_t i = 0; i < data.size(); i++) 
         {
             std::string shaderPath = data[i].as<std::string>();
-            auto pass = GetMaterialByShader(shaderPath);
-            if (nullptr != pass)
-                _defaultMaterial[shaderPath] = pass;
+            auto pass1 = GetMaterialByShader(shaderPath);
+            if (nullptr != pass1)
+            {
+                _defaultMaterial[shaderPath] = pass1;
+            }
+
+            auto pass2 = GetMaterialByShader(shaderPath, true);
+            if (nullptr != pass2)
+            {
+                _defaultMaterial[shaderPath + "isSkin"] = pass2;
+            }
         }
 
         return true;

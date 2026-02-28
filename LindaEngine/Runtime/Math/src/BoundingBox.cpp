@@ -45,6 +45,37 @@ void AABBBoundingBox::CalculateCenterSize()
 	size.z = max.z - min.z;
 }
 
+AABBBoundingBox AABBBoundingBox::WorldSpaceAABB(const glm::mat4& transform, glm::vec3& min, glm::vec3& max)
+{
+	AABBBoundingBox aabb;
+
+	std::vector<glm::vec3> vertices = {
+		glm::vec3(min.x, min.y, min.z),
+		glm::vec3(max.x, min.y, min.z),
+		glm::vec3(min.x, max.y, min.z),
+		glm::vec3(max.x, max.y, min.z),
+		glm::vec3(min.x, min.y, max.z),
+		glm::vec3(max.x, min.y, max.z),
+		glm::vec3(min.x, max.y, max.z),
+		glm::vec3(max.x, max.y, max.z)
+	};
+
+	aabb.min = glm::vec3(Mathf::MaxValue);
+	aabb.max = glm::vec3(Mathf::MinValue);
+
+	for (const auto& vertex : vertices) {
+		glm::vec4 transformed = transform * glm::vec4(vertex, 1.0f);
+		glm::vec3 pos = glm::vec3(transformed) / transformed.w;
+
+		aabb.min = glm::min(aabb.min, pos);
+		aabb.max = glm::max(aabb.max, pos);
+	}
+
+	aabb.CalculateCenterSize();
+
+	return aabb;
+}
+
 AABBBoundingBox AABBBoundingBox::Merge(const AABBBoundingBox& a, const AABBBoundingBox& b)
 {
 	AABBBoundingBox aabb;
