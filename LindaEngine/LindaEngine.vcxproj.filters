@@ -297,7 +297,7 @@
     <ClCompile Include="Runtime\Core\src\Timestamp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Temp\TestECSEvent.cpp">
+    <ClCompile Include="SandboxApp\src\TestECSEvent.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Editor\ImGui\src\ImGuiContextEditor.cpp">
@@ -2006,7 +2006,7 @@
     <ClInclude Include="Runtime\Core\include\Timestamp.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Temp\TestECSEvent.h">
+    <ClInclude Include="SandboxApp\include\TestECSEvent.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Core\include\IEventHandler.h">

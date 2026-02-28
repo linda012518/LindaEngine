@@ -332,7 +332,7 @@
     <ClCompile Include="Temp\FrustumCuller.cpp" />
     <ClCompile Include="Temp\MeshLoader.cpp" />
     <ClCompile Include="Temp\MeshManager.cpp" />
-    <ClCompile Include="Temp\TestECSEvent.cpp" />
+    <ClCompile Include="SandboxApp\src\TestECSEvent.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderer.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\UniversalRenderPipeline.cpp" />
     <ClCompile Include="Editor\IO\src\YamlSerializerEditor.cpp" />
@@ -949,7 +949,7 @@
     <ClInclude Include="Temp\FrustumCuller.h" />
     <ClInclude Include="Temp\MeshLoader.h" />
     <ClInclude Include="Temp\MeshManager.h" />
-    <ClInclude Include="Temp\TestECSEvent.h" />
+    <ClInclude Include="SandboxApp\include\TestECSEvent.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\UniversalRenderer.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\UniversalRenderPipeline.h" />
     <ClInclude Include="Editor\IO\include\YamlSerializerEditor.h" />
