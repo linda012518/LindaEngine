@@ -10,6 +10,7 @@
 #include "RendererSystem.h"
 #include "Drawable.h"
 #include "Mathf.h"
+#include "ShaderBuiltInUniform.h"
 
 using namespace LindaEngine;
 
@@ -67,8 +68,9 @@ bool Renderer::Deserialize(YAML::Node& node)
 	
 	if (mesh)
 	{
-		_mesh = FBXManager::GetMesh(mesh["FilePath"].as<std::string>().c_str(), mesh["HashCode"].as<std::string>().c_str());
-		_mesh->Deserialize(mesh);
+		Ref<Mesh> meshPtr = FBXManager::GetMesh(mesh["FilePath"].as<std::string>().c_str(), mesh["HashCode"].as<std::string>().c_str());
+		meshPtr->Deserialize(mesh);
+		SetMesh(meshPtr);
 	}
 
 	bool isSkin = _type == RenderComponentType::SkinMesh;
@@ -284,7 +286,7 @@ void SkinMeshRenderer::Tick()
 	}
 	for (auto& mat : _materialList)
 	{
-		mat->SetUniformValue<glm::mat4*>("bonesMatrices", _boneMatrices.data(), (int)_boneMatrices.size());
+		mat->SetUniformValue<glm::mat4*>(ShaderBuiltInUniform::linda_BonesMatrices.c_str(), _boneMatrices.data(), (int)_boneMatrices.size());
 	}
 }
 

@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClCompile Include="Runtime\ECS\src\AnimationSystem.cpp" />
     <ClCompile Include="Runtime\ECS\src\Animation.cpp" />
+    <ClCompile Include="Runtime\Render\Core\src\ShaderBuiltInUniform.cpp" />
     <ClCompile Include="Runtime\Render\PostProcess\src\OutLinePostProcess.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\BlitPickColorPass.cpp" />
     <ClCompile Include="External\ImGuizmo\ImGuizmo\GraphEditor.cpp" />
@@ -353,6 +354,7 @@
   <ItemGroup>
     <ClInclude Include="Runtime\ECS\include\AnimationSystem.h" />
     <ClInclude Include="Runtime\ECS\include\Animation.h" />
+    <ClInclude Include="Runtime\Render\Core\include\ShaderBuiltInUniform.h" />
     <ClInclude Include="Runtime\Render\PostProcess\include\OutLinePostProcess.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\BlitPickColorPass.h" />
     <ClInclude Include="External\ImGuizmo\ImGuizmo\GraphEditor.h" />

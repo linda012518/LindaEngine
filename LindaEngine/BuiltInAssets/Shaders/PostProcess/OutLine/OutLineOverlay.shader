@@ -44,7 +44,7 @@ Shader
 				edgeValue = edgeValue1;
 
 				vec4 ccc = edgeValue * edgeStrength * (1.0 - maskColor.r);
-				FragColor = mix(srcCol, vec4(1.0, 1.0, 1.0, 1.0) * (sin(_time.y * 3.0) / 6.0 + 0.5) * 2.0, ccc.r);
+				FragColor = mix(srcCol, vec4(1.0, 1.0, 1.0, 1.0) * (sin(linda_Time.y * 3.0) / 6.0 + 0.5) * 2.0, ccc.r);
 			}
 		}
 	}

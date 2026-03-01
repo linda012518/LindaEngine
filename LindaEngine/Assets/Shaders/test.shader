@@ -47,8 +47,8 @@ Shader
 			void main()
 			{
 				uv = aUV0;
-				worldNormal = vec3(vec4(aNormal, 1.0) * _worldToLocal);
-				gl_Position = _linda_Matrix_VP * _localToWorld * vec4(aPosition, 1.0);
+				worldNormal = vec3(vec4(aNormal, 1.0) * linda_WorldToLocal);
+				gl_Position = linda_Matrix_VP * linda_LocalToWorld * vec4(aPosition, 1.0);
 			}
 		}
 		

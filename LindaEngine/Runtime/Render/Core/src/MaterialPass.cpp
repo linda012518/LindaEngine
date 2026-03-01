@@ -1,6 +1,7 @@
 #include "MaterialPass.h"
 #include "Transform.h"
 #include "Shader.h"
+#include "ShaderBuiltInUniform.h"
 #include "TextureManager.h"
 #include "ShaderManager.h"
 #include "Texture.h"
@@ -105,12 +106,12 @@ void MaterialPass::Bind(Transform* transform)
 	_shader->Begin();
 	if (nullptr != transform)
 	{
-		_shader->SetMat4("_localToWorld", transform->GetLocalToWorldMat());
-		_shader->SetMat4("_worldToLocal", transform->GetWorldToLocalMat());
+		_shader->SetMat4(ShaderBuiltInUniform::linda_LocalToWorld, transform->GetLocalToWorldMat());
+		_shader->SetMat4(ShaderBuiltInUniform::linda_WorldToLocal, transform->GetWorldToLocalMat());
 
 		if (Application::module == AppModule::Editor)
 		{
-			_shader->SetInt("entityID", transform->GetEntity().GetEntityID());
+			_shader->SetInt(ShaderBuiltInUniform::linda_EntityID, transform->GetEntity().GetEntityID());
 		}
 	}
 

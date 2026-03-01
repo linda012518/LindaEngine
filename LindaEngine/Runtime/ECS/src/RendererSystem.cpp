@@ -8,6 +8,7 @@
 #include "CullTool.h"
 #include "Drawable.h"
 #include "MaterialManager.h"
+#include "ShaderBuiltInUniform.h"
 
 #include <algorithm>
 
@@ -132,7 +133,7 @@ void RendererSystem::DrawErrorRenderer()
 			if (nullptr != skinPtr)
 			{
 				std::vector<glm::mat4>& matrices = skinPtr->GetFinalBoneMatrix();
-				errorSkin->SetUniformValue<glm::mat4*>("bonesMatrices", matrices.data(), (int)matrices.size());
+				errorSkin->SetUniformValue<glm::mat4*>(ShaderBuiltInUniform::linda_BonesMatrices.c_str(), matrices.data(), (int)matrices.size());
 				drawable.material = errorSkin;
 			}
 			else

@@ -4,7 +4,7 @@ Shader
 	{
 		Properties
 		{
-			uniform sampler2D skybox = white;
+			uniform sampler2D linda_PanoramicCube = white;
 		}
 		
 		RenderState
@@ -18,12 +18,12 @@ Shader
 
 			out vec3 worldNormal;
 
-			uniform mat4 viewProjection;
+			uniform mat4 linda_Matrix_VP_PanoramicCube;
 
 			void main()
 			{
 				worldNormal = aPosition;
-				gl_Position = viewProjection * vec4(aPosition, 1.0);
+				gl_Position = linda_Matrix_VP_PanoramicCube * vec4(aPosition, 1.0);
 			}
 		}
 		
@@ -44,7 +44,7 @@ Shader
 			void main()
 			{
 				vec2 uv = SampleSphericalMap(normalize(worldNormal));
-				FragColor = texture(skybox, uv);
+				FragColor = texture(linda_PanoramicCube, uv);
 			}
 		}
 	}

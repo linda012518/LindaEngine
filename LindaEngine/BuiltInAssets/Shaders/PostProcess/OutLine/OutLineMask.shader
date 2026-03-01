@@ -6,7 +6,7 @@ Shader
 		{
 			void main()
 			{
-				gl_Position = _linda_Matrix_VP * _localToWorld * vec4(aPosition, 1.0);
+				gl_Position = linda_Matrix_VP * linda_LocalToWorld * vec4(aPosition, 1.0);
 			}
 		}
 		

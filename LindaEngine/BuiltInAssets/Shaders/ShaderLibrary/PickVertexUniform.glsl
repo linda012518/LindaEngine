@@ -1,3 +1,3 @@
-uniform int entityID;
+uniform int linda_EntityID;
 
 flat out int vEntityID;

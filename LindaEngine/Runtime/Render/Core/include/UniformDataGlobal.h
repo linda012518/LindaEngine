@@ -35,6 +35,14 @@ namespace LindaEngine
 			glm::vec4 spotLightAngles[64];
 
 			glm::vec4 time;
+
+			glm::vec4 linda_SHAr;
+			glm::vec4 linda_SHAg;
+			glm::vec4 linda_SHAb;
+			glm::vec4 linda_SHBr;
+			glm::vec4 linda_SHBg;
+			glm::vec4 linda_SHBb;
+			glm::vec4 linda_SHC;
 		};
 
 		Data data;

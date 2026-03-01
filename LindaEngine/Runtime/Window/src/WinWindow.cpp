@@ -1,4 +1,4 @@
-#include "WinWindow.h"
+ï»¿#include "WinWindow.h"
 #include "Application.h"
 #include "GraphicsContext.h"
 #include "EventSystem.h"
@@ -34,7 +34,7 @@ WinWindow::WinWindow()
 
 int WinWindow::Initialize()
 {
-    //¸ĞÖªdpi£¬Ëõ·Å´°¿Ú´óĞ¡
+    //æ„ŸçŸ¥dpiï¼Œç¼©æ”¾çª—å£å¤§å°
     SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
 
     // get the HINSTANCE of the Console Program
@@ -162,7 +162,7 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     switch (msg)
     {
     case WM_ERASEBKGND:
-        // ¹Ø¼ü£º×èÖ¹Windows²Á³ı±³¾°£¬±£³ÖOpenGLÄÚÈİ
+        // å…³é”®ï¼šé˜»æ­¢Windowsæ“¦é™¤èƒŒæ™¯ï¼Œä¿æŒOpenGLå†…å®¹
         break;
     case WM_SIZE:
     {
@@ -190,8 +190,10 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         EventSystem::Dispatch(nullptr, EventCode::CharInput, event);
     }
     break;
+    case WM_SYSKEYUP:
     case WM_KEYUP:
     {
+        // TODO æ³¨æ„æœ‰äº›é”®ç›˜å³ä¾§alté”®ä¼šå‘å‡ºä¸¤ä¸ªäº‹ä»¶ï¼Œä¸€ä¸ªaltäº‹ä»¶ï¼Œä¸€ä¸ªctrläº‹ä»¶ï¼Œè¿™é‡Œæš‚ä¸å¤„ç†
         KeyEvent event;
         event.key = static_cast<KeyCode>((int)wParam);
 
@@ -208,8 +210,10 @@ LRESULT WinWindow::OnEvent(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         _key = KeyCode::None;
     }
     break;
+    case WM_SYSKEYDOWN:
     case WM_KEYDOWN:
     {
+        // TODO æ³¨æ„æœ‰äº›é”®ç›˜å³ä¾§alté”®ä¼šå‘å‡ºä¸¤ä¸ªäº‹ä»¶ï¼Œä¸€ä¸ªaltäº‹ä»¶ï¼Œä¸€ä¸ªctrläº‹ä»¶ï¼Œè¿™é‡Œæš‚ä¸å¤„ç†
         KeyCode key = static_cast<KeyCode>((int)wParam);
         if (_key == key)
             break;
@@ -329,7 +333,7 @@ void WinWindow::OnTimer(WPARAM wParam, LPARAM lParam)
     auto holdSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(holdDuration).count();
     if (holdSeconds < 300)
         return;
-    // 300ºÁÃëÒÔÉÏÈÏÎªÊÇ°´×¡
+    // 300æ¯«ç§’ä»¥ä¸Šè®¤ä¸ºæ˜¯æŒ‰ä½
 
     KeyEvent event;
     event.key = _key;
@@ -345,7 +349,7 @@ void WinWindow::CheckMouseButton(LPARAM lParam)
     auto holdSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(holdDuration).count();
     if (holdSeconds < 300)
         return;
-    // 300ºÁÃëÒÔÉÏÈÏÎªÊÇ°´×¡
+    // 300æ¯«ç§’ä»¥ä¸Šè®¤ä¸ºæ˜¯æŒ‰ä½
 
     MouseEvent event;
     event.x = GET_X_LPARAM(lParam);
@@ -363,7 +367,7 @@ void WinWindow::CheckMouseWheelPressed(LPARAM lParam)
     auto holdSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(holdDuration).count();
     if (holdSeconds < 300)
         return;
-    // 300ºÁÃëÒÔÉÏÈÏÎªÊÇ°´×¡
+    // 300æ¯«ç§’ä»¥ä¸Šè®¤ä¸ºæ˜¯æŒ‰ä½
 
     MouseEvent event;
     event.x = GET_X_LPARAM(lParam);

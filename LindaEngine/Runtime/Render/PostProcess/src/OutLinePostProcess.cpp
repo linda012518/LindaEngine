@@ -10,6 +10,7 @@
 #include "RendererSystem.h"
 #include "Material.h"
 #include "MaterialManager.h"
+#include "ShaderBuiltInUniform.h"
 
 using namespace LindaEngine;
 using namespace LindaEditor;
@@ -81,7 +82,7 @@ void OutLinePostProcess::Render(Ref<RenderTexture> src, Ref<RenderTexture> dest)
 		{
 			mat = _maskMaterialSkin;
 			std::vector<glm::mat4>& matrices = skinPtr->GetFinalBoneMatrix();
-			mat->SetUniformValue<glm::mat4*>("bonesMatrices", matrices.data(), (int)matrices.size());
+			mat->SetUniformValue<glm::mat4*>(ShaderBuiltInUniform::linda_BonesMatrices.c_str(), matrices.data(), (int)matrices.size());
 		}
 		RendererSystem::DrawRenderer(render, mat);
 	}

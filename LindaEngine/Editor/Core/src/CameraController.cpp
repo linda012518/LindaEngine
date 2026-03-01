@@ -76,7 +76,7 @@ void CameraController::OnEvent(IEventHandler* sender, int eventCode, Event& even
 		_isPanning = false;
 		_leftHeld = false;
 		_rightHeld = false;
-		_ctrlHeld = false;
+		_altHeld = false;
 		isLookRound = false;
 		return;
 	}
@@ -145,7 +145,7 @@ void CameraController::ProcessMouseEvent(int eventCode, Event& eventData)
 		_isPanning = false;
 		_leftHeld = false;
 		_rightHeld = false;
-		_ctrlHeld = false;
+		_altHeld = false;
 		isLookRound = false;
 	}
 	break;
@@ -165,9 +165,9 @@ void CameraController::ProcessKeyEvent(int eventCode, Event& eventData)
 	case EventCode::KeyDown:
 	{
 		std::cout << "	KeyDown  " << static_cast<int>(event.key) << "\n" << std::endl;
-		if (event.key == KeyCode::CONTROL)
+		if (event.key == KeyCode::MENU)
 		{
-			_ctrlHeld = true;
+			_altHeld = true;
 		}
 		if (event.key == KeyCode::F)
 		{
@@ -180,7 +180,7 @@ void CameraController::ProcessKeyEvent(int eventCode, Event& eventData)
 		std::cout << "	KeyUp  " << static_cast<int>(event.key) << "\n" << std::endl;
 		if (event.key == KeyCode::CONTROL)
 		{
-			_ctrlHeld = false;
+			_altHeld = false;
 			isLookRound = false;
 		}
 
@@ -247,7 +247,7 @@ void CameraController::RotateEvent(MouseEvent& event)
 
 void CameraController::LookRoundEvent(MouseEvent& event)
 {
-	if (false == _leftHeld || false == _ctrlHeld)
+	if (false == _leftHeld || false == _altHeld)
 		return;
 	isLookRound = true;
 

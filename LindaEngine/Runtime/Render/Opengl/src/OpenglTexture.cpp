@@ -8,6 +8,7 @@
 #include "Mesh.h"
 #include "FBXManager.h"
 #include "GraphicsContext.h"
+#include "ShaderBuiltInUniform.h"
 
 #include <iostream>
 
@@ -76,15 +77,15 @@ void OpenglTexture::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
 	Entity entity("temp");
 	CubeCamera* camera = entity.AddComponent<CubeCamera>();
 	camera->Tick();
-	Ref<Material> material = MaterialManager::GetMaterialByShader("Assets/Shaders/PanoramicToCubemap.shader");
-	material->SetTexture("skybox", src);
+	Ref<Material> material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/PanoramicToCubemap.shader");
+	material->SetTexture(ShaderBuiltInUniform::linda_PanoramicCube, src);
 
 	std::string temp = Material::overrideLightMode;
 	Material::overrideLightMode = "Color";
 
 	for (unsigned int i = 0; i < 6; ++i)
 	{
-		material->SetMat4("viewProjection", camera->GetVPMatrix(i));
+		material->SetMat4(ShaderBuiltInUniform::linda_Matrix_VP_PanoramicCube, camera->GetVPMatrix(i));
 		material->Bind(0, nullptr, FBXManager::GetSkybox()->GetMeshAttributes());
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, dest->nativeColorID, 0);
 		if (depth.isRenderBuffer == false) // 如果不用RenderBuffer，需要绑定纹理

@@ -624,6 +624,9 @@
     <ClCompile Include="SandboxApp\src\TestAnimation.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Render\Core\src\ShaderBuiltInUniform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -2469,6 +2472,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SandboxApp\include\TestAnimation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\Core\include\ShaderBuiltInUniform.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
