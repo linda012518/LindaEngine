@@ -9,6 +9,8 @@
 
 namespace LindaEngine
 {
+	enum class LightType;
+
 	class FBXManager
 	{
 	public:
@@ -23,12 +25,15 @@ namespace LindaEngine
 
 		static Ref<Mesh> GetBoundingBox();
 		static Ref<Mesh> GetFrustumMesh();
-		static Ref<Mesh> GetLightMesh();
+		static Ref<Mesh> GetLightMesh(LightType type);
 
 	private:
 		static Ref<FBXResources> GetFBXResources(Ref<FBXResources> res, std::string hashCode);
 		static void ClearFBX(Ref<FBXResources> res);
 		static Ref<Mesh> CreateCubeMesh(DrawType type, float scale);
+		static Ref<Mesh> CreateDirectionLightMesh();
+		static Ref<Mesh> CreatePointLightMesh();
+		static Ref<Mesh> CreateSpotLightMesh();
 
 	private:
 		static std::unordered_map<std::string, Ref<FBXResources>> _map;
@@ -36,6 +41,8 @@ namespace LindaEngine
 		static Ref<Mesh> _empty;
 		static Ref<Mesh> _boundingBox;
 		static Ref<Mesh> _frustumMesh;
+		static Ref<Mesh> _directionLightMesh;
+		static Ref<Mesh> _pointLightMesh;
 		
 	};
 }
