@@ -155,9 +155,10 @@ Ref<Material> Renderer::GetSkyboxMaterial()
 	return GetSkyboxRenderer().material;
 }
 
-void Renderer::RenderSkybox()
+void Renderer::RenderSkybox(glm::mat4& view)
 {
 	Material::overrideLightMode = "Skybox";
+	GetSkyboxMaterial()->SetUniformValue(ShaderBuiltInUniform::linda_SkyboxMatrix_P.c_str(), view);
 	GetSkyboxRenderer().Draw();
 }
 

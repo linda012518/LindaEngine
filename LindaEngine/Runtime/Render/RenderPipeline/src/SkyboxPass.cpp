@@ -12,5 +12,5 @@ SkyboxPass::SkyboxPass()
 void SkyboxPass::Render(Camera* camera)
 {
 	if (camera->GetClearType() == CameraClearType::Skybox)
-		RendererSystem::DrawSkybox();
+		RendererSystem::DrawSkybox(camera);
 }

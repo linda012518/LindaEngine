@@ -6,6 +6,7 @@
 #include "AdjunctPass.h"
 #include "BlitPickColorPass.h"
 #include "DrawErrorPass.h"
+#include "FrustumVisiblePass.h"
 
 using namespace LindaEditor;
 using namespace LindaEngine;
@@ -16,6 +17,7 @@ void UniversalRendererEditor::CollectRenderPass()
     AddRenderPass(CreateRef<DrawErrorPass>());
     AddRenderPass(CreateRef<PostProcessPass>());
     AddRenderPass(CreateRef<AdjunctPass>());
+    AddRenderPass(CreateRef<FrustumVisiblePass>());
     AddRenderPass(CreateRef<BlitPickColorPass>());
 
     DrawingSettings settings;

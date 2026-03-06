@@ -9,10 +9,10 @@ namespace LindaEngine
 {
 	struct Drawable
 	{
-		Ref<Material> material;
-		Mesh::Data* meshData;
-		Transform* transform;
-		float distanceToCamera;
+		Ref<Material> material = nullptr;
+		Mesh::Data* meshData = nullptr;
+		Transform* transform = nullptr;
+		float distanceToCamera = 0.0f;
 
 		void Draw();
 	};

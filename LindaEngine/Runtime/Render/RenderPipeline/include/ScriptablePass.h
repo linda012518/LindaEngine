@@ -1,5 +1,7 @@
 #pragma once
 
+#include "AutoPtr.h"
+
 namespace LindaEngine
 {
     class Camera;

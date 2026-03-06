@@ -27,5 +27,6 @@ namespace LindaEditor
 	private:
 		LindaEngine::Entity* _selectionEntity = nullptr;
 		LindaEngine::Component* _component = nullptr;
+		bool _showPopup = false;
 	};
 }

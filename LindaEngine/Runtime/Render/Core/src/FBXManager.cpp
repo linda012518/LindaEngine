@@ -6,6 +6,7 @@ std::unordered_map<std::string, Ref<FBXResources>> FBXManager::_map;
 Ref<Mesh> FBXManager::_skybox = nullptr;
 Ref<Mesh> FBXManager::_empty = nullptr;
 Ref<Mesh> FBXManager::_boundingBox = nullptr;
+Ref<Mesh> FBXManager::_frustumMesh = nullptr;
 
 Ref<FBXResources> FBXManager::GetFBX(std::string fbxPath)
 {
@@ -97,6 +98,55 @@ void FBXManager::ClearFBX(Ref<FBXResources> res)
 	res = nullptr;
 }
 
+Ref<Mesh> FBXManager::CreateCubeMesh(DrawType type, float scale)
+{
+	Ref<Mesh> mesh = CreateRef<Mesh>();
+	Mesh::Data& data = mesh->AddMeshData(Mesh::Data());
+	data.AddAttribute(VertexAttributeType::Position);
+	data.drawType = type;
+
+	float value = 1.0f * scale;
+
+	data.vertexData.insert(data.vertexData.end(), {  value,  value,  value });
+	data.vertexData.insert(data.vertexData.end(), { -value,  value,  value });
+
+	data.vertexData.insert(data.vertexData.end(), { -value,  value,  value });
+	data.vertexData.insert(data.vertexData.end(), { -value, -value,  value });
+
+	data.vertexData.insert(data.vertexData.end(), { -value, -value,  value });
+	data.vertexData.insert(data.vertexData.end(), {  value, -value,  value });
+
+	data.vertexData.insert(data.vertexData.end(), {  value, -value,  value });
+	data.vertexData.insert(data.vertexData.end(), {  value,  value,  value });
+	//////////////////////////////////////////////////////////////////////////////
+	data.vertexData.insert(data.vertexData.end(), { value,  value, -value });
+	data.vertexData.insert(data.vertexData.end(), { -value,  value, -value });
+
+	data.vertexData.insert(data.vertexData.end(), { -value,  value, -value });
+	data.vertexData.insert(data.vertexData.end(), { -value, -value, -value });
+
+	data.vertexData.insert(data.vertexData.end(), { -value, -value, -value });
+	data.vertexData.insert(data.vertexData.end(), {  value, -value, -value });
+
+	data.vertexData.insert(data.vertexData.end(), {  value, -value, -value });
+	data.vertexData.insert(data.vertexData.end(), {  value,  value, -value });
+	//////////////////////////////////////////////////////////////////////////////
+	data.vertexData.insert(data.vertexData.end(), {  value,  value,   value });
+	data.vertexData.insert(data.vertexData.end(), {  value,  value,  -value });
+
+	data.vertexData.insert(data.vertexData.end(), { -value,  value,   value });
+	data.vertexData.insert(data.vertexData.end(), { -value,  value,  -value });
+
+	data.vertexData.insert(data.vertexData.end(), { -value, -value,   value });
+	data.vertexData.insert(data.vertexData.end(), { -value, -value,  -value });
+
+	data.vertexData.insert(data.vertexData.end(), {  value, -value,   value });
+	data.vertexData.insert(data.vertexData.end(), {  value, -value,  -value });
+
+	return mesh;
+
+}
+
 Ref<Mesh> FBXManager::GetSkybox()
 {
 	if (nullptr != _skybox)
@@ -168,47 +218,21 @@ Ref<Mesh> FBXManager::GetBoundingBox()
 	if (nullptr != _boundingBox)
 		return _boundingBox;
 
-	_boundingBox = CreateRef<Mesh>();
-	Mesh::Data& data = _boundingBox->AddMeshData(Mesh::Data());
-	data.AddAttribute(VertexAttributeType::Position);
-	data.drawType = DrawType::LINES;
-
-	data.vertexData.insert(data.vertexData.end(), {  0.5f,  0.5f,  0.5f });
-	data.vertexData.insert(data.vertexData.end(), { -0.5f,  0.5f,  0.5f });
-
-	data.vertexData.insert(data.vertexData.end(), { -0.5f,  0.5f,  0.5f });
-	data.vertexData.insert(data.vertexData.end(), { -0.5f, -0.5f,  0.5f });
-
-	data.vertexData.insert(data.vertexData.end(), { -0.5f, -0.5f,  0.5f });
-	data.vertexData.insert(data.vertexData.end(), {  0.5f, -0.5f,  0.5f });
-
-	data.vertexData.insert(data.vertexData.end(), {  0.5f, -0.5f,  0.5f });
-	data.vertexData.insert(data.vertexData.end(), {  0.5f,  0.5f,  0.5f });
-	//////////////////////////////////////////////////////////////////////////////
-	data.vertexData.insert(data.vertexData.end(), {  0.5f,  0.5f, -0.5f });
-	data.vertexData.insert(data.vertexData.end(), { -0.5f,  0.5f, -0.5f });
-
-	data.vertexData.insert(data.vertexData.end(), { -0.5f,  0.5f, -0.5f });
-	data.vertexData.insert(data.vertexData.end(), { -0.5f, -0.5f, -0.5f });
-
-	data.vertexData.insert(data.vertexData.end(), { -0.5f, -0.5f, -0.5f });
-	data.vertexData.insert(data.vertexData.end(), {  0.5f, -0.5f, -0.5f });
-
-	data.vertexData.insert(data.vertexData.end(), {  0.5f, -0.5f, -0.5f });
-	data.vertexData.insert(data.vertexData.end(), {  0.5f,  0.5f, -0.5f });
-	//////////////////////////////////////////////////////////////////////////////
-	data.vertexData.insert(data.vertexData.end(), {  0.5f,  0.5f,   0.5f });
-	data.vertexData.insert(data.vertexData.end(), {  0.5f,  0.5f,  -0.5f });
-
-	data.vertexData.insert(data.vertexData.end(), { -0.5f,  0.5f,   0.5f });
-	data.vertexData.insert(data.vertexData.end(), { -0.5f,  0.5f,  -0.5f });
-
-	data.vertexData.insert(data.vertexData.end(), { -0.5f, -0.5f,   0.5f });
-	data.vertexData.insert(data.vertexData.end(), { -0.5f, -0.5f,  -0.5f });
-
-	data.vertexData.insert(data.vertexData.end(), {  0.5f, -0.5f,   0.5f });
-	data.vertexData.insert(data.vertexData.end(), {  0.5f, -0.5f,  -0.5f });
-
+	_boundingBox = CreateCubeMesh(DrawType::LINES, 0.5f);
 	return _boundingBox;
+}
+
+Ref<Mesh> FBXManager::GetFrustumMesh()
+{
+	if (nullptr != _frustumMesh)
+		return _frustumMesh;
+
+	_frustumMesh = CreateCubeMesh(DrawType::LINES, 1.0f);
+	return _frustumMesh;
+}
+
+Ref<Mesh> FBXManager::GetLightMesh()
+{
+	return Ref<Mesh>();
 }
 

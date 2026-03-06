@@ -25,7 +25,7 @@ namespace LindaEngine
 
 		static void DrawRenderers(Camera* camera, DrawingSettings* settings);
 		static void DrawRenderer(Renderer* renderer, Ref<Material> material);
-		static void DrawSkybox();
+		static void DrawSkybox(Camera* camera);
 		static void DrawAdjunct();
 		static void DrawErrorRenderer();
 

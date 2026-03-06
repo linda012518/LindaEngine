@@ -96,9 +96,9 @@ void RendererSystem::DrawRenderer(Renderer* renderer, Ref<Material> material)
 	}
 }
 
-void RendererSystem::DrawSkybox()
+void RendererSystem::DrawSkybox(Camera* camera)
 {
-	Renderer::RenderSkybox();
+	Renderer::RenderSkybox((glm::mat4&)camera->GetSkyboxProjectMatrix());
 }
 
 void RendererSystem::DrawAdjunct()

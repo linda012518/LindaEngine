@@ -178,7 +178,7 @@ void CameraController::ProcessKeyEvent(int eventCode, Event& eventData)
 	case EventCode::KeyUp:
 	{
 		std::cout << "	KeyUp  " << static_cast<int>(event.key) << "\n" << std::endl;
-		if (event.key == KeyCode::CONTROL)
+		if (event.key == KeyCode::MENU)
 		{
 			_altHeld = false;
 			isLookRound = false;

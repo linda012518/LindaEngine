@@ -1,4 +1,4 @@
-#include "Camera.h"
+Ôªø#include "Camera.h"
 #include "Entity.h"
 #include "Transform.h"
 #include "YamlSerializer.h"
@@ -43,7 +43,7 @@ Camera::Camera(Entity& entity, bool enable) : Component(entity, enable)
 
 	_cameraType = CameraType::None;
 	_clearType = CameraClearType::Skybox;
-	_clearColor = glm::vec4(0.0);
+	_clearColor = glm::vec4(0.0, 0.0, 0.0, 1.0);
 	_depth = -1;
 	_msaa = 1;
 	_layerMask = 0;
@@ -216,6 +216,139 @@ CameraClearType Camera::GetClearTypeByString(std::string str)
 	return CameraClearType::Skybox;
 }
 
+void Camera::OnImguiRender()
+{
+	float firstWidth = 100.0f;
+
+	if (ImGui::BeginTable("NearTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("Near");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::DragFloat("##Near", &_zNear, 0.5f);
+		ImGui::EndTable();
+	}
+
+	if (ImGui::BeginTable("FarTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("Far");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::DragFloat("##Far", &_zFar, 0.5f);
+		ImGui::EndTable();
+	}
+
+	if (ImGui::BeginTable("DepthTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("Depth");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::DragInt("##Depth", &_depth, 1);
+		ImGui::EndTable();
+	}
+
+	if (ImGui::BeginTable("MSAATable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("MSAA");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::DragInt("##MSAA", &_msaa, 1, 0, 8);
+		ImGui::EndTable();
+		//TODO ËøôÈáåË¶ÅÊ∏ÖÊéâÊúâÂâçÁöÑRT
+	}
+
+	if (ImGui::BeginTable("ClearColorTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("ClearColor");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::ColorEdit4("##ClearColor", (float*)&_clearColor);
+		ImGui::EndTable();
+	}
+
+	if (ImGui::BeginTable("HDRTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("HDR");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		ImGui::Checkbox("##HDR", &_hdrEnable);
+		ImGui::EndTable();
+		//TODO ËøôÈáåË¶ÅÊ∏ÖÊéâÊúâÂâçÁöÑRT
+	}
+
+	static bool show_popup = false;
+	if (ImGui::Button("Clear Type", ImVec2(-1, 0))) {
+		show_popup = true;
+	}
+	if (show_popup)
+	{
+		ImGui::SetNextWindowPos(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMax().y));
+
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // ËÉåÊôØËâ≤ÔºöÊ∑±ËìùÁÅ∞
+		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // ËæπÊ°ÜËâ≤ÔºöËìùËâ≤
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // Â≠ó‰ΩìËâ≤ÔºöÊµÖÁÅ∞
+
+		ImGui::Begin("##Dropdown", &show_popup,
+			ImGuiWindowFlags_NoTitleBar |
+			ImGuiWindowFlags_NoResize |
+			ImGuiWindowFlags_NoMove |
+			ImGuiWindowFlags_AlwaysAutoResize);
+
+		// Ê£ÄÊµãÁÇπÂáªÂ§ñÈÉ®Âå∫Âüü
+		bool popup_hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup |
+			ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+		bool button_hovered = ImGui::IsItemHovered();
+
+		// Â¶ÇÊûúÊ≤°ÊúâÊÇ¨ÂÅúÂú®ÂºπÂá∫Ê°ÜÊàñÊåâÈíÆ‰∏äÔºå‰∏îÈº†Ê†áË¢´ÁÇπÂáªÔºåÂàôÂÖ≥Èó≠ÂºπÂá∫Ê°Ü
+		if (ImGui::IsMouseClicked(0) && !popup_hovered && !button_hovered) {
+			show_popup = false;
+		}
+
+		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+			show_popup = false;
+		}
+
+		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // ÈÄâ‰∏≠È°πËÉåÊôØ
+		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f)); // ÊÇ¨ÂÅúËÉåÊôØ
+		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));  // ÁÇπÂáªËÉåÊôØ
+
+		static std::vector<std::string> names = { "Skybox", "SolidColor", "DepthOnly", "DontClear" };
+
+		for (int i = 0; i < (int)names.size(); i++)
+		{
+			if (ImGui::Selectable(names[i].c_str()))
+			{
+				show_popup = false;
+				_clearType = GetClearTypeByString(names[i]);
+			}
+		}
+
+		ImGui::PopStyleColor(3);
+		ImGui::End();
+		ImGui::PopStyleColor(3);
+
+	}
+
+}
+
 /////////////////////////////////////////////////////////////////////
 
 PerspectiveCamera::PerspectiveCamera(Entity& entity, bool enable) : Camera(entity, enable)
@@ -308,134 +441,7 @@ void PerspectiveCamera::OnImguiRender()
 		ImGui::EndTable();
 	}
 
-	if (ImGui::BeginTable("NearTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("Near");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragFloat("##Near", &_zNear, 0.5f);
-		ImGui::EndTable();
-	}
-
-	if (ImGui::BeginTable("FarTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("Far");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragFloat("##Far", &_zFar, 0.5f);
-		ImGui::EndTable();
-	}
-
-	if (ImGui::BeginTable("DepthTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("Depth");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragInt("##Depth", &_depth, 1);
-		ImGui::EndTable();
-	}
-
-	if (ImGui::BeginTable("MSAATable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("MSAA");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragInt("##MSAA", &_msaa, 1, 0, 8);
-		ImGui::EndTable();
-		//TODO ’‚¿Ô“™«ÂµÙ”–«∞µƒRT
-	}
-
-	if (ImGui::BeginTable("ClearColorTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("ClearColor");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::ColorEdit4("##ClearColor", (float*)&_clearColor);
-		ImGui::EndTable();
-	}
-
-	if (ImGui::BeginTable("HDRTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("HDR");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::Checkbox("##HDR", &_hdrEnable);
-		ImGui::EndTable();
-		//TODO ’‚¿Ô“™«ÂµÙ”–«∞µƒRT
-	}
-
-	static bool show_popup = false;
-	if (ImGui::Button("Clear Type", ImVec2(-1, 0))) {
-		show_popup = true;
-	}
-	if (show_popup)
-	{
-		ImGui::SetNextWindowPos(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMax().y));
-
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // ±≥æ∞…´£∫…Ó¿∂ª“
-		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // ±ﬂøÚ…´£∫¿∂…´
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // ◊÷ÃÂ…´£∫«≥ª“
-
-		ImGui::Begin("##Dropdown", &show_popup,
-			ImGuiWindowFlags_NoTitleBar |
-			ImGuiWindowFlags_NoResize |
-			ImGuiWindowFlags_NoMove |
-			ImGuiWindowFlags_AlwaysAutoResize);
-
-		// ºÏ≤‚µ„ª˜Õ‚≤ø«¯”Ú
-		bool popup_hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup |
-			ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-		bool button_hovered = ImGui::IsItemHovered();
-
-		// »Áπ˚√ª”––¸Õ£‘⁄µØ≥ˆøÚªÚ∞¥≈•…œ£¨«“ Û±Í±ªµ„ª˜£¨‘Úπÿ±’µØ≥ˆøÚ
-		if (ImGui::IsMouseClicked(0) && !popup_hovered && !button_hovered) {
-			show_popup = false;
-		}
-
-		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
-			show_popup = false;
-		}
-
-		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // —°÷–œÓ±≥æ∞
-		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f)); // –¸Õ£±≥æ∞
-		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));  // µ„ª˜±≥æ∞
-
-		static std::vector<std::string> names = { "Skybox", "SolidColor", "DepthOnly", "DontClear" };
-
-		for (int i = 0; i < (int)names.size(); i++)
-		{
-			if (ImGui::Selectable(names[i].c_str()))
-			{
-				show_popup = false;
-				_clearType = GetClearTypeByString(names[i]);
-			}
-		}
-
-		ImGui::PopStyleColor(3);
-		ImGui::End();
-		ImGui::PopStyleColor(3);
-
-	}
-
-
+	Camera::OnImguiRender();
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -443,16 +449,24 @@ void PerspectiveCamera::OnImguiRender()
 OrthoCamera::OrthoCamera(Entity& entity, bool enable) : Camera(entity, enable)
 {
 	_cameraType = CameraType::OrthoCamera;
-	_left = 100;
+	_left = -100;
 	_right = 100;
-	_bottom = 100;
+	_bottom = -100;
 	_top = 100;
+	_scale = 1.0f;
+	_aspectRatio = 1.0f;
+	_projectSkyboxMatrix = glm::mat4(1.0f);
 	Bind(EventCode::WindowResize);
 }
 
 OrthoCamera::~OrthoCamera()
 {
 	Unbind(EventCode::WindowResize);
+}
+
+const glm::mat4& OrthoCamera::GetSkyboxProjectMatrix()
+{
+	return _projectSkyboxMatrix;
 }
 
 void OrthoCamera::MakeProjectionMatrix()
@@ -462,18 +476,25 @@ void OrthoCamera::MakeProjectionMatrix()
 
 	_projectMatrix = glm::ortho(_left, _right, _bottom, _top, _zNear, _zFar);
 	_projectInverseMatrix = glm::inverse(_projectMatrix);
+
+	if (_aspectRatio >= 1.0f) {
+		_projectSkyboxMatrix = glm::ortho(-1.0f, 1.0f, -1.0f / _aspectRatio, 1.0f / _aspectRatio, _zNear, _zFar);
+	}
+	else {
+		_projectSkyboxMatrix = glm::ortho(-_aspectRatio, _aspectRatio, -1.0f, 1.0f, _zNear, _zFar);
+	}
 }
 
 void OrthoCamera::SetProjectionData(float left, float right, float top, float bottom, float near, float far, float dontCare)
 {
 	if (left != dontCare)
-		_left = left;
+		_left = left * _scale;
 	if (right != dontCare)
-		_right = right;
+		_right = right * _scale;
 	if (top != dontCare)
-		_top = top;
+		_top = top * _scale;
 	if (bottom != dontCare)
-		_bottom = bottom;
+		_bottom = bottom * _scale;
 
 	SetNearFar(near, far, dontCare);
 }
@@ -489,7 +510,8 @@ bool OrthoCamera::Serialize()
 	out << YAML::Key << "right" << YAML::Value << _right;
 	out << YAML::Key << "bottom" << YAML::Value << _bottom;
 	out << YAML::Key << "top" << YAML::Value << _top;
-
+	out << YAML::Key << "scale" << YAML::Value << _scale;
+	
 	out << YAML::EndMap;
 
 	return true;
@@ -502,152 +524,47 @@ bool OrthoCamera::Deserialize(YAML::Node& node)
 	_right = node["right"].as<float>();
 	_bottom = node["bottom"].as<float>();
 	_top = node["top"].as<float>();
+	_scale = node["scale"].as<float>();
 	return true;
+}
+
+void OrthoCamera::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
+{
+	if (nullptr == _renderTexture && eventCode == EventCode::WindowResize)
+	{
+		WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
+		if (wre.isMinimized == true)
+			return;
+		_aspectRatio = (float)wre.width / (float)wre.height;
+		float halfWidth = wre.width * 0.5f * _scale;
+		float halfHeight = wre.height * 0.5f * _scale;
+		SetProjectionData(-halfWidth, halfWidth, halfHeight, -halfHeight, -1.0f, -1.0f);
+	}
 }
 
 void OrthoCamera::OnImguiRender()
 {
 	float firstWidth = 100.0f;
 
-	if (ImGui::BeginTable("NearTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+	if (ImGui::BeginTable("SizeTable", 2, ImGuiTableFlags_SizingStretchProp)) {
 		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
 		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableNextRow();
 		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("Near");
+		ImGui::Text("Size");
 		ImGui::TableSetColumnIndex(1);
 		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragFloat("##Near", &_zNear, 0.5f);
+		float scale = _scale;
+		ImGui::DragFloat("##Size", &scale, 0.001f);
 		ImGui::EndTable();
-	}
-
-	if (ImGui::BeginTable("FarTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("Far");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragFloat("##Far", &_zFar, 0.5f);
-		ImGui::EndTable();
-	}
-
-	//if (ImGui::BeginTable("SizeTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-	//	ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-	//	ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-	//	ImGui::TableNextRow();
-	//	ImGui::TableSetColumnIndex(0);
-	//	ImGui::Text("Size");
-	//	ImGui::TableSetColumnIndex(1);
-	//	ImGui::SetNextItemWidth(-FLT_MIN);
-	//	ImGui::DragFloat("##Size", &_left, 0.5f);
-	//	ImGui::EndTable();
-	//	// TODO Àı∑≈Õ∂”∞
-	//}
-
-	if (ImGui::BeginTable("DepthTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("Depth");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragInt("##Depth", &_depth, 1);
-		ImGui::EndTable();
-	}
-
-	if (ImGui::BeginTable("MSAATable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("MSAA");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragInt("##MSAA", &_msaa, 1, 0, 8);
-		ImGui::EndTable();
-		//TODO ’‚¿Ô“™«ÂµÙ”–«∞µƒRT
-	}
-
-	if (ImGui::BeginTable("ClearColorTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("ClearColor");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::ColorEdit4("##ClearColor", (float*)&_clearColor);
-		ImGui::EndTable();
-	}
-
-	if (ImGui::BeginTable("HDRTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("HDR");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::Checkbox("##HDR", &_hdrEnable);
-		ImGui::EndTable();
-	}
-
-	static bool show_popup = false;
-	if (ImGui::Button("Clear Type", ImVec2(-1, 0))) {
-		show_popup = true;
-	}
-	if (show_popup)
-	{
-		ImGui::SetNextWindowPos(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMax().y));
-
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // ±≥æ∞…´£∫…Ó¿∂ª“
-		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // ±ﬂøÚ…´£∫¿∂…´
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // ◊÷ÃÂ…´£∫«≥ª“
-
-		ImGui::Begin("##Dropdown", &show_popup,
-			ImGuiWindowFlags_NoTitleBar |
-			ImGuiWindowFlags_NoResize |
-			ImGuiWindowFlags_NoMove |
-			ImGuiWindowFlags_AlwaysAutoResize);
-
-		// ºÏ≤‚µ„ª˜Õ‚≤ø«¯”Ú
-		bool popup_hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup |
-			ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-		bool button_hovered = ImGui::IsItemHovered();
-
-		// »Áπ˚√ª”––¸Õ£‘⁄µØ≥ˆøÚªÚ∞¥≈•…œ£¨«“ Û±Í±ªµ„ª˜£¨‘Úπÿ±’µØ≥ˆøÚ
-		if (ImGui::IsMouseClicked(0) && !popup_hovered && !button_hovered) {
-			show_popup = false;
-		}
-
-		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
-			show_popup = false;
-		}
-
-		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // —°÷–œÓ±≥æ∞
-		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f)); // –¸Õ£±≥æ∞
-		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));  // µ„ª˜±≥æ∞
-
-		static std::vector<std::string> names = { "Skybox", "SolidColor", "DepthOnly", "DontClear" };
-
-		for (int i = 0; i < (int)names.size(); i++)
+		if (scale != _scale)
 		{
-			if (ImGui::Selectable(names[i].c_str()))
-			{
-				show_popup = false;
-				_clearType = GetClearTypeByString(names[i]);
-			}
+			_scale = scale;
+			SetProjectionData(_left, _right, _top, _bottom, -1.0f, -1.0f);
 		}
-
-		ImGui::PopStyleColor(3);
-		ImGui::End();
-		ImGui::PopStyleColor(3);
-
 	}
 
+	Camera::OnImguiRender();
 }
 
 /////////////////////////////////////////////////////////////////////

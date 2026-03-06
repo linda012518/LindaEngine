@@ -73,8 +73,8 @@ static void DrawVec3Control(const std::string& label, glm::vec3& values, float r
 }
 
 
-template<typename T, typename UIFunction>
-static void DrawComponent(T* component, Entity* entity, UIFunction uiFunction)
+template<typename T, typename UIFunction, typename HoverCallback = std::nullptr_t>
+static void DrawComponent(T* component, Entity* entity, UIFunction uiFunction, HoverCallback uiHovered)
 {
 	bool isTransform = std::is_same<Transform, T>::value;
 
@@ -109,6 +109,8 @@ static void DrawComponent(T* component, Entity* entity, UIFunction uiFunction)
 	treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_SpanAvailWidth;
 	if (ImGui::TreeNodeEx((void*)component, treeNodeFlags, component->GetClassName().c_str()))
 	{
+		if (ImGui::IsItemHovered())
+			uiHovered(component);
 		uiFunction(component);
 		ImGui::TreePop();
 	}
@@ -134,6 +136,7 @@ void InspectorPanelEditor::OnImGuiRender()
 
 	if (nullptr == _selectionEntity)
 	{
+		_showPopup = false;
 		ImGui::End();
 		return;
 	}
@@ -198,18 +201,20 @@ void InspectorPanelEditor::DrawComponents()
 				glm::vec3& scale = com->GetLocalScale();
 				DrawVec3Control("Scale", scale, 1.0f);
 				com->SetLocalScale(scale);
-			});
+			}, [=](auto& com) { });
 		}
 		else
 		{
-			DrawComponent<Component>(go.get(), _selectionEntity, [=](auto& com)
-			{
-				go->OnImguiRender();
-				if (ImGui::IsItemHovered())
+			DrawComponent<Component>(go.get(), _selectionEntity, 
+				[=](auto& com)
+				{
+					go->OnImguiRender();
+				}, 
+				[=](auto& com)
 				{
 					_component = go.get();
 				}
-			});
+			);
 		}
 		ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
 		ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
@@ -247,13 +252,11 @@ void InspectorPanelEditor::DrawSundry()
 {
 	std::vector<std::string>& names = ComponentFactory::GetComponents();
 
-	static bool show_popup = false;
-
 	if (ImGui::Button("Add Component", ImVec2(-1, 0))) {
-		show_popup = true;
+		_showPopup = true;
 	}
 
-	if (false == show_popup)
+	if (false == _showPopup)
 		return;
 
 	ImGui::SetNextWindowPos(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMax().y));
@@ -262,7 +265,7 @@ void InspectorPanelEditor::DrawSundry()
 	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // 边框色：蓝色
 	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // 字体色：浅灰
 
-	ImGui::Begin("##Dropdown", &show_popup,
+	ImGui::Begin("##Dropdown", &_showPopup,
 		ImGuiWindowFlags_NoTitleBar |
 		ImGuiWindowFlags_NoResize |
 		ImGuiWindowFlags_NoMove |
@@ -275,11 +278,11 @@ void InspectorPanelEditor::DrawSundry()
 
 	// 如果没有悬停在弹出框或按钮上，且鼠标被点击，则关闭弹出框
 	if (ImGui::IsMouseClicked(0) && !popup_hovered && !button_hovered) {
-		show_popup = false;
+		_showPopup = false;
 	}
 
 	if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
-		show_popup = false;
+		_showPopup = false;
 	}
 
 	ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // 选中项背景
@@ -290,7 +293,7 @@ void InspectorPanelEditor::DrawSundry()
 	{
 		if (ImGui::Selectable(names[i].c_str()))
 		{
-			show_popup = false;
+			_showPopup = false;
 			_selectionEntity->AddComponent(names[i]);
 		}
 	}

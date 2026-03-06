@@ -38,7 +38,7 @@ namespace LindaEngine
 		static Drawable& GetSkyboxRenderer();
 		static void SetSkyboxMaterial(Ref<Material> material);
 		static Ref<Material> GetSkyboxMaterial();
-		static void RenderSkybox();
+		static void RenderSkybox(glm::mat4& view);
 
 		static Drawable& GetBoundingBoxRenderer();
 		void RenderBoundingBox();

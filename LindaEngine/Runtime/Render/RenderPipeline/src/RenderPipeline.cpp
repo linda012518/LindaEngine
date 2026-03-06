@@ -103,7 +103,7 @@ void RenderPipeline::SetupLightListShaderParameters(Camera* camera, UniformDataG
                 break;
             float atten = 1.0f / glm::max(pointLight->GetRange() * pointLight->GetRange(), 0.00001f);
             block.pointLightColors[pointLightCount] = pointLight->GetFinalColor();
-            block.pointLightColors[pointLightCount] = glm::vec4(pointLight->GetPosition(), atten);
+            block.pointLightPositionAttens[pointLightCount] = glm::vec4(pointLight->GetPosition(), atten);
             pointLightCount++;
         }
         break;

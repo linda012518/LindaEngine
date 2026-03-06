@@ -34,6 +34,7 @@ namespace LindaEngine
 		void Tick();
 		void TransformDirty();
 
+		virtual const glm::mat4& GetSkyboxProjectMatrix() { return _projectMatrix; }
 		const glm::mat4& GetViewMatrix() { return _viewMatrix; }
 		const glm::mat4& GetProjectMatrix() { return _projectMatrix; }
 		const glm::mat4& GetViewProjectMatrix() { return _viewProjectMatrix; }
@@ -70,6 +71,8 @@ namespace LindaEngine
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
+
+		virtual void OnImguiRender();
 
 		glm::vec3 ScreenToWorldPosition(glm::vec3& screenPos);
 
@@ -142,12 +145,15 @@ namespace LindaEngine
 		OrthoCamera(Entity& entity, bool enable = true);
 		virtual ~OrthoCamera();
 
+		const glm::mat4& GetSkyboxProjectMatrix();
 		virtual void MakeProjectionMatrix();
 
 		void SetProjectionData(float left, float right, float top, float bottom, float near, float far, float dontCare = -1.0f);
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
+
+		void OnEvent(IEventHandler* sender, int eventCode, Event& eventData);
 
 		void OnImguiRender();
 
@@ -156,6 +162,9 @@ namespace LindaEngine
 		float _right;
 		float _bottom;
 		float _top;
+		float _scale;
+		float _aspectRatio;
+		glm::mat4 _projectSkyboxMatrix;
 	};
 
 	class CubeCamera : public Camera

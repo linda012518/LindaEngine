@@ -22,15 +22,20 @@ namespace LindaEngine
 		static Ref<Mesh> GetEmpty();
 
 		static Ref<Mesh> GetBoundingBox();
+		static Ref<Mesh> GetFrustumMesh();
+		static Ref<Mesh> GetLightMesh();
 
 	private:
 		static Ref<FBXResources> GetFBXResources(Ref<FBXResources> res, std::string hashCode);
 		static void ClearFBX(Ref<FBXResources> res);
+		static Ref<Mesh> CreateCubeMesh(DrawType type, float scale);
 
 	private:
 		static std::unordered_map<std::string, Ref<FBXResources>> _map;
 		static Ref<Mesh> _skybox;
 		static Ref<Mesh> _empty;
 		static Ref<Mesh> _boundingBox;
+		static Ref<Mesh> _frustumMesh;
+		
 	};
 }
