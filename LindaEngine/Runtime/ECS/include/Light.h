@@ -84,9 +84,9 @@ namespace LindaEngine
 		//float GetAttenuation();
 		//glm::vec4 GetSpotAngles();
 
-		void SetRange(float range) { _range = range; CalculateAABB(); }
-		void SetInnerAngle(float angle) { _innerAngle = angle; CalculateAABB(); }
-		void SetOuterAngle(float angle) { _outerAngle = angle; CalculateAABB(); }
+		void SetRange(float range);
+		void SetInnerAngle(float angle);
+		void SetOuterAngle(float angle);
 
 		float GetRange() { return _range; }
 		float GetInnerAngle() { return _innerAngle; }

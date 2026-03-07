@@ -248,7 +248,10 @@ void SpotLight::OnImguiRender()
 		ImGui::Text("Range");
 		ImGui::TableSetColumnIndex(1);
 		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragFloat("##Range", &_range, 0.01f);
+		float value = _range;
+		ImGui::DragFloat("##Range", &value, 0.01f);
+		if (value != _range)
+			SetRange(value);
 		ImGui::EndTable();
 	}
 
@@ -260,7 +263,10 @@ void SpotLight::OnImguiRender()
 		ImGui::Text("InnerAngle");
 		ImGui::TableSetColumnIndex(1);
 		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragFloat("##InnerAngle", &_innerAngle, 0.01f);
+		float value = _innerAngle;
+		ImGui::DragFloat("##InnerAngle", &value, 0.01f);
+		if (value != _innerAngle)
+			SetInnerAngle(value);
 		ImGui::EndTable();
 	}
 
@@ -272,10 +278,41 @@ void SpotLight::OnImguiRender()
 		ImGui::Text("OuterAngle");
 		ImGui::TableSetColumnIndex(1);
 		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragFloat("##OuterAngle", &_outerAngle, 0.01f);
+		float value = _outerAngle;
+		ImGui::DragFloat("##OuterAngle", &value, 0.01f);
+		if (value != _outerAngle)
+			SetOuterAngle(value);
 		ImGui::EndTable();
 	}
 
+}
+
+void SpotLight::SetRange(float range)
+{
+	_range = range; 
+	CalculateAABB();
+}
+
+void SpotLight::SetInnerAngle(float angle)
+{
+	if (angle > 168.0f)
+		angle = 168.0f;
+	if (angle > _outerAngle)
+		_innerAngle = _outerAngle;
+	else
+		_innerAngle = angle;
+	CalculateAABB();
+}
+
+void SpotLight::SetOuterAngle(float angle)
+{
+	if (angle > 168.0f)
+		angle = 168.0f;
+	if (angle < _innerAngle)
+		_outerAngle = _innerAngle;
+	else
+		_outerAngle = angle;
+	CalculateAABB(); 
 }
 
 void SpotLight::CalculateAABB()
@@ -347,7 +384,10 @@ void PointLight::OnImguiRender()
 		ImGui::Text("Range");
 		ImGui::TableSetColumnIndex(1);
 		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragFloat("##Range", &_range, 0.01f);
+		float value = _range;
+		ImGui::DragFloat("##Range", &value, 0.01f);
+		if (value != _range)
+			SetRange(value);
 		ImGui::EndTable();
 	}
 

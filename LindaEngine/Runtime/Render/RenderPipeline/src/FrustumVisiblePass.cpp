@@ -107,7 +107,7 @@ void FrustumVisiblePass::CalculateSpotLightMat(glm::mat4& model, Light* light, b
 	SpotLight* spotLight = ((SpotLight*)light);
 	float angle = isInner ? spotLight->GetInnerAngle() : spotLight->GetOuterAngle();
 	float distance = spotLight->GetRange();
-	float scaleXY = glm::tan(angle / 2) * distance;  // 根据距离和角度计算底面半径
+	float scaleXY = glm::tan(glm::radians(angle / 2)) * distance;  // 根据距离和角度计算底面半径
 	float scaleZ = distance;							  // 轴向长度
 
 	model[0][0] = scaleXY;
