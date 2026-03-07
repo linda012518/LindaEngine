@@ -43,6 +43,7 @@ namespace LindaEngine
 		static Ref<Mesh> _frustumMesh;
 		static Ref<Mesh> _directionLightMesh;
 		static Ref<Mesh> _pointLightMesh;
+		static Ref<Mesh> _spotLightMesh;
 		
 	};
 }

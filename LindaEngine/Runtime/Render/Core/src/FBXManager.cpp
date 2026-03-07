@@ -11,6 +11,7 @@ Ref<Mesh> FBXManager::_boundingBox = nullptr;
 Ref<Mesh> FBXManager::_frustumMesh = nullptr;
 Ref<Mesh> FBXManager::_directionLightMesh = nullptr;
 Ref<Mesh> FBXManager::_pointLightMesh = nullptr;
+Ref<Mesh> FBXManager::_spotLightMesh = nullptr;
 
 Ref<FBXResources> FBXManager::GetFBX(std::string fbxPath)
 {
@@ -239,8 +240,7 @@ Ref<Mesh> FBXManager::CreatePointLightMesh()
 	float scale = 0.2f;
 	float radius = 1.0f * scale; // 半径
 	int segments = 36;
-	const float twoPi = glm::two_pi<float>();
-	float angleStep = twoPi / segments;
+	float angleStep = glm::two_pi<float>() / segments;
 
 	// --- 顶点定义 -------------------------------------------------
 	// 圆1：XY 平面（绕 Z 轴），顶点坐标 (r*cos, r*sin, 0)
@@ -276,7 +276,60 @@ Ref<Mesh> FBXManager::CreatePointLightMesh()
 
 Ref<Mesh> FBXManager::CreateSpotLightMesh()
 {
-	return Ref<Mesh>();
+	if (nullptr != _spotLightMesh)
+		return _spotLightMesh;
+
+	_spotLightMesh = CreateRef<Mesh>();
+	Mesh::Data& data = _spotLightMesh->AddMeshData(Mesh::Data());
+	data.AddAttribute(VertexAttributeType::Position);
+	data.drawType = DrawType::LINES;
+
+	int segments = 36;
+	const float angleStep = glm::two_pi<float>() / segments;
+
+	// --- 顶点定义 -------------------------------------------------
+	// 0: 顶点（光源位置）
+	data.AddFloat3(glm::vec3(0.0f, 0.0f, 0.0f));
+	// 1: 底面中心
+	data.AddFloat3(glm::vec3(0.0f, 0.0f, 1.0f));
+
+	// 2 ~ 2+segments-1: 底面圆周点 (z = 1)
+	for (int i = 0; i < segments; ++i) {
+		float angle = i * angleStep;
+		float x = cos(angle);
+		float y = sin(angle);
+		data.AddFloat3(glm::vec3(x, y, 1.0f));
+	}
+
+	// --- 线段索引构建 ---------------------------------------------
+	const int baseIdx = 2;  // 第一个圆周点的索引
+
+	// 轴线 (0 → 1)
+	data.indexData.push_back(0);
+	data.indexData.push_back(1);
+
+	// 母线 (0 → 每个圆周点)
+	for (int i = 0; i < segments; ++i) {
+		data.indexData.push_back(0);
+		data.indexData.push_back(baseIdx + i);
+	}
+
+	// 底面圆环 (相邻圆周点相连)
+	for (int i = 0; i < segments; ++i) {
+		int curr = baseIdx + i;
+		int next = baseIdx + (i + 1) % segments;
+		data.indexData.push_back(curr);
+		data.indexData.push_back(next);
+	}
+
+	//// 辐条 (底面中心 → 每个圆周点)
+	//for (int i = 0; i < segments; ++i) {
+	//	data.indexData.push_back(1);
+	//	data.indexData.push_back(baseIdx + i);
+	//}
+
+
+	return _spotLightMesh;
 }
 
 Ref<Mesh> FBXManager::GetSkybox()

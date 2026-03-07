@@ -26,6 +26,8 @@ namespace LindaEngine
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
+		virtual void OnImguiRender();
+
 		void TransformDirty();
 
 		glm::vec4 GetFinalColor();
@@ -44,6 +46,9 @@ namespace LindaEngine
 		void SetIntensity(float intensity) { _intensity = intensity; }
 		void SetColor(glm::vec4 color) { _color = color; }
 		void SetShadowType(ShadowType type) { _shadowType = type; }
+
+	protected:
+		ShadowType GetShadowTypeByString(std::string str);
 
 	protected:
 		float _intensity;
@@ -74,6 +79,8 @@ namespace LindaEngine
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
+		void OnImguiRender();
+
 		//float GetAttenuation();
 		//glm::vec4 GetSpotAngles();
 
@@ -102,6 +109,8 @@ namespace LindaEngine
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
+
+		void OnImguiRender();
 
 		//float GetAttenuation();
 
