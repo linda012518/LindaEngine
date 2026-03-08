@@ -10,6 +10,7 @@
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
+#include <imgui/imgui_stdlib.h>
 
 using namespace LindaEditor;
 using namespace LindaEngine;
@@ -151,12 +152,12 @@ void InspectorPanelEditor::OnImGuiRender()
 		_selectionEntity->SetActive(ret);
 
 	ImGui::SameLine();
-	static char name[256] = "";
-	auto go = _selectionEntity->GetName().c_str();
-	strncpy_s(name, go, 256);
+	std::string go = _selectionEntity->GetName();
 	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 18.0f);
 	ImGui::SetNextItemWidth(-FLT_MIN);
-	ImGui::InputText("##Name", name, IM_ARRAYSIZE(name));
+	ImGui::InputText("##Name", &go);
+	if (go != _selectionEntity->GetName())
+		_selectionEntity->SetName(go);
 
 	DrawComponents();
 	DrawSundry();

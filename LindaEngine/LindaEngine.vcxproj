@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="External\imgui\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="Runtime\ECS\src\AnimationSystem.cpp" />
     <ClCompile Include="Runtime\ECS\src\Animation.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\ShaderBuiltInUniform.cpp" />
@@ -353,6 +354,7 @@
     <ClCompile Include="SandboxApp\src\TestAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="External\imgui\imgui\imgui_stdlib.h" />
     <ClInclude Include="Runtime\ECS\include\AnimationSystem.h" />
     <ClInclude Include="Runtime\ECS\include\Animation.h" />
     <ClInclude Include="Runtime\Render\Core\include\ShaderBuiltInUniform.h" />
