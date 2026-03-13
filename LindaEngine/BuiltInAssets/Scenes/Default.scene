@@ -1,6 +1,6 @@
 Scene:
   FileName: BuiltInAssets/Scenes/Default.scene
-  SkyboxMaterial: Assets/Materials/SkyboxCubemap.mat
+  SkyboxMaterial: BuiltInAssets/Materials/ProceduralSkybox.mat
   Entitys:
     - Name: Main Camera
       Layer: 1

@@ -633,6 +633,9 @@
     <ClCompile Include="External\imgui\imgui\imgui_stdlib.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Core\src\TaskServer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -2487,6 +2490,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="External\imgui\imgui\imgui_stdlib.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Core\include\TaskServer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

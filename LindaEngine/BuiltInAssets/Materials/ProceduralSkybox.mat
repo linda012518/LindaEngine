@@ -1,0 +1,12 @@
+Material:
+  HasFallback: false
+  IsError: false
+  MaterialPath: BuiltInAssets/Materials/ProceduralSkybox.mat
+  RenderQueue: 2000
+  RenderType: 1
+  ShaderPath: BuiltInAssets/Shaders/ProceduralSkybox.shader
+  MaterialPasses:
+    - PassName: Skybox
+      RenderState:
+        DepthState:
+          DepthFunc: 515
