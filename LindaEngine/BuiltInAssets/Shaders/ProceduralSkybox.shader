@@ -32,8 +32,6 @@
 		{
 			in vec3 worldNormal;
 
-			uniform vec3 lightDir;      // 主光源方向（世界空间，从物体指向光源）
-
 			// 将方向转换为天顶角 theta (0~PI) 和方位角 phi (0~2PI)
 			vec2 dirToAngles(vec3 dir) {
 				float theta = acos(dir.y);                 // 与+Y轴的夹角
