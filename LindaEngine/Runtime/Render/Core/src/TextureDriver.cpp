@@ -20,6 +20,21 @@ void TextureDriver::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
 	_context->CreateCubeByPanoramic(src, dest);
 }
 
+void TextureDriver::CreateIBLIrradianceMap(Ref<Texture> src, Ref<Texture> dest)
+{
+	_context->CreateIBLIrradianceMap(src, dest);
+}
+
+void TextureDriver::CreateIBLPrefilterMap(Ref<Texture> src, Ref<Texture> dest)
+{
+	_context->CreateIBLPrefilterMap(src, dest);
+}
+
+void TextureDriver::CreateIBLBRDFMap(Ref<Texture> dest)
+{
+	_context->CreateIBLBRDFMap(dest);
+}
+
 void TextureDriver::DeleteTexture(Ref<Texture> texture)
 {
 	_context->DeleteTexture(texture);
@@ -53,6 +68,11 @@ void TextureDriver::CopyRenderTexture(Ref<RenderTexture> src, Ref<RenderTexture>
 void* TextureDriver::ReadPixed(Ref<RenderTexture> src, int xStart, int yStart, int width, int height, uint32_t attachmentIndex)
 {
 	return _context->ReadPixed(src, xStart, yStart, width, height, attachmentIndex);
+}
+
+std::vector<std::vector<glm::vec3>> TextureDriver::GetPixelByCubemap(Ref<Texture> cubemap)
+{
+	return _context->GetPixelByCubemap(cubemap);
 }
 
 void TextureDriver::Initialize()

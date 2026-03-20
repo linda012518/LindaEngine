@@ -109,6 +109,169 @@ void OpenglTexture::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
 	Material::overrideLightMode = temp;
 }
 
+void OpenglTexture::CreateIBLIrradianceMap(Ref<Texture> src, Ref<Texture> dest)
+{
+	FramebufferTextureSpecification color;
+	color.colorFormat = TextureFormat::RGBA8;
+
+	FramebufferTextureSpecification depth;
+	depth.colorFormat = TextureFormat::Depth16;
+	depth.isRenderBuffer = true;
+
+	Ref<RenderTexture> rt = CreateRef<RenderTexture>();
+	rt->width = 64;
+	rt->height = 64;
+	rt->isCube = true;
+	rt->isGammaCorrection = false;
+	rt->msaa = 1;
+	rt->mipmapCount = 1;
+	rt->anisotropy = 1;
+	rt->colorAttachments.push_back(color);
+	rt->depthAttachment = depth;
+	CreateRenderTextureCubemap(rt);
+	dest->nativeColorID = rt->nativeIDs[0];
+
+	glBindFramebuffer(GL_FRAMEBUFFER, rt->nativeColorID);
+	glViewport(0, 0, 64, 64);
+
+	Entity entity("temp");
+	CubeCamera* camera = entity.AddComponent<CubeCamera>();
+	camera->Tick();
+	Ref<Material> material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/IBLIrradiance.shader");
+	material->SetTexture(ShaderBuiltInUniform::linda_PanoramicCube, src);
+
+	std::string temp = Material::overrideLightMode;
+	Material::overrideLightMode = "Color";
+
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		material->SetMat4(ShaderBuiltInUniform::linda_Matrix_VP_PanoramicCube, camera->GetVPMatrix(i));
+		material->Bind(0, nullptr, FBXManager::GetSkybox()->GetMeshAttributes());
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, dest->nativeColorID, 0);
+		if (depth.isRenderBuffer == false) // 如果不用RenderBuffer，需要绑定纹理
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GetRenderTextureDepthAttachment(depth.colorFormat), GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, rt->depthNativeID, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		FBXManager::GetSkybox()->Draw();
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	if (dest->mipmapCount > 1)
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, dest->nativeColorID);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, dest->mipmapCount);
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	}
+
+	glDeleteFramebuffers(1, &rt->nativeColorID);
+	glDeleteRenderbuffers((int)rt->renderBuffers.size(), rt->renderBuffers.data());
+
+	Material::overrideLightMode = temp;
+
+}
+
+void OpenglTexture::CreateIBLPrefilterMap(Ref<Texture> src, Ref<Texture> dest)
+{
+	FramebufferTextureSpecification color;
+	color.colorFormat = TextureFormat::RGBA8;
+
+	FramebufferTextureSpecification depth;
+	depth.colorFormat = TextureFormat::Depth16;
+	depth.isRenderBuffer = true;
+
+	Ref<RenderTexture> rt = CreateRef<RenderTexture>();
+	rt->width = 128;
+	rt->height = 128;
+	rt->isCube = true;
+	rt->isGammaCorrection = false;
+	rt->msaa = 1;
+	rt->mipmapCount = 1;
+	rt->anisotropy = 1;
+	rt->colorAttachments.push_back(color);
+	rt->depthAttachment = depth;
+	CreateRenderTextureCubemap(rt);
+	dest->nativeColorID = rt->nativeIDs[0];
+
+	glBindFramebuffer(GL_FRAMEBUFFER, rt->nativeColorID);
+	glViewport(0, 0, 128, 128);
+
+	Entity entity("temp");
+	CubeCamera* camera = entity.AddComponent<CubeCamera>();
+	camera->Tick();
+	Ref<Material> material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/IBLPrefilter.shader");
+	material->SetTexture(ShaderBuiltInUniform::linda_PanoramicCube, src);
+
+	std::string temp = Material::overrideLightMode;
+	Material::overrideLightMode = "Color";
+
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		material->SetMat4(ShaderBuiltInUniform::linda_Matrix_VP_PanoramicCube, camera->GetVPMatrix(i));
+		material->Bind(0, nullptr, FBXManager::GetSkybox()->GetMeshAttributes());
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, dest->nativeColorID, 0);
+		if (depth.isRenderBuffer == false) // 如果不用RenderBuffer，需要绑定纹理
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GetRenderTextureDepthAttachment(depth.colorFormat), GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, rt->depthNativeID, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		FBXManager::GetSkybox()->Draw();
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// 这里生成mipmap，后续使用时根据粗糙度采样不同的mipmap层，不计算使用不同的roughness，性能更好
+	if (dest->mipmapCount > 1)
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, dest->nativeColorID);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, dest->mipmapCount);
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	}
+
+	glDeleteFramebuffers(1, &rt->nativeColorID);
+	glDeleteRenderbuffers((int)rt->renderBuffers.size(), rt->renderBuffers.data());
+
+	Material::overrideLightMode = temp;
+
+}
+
+void OpenglTexture::CreateIBLBRDFMap(Ref<Texture> dest)
+{
+	FramebufferTextureSpecification color;
+	color.colorFormat = TextureFormat::RGBA8;
+
+	FramebufferTextureSpecification depth;
+	depth.colorFormat = TextureFormat::Depth16;
+	depth.isRenderBuffer = true;
+
+	Ref<RenderTexture> rt = CreateRef<RenderTexture>();
+	rt->width = 512;
+	rt->height = 512;
+	rt->isGammaCorrection = false;
+	rt->msaa = 1;
+	rt->mipmapCount = 1;
+	rt->anisotropy = 1;
+	rt->colorAttachments.push_back(color);
+	rt->depthAttachment = depth;
+	CreateRenderTexture2D(rt);
+	dest->nativeColorID = rt->nativeIDs[0];
+
+	glBindFramebuffer(GL_FRAMEBUFFER, rt->nativeColorID);
+	glViewport(0, 0, 512, 512);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	std::string temp = Material::overrideLightMode;
+	Material::overrideLightMode = "Color";
+
+	Ref<Material> material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/IBLBRDF.shader");
+	material->Bind(0, nullptr, std::vector<VertexAttribute>());
+	FBXManager::GetEmpty()->Draw();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glDeleteFramebuffers(1, &rt->nativeColorID);
+	glDeleteRenderbuffers((int)rt->renderBuffers.size(), rt->renderBuffers.data());
+
+	Material::overrideLightMode = temp;
+}
+
 void OpenglTexture::DeleteTexture(Ref<Texture> texture)
 {
 	if (nullptr != texture && texture->nativeColorID != 0)
@@ -241,6 +404,19 @@ void* OpenglTexture::ReadPixed(Ref<RenderTexture> src, int xStart, int yStart, i
 	glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
 	glReadPixels(xStart, yStart, width, height, GetRenderTextureDataFormat(format), GetRenderTextureDataType(format), data);
 	return data;
+}
+
+std::vector<std::vector<glm::vec3>> OpenglTexture::GetPixelByCubemap(Ref<Texture> cubemap)
+{
+	Bind(cubemap, 0, 0);
+	int cubeSize = cubemap->width;
+	std::vector<std::vector<glm::vec3>> faces(6);
+	for (int face = 0; face < 6; face++) 
+	{
+		faces[face].resize(cubeSize * cubeSize);
+		glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, 0, GL_RGB, GL_FLOAT, faces[face].data());
+	}
+	return faces;
 }
 
 unsigned int OpenglTexture::CreateOpenglTexture2D(int width, int height, unsigned int dataFormat, unsigned int internalFormat, unsigned int dataType, FilterMode filter, TextureWrapMode warpU, TextureWrapMode warpV, int mipmapCount, int anisotropy, void* data)

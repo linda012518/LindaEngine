@@ -26,11 +26,6 @@ layout (std140) uniform globalUniform
 
 	vec4 linda_Time; //以场景加载开始的时间 (t/20, t, t*2, t*3)
 
-	vec4 linda_SHAr;
-	vec4 linda_SHAg;
-	vec4 linda_SHAb;
-	vec4 linda_SHBr;
-	vec4 linda_SHBg;
-	vec4 linda_SHBb;
-	vec4 linda_SHC;
+	uniform vec3 linda_SHCoeffs[9]; // 球谐系数（9个RGB系数）
+
 };

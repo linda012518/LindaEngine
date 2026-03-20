@@ -58,7 +58,7 @@
 			// 模拟 Mie 散射（太阳周围的光晕）
 			float miePhase(float cosTheta, float g) {
 				float g2 = g * g;
-				return (1.0 - g2) / (4.0 * PI * pow(1.0 + g2 - 2.0 * g * cosTheta, 1.5));
+				return (1.0 - g2) / (4.0 * linda_PI * pow(1.0 + g2 - 2.0 * g * cosTheta, 1.5));
 			}
 
 			void main()

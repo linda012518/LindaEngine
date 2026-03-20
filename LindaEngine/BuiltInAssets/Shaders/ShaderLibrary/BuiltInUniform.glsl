@@ -1,5 +1,5 @@
 
-#define PI 3.14159265358979323
+#define linda_PI 3.14159265358979323
 
 uniform mat4 linda_LocalToWorld;
 uniform mat4 linda_WorldToLocal;
