@@ -3,11 +3,13 @@
 #include "SkyboxPass.h"
 #include "DrawObjectsPass.h"
 #include "PostProcessPasses.h"
+#include "PrecomputedAmbientPass.h"
 
 using namespace LindaEngine;
 
 void UniversalRenderer::CollectRenderPass()
 {
+    AddRenderPass(CreateRef<PrecomputedAmbientPass>());
     AddRenderPass(CreateRef<SkyboxPass>());
     AddRenderPass(CreateRef<PostProcessPass>());
 

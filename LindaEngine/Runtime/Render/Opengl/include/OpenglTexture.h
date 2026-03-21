@@ -12,6 +12,7 @@ namespace LindaEngine
 		void CreateTexture2D(Ref<Texture> texture, void* data, int channels, int bitCount);
 		void CreateCube(Ref<Texture> texture, void* right, void*left, void* top, void* bottom, void* front, void* back, int channels, int bitCount);
 		void CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest);
+		void CreateCubeByMaterial(Ref<Material> material, Ref<Texture> dest);
 		void CreateIBLIrradianceMap(Ref<Texture> src, Ref<Texture> dest);
 		void CreateIBLPrefilterMap(Ref<Texture> src, Ref<Texture> dest);
 		void CreateIBLBRDFMap(Ref<Texture> dest);

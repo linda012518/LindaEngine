@@ -12,6 +12,7 @@ namespace LindaEngine
 	struct Cubemap;
 	class TextureContext;
 	struct RenderTexture;
+	class Material;
 
 	class TextureDriver
 	{
@@ -19,6 +20,7 @@ namespace LindaEngine
 		static void CreateTexture2D(Ref<Texture> texture, void* data, int channels, int bitCount);
 		static void CreateCube(Ref<Texture> texture, void* right, void* left, void* top, void* bottom, void* front, void* back, int channels, int bitCount);
 		static void CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest);
+		static void CreateCubeByMaterial(Ref<Material> material, Ref<Texture> dest);
 		static void CreateIBLIrradianceMap(Ref<Texture> src, Ref<Texture> dest);
 		static void CreateIBLPrefilterMap(Ref<Texture> src, Ref<Texture> dest);
 		static void CreateIBLBRDFMap(Ref<Texture> dest);

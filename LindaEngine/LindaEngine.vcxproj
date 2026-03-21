@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\PrecomputedAmbientPass.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\Environment.cpp" />
     <ClCompile Include="External\imgui\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="Runtime\Core\src\TaskServer.cpp" />
@@ -357,6 +358,7 @@
     <ClCompile Include="SandboxApp\src\TestAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\PrecomputedAmbientPass.h" />
     <ClInclude Include="Runtime\Render\Core\include\Environment.h" />
     <ClInclude Include="External\imgui\imgui\imgui_stdlib.h" />
     <ClInclude Include="Runtime\Core\include\TaskServer.h" />

@@ -20,6 +20,11 @@ void TextureDriver::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
 	_context->CreateCubeByPanoramic(src, dest);
 }
 
+void TextureDriver::CreateCubeByMaterial(Ref<Material> material, Ref<Texture> dest)
+{
+	_context->CreateCubeByMaterial(material, dest);
+}
+
 void TextureDriver::CreateIBLIrradianceMap(Ref<Texture> src, Ref<Texture> dest)
 {
 	_context->CreateIBLIrradianceMap(src, dest);

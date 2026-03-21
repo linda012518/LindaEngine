@@ -125,7 +125,7 @@ Shader
 			void main()
 			{
 				vec2 integratedBRDF = IntegrateBRDF(uv.x, uv.y);
-				FragColor = integratedBRDF;
+				FragColor = vec4(integratedBRDF, 0.0, 1.0);
 			}
 		}
 	}

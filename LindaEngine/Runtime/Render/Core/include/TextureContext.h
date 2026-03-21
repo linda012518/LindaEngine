@@ -10,6 +10,7 @@ namespace LindaEngine
 {
 	struct Texture;
 	struct RenderTexture;
+	class Material;
 
 	class TextureContext
 	{
@@ -17,6 +18,7 @@ namespace LindaEngine
 		virtual void CreateTexture2D(Ref<Texture> texture, void* data, int channels, int bitCount) = 0;
 		virtual void CreateCube(Ref<Texture> texture, void* right, void* left, void* top, void* bottom, void* front, void* back, int channels, int bitCount) = 0;
 		virtual void CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest) = 0;
+		virtual void CreateCubeByMaterial(Ref<Material> material, Ref<Texture> dest) = 0;
 		virtual void CreateIBLIrradianceMap(Ref<Texture> src, Ref<Texture> dest) = 0;
 		virtual void CreateIBLPrefilterMap(Ref<Texture> src, Ref<Texture> dest) = 0;
 		virtual void CreateIBLBRDFMap(Ref<Texture> dest) = 0;

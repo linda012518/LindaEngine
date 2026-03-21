@@ -7,12 +7,14 @@
 #include "BlitPickColorPass.h"
 #include "DrawErrorPass.h"
 #include "FrustumVisiblePass.h"
+#include "PrecomputedAmbientPass.h"
 
 using namespace LindaEditor;
 using namespace LindaEngine;
 
 void UniversalRendererEditor::CollectRenderPass()
 {
+    AddRenderPass(CreateRef<PrecomputedAmbientPass>());
     AddRenderPass(CreateRef<SkyboxPass>());
     AddRenderPass(CreateRef<DrawErrorPass>());
     AddRenderPass(CreateRef<PostProcessPass>());

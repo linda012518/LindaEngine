@@ -642,6 +642,9 @@
     <ClCompile Include="Runtime\Render\Core\src\Environment.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Render\RenderPipeline\src\PrecomputedAmbientPass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -2505,6 +2508,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Render\Core\include\Environment.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\RenderPipeline\include\PrecomputedAmbientPass.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
