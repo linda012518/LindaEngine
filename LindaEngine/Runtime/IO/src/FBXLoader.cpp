@@ -19,7 +19,8 @@ Ref<FBXResources> FBXLoader::LoadFBX(std::string path)
 	//aiProcess_GenNormals			如果模型不包含法向量的话，就为每个顶点创建法线
 	//aiProcess_SplitLargeMeshes	将比较大的网格分割成更小的子网格，如果你的渲染有最大顶点数限制，只能渲染较小的网格，那么它会非常有用
 	//aiProcess_OptimizeMeshes		和上个选项相反，它会将多个小网格拼接为一个大的网格，减少绘制调用从而进行优化
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_PopulateArmatureData);
+	//aiProcess_LimitBoneWeights	一个顶点超过4根骨骼，由 Assimp 按权重大小合并到 4 根骨骼
+	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_PopulateArmatureData | aiProcess_LimitBoneWeights);
 
 	//mFlags	返回的数据是不是不完整的
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -220,7 +221,8 @@ void FBXLoader::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMe
 			BoneInfo newBoneInfo;
 			newBoneInfo.id = boneCount;
 			newBoneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(bone->mOffsetMatrix);
-			newBoneInfo.name = bone->mName.data;
+			// 优先使用 bone->mNode->mName（与层级里实体名一致），没有 mNode 时再退回 bone->mName
+			newBoneInfo.name = bone->mNode ? bone->mNode->mName.data : bone->mName.data;
 			newBoneInfo.nativeNode = bone->mNode;
 			boneArray.push_back(newBoneInfo);
 			boneID = boneCount;
