@@ -46,7 +46,7 @@ Ref<Mesh> FBXManager::GetMesh(std::string fbxPath, std::string hashCode)
     }
 }
 
-std::vector<BoneData>& FBXManager::GetMeshBoneData(std::string fbxPath, std::string hashCode)
+std::vector<BoneData> FBXManager::GetMeshBoneData(std::string fbxPath, std::string hashCode)
 {
 	std::vector<BoneData> data;
 	try
