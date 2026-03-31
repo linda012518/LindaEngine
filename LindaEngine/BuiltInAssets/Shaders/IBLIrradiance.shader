@@ -4,7 +4,7 @@ Shader
 	{
 		Properties
 		{
-			uniform sampler2D linda_PanoramicCube = white;
+			uniform samplerCube linda_PanoramicCube = white;
 		}
 		
 		RenderState

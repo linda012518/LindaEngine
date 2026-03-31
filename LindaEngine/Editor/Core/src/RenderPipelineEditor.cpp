@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "Entity.h"
 #include "CameraController.h"
+#include "Environment.h"
 
 using namespace LindaEditor;
 using namespace LindaEngine;
@@ -17,6 +18,7 @@ int RenderPipelineEditor::Initialize()
     _entity = CreateRef<Entity>("EditorModeMainCamera");
     _entity->SetDontDestory(true);
     activeCamera = _entity->AddComponent<PerspectiveCamera>();
+    activeCamera->SetNearFar(0.01f, 10000.0f);
     activeCamera->AddPostProcess("OutLinePostProcess");
     _entity->AddComponent<OrthoCamera>();
     _entity->AddComponent<CameraController>();
@@ -34,6 +36,7 @@ void RenderPipelineEditor::Finalize()
 
 void RenderPipelineEditor::Render()
 {
+    //Environment::test();
     Camera* camera = activeCamera;
 
     camera->SetRenderTarget(RenderTexture::finalRT);

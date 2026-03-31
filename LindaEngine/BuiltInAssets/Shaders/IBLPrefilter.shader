@@ -4,7 +4,7 @@ Shader
 	{
 		Properties
 		{
-			uniform sampler2D linda_PanoramicCube = white;
+			uniform samplerCube linda_PanoramicCube = white;
 			uniform float roughness = 0.0;
 		}
 		
@@ -41,7 +41,7 @@ Shader
 
 				float nom   = a2;
 				float denom = (NdotH2 * (a2 - 1.0) + 1.0);
-				denom = PI * denom * denom;
+				denom = linda_PI * denom * denom;
 
 				return nom / denom;
 			}
@@ -67,7 +67,7 @@ Shader
 			{
 				float a = roughness*roughness;
 	
-				float phi = 2.0 * PI * Xi.x;
+				float phi = 2.0 * linda_PI * Xi.x;
 				float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));
 				float sinTheta = sqrt(1.0 - cosTheta*cosTheta);
 	
@@ -115,7 +115,7 @@ Shader
 						float pdf = D * NdotH / (4.0 * HdotV) + 0.0001; 
 
 						float resolution = 512.0; // resolution of source cubemap (per face)
-						float saTexel  = 4.0 * PI / (6.0 * resolution * resolution);
+						float saTexel  = 4.0 * linda_PI / (6.0 * resolution * resolution);
 						float saSample = 1.0 / (float(SAMPLE_COUNT) * pdf + 0.0001);
 
 						float mipLevel = roughness == 0.0 ? 0.0 : 0.5 * log2(saSample / saTexel); 

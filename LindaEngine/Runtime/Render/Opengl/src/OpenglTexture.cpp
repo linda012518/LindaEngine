@@ -9,7 +9,7 @@
 #include "FBXManager.h"
 #include "GraphicsContext.h"
 #include "ShaderBuiltInUniform.h"
-#include "UniformDataGlobal.h"
+#include "RenderPipeline.h"
 
 #include <iostream>
 
@@ -131,6 +131,9 @@ void OpenglTexture::CreateCubeByMaterial(Ref<Material> material, Ref<Texture> de
 	rt->depthAttachment = depth;
 	CreateRenderTextureCubemap(rt);
 	dest->nativeColorID = rt->nativeIDs[0];
+	dest->width = dest->height = 512;
+	dest->mipmapCount = 1;
+	dest->colorFormat = TextureFormat::RGBA8;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, rt->nativeColorID);
 	glViewport(0, 0, 512, 512);
@@ -142,13 +145,15 @@ void OpenglTexture::CreateCubeByMaterial(Ref<Material> material, Ref<Texture> de
 	std::string temp = Material::overrideLightMode;
 	Material::overrideLightMode = "Skybox";
 
+	Ref<UniformDataGlobal> uniformGlobal = RenderPipeline::GetGlobalUniformData();
+	glm::mat4 view = uniformGlobal->data.view;
+
 	for (unsigned int i = 0; i < 6; ++i)
 	{
-		Ref<UniformDataGlobal> uniformGlobal = CreateRef<UniformDataGlobal>();
 		uniformGlobal->data.view = camera->GetViewMatrix();
-		uniformGlobal->data.project = camera->GetProjectMatrix();
 		uniformGlobal->SetUniformBufferData();
 
+		material->SetUniformValue(ShaderBuiltInUniform::linda_SkyboxMatrix_P.c_str(), camera->GetProjectMatrix());
 		material->Bind(0, nullptr, FBXManager::GetSkybox()->GetMeshAttributes());
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, dest->nativeColorID, 0);
 		if (depth.isRenderBuffer == false) // 如果不用RenderBuffer，需要绑定纹理
@@ -156,6 +161,9 @@ void OpenglTexture::CreateCubeByMaterial(Ref<Material> material, Ref<Texture> de
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		FBXManager::GetSkybox()->Draw();
 	}
+
+	uniformGlobal->data.view = view;
+	uniformGlobal->SetUniformBufferData();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

@@ -43,6 +43,16 @@ void Environment::ComputeBRDFLutMap()
     TextureDriver::CreateIBLBRDFMap(_brdfLUTMap);
 }
 
+Ref<Texture> Environment::GetCubemap()
+{
+    return _cubemap;
+}
+
+void LindaEngine::Environment::test()
+{
+    TextureDriver::CreateCubeByMaterial(_material, _cubemap);
+}
+
 SHCoefficients Environment::ComputeSHFromCubemap(Ref<Texture> cubemap)
 {
     return SphericalHarmonics::ComputeSHFromCubemap(TextureDriver::GetPixelByCubemap(cubemap), cubemap->width);

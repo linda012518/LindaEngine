@@ -11,6 +11,7 @@
 #include "Drawable.h"
 #include "Mathf.h"
 #include "ShaderBuiltInUniform.h"
+#include "Environment.h"
 
 using namespace LindaEngine;
 
@@ -140,6 +141,7 @@ Drawable& Renderer::GetSkyboxRenderer()
 	{
 		drawable.meshData = FBXManager::GetSkybox()->GetMeshData();
 		drawable.transform = nullptr;
+		//drawable.material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/SkyboxCubemap.shader");
 		isLoaded = true;
 	}
 	return drawable;
@@ -155,10 +157,11 @@ Ref<Material> Renderer::GetSkyboxMaterial()
 	return GetSkyboxRenderer().material;
 }
 
-void Renderer::RenderSkybox(glm::mat4& view)
+void Renderer::RenderSkybox(glm::mat4& project)
 {
 	Material::overrideLightMode = "Skybox";
-	GetSkyboxMaterial()->SetUniformValue(ShaderBuiltInUniform::linda_SkyboxMatrix_P.c_str(), view);
+	//GetSkyboxMaterial()->SetUniformValue("skybox", Environment::GetCubemap());
+	GetSkyboxMaterial()->SetUniformValue(ShaderBuiltInUniform::linda_SkyboxMatrix_P.c_str(), project);
 	GetSkyboxRenderer().Draw();
 }
 

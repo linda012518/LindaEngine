@@ -18,6 +18,7 @@ namespace LindaEngine
 		virtual void Tick();
 
 		static Ref<RenderPipeline> Create();
+		static Ref<UniformDataGlobal> GetGlobalUniformData() { return _uniformGlobal; }
 
 	protected:
 		const std::vector<Camera*> CheckCameraList();

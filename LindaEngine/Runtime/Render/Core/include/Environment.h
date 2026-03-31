@@ -15,6 +15,10 @@ namespace LindaEngine
 		static void RenderSkyboxMap();
 		static void ComputeBRDFLutMap();
 
+		static Ref<Texture> GetCubemap();
+
+		static void test();
+
 	private:
 		static SHCoefficients ComputeSHFromCubemap(Ref<Texture> cubemap);
 
