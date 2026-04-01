@@ -47,7 +47,8 @@ Shader
 			void main()
 			{
 				uv = aUV0;
-				worldNormal = vec3(vec4(aNormal, 1.0) * linda_WorldToLocal);
+				// worldNormal = vec3(vec4(aNormal, 1.0) * linda_WorldToLocal);
+				worldNormal = normalize(aNormal * mat3(linda_WorldToLocal));
 				gl_Position = linda_Matrix_VP * linda_LocalToWorld * vec4(aPosition, 1.0);
 			}
 		}
@@ -57,12 +58,14 @@ Shader
 			in vec2 uv;
 			in vec3 worldNormal;
 
+			#include "BuiltInAssets/Shaders/ShaderLibrary/GlobalIllumination.glsl"
+
 			void main()
 			{
 				FragColor.rgb = vec3(0.3, 0.0, 0.0);
 				FragColor.a = 1.0;
 				FragColor = testVec4;
-				FragColor = texture(maskTexture, uv);
+				FragColor = vec4(ShadeSH9(worldNormal), 1.0);
 				// FragColor = vec4(worldNormal, 1.0);
 				// vec3 lightDir = normalize(_dirLightDirections[0].xyz);
 				// vec3 normal = normalize(worldNormal);
