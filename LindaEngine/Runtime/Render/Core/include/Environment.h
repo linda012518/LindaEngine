@@ -17,8 +17,6 @@ namespace LindaEngine
 
 		static Ref<Texture> GetCubemap();
 
-		static void test();
-
 	private:
 		static SHCoefficients ComputeSHFromCubemap(Ref<Texture> cubemap);
 

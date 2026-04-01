@@ -16,24 +16,7 @@ Shader
 			DepthState (depthTest=true; depthWrite=true; depthFunc= LEQUAL)
 		}
 
-		Vertex
-		{
-			AttributeNameArray { aPosition }
-
-			out vec3 worldNormal;
-
-			uniform mat4 linda_SkyboxMatrix_P;
-
-			void main()
-			{
-				worldNormal = aPosition;
-				mat4 view = linda_Matrix_V;
-				view[3].xyz = vec3(0.0);
-				view[3].w = 1.0;
-				gl_Position = linda_SkyboxMatrix_P * view * vec4(aPosition, 1.0);
-				gl_Position = gl_Position.xyww;
-			}
-		}
+		#include "BuiltInAssets/Shaders/ShaderLibrary/SkyboxVertexFunction.glsl"
 		
 		Fragment
 		{
@@ -42,6 +25,7 @@ Shader
 			void main()
 			{
 				FragColor = texture(skybox, normalize(worldNormal));
+				FragColor.rgb = pow(FragColor.rgb, vec3(1.0 / 2.2));
 			}
 		}
 	}

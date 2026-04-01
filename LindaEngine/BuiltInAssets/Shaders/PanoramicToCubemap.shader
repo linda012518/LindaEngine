@@ -1,7 +1,11 @@
 Shader
 {
+	RenderType "Skybox"
+
 	Pass
 	{
+		LightMode "Skybox"
+
 		Properties
 		{
 			uniform sampler2D linda_PanoramicCube = white;
@@ -12,21 +16,8 @@ Shader
 			DepthState (depthTest=true; depthWrite=true; depthFunc= LEQUAL)
 		}
 
-		Vertex
-		{
-			AttributeNameArray { aPosition }
+		#include "ShaderLibrary/SkyboxVertexFunction.glsl"
 
-			out vec3 worldNormal;
-
-			uniform mat4 linda_Matrix_VP_PanoramicCube;
-
-			void main()
-			{
-				worldNormal = aPosition;
-				gl_Position = linda_Matrix_VP_PanoramicCube * vec4(aPosition, 1.0);
-			}
-		}
-		
 		Fragment
 		{
 			in vec3 worldNormal;

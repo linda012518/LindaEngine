@@ -584,12 +584,12 @@ void CubeCamera::MakeViewMatrix()
 	if (false == _viewDirty)
 		return;
 
-	cameraMatrixs[0] = _transform->LookAt(glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
-	cameraMatrixs[1] = _transform->LookAt(glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
-	cameraMatrixs[2] = _transform->LookAt(glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f));
-	cameraMatrixs[3] = _transform->LookAt(glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f));
-	cameraMatrixs[4] = _transform->LookAt(glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
-	cameraMatrixs[5] = _transform->LookAt(glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+	viewMatrixs[0] = _transform->LookAt(glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+	viewMatrixs[1] = _transform->LookAt(glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+	viewMatrixs[2] = _transform->LookAt(glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f));
+	viewMatrixs[3] = _transform->LookAt(glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f));
+	viewMatrixs[4] = _transform->LookAt(glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+	viewMatrixs[5] = _transform->LookAt(glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
 }
 
 void CubeCamera::MakeProjectionMatrix()
@@ -604,17 +604,27 @@ void CubeCamera::MakeViewProjectionMatrix()
 	_viewDirty = false;
 	_projectDirty = false;
 
-	cameraMatrixs[0] = projectionMatrix * cameraMatrixs[0];
-	cameraMatrixs[1] = projectionMatrix * cameraMatrixs[1];
-	cameraMatrixs[2] = projectionMatrix * cameraMatrixs[2];
-	cameraMatrixs[3] = projectionMatrix * cameraMatrixs[3];
-	cameraMatrixs[4] = projectionMatrix * cameraMatrixs[4];
-	cameraMatrixs[5] = projectionMatrix * cameraMatrixs[5];
+	viewProjectionMatrixs[0] = projectionMatrix * viewMatrixs[0];
+	viewProjectionMatrixs[1] = projectionMatrix * viewMatrixs[1];
+	viewProjectionMatrixs[2] = projectionMatrix * viewMatrixs[2];
+	viewProjectionMatrixs[3] = projectionMatrix * viewMatrixs[3];
+	viewProjectionMatrixs[4] = projectionMatrix * viewMatrixs[4];
+	viewProjectionMatrixs[5] = projectionMatrix * viewMatrixs[5];
 }
 
-glm::mat4& CubeCamera::GetVPMatrix(int index)
+glm::mat4& CubeCamera::GetCubeViewMatrix(int index)
 {
-	return cameraMatrixs[index];
+	return viewMatrixs[index];
+}
+
+glm::mat4& CubeCamera::GetCubeProjectionMatrix()
+{
+	return projectionMatrix;
+}
+
+glm::mat4& CubeCamera::GetCubeVPMatrix(int index)
+{
+	return viewProjectionMatrixs[index];
 }
 
 void CubeCamera::SetProjectionData(float near, float far, float dontCare)

@@ -6,7 +6,6 @@
 #include "Camera.h"
 #include "Entity.h"
 #include "CameraController.h"
-#include "Environment.h"
 
 using namespace LindaEditor;
 using namespace LindaEngine;
@@ -36,7 +35,6 @@ void RenderPipelineEditor::Finalize()
 
 void RenderPipelineEditor::Render()
 {
-    //Environment::test();
     Camera* camera = activeCamera;
 
     camera->SetRenderTarget(RenderTexture::finalRT);

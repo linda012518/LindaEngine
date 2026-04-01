@@ -178,7 +178,9 @@ namespace LindaEngine
 		virtual void MakeProjectionMatrix();
 		virtual void MakeViewProjectionMatrix();
 
-		glm::mat4& GetVPMatrix(int index);
+		glm::mat4& GetCubeViewMatrix(int index);
+		glm::mat4& GetCubeProjectionMatrix();
+		glm::mat4& GetCubeVPMatrix(int index);
 		void SetProjectionData(float near, float far, float dontCare = -1.0f);
 
 		bool Serialize();
@@ -186,7 +188,8 @@ namespace LindaEngine
 
 	private:
 		glm::mat4 projectionMatrix;
-		glm::mat4 cameraMatrixs[6];
+		glm::mat4 viewProjectionMatrixs[6];
+		glm::mat4 viewMatrixs[6];
 	};
 
 }

@@ -141,7 +141,7 @@ Drawable& Renderer::GetSkyboxRenderer()
 	{
 		drawable.meshData = FBXManager::GetSkybox()->GetMeshData();
 		drawable.transform = nullptr;
-		//drawable.material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/SkyboxCubemap.shader");
+		drawable.material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/SkyboxCubemap.shader");
 		isLoaded = true;
 	}
 	return drawable;
@@ -160,7 +160,7 @@ Ref<Material> Renderer::GetSkyboxMaterial()
 void Renderer::RenderSkybox(glm::mat4& project)
 {
 	Material::overrideLightMode = "Skybox";
-	//GetSkyboxMaterial()->SetUniformValue("skybox", Environment::GetCubemap());
+	GetSkyboxMaterial()->SetUniformValue("skybox", Environment::GetCubemap());
 	GetSkyboxMaterial()->SetUniformValue(ShaderBuiltInUniform::linda_SkyboxMatrix_P.c_str(), project);
 	GetSkyboxRenderer().Draw();
 }

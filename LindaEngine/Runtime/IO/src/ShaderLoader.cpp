@@ -56,14 +56,21 @@ void ShaderLoader::ProcessInclude(std::string& tex, std::vector<std::string>& pa
 
 		if (path[0] != '.')
 		{
-			std::string go;
-			for (std::string temp : paths)
+			if (path.compare(0, 6, "Assets") == 0 || path.compare(0, 13, "BuiltInAssets") == 0)
 			{
-				go += temp + "/";
+				tex.replace(firstPos, two - firstPos + 1, ShaderManager::GetInclude(path.c_str()) + "\n");
 			}
-			go += path;
+			else
+			{
+				std::string go;
+				for (std::string temp : paths)
+				{
+					go += temp + "/";
+				}
+				go += path;
 
-			tex.replace(firstPos, two - firstPos + 1, ShaderManager::GetInclude(go.c_str()) + "\n");
+				tex.replace(firstPos, two - firstPos + 1, ShaderManager::GetInclude(go.c_str()) + "\n");
+			}
 		}
 		else
 		{

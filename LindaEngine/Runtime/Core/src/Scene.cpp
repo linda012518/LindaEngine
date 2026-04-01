@@ -238,8 +238,7 @@ void Scene::Destroy()
 
 void Scene::SetSkyboxMaterial(Ref<Material> material)
 {
-	Renderer::SetSkyboxMaterial(material);
-	//Environment::SetSkybox(material);
+	Environment::SetSkybox(material);
 }
 
 void Scene::ResetUUID(std::vector<Ref<Entity>>& entitys)

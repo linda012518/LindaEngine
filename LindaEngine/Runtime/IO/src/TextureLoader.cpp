@@ -123,6 +123,12 @@ void TextureLoader::LoadCubemap(Ref<Texture> texture)
         panoramic->warpV = TextureWrapMode::Clamp;
         panoramic->isUserCreate = true;
         LoadTexture2D(panoramic);
+		texture->colorFormat = panoramic->colorFormat;
+        texture->width = 512;
+        texture->height = 512;
+        texture->isGammaCorrection = false;
+        texture->mipmapCount = 1;
+        texture->anisotropy = 1;
         TextureDriver::CreateCubeByPanoramic(panoramic, texture);
         Delete(panoramic);
     }

@@ -10,6 +10,8 @@
 #include "GraphicsContext.h"
 #include "ShaderBuiltInUniform.h"
 #include "RenderPipeline.h"
+#include "Texture.h"
+#include "TextureManager.h"
 
 #include <iostream>
 
@@ -52,76 +54,83 @@ void OpenglTexture::CreateCube(Ref<Texture> texture, void* right, void* left, vo
 
 void OpenglTexture::CreateCubeByPanoramic(Ref<Texture> src, Ref<Texture> dest)
 {
-	FramebufferTextureSpecification color;
-	color.colorFormat = TextureFormat::RGBA8;
-
-	FramebufferTextureSpecification depth;
-	depth.colorFormat = TextureFormat::Depth16;
-	depth.isRenderBuffer = true;
-
-	Ref<RenderTexture> rt = CreateRef<RenderTexture>();
-	rt->width = 512;
-	rt->height = 512;
-	rt->isCube = true;
-	rt->isGammaCorrection = false;
-	rt->msaa = 1;
-	rt->mipmapCount = 1;
-	rt->anisotropy = 1;
-	rt->colorAttachments.push_back(color);
-	rt->depthAttachment = depth;
-	CreateRenderTextureCubemap(rt);
-	dest->nativeColorID = rt->nativeIDs[0];
-
-	glBindFramebuffer(GL_FRAMEBUFFER, rt->nativeColorID);
-	glViewport(0, 0, 512, 512);
-
-	Entity entity("temp");
-	CubeCamera* camera = entity.AddComponent<CubeCamera>();
-	camera->Tick();
 	Ref<Material> material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/PanoramicToCubemap.shader");
 	material->SetTexture(ShaderBuiltInUniform::linda_PanoramicCube, src);
 
-	std::string temp = Material::overrideLightMode;
-	Material::overrideLightMode = "Color";
+	CreateCubeByMaterial(material, dest);
 
-	for (unsigned int i = 0; i < 6; ++i)
-	{
-		material->SetMat4(ShaderBuiltInUniform::linda_Matrix_VP_PanoramicCube, camera->GetVPMatrix(i));
-		material->Bind(0, nullptr, FBXManager::GetSkybox()->GetMeshAttributes());
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, dest->nativeColorID, 0);
-		if (depth.isRenderBuffer == false) // 如果不用RenderBuffer，需要绑定纹理
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GetRenderTextureDepthAttachment(depth.colorFormat), GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, rt->depthNativeID, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		FBXManager::GetSkybox()->Draw();
-	}
+	//FramebufferTextureSpecification color;
+	//color.colorFormat = TextureFormat::RGBA8;
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//FramebufferTextureSpecification depth;
+	//depth.colorFormat = TextureFormat::Depth16;
+	//depth.isRenderBuffer = true;
 
-	if (dest->mipmapCount > 1)
-	{
-		glBindTexture(GL_TEXTURE_CUBE_MAP, dest->nativeColorID);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, dest->mipmapCount);
-		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-	}
+	//Ref<RenderTexture> rt = CreateRef<RenderTexture>();
+	//rt->width = 512;
+	//rt->height = 512;
+	//rt->isCube = true;
+	//rt->isGammaCorrection = false;
+	//rt->msaa = 1;
+	//rt->mipmapCount = 1;
+	//rt->anisotropy = 1;
+	//rt->colorAttachments.push_back(color);
+	//rt->depthAttachment = depth;
+	//CreateRenderTextureCubemap(rt);
+	//dest->nativeColorID = rt->nativeIDs[0];
 
-	glDeleteFramebuffers(1, &rt->nativeColorID);
-	glDeleteRenderbuffers((int)rt->renderBuffers.size(), rt->renderBuffers.data());
+	//Ref<RenderTexture> tempRT = RenderTexture::active;
+	//RenderTextureManager::SetRenderTarget(rt);
+	//glViewport(0, 0, 512, 512);
 
-	Material::overrideLightMode = temp;
+	//Entity entity("temp");
+	//CubeCamera* camera = entity.AddComponent<CubeCamera>();
+	//camera->Tick();
+	//Ref<Material> material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/PanoramicToCubemap.shader");
+	//material->SetTexture(ShaderBuiltInUniform::linda_PanoramicCube, src);
+
+	//std::string temp = Material::overrideLightMode;
+	//Material::overrideLightMode = "Skybox";
+
+	//for (unsigned int i = 0; i < 6; ++i)
+	//{
+	//	material->SetMat4(ShaderBuiltInUniform::linda_SkyboxMatrix_V, camera->GetCubeViewMatrix(i));
+	//	material->SetMat4(ShaderBuiltInUniform::linda_SkyboxMatrix_P, camera->GetCubeProjectionMatrix());
+	//	material->Bind(0, nullptr, FBXManager::GetSkybox()->GetMeshAttributes());
+	//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, dest->nativeColorID, 0);
+	//	if (depth.isRenderBuffer == false) // 如果不用RenderBuffer，需要绑定纹理
+	//		glFramebufferTexture2D(GL_FRAMEBUFFER, GetRenderTextureDepthAttachment(depth.colorFormat), GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, rt->depthNativeID, 0);
+	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//	FBXManager::GetSkybox()->Draw();
+	//}
+
+	//RenderTextureManager::SetRenderTarget(tempRT);
+
+	//if (dest->mipmapCount > 1)
+	//{
+	//	glBindTexture(GL_TEXTURE_CUBE_MAP, dest->nativeColorID);
+	//	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, dest->mipmapCount);
+	//	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	//}
+
+	//glDeleteFramebuffers(1, &rt->nativeColorID);
+	//glDeleteRenderbuffers((int)rt->renderBuffers.size(), rt->renderBuffers.data());
+
+	//Material::overrideLightMode = temp;
 }
 
 void OpenglTexture::CreateCubeByMaterial(Ref<Material> material, Ref<Texture> dest)
 {
 	FramebufferTextureSpecification color;
-	color.colorFormat = TextureFormat::RGBA8;
+	color.colorFormat = dest->colorFormat;
 
 	FramebufferTextureSpecification depth;
 	depth.colorFormat = TextureFormat::Depth16;
 	depth.isRenderBuffer = true;
 
 	Ref<RenderTexture> rt = CreateRef<RenderTexture>();
-	rt->width = 512;
-	rt->height = 512;
+	rt->width = dest->width;
+	rt->height = dest->height;
 	rt->isCube = true;
 	rt->isGammaCorrection = false;
 	rt->msaa = 1;
@@ -131,12 +140,10 @@ void OpenglTexture::CreateCubeByMaterial(Ref<Material> material, Ref<Texture> de
 	rt->depthAttachment = depth;
 	CreateRenderTextureCubemap(rt);
 	dest->nativeColorID = rt->nativeIDs[0];
-	dest->width = dest->height = 512;
-	dest->mipmapCount = 1;
-	dest->colorFormat = TextureFormat::RGBA8;
 
-	glBindFramebuffer(GL_FRAMEBUFFER, rt->nativeColorID);
-	glViewport(0, 0, 512, 512);
+	Ref<RenderTexture> tempRT = RenderTexture::active;
+	RenderTextureManager::SetRenderTarget(rt);
+	glViewport(0, 0, rt->width, rt->height);
 
 	Entity entity("temp");
 	CubeCamera* camera = entity.AddComponent<CubeCamera>();
@@ -145,15 +152,10 @@ void OpenglTexture::CreateCubeByMaterial(Ref<Material> material, Ref<Texture> de
 	std::string temp = Material::overrideLightMode;
 	Material::overrideLightMode = "Skybox";
 
-	Ref<UniformDataGlobal> uniformGlobal = RenderPipeline::GetGlobalUniformData();
-	glm::mat4 view = uniformGlobal->data.view;
-
 	for (unsigned int i = 0; i < 6; ++i)
 	{
-		uniformGlobal->data.view = camera->GetViewMatrix();
-		uniformGlobal->SetUniformBufferData();
-
-		material->SetUniformValue(ShaderBuiltInUniform::linda_SkyboxMatrix_P.c_str(), camera->GetProjectMatrix());
+		material->SetMat4(ShaderBuiltInUniform::linda_SkyboxMatrix_V, camera->GetCubeViewMatrix(i));
+		material->SetMat4(ShaderBuiltInUniform::linda_SkyboxMatrix_P, camera->GetCubeProjectionMatrix());
 		material->Bind(0, nullptr, FBXManager::GetSkybox()->GetMeshAttributes());
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, dest->nativeColorID, 0);
 		if (depth.isRenderBuffer == false) // 如果不用RenderBuffer，需要绑定纹理
@@ -162,10 +164,7 @@ void OpenglTexture::CreateCubeByMaterial(Ref<Material> material, Ref<Texture> de
 		FBXManager::GetSkybox()->Draw();
 	}
 
-	uniformGlobal->data.view = view;
-	uniformGlobal->SetUniformBufferData();
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	RenderTextureManager::SetRenderTarget(tempRT);
 
 	if (dest->mipmapCount > 1)
 	{
@@ -182,125 +181,16 @@ void OpenglTexture::CreateCubeByMaterial(Ref<Material> material, Ref<Texture> de
 
 void OpenglTexture::CreateIBLIrradianceMap(Ref<Texture> src, Ref<Texture> dest)
 {
-	FramebufferTextureSpecification color;
-	color.colorFormat = TextureFormat::RGBA8;
-
-	FramebufferTextureSpecification depth;
-	depth.colorFormat = TextureFormat::Depth16;
-	depth.isRenderBuffer = true;
-
-	Ref<RenderTexture> rt = CreateRef<RenderTexture>();
-	rt->width = 64;
-	rt->height = 64;
-	rt->isCube = true;
-	rt->isGammaCorrection = false;
-	rt->msaa = 1;
-	rt->mipmapCount = 1;
-	rt->anisotropy = 1;
-	rt->colorAttachments.push_back(color);
-	rt->depthAttachment = depth;
-	CreateRenderTextureCubemap(rt);
-	dest->nativeColorID = rt->nativeIDs[0];
-
-	glBindFramebuffer(GL_FRAMEBUFFER, rt->nativeColorID);
-	glViewport(0, 0, 64, 64);
-
-	Entity entity("temp");
-	CubeCamera* camera = entity.AddComponent<CubeCamera>();
-	camera->Tick();
 	Ref<Material> material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/IBLIrradiance.shader");
-	material->SetTexture(ShaderBuiltInUniform::linda_PanoramicCube, src);
-
-	std::string temp = Material::overrideLightMode;
-	Material::overrideLightMode = "Color";
-
-	for (unsigned int i = 0; i < 6; ++i)
-	{
-		material->SetMat4(ShaderBuiltInUniform::linda_Matrix_VP_PanoramicCube, camera->GetVPMatrix(i));
-		material->Bind(0, nullptr, FBXManager::GetSkybox()->GetMeshAttributes());
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, dest->nativeColorID, 0);
-		if (depth.isRenderBuffer == false) // 如果不用RenderBuffer，需要绑定纹理
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GetRenderTextureDepthAttachment(depth.colorFormat), GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, rt->depthNativeID, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		FBXManager::GetSkybox()->Draw();
-	}
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	if (dest->mipmapCount > 1)
-	{
-		glBindTexture(GL_TEXTURE_CUBE_MAP, dest->nativeColorID);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, dest->mipmapCount);
-		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-	}
-
-	glDeleteFramebuffers(1, &rt->nativeColorID);
-	glDeleteRenderbuffers((int)rt->renderBuffers.size(), rt->renderBuffers.data());
-
-	Material::overrideLightMode = temp;
-
+	material->SetTexture("skybox", src);
+	CreateCubeByMaterial(material, dest);
 }
 
 void OpenglTexture::CreateIBLPrefilterMap(Ref<Texture> src, Ref<Texture> dest)
 {
-	FramebufferTextureSpecification color;
-	color.colorFormat = TextureFormat::RGBA8;
-
-	FramebufferTextureSpecification depth;
-	depth.colorFormat = TextureFormat::Depth16;
-	depth.isRenderBuffer = true;
-
-	Ref<RenderTexture> rt = CreateRef<RenderTexture>();
-	rt->width = 128;
-	rt->height = 128;
-	rt->isCube = true;
-	rt->isGammaCorrection = false;
-	rt->msaa = 1;
-	rt->mipmapCount = 1;
-	rt->anisotropy = 1;
-	rt->colorAttachments.push_back(color);
-	rt->depthAttachment = depth;
-	CreateRenderTextureCubemap(rt);
-	dest->nativeColorID = rt->nativeIDs[0];
-
-	glBindFramebuffer(GL_FRAMEBUFFER, rt->nativeColorID);
-	glViewport(0, 0, 128, 128);
-
-	Entity entity("temp");
-	CubeCamera* camera = entity.AddComponent<CubeCamera>();
-	camera->Tick();
 	Ref<Material> material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/IBLPrefilter.shader");
-	material->SetTexture(ShaderBuiltInUniform::linda_PanoramicCube, src);
-
-	std::string temp = Material::overrideLightMode;
-	Material::overrideLightMode = "Color";
-
-	for (unsigned int i = 0; i < 6; ++i)
-	{
-		material->SetMat4(ShaderBuiltInUniform::linda_Matrix_VP_PanoramicCube, camera->GetVPMatrix(i));
-		material->Bind(0, nullptr, FBXManager::GetSkybox()->GetMeshAttributes());
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, dest->nativeColorID, 0);
-		if (depth.isRenderBuffer == false) // 如果不用RenderBuffer，需要绑定纹理
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GetRenderTextureDepthAttachment(depth.colorFormat), GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, rt->depthNativeID, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		FBXManager::GetSkybox()->Draw();
-	}
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	// 这里生成mipmap，后续使用时根据粗糙度采样不同的mipmap层，不计算使用不同的roughness，性能更好
-	if (dest->mipmapCount > 1)
-	{
-		glBindTexture(GL_TEXTURE_CUBE_MAP, dest->nativeColorID);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, dest->mipmapCount);
-		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-	}
-
-	glDeleteFramebuffers(1, &rt->nativeColorID);
-	glDeleteRenderbuffers((int)rt->renderBuffers.size(), rt->renderBuffers.data());
-
-	Material::overrideLightMode = temp;
-
+	material->SetTexture("skybox", src);
+	CreateCubeByMaterial(material, dest);
 }
 
 void OpenglTexture::CreateIBLBRDFMap(Ref<Texture> dest)

@@ -1,10 +1,14 @@
 Shader
 {
+	RenderType "Skybox"
+
 	Pass
 	{
+		LightMode "Skybox"
+
 		Properties
 		{
-			uniform samplerCube linda_PanoramicCube = white;
+			uniform samplerCube skybox = white;
 		}
 		
 		RenderState
@@ -12,20 +16,7 @@ Shader
 			DepthState (depthTest=true; depthWrite=true; depthFunc= LEQUAL)
 		}
 
-		Vertex
-		{
-			AttributeNameArray { aPosition }
-
-			out vec3 worldNormal;
-
-			uniform mat4 linda_Matrix_VP_PanoramicCube;
-
-			void main()
-			{
-				worldNormal = aPosition;
-				gl_Position = linda_Matrix_VP_PanoramicCube * vec4(aPosition, 1.0);
-			}
-		}
+		#include "ShaderLibrary/SkyboxVertexFunction.glsl"
 		
 		Fragment
 		{
@@ -53,7 +44,7 @@ Shader
 						// tangent space to world
 						vec3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * N; 
 
-						irradiance += texture(linda_PanoramicCube, sampleVec).rgb * cos(theta) * sin(theta);
+						irradiance += texture(skybox, sampleVec).rgb * cos(theta) * sin(theta);
 						nrSamples++;
 					}
 				}

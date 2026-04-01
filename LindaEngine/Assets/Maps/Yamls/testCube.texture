@@ -1,8 +1,8 @@
 Texture:
   left: Assets/Maps/skybox/left.jpg
   right: Assets/Maps/skybox/right.jpg
-  top: Assets/Maps/skybox/top.jpg
-  bottom: Assets/Maps/skybox/bottom.jpg
+  top: Assets/Maps/skybox/bottom.jpg
+  bottom: Assets/Maps/skybox/top.jpg
   front: Assets/Maps/skybox/front.jpg
   back: Assets/Maps/skybox/back.jpg
   type: 2
