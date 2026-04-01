@@ -14,6 +14,10 @@ DYNAMIC_CREATE(DirectionLight)
 DYNAMIC_CREATE(SpotLight)
 DYNAMIC_CREATE(PointLight)
 
+Light* Light::mainLight = nullptr;
+bool Light::mainLightDirty = false;
+float Light::mainAngleX = 0.0f;
+
 Light::Light(Entity& entity, bool enable) : Component(entity, enable)
 {
 	LightSystem::Add(this);
@@ -138,6 +142,15 @@ void Light::OnImguiRender()
 void Light::TransformDirty()
 {
 	CalculateAABB();
+	if (this != mainLight)
+		return;
+
+	float angle = _transform->GetLocalEulerAngles().x;
+	if (glm::abs(angle - mainAngleX) > 30.0f)
+	{
+		mainLightDirty = true;
+		mainAngleX = angle;
+	}
 }
 
 glm::vec4 Light::GetFinalColor()

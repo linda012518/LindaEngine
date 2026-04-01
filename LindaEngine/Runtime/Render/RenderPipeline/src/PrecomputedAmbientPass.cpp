@@ -1,6 +1,7 @@
 ﻿#include "PrecomputedAmbientPass.h"
 #include "Environment.h"
 #include "RendererSystem.h"
+#include "Light.h"
 
 using namespace LindaEngine;
 
@@ -12,6 +13,8 @@ PrecomputedAmbientPass::PrecomputedAmbientPass()
 
 void PrecomputedAmbientPass::Render(Camera* camera)
 {
-	// TODO 这里渲染天空盒cubemap，然后生成环境光数据，Skybox Pass 直接采样渲染
-	//Environment::RenderSkyboxMap();
+	if (false == Light::mainLightDirty)
+		return;
+	Light::mainLightDirty = false;
+	Environment::RenderSkyboxMap();
 }

@@ -51,6 +51,10 @@ void Environment::RenderSkyboxMap()
     _cubemap->anisotropy = 1;
     _cubemap->colorFormat = TextureFormat::RGB16;
 
+    if (_material->GetPath() == "BuiltInAssets/Materials/ProceduralSkybox.mat")
+    {
+
+    }
     TextureDriver::CreateCubeByMaterial(_material, _cubemap);
 
     _sh = ComputeSHFromCubemap(_cubemap);
@@ -72,9 +76,34 @@ void Environment::ComputeBRDFLutMap()
     TextureDriver::CreateIBLBRDFMap(_brdfLUTMap);
 }
 
+void Environment::ComputeProceduralMap()
+{
+
+}
+
 Ref<Texture> Environment::GetCubemap()
 {
     return _cubemap;
+}
+
+Ref<Texture> Environment::GetIrradianceMap()
+{
+    return _irradianceMap;
+}
+
+Ref<Texture> Environment::GetPrefilterMap()
+{
+    return _prefilterMap;
+}
+
+Ref<Texture> Environment::GetBRDFLUTMap()
+{
+    return _brdfLUTMap;
+}
+
+SHCoefficients& Environment::GetSH()
+{
+    return _sh;
 }
 
 SHCoefficients Environment::ComputeSHFromCubemap(Ref<Texture> cubemap)

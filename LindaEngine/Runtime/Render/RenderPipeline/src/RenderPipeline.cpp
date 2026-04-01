@@ -9,6 +9,7 @@
 #include "Light.h"
 #include "LightSystem.h"
 #include "Timestamp.h"
+#include "Environment.h"
 
 #include <algorithm>
 
@@ -51,6 +52,11 @@ void RenderPipeline::SetupShaderParameters(Camera* camera)
     SetupLightListShaderParameters(camera, block);
     double second = Timestamp::GetElapsedSecond();
     block.time = glm::vec4(second / 2.0, second, second * 2.0, second * 3.0);
+    SHCoefficients& sh = Environment::GetSH();
+    for (int i = 0; i < 9; i++)
+    {
+		block.shCoeffs[i] = sh.coeffs[i];
+    }
 
     _uniformGlobal->SetUniformBufferData();
 }

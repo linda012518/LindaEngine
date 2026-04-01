@@ -15,6 +15,8 @@ void LightSystem::Tick(float deltaTime)
 			continue;
 		com->Tick();
 	}
+
+	UpdateMainLight();
 }
 
 void LightSystem::OnDeserializeFinish()
@@ -74,5 +76,27 @@ const std::vector<Light*> LightSystem::GetLightList(Camera* camera)
 	}
 
 	return list;
+}
+
+void LightSystem::UpdateMainLight()
+{
+	std::vector<Light*> directionLights;
+	for (auto& light : _components)
+	{
+		if (light->GetLightType() != LightType::DirectionLight)
+			continue;
+		directionLights.push_back(light);
+	}
+	Light* main = directionLights[0];
+	for (auto& light : directionLights)
+	{
+		if (light->GetIntensity() > main->GetIntensity())
+			main = light;
+	}
+	if (Light::mainLight != main)
+	{
+		Light::mainLight = main;
+		Light::mainLightDirty = true;
+	}
 }
 

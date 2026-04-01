@@ -21,6 +21,9 @@ namespace LindaEngine
 		static const std::vector<Light*> GetLightList(Camera* camera);
 
 	private:
+		static void UpdateMainLight();
+
+	private:
 		static std::vector<Light*> _components;
 	};
 }

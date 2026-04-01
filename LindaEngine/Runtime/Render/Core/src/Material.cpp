@@ -4,6 +4,7 @@
 #include "YamlSerializer.h"
 #include "MaterialManager.h"
 #include "Mesh.h"
+#include "Environment.h"
 
 #define IMPLEMENT_SETMATERIALUNIFORM(dataType) \
 template<> \
@@ -92,6 +93,9 @@ void Material::Bind(Ref<MaterialPass> pass, Transform* transform, const std::vec
 
 void Material::Bind(int pass, Transform* transform, const std::vector<VertexAttribute>& attributes)
 {
+	SetTexture("linda_PrefilterSpecCube", Environment::GetPrefilterMap());
+	SetTexture("linda_IrradianceCube", Environment::GetIrradianceMap());
+	SetTexture("linda_BRDFLUT", Environment::GetBRDFLUTMap());
 	Bind(_passes[pass], transform, attributes);
 }
 

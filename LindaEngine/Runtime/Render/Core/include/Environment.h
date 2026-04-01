@@ -14,8 +14,13 @@ namespace LindaEngine
 		static void SetSkybox(Ref<Material> material);
 		static void RenderSkyboxMap();
 		static void ComputeBRDFLutMap();
+		static void ComputeProceduralMap();
 
 		static Ref<Texture> GetCubemap();
+		static Ref<Texture> GetIrradianceMap();
+		static Ref<Texture> GetPrefilterMap();
+		static Ref<Texture> GetBRDFLUTMap();
+		static SHCoefficients& GetSH();
 
 	private:
 		static SHCoefficients ComputeSHFromCubemap(Ref<Texture> cubemap);

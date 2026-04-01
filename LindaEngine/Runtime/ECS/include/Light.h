@@ -50,6 +50,12 @@ namespace LindaEngine
 	protected:
 		ShadowType GetShadowTypeByString(std::string str);
 
+	public:
+		static Light* mainLight;
+		static bool mainLightDirty;
+	private:
+		static float mainAngleX;
+
 	protected:
 		float _intensity;
 		glm::vec4 _color;
