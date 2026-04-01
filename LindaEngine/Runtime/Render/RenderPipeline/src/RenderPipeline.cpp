@@ -1,4 +1,4 @@
-﻿#include "RenderPipeline.h"
+#include "RenderPipeline.h"
 #include "Application.h"
 #include "UniversalRenderPipeline.h"
 #include "RenderPipelineEditor.h"
@@ -55,7 +55,7 @@ void RenderPipeline::SetupShaderParameters(Camera* camera)
     SHCoefficients& sh = Environment::GetSH();
     for (int i = 0; i < 9; i++)
     {
-		block.shCoeffs[i] = sh.coeffs[i];
+		block.shCoeffs[i] = glm::vec4(sh.coeffs[i], 0.0f);
     }
 
     _uniformGlobal->SetUniformBufferData();

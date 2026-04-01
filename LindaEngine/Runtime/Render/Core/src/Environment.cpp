@@ -108,6 +108,6 @@ SHCoefficients& Environment::GetSH()
 
 SHCoefficients Environment::ComputeSHFromCubemap(Ref<Texture> cubemap)
 {
-    return SphericalHarmonics::ComputeSHFromCubemap(TextureDriver::GetPixelByCubemap(cubemap), cubemap->width);
+    return SphericalHarmonics::ComputeSHFromCubemap(TextureDriver::GetPixelByCubemap(cubemap), cubemap->width, false);
 }
 

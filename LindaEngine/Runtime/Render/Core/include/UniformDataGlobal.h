@@ -36,7 +36,7 @@ namespace LindaEngine
 
 			glm::vec4 time;
 
-			glm::vec3 shCoeffs[9];
+			glm::vec4 shCoeffs[9];
 		};
 
 		Data data;

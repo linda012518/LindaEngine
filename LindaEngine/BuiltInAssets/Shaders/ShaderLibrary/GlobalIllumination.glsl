@@ -17,21 +17,25 @@ vec3 ShadeSH9(vec3 normal)
     vec3 irradiance = vec3(0.0);
     
     // l=0, m=0 (常数项)
-    irradiance += linda_SHCoeffs[0] * 0.282095;
+    irradiance += linda_SHCoeffs[0].rgb * 0.282095;
     
     // l=1 (线性项)
-    irradiance += linda_SHCoeffs[1] * (-0.488603 * y);
-    irradiance += linda_SHCoeffs[2] * (0.488603 * z);
-    irradiance += linda_SHCoeffs[3] * (-0.488603 * x);
+    irradiance += linda_SHCoeffs[1].rgb * (-0.488603 * y);
+    irradiance += linda_SHCoeffs[2].rgb * (0.488603 * z);
+    irradiance += linda_SHCoeffs[3].rgb * (-0.488603 * x);
     
     // l=2 (二次项)
-    irradiance += linda_SHCoeffs[4] * (1.092548 * xy);
-    irradiance += linda_SHCoeffs[5] * (-1.092548 * yz);
-    irradiance += linda_SHCoeffs[6] * (0.315392 * (3.0 * zz - 1.0));
-    irradiance += linda_SHCoeffs[7] * (-1.092548 * xz);
-    irradiance += linda_SHCoeffs[8] * (0.546274 * (xx - yy));
+    irradiance += linda_SHCoeffs[4].rgb * (1.092548 * xy);
+    irradiance += linda_SHCoeffs[5].rgb * (-1.092548 * yz);
+    irradiance += linda_SHCoeffs[6].rgb * (0.315392 * (3.0 * zz - 1.0));
+    irradiance += linda_SHCoeffs[7].rgb * (-1.092548 * xz);
+    irradiance += linda_SHCoeffs[8].rgb * (0.546274 * (xx - yy));
     
     // 线性空间
     // 最终还需要乘以PBR的漫反射系数（1/PI）和颜色
-    return max(irradiance, 0.0);
+    // return max(irradiance, 0.0);
+
+    // 直接在sh里面计算好
+    irradiance = max(irradiance, 0.0);
+    return pow(max(irradiance / linda_PI, 0.0), vec3(1.0 / 2.2));
 }
