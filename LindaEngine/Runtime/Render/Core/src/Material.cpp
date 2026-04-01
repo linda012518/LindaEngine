@@ -88,14 +88,14 @@ void Material::SetMat4(const std::string& name, const glm::mat4& mat, int count,
 void Material::Bind(Ref<MaterialPass> pass, Transform* transform, const std::vector<VertexAttribute>& attributes)
 {
 	_hasError = pass->CompileShader(_state.shaderPath, attributes);
+	SetTexture("linda_PrefilterSpecCube", Environment::GetPrefilterMap());
+	SetTexture("linda_IrradianceCube", Environment::GetIrradianceMap());
+	SetTexture("linda_BRDFLUT", Environment::GetBRDFLUTMap());
 	pass->Bind(transform);
 }
 
 void Material::Bind(int pass, Transform* transform, const std::vector<VertexAttribute>& attributes)
 {
-	SetTexture("linda_PrefilterSpecCube", Environment::GetPrefilterMap());
-	SetTexture("linda_IrradianceCube", Environment::GetIrradianceMap());
-	SetTexture("linda_BRDFLUT", Environment::GetBRDFLUTMap());
 	Bind(_passes[pass], transform, attributes);
 }
 

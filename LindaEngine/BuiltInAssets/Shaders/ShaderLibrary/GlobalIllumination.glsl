@@ -1,4 +1,4 @@
-﻿
+
 // 重建辐照度（漫反射光照）
 vec3 ShadeSH9(vec3 normal) 
 {

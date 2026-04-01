@@ -26,7 +26,7 @@ namespace LindaEngine
     public:
         // 更高效的实现：使用Compute Shader或离线预处理
         // 这里提供一个基于CPU的精确实现，使用固定网格采样
-        static SHCoefficients ComputeSHFromCubemap(std::vector<std::vector<glm::vec3>> faces, int cubeSize, bool srgb = false);
+        static SHCoefficients ComputeSHFromCubemap(std::vector<std::vector<glm::vec3>> faces, int cubeSize, bool srgb = true);
 
     private:
         // 将立方体面+UV转换为3D方向

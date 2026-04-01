@@ -87,6 +87,8 @@ void LightSystem::UpdateMainLight()
 			continue;
 		directionLights.push_back(light);
 	}
+	if (directionLights.size() <= 0)
+		return;
 	Light* main = directionLights[0];
 	for (auto& light : directionLights)
 	{

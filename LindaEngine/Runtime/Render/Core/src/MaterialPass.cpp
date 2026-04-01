@@ -280,7 +280,13 @@ template<>
 void MaterialPass::SetUniformValue<Ref<Texture>>(const char* name, Ref<Texture> val, int count)
 {
 	if (_state.uniformNameMap.find(name) == _state.uniformNameMap.end())
+	{
+		Ref<TexturePointerUniformData> tud = CreateRef<TexturePointerUniformData>();
+		tud->name = name;
+		tud->value = val;
+		_state.uniformNameMap[name] = tud;
 		return;
+	}
 
 	Ref<RenderTexture> rt = DynamicCastRef(RenderTexture, val);
 
