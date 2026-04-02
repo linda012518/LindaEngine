@@ -10,10 +10,12 @@
 #include "CameraSystem.h"
 #include "ClassFactory.h"
 #include "TextureManager.h"
+#include "GUILayoutEditor.h"
 
 #include "imgui/imgui.h"
 
 using namespace LindaEngine;
+using namespace LindaEditor;
 
 DYNAMIC_CREATE(PerspectiveCamera)
 DYNAMIC_CREATE(OrthoCamera)
@@ -216,136 +218,108 @@ CameraClearType Camera::GetClearTypeByString(std::string str)
 	return CameraClearType::Skybox;
 }
 
+std::string Camera::GetStringByClearType(CameraClearType type)
+{
+	if (type == CameraClearType::Skybox) return "Skybox";
+	else if (type == CameraClearType::SolidColor) return "SolidColor";
+	else if (type == CameraClearType::DepthOnly) return "DepthOnly";
+	else if (type == CameraClearType::DontClear) return "DontClear";
+	return "Skybox";
+}
+
 void Camera::OnImguiRender()
 {
-	float firstWidth = 100.0f;
+	float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth({ "Near", "ClearColor", "Depth", "MSAA" });
 
-	if (ImGui::BeginTable("NearTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("Near");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragFloat("##Near", &_zNear, 0.5f);
-		ImGui::EndTable();
-	}
+	GUILayoutEditor::DragFloat("Near", &_zNear, [&]() {
+		if (_zNear < 0.01f)
+			_zNear = 0.01f;
+		else if (_zNear > _zFar - 0.1f)
+			_zNear = _zFar - 0.1f;
+		SetNearFar(_zNear, -1.0f);
+		}, 0.01f, 0.01f, _zFar - 0.1f, firstWidth);
 
-	if (ImGui::BeginTable("FarTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("Far");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragFloat("##Far", &_zFar, 0.5f);
-		ImGui::EndTable();
-	}
+	GUILayoutEditor::DragFloat("Far", &_zFar, [&]() {
+		if (_zFar < _zNear + 0.1f)
+			_zFar = _zNear + 0.1f;
+		else if (_zFar > 10000.0f)
+			_zFar = 10000.0f;
+		SetNearFar(-1.0f, _zFar);
+		}, 0.01f, _zNear + 0.1f, 10000.0f, firstWidth);
 
-	if (ImGui::BeginTable("DepthTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("Depth");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragInt("##Depth", &_depth, 1);
-		ImGui::EndTable();
-	}
+	GUILayoutEditor::DragInt("Depth", &_depth, nullptr, 1);
 
-	if (ImGui::BeginTable("MSAATable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("MSAA");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragInt("##MSAA", &_msaa, 1, 0, 8);
-		ImGui::EndTable();
+	GUILayoutEditor::DragInt("MSAA", &_msaa, [&]() {
 		//TODO 这里要清掉有前的RT
-	}
+		}, 1, 1, 8);
 
-	if (ImGui::BeginTable("ClearColorTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("ClearColor");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::ColorEdit4("##ClearColor", (float*)&_clearColor);
-		ImGui::EndTable();
-	}
+	GUILayoutEditor::ColorEdit4("ClearColor", (float*)&_clearColor, nullptr);
 
-	if (ImGui::BeginTable("HDRTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("HDR");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::Checkbox("##HDR", &_hdrEnable);
-		ImGui::EndTable();
+	GUILayoutEditor::Checkbox("HDR", &_hdrEnable, [&]() {
 		//TODO 这里要清掉有前的RT
-	}
+		}, firstWidth);
 
-	static bool show_popup = false;
-	if (ImGui::Button("Clear Type", ImVec2(-1, 0))) {
-		show_popup = true;
-	}
-	if (show_popup)
-	{
-		ImGui::SetNextWindowPos(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMax().y));
+	static std::vector<std::string> names = { "Skybox", "SolidColor", "DepthOnly", "DontClear" };
+	GUILayoutEditor::ComboSelectable("ClearType", (int)_clearType, names, [&](int index) {
+		_clearType = GetClearTypeByString(names[index]);
+		});
 
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // 背景色：深蓝灰
-		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // 边框色：蓝色
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // 字体色：浅灰
+	//GUILayoutEditor::Dropdown(GetStringByClearType(_clearType), names, [&](int index) {
+	//	_clearType = GetClearTypeByString(names[index]);
+	//	});
 
-		ImGui::Begin("##Dropdown", &show_popup,
-			ImGuiWindowFlags_NoTitleBar |
-			ImGuiWindowFlags_NoResize |
-			ImGuiWindowFlags_NoMove |
-			ImGuiWindowFlags_AlwaysAutoResize);
+	//static bool show_popup = false;
+	//if (ImGui::Button(GetStringByClearType(_clearType).c_str(), ImVec2(-1, 0))) {
+	//	show_popup = true;
+	//}
+	//if (show_popup)
+	//{
+	//	ImGui::SetNextWindowPos(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMax().y));
 
-		// 检测点击外部区域
-		bool popup_hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup |
-			ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-		bool button_hovered = ImGui::IsItemHovered();
+	//	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // 背景色：深蓝灰
+	//	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // 边框色：蓝色
+	//	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // 字体色：浅灰
 
-		// 如果没有悬停在弹出框或按钮上，且鼠标被点击，则关闭弹出框
-		if (ImGui::IsMouseClicked(0) && !popup_hovered && !button_hovered) {
-			show_popup = false;
-		}
+	//	ImGui::Begin("##Dropdown", &show_popup,
+	//		ImGuiWindowFlags_NoTitleBar |
+	//		ImGuiWindowFlags_NoResize |
+	//		ImGuiWindowFlags_NoMove |
+	//		ImGuiWindowFlags_AlwaysAutoResize);
 
-		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
-			show_popup = false;
-		}
+	//	// 检测点击外部区域
+	//	bool popup_hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup |
+	//		ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+	//	bool button_hovered = ImGui::IsItemHovered();
 
-		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // 选中项背景
-		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f)); // 悬停背景
-		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));  // 点击背景
+	//	// 如果没有悬停在弹出框或按钮上，且鼠标被点击，则关闭弹出框
+	//	if (ImGui::IsMouseClicked(0) && !popup_hovered && !button_hovered) {
+	//		show_popup = false;
+	//	}
 
-		static std::vector<std::string> names = { "Skybox", "SolidColor", "DepthOnly", "DontClear" };
+	//	if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+	//		show_popup = false;
+	//	}
 
-		for (int i = 0; i < (int)names.size(); i++)
-		{
-			if (ImGui::Selectable(names[i].c_str()))
-			{
-				show_popup = false;
-				_clearType = GetClearTypeByString(names[i]);
-			}
-		}
+	//	ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // 选中项背景
+	//	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f)); // 悬停背景
+	//	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));  // 点击背景
 
-		ImGui::PopStyleColor(3);
-		ImGui::End();
-		ImGui::PopStyleColor(3);
+	//	static std::vector<std::string> names = { "Skybox", "SolidColor", "DepthOnly", "DontClear" };
 
-	}
+	//	for (int i = 0; i < (int)names.size(); i++)
+	//	{
+	//		if (ImGui::Selectable(names[i].c_str()))
+	//		{
+	//			show_popup = false;
+	//			_clearType = GetClearTypeByString(names[i]);
+	//		}
+	//	}
+
+	//	ImGui::PopStyleColor(3);
+	//	ImGui::End();
+	//	ImGui::PopStyleColor(3);
+
+	//}
 
 }
 

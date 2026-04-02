@@ -24,6 +24,8 @@ namespace LindaEngine
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
+		virtual void OnImguiRender();
+
 		void SetMesh(Ref<Mesh> mesh);
 		virtual void AddMaterial(int index, Ref<Material> mat);
 		void TransformDirty();
@@ -84,6 +86,8 @@ namespace LindaEngine
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
+
+		void OnImguiRender();
 
 		void AddMaterial(int index, Ref<Material> mat) override;
 

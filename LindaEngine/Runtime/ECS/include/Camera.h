@@ -78,6 +78,7 @@ namespace LindaEngine
 
 	protected:
 		static CameraClearType GetClearTypeByString(std::string str);
+		static std::string GetStringByClearType(CameraClearType type);
 
 	public:
 		static Camera* currentRenderCamera;

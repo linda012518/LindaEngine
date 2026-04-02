@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Editor\ImGui\src\GUILayoutEditor.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\PrecomputedAmbientPass.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\Environment.cpp" />
     <ClCompile Include="External\imgui\imgui\imgui_stdlib.cpp" />
@@ -358,6 +359,7 @@
     <ClCompile Include="SandboxApp\src\TestAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Editor\ImGui\include\GUILayoutEditor.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\PrecomputedAmbientPass.h" />
     <ClInclude Include="Runtime\Render\Core\include\Environment.h" />
     <ClInclude Include="External\imgui\imgui\imgui_stdlib.h" />

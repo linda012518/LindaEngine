@@ -645,6 +645,9 @@
     <ClCompile Include="Runtime\Render\RenderPipeline\src\PrecomputedAmbientPass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Editor\ImGui\src\GUILayoutEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -2511,6 +2514,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Runtime\Render\RenderPipeline\include\PrecomputedAmbientPass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor\ImGui\include\GUILayoutEditor.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,8 +12,16 @@
 #include "Mathf.h"
 #include "ShaderBuiltInUniform.h"
 #include "Environment.h"
+#include "TextureManager.h"
+#include "Texture.h"
+#include "Path.h"
+#include "ContentBrowserPanelEditor.h"
+#include "GUILayoutEditor.h"
+
+#include "imgui/imgui.h"
 
 using namespace LindaEngine;
+using namespace LindaEditor;
 
 DYNAMIC_CREATE(MeshRenderer)
 DYNAMIC_CREATE(SkinMeshRenderer)
@@ -87,6 +95,100 @@ bool Renderer::Deserialize(YAML::Node& node)
 	return true;
 }
 
+void Renderer::OnImguiRender()
+{
+	float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth({ "Shadow Cast", "Receive Shadow", "Mesh", "Material 99" });
+
+	GUILayoutEditor::Checkbox("Shadow Cast", &_shadowCast, [&]() {}, firstWidth);
+	GUILayoutEditor::Checkbox("Receive Shadow", &_receiveShadow, [&]() {}, firstWidth);
+	GUILayoutEditor::TextDescription("Mesh", _mesh ? _mesh->GetPath().c_str() : "None ???", !_mesh, firstWidth);
+
+	if (nullptr == _mesh || _mesh->GetAllMeshData().size() <= 0)
+		return;
+
+	size_t matSlotCount = _mesh->GetAllMeshData().size();
+
+	Ref<Texture> matIconTex = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Material.png");
+	const ImTextureID matIconId = matIconTex ? (ImTextureID)(uintptr_t)matIconTex->nativeColorID : (ImTextureID)0;
+
+	if (ImGui::BeginTable("MaterialsTable", 2, ImGuiTableFlags_SizingStretchProp)) 
+	{
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		for (size_t i = 0; i < matSlotCount; ++i)
+		{
+			ImGui::TableNextRow();
+			ImGui::TableSetColumnIndex(0);
+			ImGui::Text("Material %zu", i);
+			ImGui::TableSetColumnIndex(1);
+			ImGui::PushID((int)i);
+
+			const ImGuiStyle& style = ImGui::GetStyle();
+			const float rowH = ImGui::GetFrameHeight();
+			//const float restW = std::max(40.f, ImGui::GetContentRegionAvail().x);
+
+			const bool hasMaterial = (i < _materialList.size() && _materialList[i]);
+			std::string display;
+			if (hasMaterial)
+			{
+				std::string& p = _materialList[i]->GetPath();
+				display = Path::GetFileNameNoExtension(p);
+			}
+			else
+				display = "(Drag material)";
+
+			const ImU32 textCol = ImGui::GetColorU32(hasMaterial ? ImGuiCol_Text : ImGuiCol_TextDisabled);
+
+			ImGui::PushStyleColor(ImGuiCol_Button, style.Colors[ImGuiCol_FrameBg]);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, style.Colors[ImGuiCol_FrameBgHovered]);
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, style.Colors[ImGuiCol_FrameBgActive]);
+			ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, style.FrameRounding);
+			ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, style.FrameBorderSize);
+
+			ImGui::Button("##matSlot", ImVec2(-FLT_MIN, rowH));
+
+			const ImVec2 rmin = ImGui::GetItemRectMin();
+			const ImVec2 rmax = ImGui::GetItemRectMax();
+			ImDrawList* dl = ImGui::GetWindowDrawList();
+			const float padX = style.FramePadding.x;
+			const float yMid = (rmin.y + rmax.y) * 0.5f;
+			float x = rmin.x + padX;
+
+			dl->PushClipRect(rmin, rmax, true);
+			if (matIconId)
+			{
+				const float iy = yMid - 9.0f;
+				dl->AddImage(matIconId, ImVec2(x, iy), ImVec2(x + 18.0f, iy + 18.0f), ImVec2(0, 1), ImVec2(1, 0));
+				x += 18.0f + 6.0f;
+			}
+			const ImVec2 textSz = ImGui::CalcTextSize(display.c_str());
+			dl->AddText(ImVec2(x, yMid - textSz.y * 0.5f), textCol, display.c_str());
+			dl->PopClipRect();
+
+			ImGui::PopStyleVar(2);
+			ImGui::PopStyleColor(3);
+
+			ImGuiDragDropFlags target_flags = ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG", target_flags))
+				{
+					LindaEditor::FileNode* node = *(LindaEditor::FileNode**)payload->Data;
+					if (node && node->type == LindaEditor::FileType::Material)
+					{
+						const bool isSkin = (_type == RenderComponentType::SkinMesh);
+						AddMaterial((int)i, MaterialManager::GetMaterial(node->path, isSkin));
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+			ImGui::PopID();
+		}
+		ImGui::EndTable();
+	}
+}
+
 void Renderer::SetMesh(Ref<Mesh> mesh)
 {
 	_mesh = mesh;
@@ -113,15 +215,17 @@ void Renderer::TransformDirty()
 
 bool Renderer::CanRender(int index, int minQueue, int maxQueue)
 {
-	if (_materialList.size() <= index)
+	if (_materialList.size() <= (size_t)index || !_materialList[(size_t)index])
 		return false;
 
-	return _materialList[index]->CanRender(Material::overrideLightMode, minQueue, maxQueue);
+	return _materialList[(size_t)index]->CanRender(Material::overrideLightMode, minQueue, maxQueue);
 }
 
 bool Renderer::HasError(int index)
 {
-	return _materialList[index]->HasError();
+	if (_materialList.size() <= (size_t)index || !_materialList[(size_t)index])
+		return false;
+	return _materialList[(size_t)index]->HasError();
 }
 
 bool Renderer::InLayerMask(int layer)
@@ -340,6 +444,57 @@ bool SkinMeshRenderer::Deserialize(YAML::Node& node)
 		_bonesData = FBXManager::GetMeshBoneData(_mesh->GetPath(), _mesh->GetHashCode());
 	}
 	return true;
+}
+
+void SkinMeshRenderer::OnImguiRender()
+{
+	Renderer::OnImguiRender();
+
+	float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth({ "Root Bone", "Bone Count" });
+
+	if (ImGui::BeginTable("RootBoneTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("Root Bone");
+		ImGui::TableSetColumnIndex(1);
+		if (_rootBone)
+			ImGui::TextWrapped("%s", _rootBone->GetEntity().GetName().c_str());
+		else
+			ImGui::TextDisabled("(None)");
+		ImGui::EndTable();
+	}
+
+	if (ImGui::BeginTable("BonesCountTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+		ImGui::TableSetColumnIndex(0);
+		ImGui::Text("Bone Count");
+		ImGui::TableSetColumnIndex(1);
+		ImGui::Text("%zu", _bones.size());
+		ImGui::EndTable();
+	}
+
+	for (size_t i = 0; i < _bones.size(); ++i)
+	{
+		ImGui::PushID((int)i);
+		if (ImGui::BeginTable("BoneSlot", 2, ImGuiTableFlags_SizingStretchProp)) {
+			ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
+			ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableNextRow();
+			ImGui::TableSetColumnIndex(0);
+			ImGui::Text("[%zu]", i);
+			ImGui::TableSetColumnIndex(1);
+			if (_bones[i])
+				ImGui::TextWrapped("%s", _bones[i]->GetEntity().GetName().c_str());
+			else
+				ImGui::TextDisabled("(None)");
+			ImGui::EndTable();
+		}
+		ImGui::PopID();
+	}
 }
 
 void SkinMeshRenderer::AddMaterial(int index, Ref<Material> mat)
