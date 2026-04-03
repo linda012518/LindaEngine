@@ -7,6 +7,7 @@
 #include "Transform.h"
 #include "Component.h"
 #include "ComponentFactory.h"
+#include "GUILayoutEditor.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -253,55 +254,9 @@ void InspectorPanelEditor::DrawSundry()
 {
 	std::vector<std::string>& names = ComponentFactory::GetComponents();
 
-	if (ImGui::Button("Add Component", ImVec2(-1, 0))) {
-		_showPopup = true;
-	}
-
-	if (false == _showPopup)
-		return;
-
-	ImGui::SetNextWindowPos(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMax().y));
-
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // 背景色：深蓝灰
-	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // 边框色：蓝色
-	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // 字体色：浅灰
-
-	ImGui::Begin("##Dropdown", &_showPopup,
-		ImGuiWindowFlags_NoTitleBar |
-		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoMove |
-		ImGuiWindowFlags_AlwaysAutoResize);
-
-	// 检测点击外部区域
-	bool popup_hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup |
-		ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-	bool button_hovered = ImGui::IsItemHovered();
-
-	// 如果没有悬停在弹出框或按钮上，且鼠标被点击，则关闭弹出框
-	if (ImGui::IsMouseClicked(0) && !popup_hovered && !button_hovered) {
-		_showPopup = false;
-	}
-
-	if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
-		_showPopup = false;
-	}
-
-	ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // 选中项背景
-	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f)); // 悬停背景
-	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));  // 点击背景
-
-	for (int i = 0; i < (int)names.size(); i++)
-	{
-		if (ImGui::Selectable(names[i].c_str()))
-		{
-			_showPopup = false;
-			_selectionEntity->AddComponent(names[i]);
-		}
-	}
-
-	ImGui::PopStyleColor(3);
-	ImGui::End();
-	ImGui::PopStyleColor(3);
+	GUILayoutEditor::DropdownButton("Add Component", names, [&](int index) {
+		_selectionEntity->AddComponent(names[index]);
+		});
 }
 
 

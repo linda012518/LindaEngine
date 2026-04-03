@@ -229,7 +229,7 @@ std::string Camera::GetStringByClearType(CameraClearType type)
 
 void Camera::OnImguiRender()
 {
-	float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth({ "Near", "ClearColor", "Depth", "MSAA" });
+	float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth({ "ClearType", "ClearColor", "Depth", "MSAA" });
 
 	GUILayoutEditor::DragFloat("Near", &_zNear, [&]() {
 		if (_zNear < 0.01f)
@@ -247,80 +247,22 @@ void Camera::OnImguiRender()
 		SetNearFar(-1.0f, _zFar);
 		}, 0.01f, _zNear + 0.1f, 10000.0f, firstWidth);
 
-	GUILayoutEditor::DragInt("Depth", &_depth, nullptr, 1);
+	GUILayoutEditor::DragInt("Depth", &_depth, nullptr, 1, 0, 0, firstWidth);
 
 	GUILayoutEditor::DragInt("MSAA", &_msaa, [&]() {
 		//TODO 这里要清掉有前的RT
-		}, 1, 1, 8);
+		}, 1, 1, 8, firstWidth);
 
-	GUILayoutEditor::ColorEdit4("ClearColor", (float*)&_clearColor, nullptr);
+	GUILayoutEditor::ColorEdit4("ClearColor", (float*)&_clearColor, nullptr, firstWidth);
 
 	GUILayoutEditor::Checkbox("HDR", &_hdrEnable, [&]() {
 		//TODO 这里要清掉有前的RT
 		}, firstWidth);
 
 	static std::vector<std::string> names = { "Skybox", "SolidColor", "DepthOnly", "DontClear" };
-	GUILayoutEditor::ComboSelectable("ClearType", (int)_clearType, names, [&](int index) {
+	GUILayoutEditor::Dropdown("ClearType", (int)_clearType, names, [&](int index) {
 		_clearType = GetClearTypeByString(names[index]);
 		});
-
-	//GUILayoutEditor::Dropdown(GetStringByClearType(_clearType), names, [&](int index) {
-	//	_clearType = GetClearTypeByString(names[index]);
-	//	});
-
-	//static bool show_popup = false;
-	//if (ImGui::Button(GetStringByClearType(_clearType).c_str(), ImVec2(-1, 0))) {
-	//	show_popup = true;
-	//}
-	//if (show_popup)
-	//{
-	//	ImGui::SetNextWindowPos(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMax().y));
-
-	//	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // 背景色：深蓝灰
-	//	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // 边框色：蓝色
-	//	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // 字体色：浅灰
-
-	//	ImGui::Begin("##Dropdown", &show_popup,
-	//		ImGuiWindowFlags_NoTitleBar |
-	//		ImGuiWindowFlags_NoResize |
-	//		ImGuiWindowFlags_NoMove |
-	//		ImGuiWindowFlags_AlwaysAutoResize);
-
-	//	// 检测点击外部区域
-	//	bool popup_hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup |
-	//		ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-	//	bool button_hovered = ImGui::IsItemHovered();
-
-	//	// 如果没有悬停在弹出框或按钮上，且鼠标被点击，则关闭弹出框
-	//	if (ImGui::IsMouseClicked(0) && !popup_hovered && !button_hovered) {
-	//		show_popup = false;
-	//	}
-
-	//	if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
-	//		show_popup = false;
-	//	}
-
-	//	ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // 选中项背景
-	//	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f)); // 悬停背景
-	//	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));  // 点击背景
-
-	//	static std::vector<std::string> names = { "Skybox", "SolidColor", "DepthOnly", "DontClear" };
-
-	//	for (int i = 0; i < (int)names.size(); i++)
-	//	{
-	//		if (ImGui::Selectable(names[i].c_str()))
-	//		{
-	//			show_popup = false;
-	//			_clearType = GetClearTypeByString(names[i]);
-	//		}
-	//	}
-
-	//	ImGui::PopStyleColor(3);
-	//	ImGui::End();
-	//	ImGui::PopStyleColor(3);
-
-	//}
-
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -401,19 +343,15 @@ void PerspectiveCamera::OnEvent(IEventHandler* sender, int eventCode, Event& eve
 
 void PerspectiveCamera::OnImguiRender()
 {
-	float firstWidth = 100.0f;
+	float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth({ "ClearType", "ClearColor", "Depth", "MSAA" });
 
-	if (ImGui::BeginTable("FOVTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("FOV");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragFloat("##FOV", &_fov, 0.5f, 0.0f, 180.0f);
-		ImGui::EndTable();
-	}
+	GUILayoutEditor::DragFloat("FOV", &_fov, [&]() {
+			if (_fov < 0.1f)
+				_fov = 0.1f;
+			else if (_fov > 179.0f)
+				_fov = 179.0f;
+			SetProjectionData(_fov, -1.0f, -1.0f, -1.0f);
+		}, 0.5f, 0.1f, 179.0f, firstWidth);
 
 	Camera::OnImguiRender();
 }
@@ -423,12 +361,10 @@ void PerspectiveCamera::OnImguiRender()
 OrthoCamera::OrthoCamera(Entity& entity, bool enable) : Camera(entity, enable)
 {
 	_cameraType = CameraType::OrthoCamera;
-	_left = -100;
-	_right = 100;
-	_bottom = -100;
-	_top = 100;
+	_halfWidth = 100.0f;
+	_halfHeight = 100.0f;
 	_scale = 1.0f;
-	_aspectRatio = 1.0f;
+	_aspectRatio = (float)GraphicsContext::graphicsConfig.screenNewWidth / (float)GraphicsContext::graphicsConfig.screenNewHeight;
 	_projectSkyboxMatrix = glm::mat4(1.0f);
 	Bind(EventCode::WindowResize);
 }
@@ -448,29 +384,10 @@ void OrthoCamera::MakeProjectionMatrix()
 	if (false == _projectDirty)
 		return;
 
-	_projectMatrix = glm::ortho(_left, _right, _bottom, _top, _zNear, _zFar);
+	_projectMatrix = glm::ortho(-_halfWidth * _scale, _halfWidth * _scale, -_halfHeight * _scale, _halfHeight * _scale, _zNear, _zFar);
 	_projectInverseMatrix = glm::inverse(_projectMatrix);
 
-	if (_aspectRatio >= 1.0f) {
-		_projectSkyboxMatrix = glm::ortho(-1.0f, 1.0f, -1.0f / _aspectRatio, 1.0f / _aspectRatio, _zNear, _zFar);
-	}
-	else {
-		_projectSkyboxMatrix = glm::ortho(-_aspectRatio, _aspectRatio, -1.0f, 1.0f, _zNear, _zFar);
-	}
-}
-
-void OrthoCamera::SetProjectionData(float left, float right, float top, float bottom, float near, float far, float dontCare)
-{
-	if (left != dontCare)
-		_left = left * _scale;
-	if (right != dontCare)
-		_right = right * _scale;
-	if (top != dontCare)
-		_top = top * _scale;
-	if (bottom != dontCare)
-		_bottom = bottom * _scale;
-
-	SetNearFar(near, far, dontCare);
+	_projectSkyboxMatrix = glm::perspective(glm::radians(60.0f), _aspectRatio, _zNear, _zFar);
 }
 
 bool OrthoCamera::Serialize()
@@ -480,10 +397,8 @@ bool OrthoCamera::Serialize()
 	YAML::Emitter& out = *YamlSerializer::out;
 
 	out << YAML::Key << "Name" << YAML::Value << "OrthoCamera";
-	out << YAML::Key << "left" << YAML::Value << _left;
-	out << YAML::Key << "right" << YAML::Value << _right;
-	out << YAML::Key << "bottom" << YAML::Value << _bottom;
-	out << YAML::Key << "top" << YAML::Value << _top;
+	out << YAML::Key << "halfWidth" << YAML::Value << _halfWidth;
+	out << YAML::Key << "halfHeight" << YAML::Value << _halfHeight;
 	out << YAML::Key << "scale" << YAML::Value << _scale;
 	
 	out << YAML::EndMap;
@@ -494,10 +409,8 @@ bool OrthoCamera::Serialize()
 bool OrthoCamera::Deserialize(YAML::Node& node)
 {
 	Camera::Deserialize(node);
-	_left = node["left"].as<float>();
-	_right = node["right"].as<float>();
-	_bottom = node["bottom"].as<float>();
-	_top = node["top"].as<float>();
+	_halfWidth = node["halfWidth"].as<float>();
+	_halfHeight = node["halfHeight"].as<float>();
 	_scale = node["scale"].as<float>();
 	return true;
 }
@@ -510,33 +423,23 @@ void OrthoCamera::OnEvent(IEventHandler* sender, int eventCode, Event& eventData
 		if (wre.isMinimized == true)
 			return;
 		_aspectRatio = (float)wre.width / (float)wre.height;
-		float halfWidth = wre.width * 0.5f * _scale;
-		float halfHeight = wre.height * 0.5f * _scale;
-		SetProjectionData(-halfWidth, halfWidth, halfHeight, -halfHeight, -1.0f, -1.0f);
+		_halfWidth = wre.width * 0.5f;
+		_halfHeight = wre.height * 0.5f;
+		_projectDirty = true;
 	}
 }
 
 void OrthoCamera::OnImguiRender()
 {
-	float firstWidth = 100.0f;
+	float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth({ "ClearType", "ClearColor", "Depth", "MSAA" });
 
-	if (ImGui::BeginTable("SizeTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("Size");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		float scale = _scale;
-		ImGui::DragFloat("##Size", &scale, 0.001f);
-		ImGui::EndTable();
-		if (scale != _scale)
-		{
-			_scale = scale;
-			SetProjectionData(_left, _right, _top, _bottom, -1.0f, -1.0f);
-		}
-	}
+	GUILayoutEditor::DragFloat("Size", &_scale, [&]() {
+		if (_scale < 0.1f)
+			_scale = 0.1f;
+		else if (_scale > 100.0f)
+			_scale = 100.0f;
+		_projectDirty = true;
+		}, 0.1f, 0.1f, 100.0f, firstWidth);
 
 	Camera::OnImguiRender();
 }

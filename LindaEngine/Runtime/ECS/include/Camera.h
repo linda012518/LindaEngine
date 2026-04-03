@@ -149,8 +149,6 @@ namespace LindaEngine
 		const glm::mat4& GetSkyboxProjectMatrix();
 		virtual void MakeProjectionMatrix();
 
-		void SetProjectionData(float left, float right, float top, float bottom, float near, float far, float dontCare = -1.0f);
-
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
@@ -159,12 +157,10 @@ namespace LindaEngine
 		void OnImguiRender();
 
 	private:
-		float _left;
-		float _right;
-		float _bottom;
-		float _top;
 		float _scale;
 		float _aspectRatio;
+		float _halfWidth;
+		float _halfHeight;
 		glm::mat4 _projectSkyboxMatrix;
 	};
 

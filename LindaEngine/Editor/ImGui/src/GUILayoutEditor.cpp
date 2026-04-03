@@ -85,102 +85,142 @@ void GUILayoutEditor::ColorEdit4(std::string name, float* value, WidgetCallback 
 		}, name, nameSize);
 }
 
-void GUILayoutEditor::Dropdown(std::string name, std::vector<std::string>& value, DropdownCallback onChanged)
+void GUILayoutEditor::Dropdown(std::string name, int curIndex, std::vector<std::string>& value, DropdownCallback onChanged, float nameSize)
 {
-	static bool show_popup = false;
-	if (ImGui::Button(name.c_str(), ImVec2(-1, 0))) {
-		show_popup = true;
-	}
-	if (show_popup)
-	{
-		ImGui::SetNextWindowPos(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMax().y));
+	DrawWidget([&]() {
+		if (ImGui::Button(value[curIndex].c_str(), ImVec2(-1, 0))) {
+			ImGui::OpenPopup("##Dropdown");
+		}
 
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // 背景色：深蓝灰
-		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // 边框色：蓝色
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // 字体色：浅灰
+		ImVec2 buttonMin = ImGui::GetItemRectMin();
+		ImVec2 buttonMax = ImGui::GetItemRectMax();
 
-		ImGui::Begin("##Dropdown", &show_popup,
-			ImGuiWindowFlags_NoTitleBar |
+		ImGui::SetNextWindowPos(ImVec2(buttonMin.x, buttonMax.y));
+		ImGui::SetNextWindowSize(ImVec2(buttonMax.x - buttonMin.x, 0));
+
+		ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // 背景色
+		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // 边框色
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // 字体色
+
+		if (ImGui::BeginPopup("##Dropdown", ImGuiWindowFlags_NoTitleBar |
 			ImGuiWindowFlags_NoResize |
-			ImGuiWindowFlags_NoMove |
-			ImGuiWindowFlags_AlwaysAutoResize);
+			ImGuiWindowFlags_NoMove))
+		{
+			ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // 选中项背景
+			ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f)); // 悬停背景
+			ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));  // 点击背景
 
-		// 检测点击外部区域
-		bool popup_hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup |
-			ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-		bool button_hovered = ImGui::IsItemHovered();
+			ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5f, 0.5f));
 
-		// 如果没有悬停在弹出框或按钮上，且鼠标被点击，则关闭弹出框
-		if (ImGui::IsMouseClicked(0) && !popup_hovered && !button_hovered) {
-			show_popup = false;
+			for (int i = 0; i < (int)value.size(); i++)
+			{
+				const bool is_selected = (curIndex == i);
+				if (ImGui::Selectable(value[i].c_str(), is_selected))
+				{
+					if (onChanged)
+						onChanged(i);
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			ImGui::PopStyleVar(1);
+
+			ImGui::PopStyleColor(3);
+			ImGui::EndPopup();
+		}
+		ImGui::PopStyleColor(3);
+
+		}, name, nameSize);
+}
+
+void GUILayoutEditor::ComboSelectable(std::string name, int curIndex, std::vector<std::string>& value, DropdownCallback onChanged, float nameSize)
+{
+	DrawWidget([&]() {
+		const char* preview = "";
+		if (!value.empty() && curIndex >= 0 && curIndex < (int)value.size())
+			preview = value[curIndex].c_str();
+
+		const ImVec4 bgPopup(0.8f, 0.8f, 0.85f, 0.95f);
+		const ImVec4 borderCol(0.3f, 0.4f, 0.8f, 1.0f);
+		const ImVec4 textCol(0.2f, 0.2f, 0.2f, 1.0f);
+
+		ImGui::SetNextItemWidth(-FLT_MIN);
+
+		const ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton | ImGuiComboFlags_HeightRegular;
+
+		ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));
+		ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5f, 0.5f));
+
+		if (ImGui::BeginCombo(("##" + name).c_str(), preview, flags))
+		{
+			ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));
+			ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f));
+			ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));
+			ImGui::PushStyleColor(ImGuiCol_Text, textCol);
+			ImGui::PushStyleColor(ImGuiCol_Border, borderCol);
+
+			for (int n = 0; n < (int)value.size(); n++)
+			{
+				const bool is_selected = (curIndex == n);
+				if (ImGui::Selectable(value[n].c_str(), is_selected))
+				{
+					if (onChanged)
+						onChanged(n);
+				}
+			}
+
+			ImGui::PopStyleColor(5);
+			ImGui::EndCombo();
 		}
 
-		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
-			show_popup = false;
-		}
+		ImGui::PopStyleVar(1);
+		ImGui::PopStyleColor(1);
 
+		}, name, nameSize);
+}
+
+void GUILayoutEditor::DropdownButton(std::string name, std::vector<std::string>& value, DropdownCallback onChanged)
+{
+	if (ImGui::Button(name.c_str(), ImVec2(-1, 0))) {
+		ImGui::OpenPopup("##Dropdown");
+	}
+
+	ImVec2 buttonMin = ImGui::GetItemRectMin();
+	ImVec2 buttonMax = ImGui::GetItemRectMax();
+
+	ImGui::SetNextWindowPos(ImVec2(buttonMin.x, buttonMax.y));
+	ImGui::SetNextWindowSize(ImVec2(buttonMax.x - buttonMin.x, 0));
+
+	ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // 背景色
+	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // 边框色
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // 字体色
+
+	if (ImGui::BeginPopup("##Dropdown", ImGuiWindowFlags_NoTitleBar |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoMove))
+	{
 		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // 选中项背景
 		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f)); // 悬停背景
 		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));  // 点击背景
+
+		ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5f, 0.5f));
 
 		for (int i = 0; i < (int)value.size(); i++)
 		{
 			if (ImGui::Selectable(value[i].c_str()))
 			{
-				show_popup = false;
-				onChanged(i);
-			}
-		}
-
-		ImGui::PopStyleColor(3);
-		ImGui::End();
-		ImGui::PopStyleColor(3);
-
-	}
-
-}
-
-void GUILayoutEditor::ComboSelectable(std::string name, int curIndex, std::vector<std::string>& value, DropdownCallback onChanged)
-{
-	const char* preview = "";
-	if (!value.empty() && curIndex >= 0 && curIndex < (int)value.size())
-		preview = value[curIndex].c_str();
-
-	const ImVec4 bgPopup(0.8f, 0.8f, 0.85f, 0.95f);
-	const ImVec4 borderCol(0.3f, 0.4f, 0.8f, 1.0f);
-	const ImVec4 textCol(0.2f, 0.2f, 0.2f, 1.0f);
-
-	ImGui::SetNextItemWidth(-FLT_MIN);
-
-	const ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton | ImGuiComboFlags_HeightRegular;
-
-	ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));
-	ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5f, 0.5f));
-
-	if (ImGui::BeginCombo(("##" + name).c_str(), preview, flags))
-	{
-		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));
-		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f));
-		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));
-		ImGui::PushStyleColor(ImGuiCol_Text, textCol);
-		ImGui::PushStyleColor(ImGuiCol_Border, borderCol);
-
-		for (int n = 0; n < (int)value.size(); n++)
-		{
-			const bool is_selected = (curIndex == n);
-			if (ImGui::Selectable(value[n].c_str(), is_selected))
-			{
 				if (onChanged)
-					onChanged(n);
+					onChanged(i);
+				ImGui::CloseCurrentPopup();
 			}
 		}
 
-		ImGui::PopStyleColor(5);
-		ImGui::EndCombo();
-	}
+		ImGui::PopStyleVar(1);
 
-	ImGui::PopStyleVar(1);
-	ImGui::PopStyleColor(1);
+		ImGui::PopStyleColor(3);
+		ImGui::EndPopup();
+	}
+	ImGui::PopStyleColor(3);
 }
 
 float GUILayoutEditor::ImGuiLabelColumnWidth(std::initializer_list<const char*> labels)

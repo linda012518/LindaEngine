@@ -5,10 +5,12 @@
 #include "ComponentImplement.inl"
 #include "LightSystem.h"
 #include "Transform.h"
+#include "GUILayoutEditor.h"
 
 #include "imgui/imgui.h"
 
 using namespace LindaEngine;
+using namespace LindaEditor;
 
 DYNAMIC_CREATE(DirectionLight)
 DYNAMIC_CREATE(SpotLight)
@@ -58,85 +60,21 @@ bool Light::Deserialize(YAML::Node& node)
 
 void Light::OnImguiRender()
 {
-	float firstWidth = 100.0f;
+	float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth({ "Intensity", "Shadow Type", "OuterAngle", "InnerAngle"});
 
-	if (ImGui::BeginTable("IntensityTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("Intensity");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::DragFloat("##Intensity", &_intensity, 0.01f);
-		ImGui::EndTable();
-	}
+	GUILayoutEditor::DragFloat("Intensity", &_intensity, [&]() {
+		if (_intensity < 0.0f)
+			_intensity = 0.0f;
+		else if (_intensity > 10000.0f)
+			_intensity = 10000.0f;
+		}, 0.01f, 0.0f, 10000.0f, firstWidth);
 
-	if (ImGui::BeginTable("ColorTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("Color");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		ImGui::ColorEdit4("##Color", (float*)&_color);
-		ImGui::EndTable();
-	}
+	GUILayoutEditor::ColorEdit4("Color", (float*)&_color, nullptr, firstWidth);
 
-	static bool show_popup = false;
-	if (ImGui::Button("Shadow Type", ImVec2(-1, 0))) {
-		show_popup = true;
-	}
-	if (show_popup)
-	{
-		ImGui::SetNextWindowPos(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMax().y));
-
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // 背景色：深蓝灰
-		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // 边框色：蓝色
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // 字体色：浅灰
-
-		ImGui::Begin("##Dropdown", &show_popup,
-			ImGuiWindowFlags_NoTitleBar |
-			ImGuiWindowFlags_NoResize |
-			ImGuiWindowFlags_NoMove |
-			ImGuiWindowFlags_AlwaysAutoResize);
-
-		// 检测点击外部区域
-		bool popup_hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup |
-			ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
-		bool button_hovered = ImGui::IsItemHovered();
-
-		// 如果没有悬停在弹出框或按钮上，且鼠标被点击，则关闭弹出框
-		if (ImGui::IsMouseClicked(0) && !popup_hovered && !button_hovered) {
-			show_popup = false;
-		}
-
-		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
-			show_popup = false;
-		}
-
-		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // 选中项背景
-		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f)); // 悬停背景
-		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));  // 点击背景
-
-		static std::vector<std::string> names = { "None", "HardShadows", "SoftShadows" };
-
-		for (int i = 0; i < (int)names.size(); i++)
-		{
-			if (ImGui::Selectable(names[i].c_str()))
-			{
-				show_popup = false;
-				_shadowType = GetShadowTypeByString(names[i]);
-			}
-		}
-
-		ImGui::PopStyleColor(3);
-		ImGui::End();
-		ImGui::PopStyleColor(3);
-
-	}
-
+	static std::vector<std::string> names = { "None", "HardShadows", "SoftShadows" };
+	GUILayoutEditor::Dropdown("Shadow Type", (int)_shadowType, names, [&](int index) {
+		_shadowType = GetShadowTypeByString(names[index]);
+		});
 }
 
 void Light::TransformDirty()
@@ -251,53 +189,31 @@ void SpotLight::OnImguiRender()
 {
 	Light::OnImguiRender();
 
-	float firstWidth = 100.0f;
+	float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth({ "Intensity", "Shadow Type", "OuterAngle", "InnerAngle" });
 
-	if (ImGui::BeginTable("RangeTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("Range");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		float value = _range;
-		ImGui::DragFloat("##Range", &value, 0.01f);
-		if (value != _range)
-			SetRange(value);
-		ImGui::EndTable();
-	}
+	GUILayoutEditor::DragFloat("Range", &_range, [&]() {
+		if (_range < 0.1f)
+			_range = 0.1f;
+		else if (_range > 10000.0f)
+			_range = 10000.0f;
+		SetRange(_range);
+		}, 0.01f, 0.1f, 10000.0f, firstWidth);
 
-	if (ImGui::BeginTable("InnerAngleTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("InnerAngle");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		float value = _innerAngle;
-		ImGui::DragFloat("##InnerAngle", &value, 0.01f);
-		if (value != _innerAngle)
-			SetInnerAngle(value);
-		ImGui::EndTable();
-	}
+	GUILayoutEditor::DragFloat("InnerAngle", &_innerAngle, [&]() {
+		if (_innerAngle < 0.1f)
+			_innerAngle = 0.1f;
+		else if (_innerAngle > _outerAngle - 0.1f)
+			_innerAngle = _outerAngle - 0.1f;
+		SetInnerAngle(_innerAngle);
+		}, 0.01f, 0.1f, _outerAngle - 0.1f, firstWidth);
 
-	if (ImGui::BeginTable("OuterAngleTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("OuterAngle");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		float value = _outerAngle;
-		ImGui::DragFloat("##OuterAngle", &value, 0.01f);
-		if (value != _outerAngle)
-			SetOuterAngle(value);
-		ImGui::EndTable();
-	}
-
+	GUILayoutEditor::DragFloat("OuterAngle", &_outerAngle, [&]() {
+		if (_outerAngle < _innerAngle + 0.1f)
+			_outerAngle = _innerAngle + 0.1f;
+		else if (_outerAngle > 10000.0f)
+			_outerAngle = 10000.0f;
+		SetOuterAngle(_outerAngle);
+		}, 0.01f, _innerAngle + 0.1f, 10000.0f, firstWidth);
 }
 
 void SpotLight::SetRange(float range)
@@ -387,23 +303,15 @@ void PointLight::OnImguiRender()
 {
 	Light::OnImguiRender();
 
-	float firstWidth = 100.0f;
+	float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth({ "Intensity", "Shadow Type", "OuterAngle", "InnerAngle" });
 
-	if (ImGui::BeginTable("RangeTable", 2, ImGuiTableFlags_SizingStretchProp)) {
-		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
-		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableNextRow();
-		ImGui::TableSetColumnIndex(0);
-		ImGui::Text("Range");
-		ImGui::TableSetColumnIndex(1);
-		ImGui::SetNextItemWidth(-FLT_MIN);
-		float value = _range;
-		ImGui::DragFloat("##Range", &value, 0.01f);
-		if (value != _range)
-			SetRange(value);
-		ImGui::EndTable();
-	}
-
+	GUILayoutEditor::DragFloat("Range", &_range, [&]() {
+		if (_range < 0.1f)
+			_range = 0.1f;
+		else if (_range > 10000.0f)
+			_range = 10000.0f;
+		SetRange(_range);
+		}, 0.01f, 0.1f, 10000.0f, firstWidth);
 }
 
 void PointLight::CalculateAABB()
