@@ -143,6 +143,11 @@ bool Material::Deserialize(YAML::Node& node)
 	return true;
 }
 
+void Material::OnImguiRender()
+{
+
+}
+
 bool Material::CanRender(std::string& lightMode, int minQueue, int maxQueue)
 {
 	return false == _hasError && _state.renderQueue >= minQueue && _state.renderQueue <= maxQueue && HasLightMode(lightMode);

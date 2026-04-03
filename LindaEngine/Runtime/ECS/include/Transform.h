@@ -92,6 +92,7 @@ namespace LindaEngine
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
+		void OnImguiRender();
 
 	private:
 		void UpdateWhenLocalChange();

@@ -6,10 +6,14 @@
 #include "TransformSystem.h"
 #include "Path.h"
 #include "Mathf.h"
+#include "GUILayoutEditor.h"
+
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/quaternion.hpp"
 #include "glm/gtx/matrix_decompose.hpp"
 #include "glm/gtx/euler_angles.hpp"
+
+#include "imgui/imgui.h"
 
 #define DO_LOCALCHANGE \
 if (_localChange) \
@@ -22,6 +26,7 @@ if (_worldChange) \
 _localChange = true;
 
 using namespace LindaEngine;
+using namespace LindaEditor;
 
 Transform::Transform(Entity& entity) : Component(entity, true)
 {
@@ -490,3 +495,16 @@ bool Transform::Deserialize(YAML::Node& node)
 	return true;
 }
 
+void Transform::OnImguiRender()
+{
+	GUILayoutEditor::Vec3Control("Position", _localPosition);
+	SetLocalPosition(_localPosition);
+
+	ImGui::Spacing();
+	GUILayoutEditor::Vec3Control("Angles", _localEulerAngles);
+	SetLocalEulerAngles(_localEulerAngles);
+
+	ImGui::Spacing();
+	GUILayoutEditor::Vec3Control("Scale", _localScale, 1.0f);
+	SetLocalScale(_localScale);
+}

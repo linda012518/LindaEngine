@@ -111,67 +111,49 @@ void Renderer::OnImguiRender()
 	Ref<Texture> matIconTex = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Material.png");
 	const ImTextureID matIconId = matIconTex ? (ImTextureID)(uintptr_t)matIconTex->nativeColorID : (ImTextureID)0;
 
-	if (ImGui::BeginTable("MaterialsTable", 2, ImGuiTableFlags_SizingStretchProp)) 
+	if (ImGui::BeginTable("MaterialsTable", 2, ImGuiTableFlags_SizingStretchProp))
 	{
 		ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed, firstWidth);
 		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
+
 		for (size_t i = 0; i < matSlotCount; ++i)
 		{
 			ImGui::TableNextRow();
 			ImGui::TableSetColumnIndex(0);
+			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Material %zu", i);
 			ImGui::TableSetColumnIndex(1);
+			ImGui::SetNextItemWidth(-FLT_MIN);
 			ImGui::PushID((int)i);
 
-			const ImGuiStyle& style = ImGui::GetStyle();
-			const float rowH = ImGui::GetFrameHeight();
-			//const float restW = std::max(40.f, ImGui::GetContentRegionAvail().x);
-
 			const bool hasMaterial = (i < _materialList.size() && _materialList[i]);
-			std::string display;
-			if (hasMaterial)
+			std::string display = hasMaterial
+				? Path::GetFileNameNoExtension(_materialList[i]->GetPath())
+				: "(Drag material)";
+
+			const ImGuiStyle& style = ImGui::GetStyle();
+			const float rowHeight = ImGui::GetFrameHeight();
+			const ImVec2 availSize = ImVec2(ImGui::GetContentRegionAvail().x, rowHeight);
+
+			ImVec4 bgColor = style.Colors[ImGuiCol_FrameBg];
+			ImVec4 bgHover = style.Colors[ImGuiCol_FrameBgHovered];
+			ImVec4 bgActive = style.Colors[ImGuiCol_FrameBgActive];
+
+			ImGui::PushStyleColor(ImGuiCol_Header, bgColor);
+			ImGui::PushStyleColor(ImGuiCol_HeaderHovered, bgColor);
+			ImGui::PushStyleColor(ImGuiCol_HeaderActive, bgActive);
+			
+			bool selected = false;
+			if (ImGui::Selectable("##matSlot", false, ImGuiSelectableFlags_Highlight, availSize))
 			{
-				std::string& p = _materialList[i]->GetPath();
-				display = Path::GetFileNameNoExtension(p);
+				// 点击事件
 			}
-			else
-				display = "(Drag material)";
 
-			const ImU32 textCol = ImGui::GetColorU32(hasMaterial ? ImGuiCol_Text : ImGuiCol_TextDisabled);
-
-			ImGui::PushStyleColor(ImGuiCol_Button, style.Colors[ImGuiCol_FrameBg]);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, style.Colors[ImGuiCol_FrameBgHovered]);
-			ImGui::PushStyleColor(ImGuiCol_ButtonActive, style.Colors[ImGuiCol_FrameBgActive]);
-			ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, style.FrameRounding);
-			ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, style.FrameBorderSize);
-
-			ImGui::Button("##matSlot", ImVec2(-FLT_MIN, rowH));
-
-			const ImVec2 rmin = ImGui::GetItemRectMin();
-			const ImVec2 rmax = ImGui::GetItemRectMax();
-			ImDrawList* dl = ImGui::GetWindowDrawList();
-			const float padX = style.FramePadding.x;
-			const float yMid = (rmin.y + rmax.y) * 0.5f;
-			float x = rmin.x + padX;
-
-			dl->PushClipRect(rmin, rmax, true);
-			if (matIconId)
-			{
-				const float iy = yMid - 9.0f;
-				dl->AddImage(matIconId, ImVec2(x, iy), ImVec2(x + 18.0f, iy + 18.0f), ImVec2(0, 1), ImVec2(1, 0));
-				x += 18.0f + 6.0f;
-			}
-			const ImVec2 textSz = ImGui::CalcTextSize(display.c_str());
-			dl->AddText(ImVec2(x, yMid - textSz.y * 0.5f), textCol, display.c_str());
-			dl->PopClipRect();
-
-			ImGui::PopStyleVar(2);
 			ImGui::PopStyleColor(3);
 
-			ImGuiDragDropFlags target_flags = ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
 			if (ImGui::BeginDragDropTarget())
 			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG", target_flags))
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG"))
 				{
 					LindaEditor::FileNode* node = *(LindaEditor::FileNode**)payload->Data;
 					if (node && node->type == LindaEditor::FileType::Material)
@@ -182,6 +164,41 @@ void Renderer::OnImguiRender()
 				}
 				ImGui::EndDragDropTarget();
 			}
+
+			if (hasMaterial && ImGui::BeginPopupContextItem("##ClearMaterial"))
+			{
+				if (ImGui::MenuItem("Clear Material"))
+				{
+					//RemoveMaterial((int)i);
+				}
+				ImGui::EndPopup();
+			}
+
+			ImVec2 itemMin = ImGui::GetItemRectMin();
+			ImVec2 itemMax = ImGui::GetItemRectMax();
+			float itemHeight = itemMax.y - itemMin.y;
+			float contentY = itemMin.y + (itemHeight - 18.0f) * 0.5f; // 18是图标高度
+
+			float x = itemMin.x + style.FramePadding.x;
+			ImGui::SetCursorScreenPos(ImVec2(x, contentY));
+
+			if (matIconId && hasMaterial)
+			{
+				ImGui::Image(matIconId, ImVec2(18, 18), ImVec2(0, 1), ImVec2(1, 0));
+				ImGui::SameLine(0, 6);
+			}
+
+			ImVec2 textSize = ImGui::CalcTextSize(display.c_str());
+			float textY = itemMin.y + (itemHeight - textSize.y) * 0.5f;
+			ImGui::SetCursorScreenPos(ImVec2(ImGui::GetCursorScreenPos().x, textY));
+
+			if (!hasMaterial)
+				ImGui::PushStyleColor(ImGuiCol_Text, style.Colors[ImGuiCol_TextDisabled]);
+
+			ImGui::TextUnformatted(display.c_str());
+
+			if (!hasMaterial)
+				ImGui::PopStyleColor();
 
 			ImGui::PopID();
 		}
@@ -207,6 +224,8 @@ void Renderer::AddMaterial(int index, Ref<Material> mat)
 
 void Renderer::TransformDirty()
 {
+	if (nullptr == _mesh)
+		return;
 	glm::vec3 min = _mesh->GetBoundingBox().min;
 	glm::vec3 max = _mesh->GetBoundingBox().max;
 	const glm::mat4& transform = _transform->GetLocalToWorldMat();
@@ -288,6 +307,8 @@ Drawable& Renderer::GetBoundingBoxRenderer()
 
 void Renderer::RenderBoundingBox()
 {
+	if (nullptr == _mesh)
+		return;
 	Material::overrideLightMode = "Adjunct";
 	Drawable& drawable = GetBoundingBoxRenderer();
 	drawable.transform->SetLocalPosition(_transform->GetWorldScale() * _mesh->GetBoundingBox().center);

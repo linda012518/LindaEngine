@@ -85,7 +85,10 @@ void RendererSystem::DrawRenderers(Camera* camera, DrawingSettings* settings)
 
 void RendererSystem::DrawRenderer(Renderer* renderer, Ref<Material> material)
 {
-	int count = (int)renderer->GetMesh()->GetAllMeshData().size();
+	Mesh* mesh = renderer->GetMesh();
+	if (nullptr == mesh)
+		return;
+	int count = (int)mesh->GetAllMeshData().size();
 	for (int i = 0; i < count; i++)
 	{
 		Drawable da;
@@ -123,7 +126,10 @@ void RendererSystem::DrawErrorRenderer()
 
 	for (auto& renderer : _components)
 	{
-		int count = (int)renderer->GetMesh()->GetAllMeshData().size();
+		Mesh* mesh = renderer->GetMesh();
+		if (nullptr == mesh)
+			continue;
+		int count = (int)mesh->GetAllMeshData().size();
 		for (int i = 0; i < count; i++)
 		{
 			if (false == renderer->HasError(i))

@@ -47,7 +47,6 @@ namespace LindaEngine
 		void TransformDirty();
 
 		Transform* GetTransform();
-		std::vector<Ref<Component>>& GetAllComponent() { return _components; }
 
 		template <typename TComponent, typename ... Args>
 		TComponent* AddComponent(Args&& ... args);
@@ -62,6 +61,7 @@ namespace LindaEngine
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
+		void OnImguiRender();
 
 		friend std::ostream& operator<<(std::ostream& out, const Entity& entity)
 		{
@@ -88,6 +88,8 @@ namespace LindaEngine
 		std::vector<Behavior*> _behaviors;
 		bool _isDontDestory;
 		int _hierarchyIndex;
+
+		Component* _eidtorDirty = nullptr;
 
 		static int _id;
 		int _entityID;

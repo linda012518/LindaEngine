@@ -17,6 +17,7 @@ namespace LindaEngine
 		void Unbind(int eventCode);
 		void Dispatch(IEventHandler* sender, int eventCode, Event& eventData);
 		virtual void OnEvent(IEventHandler* sender, int eventCode, Event& eventData) { }
+		virtual void OnImguiRender() {}
 
 	protected:
 		static int _id;

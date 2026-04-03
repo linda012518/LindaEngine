@@ -7,6 +7,8 @@
 namespace LindaEngine
 {
 	class Entity;
+	class Material;
+	class LObject;
 }
 
 namespace LindaEditor
@@ -19,5 +21,10 @@ namespace LindaEditor
 	struct PickEntityIDEditor : public LindaEngine::Event
 	{
 		std::unordered_map<int, int> selectID;
+	};
+
+	struct SwitchInspectorObjectEditor : public LindaEngine::Event
+	{
+		LindaEngine::LObject* lobject = nullptr;
 	};
 }

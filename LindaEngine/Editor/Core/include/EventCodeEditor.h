@@ -8,5 +8,6 @@ namespace LindaEditor
 	public:
 		const static int SwitchSelectEntity = BasicCountEditor + 1;
 		const static int PickEntityID = BasicCountEditor + 2;
+		const static int SwitchInspectorObject = BasicCountEditor + 3;
 	};
 }

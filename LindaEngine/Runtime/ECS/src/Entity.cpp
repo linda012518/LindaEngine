@@ -8,6 +8,10 @@
 #include "BehaviorSystem.h"
 #include "Application.h"
 
+#include "imgui/imgui.h"
+#include <imgui/imgui_internal.h>
+#include <imgui/imgui_stdlib.h>
+
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -252,4 +256,90 @@ bool Entity::Deserialize(YAML::Node& node)
 	}
 
 	return true;
+}
+
+void Entity::OnImguiRender()
+{
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+	ImGui::PopStyleColor(1);
+
+	std::vector<Ref<Component>>& coms = _components;
+	for (auto& go : coms)
+	{
+		if (nullptr == go)
+			continue;
+		Component* component = go.get();
+		bool isTransform = nullptr != dynamic_cast<Transform*>(component);
+
+		ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, 0);
+
+		ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(1.0f, 1.0f, 1.0f, 1.00f));
+		if (isTransform)
+			ImGui::BeginDisabled();
+
+		std::string goID = "##" + std::string((const char*)component);
+		bool ret = component->GetEnable();
+		ImGui::Checkbox(goID.c_str(), &ret);
+		if (component->GetEnable() != ret)
+			component->SetEnable(ret);
+
+		ImGui::PopStyleVar(1);
+		ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, 1);
+
+		ImGui::SameLine();
+		ImGui::Spacing();
+		ImGui::SameLine();
+
+		if (isTransform)
+			ImGui::EndDisabled();
+		ImGui::PopStyleColor(1);
+
+		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.26f, 0.26f, 0.26f, 1.00f));
+		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.36f, 0.36f, 0.36f, 1.00f));
+		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.56f, 0.56f, 0.56f, 1.00f));
+
+		ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
+		treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_SpanAvailWidth;
+		if (ImGui::TreeNodeEx((void*)component, treeNodeFlags, component->GetClassName().c_str()))
+		{
+			if (ImGui::IsItemHovered() && false == isTransform)
+				_eidtorDirty = component;
+			component->OnImguiRender();
+			ImGui::TreePop();
+		}
+
+		ImGui::PopStyleVar(1);
+		ImGui::PopStyleColor(3);
+
+		ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+		ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+		ImGui::PopStyleColor(1);
+	}
+
+	ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));       // 菜单栏背景
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));            // 文本颜色
+	ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));         // 弹出菜单背景
+	ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));          // 选中状态（子菜单打开时）
+
+	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.75f, 0.75f, 0.75f, 1.0f));   // 悬停背景
+	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));    // 激活背景
+	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));          // 边框颜色
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));       // 分隔线颜色
+
+	if (ImGui::BeginPopupContextWindow(0, ImGuiPopupFlags_MouseButtonRight))
+	{
+		if (ImGui::MenuItem("Remove component"))
+		{
+			RemoveComponentImmediately(_eidtorDirty);
+			_eidtorDirty = nullptr;
+		}
+		ImGui::EndPopup();
+	}
+	else
+	{
+		_eidtorDirty = nullptr;
+	}
+
+	ImGui::PopStyleColor(8);
 }

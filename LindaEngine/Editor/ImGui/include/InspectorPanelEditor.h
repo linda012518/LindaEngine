@@ -7,6 +7,8 @@ namespace LindaEngine
 {
 	class Entity;
 	class Component;
+	class Material;
+	class LObject;
 }
 
 namespace LindaEditor
@@ -25,8 +27,8 @@ namespace LindaEditor
 		void DrawSundry();
 
 	private:
+		LindaEngine::LObject* _object = nullptr;
 		LindaEngine::Entity* _selectionEntity = nullptr;
-		LindaEngine::Component* _component = nullptr;
 		bool _showPopup = false;
 	};
 }
