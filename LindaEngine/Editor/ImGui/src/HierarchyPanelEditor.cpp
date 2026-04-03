@@ -1,4 +1,4 @@
-#include "HierarchyPanelEditor.h"
+ï»¿#include "HierarchyPanelEditor.h"
 #include "SceneManagerEditor.h"
 #include "Entity.h"
 #include "Scene.h"
@@ -11,6 +11,7 @@
 #include "RenderPipelineEditor.h"
 #include "CameraController.h"
 #include "Camera.h"
+#include "GUILayoutEditor.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -123,28 +124,28 @@ void HierarchyPanelEditor::DrawEntityRecursive(Entity* entity, int* index)
 
 	if (_renameEntity == entity)
 	{
-		// ÖØÃüÃû×´Ì¬ÏÂ£º»æÖÆÒ»¸ö¿ÕµÄÊ÷½Úµã£¨ÓÃÓÚ²¼¾Ö£©
+		// é‡å‘½åçŠ¶æ€ä¸‹ï¼šç»˜åˆ¶ä¸€ä¸ªç©ºçš„æ ‘èŠ‚ç‚¹ï¼ˆç”¨äºå¸ƒå±€ï¼‰
 		opened = ImGui::TreeNodeEx((void*)entity, flags, "");
 
-		// »æÖÆÊäÈë¿ò
+		// ç»˜åˆ¶è¾“å…¥æ¡†
 		ImGui::SameLine();
 		ImGui::SetKeyboardFocusHere();
 
 		if (ImGui::InputText("##Rename", renameBuffer, IM_ARRAYSIZE(renameBuffer),
 			ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll))
 		{
-			// °´ÏÂ»Ø³µÈ·ÈÏÖØÃüÃû
+			// æŒ‰ä¸‹å›è½¦ç¡®è®¤é‡å‘½å
 			_renameEntity->SetName(renameBuffer);
 			_renameEntity = nullptr;
 		}
 
-		// Ê§È¥½¹µãÒ²È·ÈÏÖØÃüÃû
+		// å¤±å»ç„¦ç‚¹ä¹Ÿç¡®è®¤é‡å‘½å
 		if (!ImGui::IsItemActive() && ImGui::IsItemDeactivated() && nullptr != _renameEntity)
 		{
 			_renameEntity->SetName(renameBuffer);
 			_renameEntity = nullptr;
 		}
-		// ESC¼üÈ¡ÏûÖØÃüÃû
+		// ESCé”®å–æ¶ˆé‡å‘½å
 		if (ImGui::IsKeyPressed(ImGuiKey_Escape) && nullptr != _renameEntity)
 		{
 			_renameEntity = nullptr;
@@ -167,21 +168,21 @@ void HierarchyPanelEditor::DrawEntityRecursive(Entity* entity, int* index)
 
 	DragEntitys(entity);
 
-	// ¼ì²éÊÇ·ñµã»÷ÁËÕ¹¿ªÈı½ÇÇøÓò
+	// æ£€æŸ¥æ˜¯å¦ç‚¹å‡»äº†å±•å¼€ä¸‰è§’åŒºåŸŸ
 	bool clickedOnArrow = false;
 	if (hasChildren && ImGui::IsItemHovered())
 	{
-		// »ñÈ¡Ê÷½ÚµãµÄ¾ØĞÎÇøÓò
+		// è·å–æ ‘èŠ‚ç‚¹çš„çŸ©å½¢åŒºåŸŸ
 		ImVec2 rectMin = ImGui::GetItemRectMin();
 		ImVec2 rectMax = ImGui::GetItemRectMax();
-		// »ñÈ¡Êó±êÎ»ÖÃ
+		// è·å–é¼ æ ‡ä½ç½®
 		ImVec2 mousePos = ImGui::GetMousePos();
 
-		// ¼ÆËãÕ¹¿ªÈı½ÇµÄ½üËÆÇøÓò£¨ÔÚImGuiÖĞ£¬¼ıÍ·ÇøÓòÍ¨³£ÔÚ×ó²à£©
+		// è®¡ç®—å±•å¼€ä¸‰è§’çš„è¿‘ä¼¼åŒºåŸŸï¼ˆåœ¨ImGuiä¸­ï¼Œç®­å¤´åŒºåŸŸé€šå¸¸åœ¨å·¦ä¾§ï¼‰
 		float arrowWidth = ImGui::GetFrameHeight();
 		ImRect arrowRect = ImRect(rectMin.x, rectMin.y, rectMin.x + arrowWidth, rectMax.y);
 
-		// ¼ì²éÊó±êÊÇ·ñÔÚ¼ıÍ·ÇøÓòÄÚ
+		// æ£€æŸ¥é¼ æ ‡æ˜¯å¦åœ¨ç®­å¤´åŒºåŸŸå†…
 		if (arrowRect.Contains(mousePos))
 		{
 			clickedOnArrow = true;
@@ -226,84 +227,70 @@ void HierarchyPanelEditor::DrawEntityRecursive(Entity* entity, int* index)
 
 void HierarchyPanelEditor::DrawContextMenu()
 {
-	ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));       // ²Ëµ¥À¸±³¾°
-	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));            // ÎÄ±¾ÑÕÉ«
-	ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));         // µ¯³ö²Ëµ¥±³¾°
-	ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));          // Ñ¡ÖĞ×´Ì¬£¨×Ó²Ëµ¥´ò¿ªÊ±£©
-
-	ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.75f, 0.75f, 0.75f, 1.0f));   // ĞüÍ£±³¾°
-	ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));    // ¼¤»î±³¾°
-	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));          // ±ß¿òÑÕÉ«
-	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.85f, 0.85f, 0.85f, 1.0f));       // ·Ö¸ôÏßÑÕÉ«
-
-	if (ImGui::BeginPopupContextWindow(0, ImGuiPopupFlags_MouseButtonRight))
-	{
-		if (nullptr != _hoveredEntity)
-		{
-			if (IsEntitySelected(_hoveredEntity) == false || _selectionEntityArray.size() <= 1)
+	GUILayoutEditor::PopupContextMenu(
+		[&]() {
+			if (nullptr != _hoveredEntity)
 			{
-				SelectSingle();
-				if (ImGui::MenuItem("Rename"))
+				if (IsEntitySelected(_hoveredEntity) == false || _selectionEntityArray.size() <= 1)
 				{
-					_firstRename = true;
-					_renameEntity = _selectionEntity;
-					strcpy_s(renameBuffer, _renameEntity->GetName().c_str());
+					SelectSingle();
+					if (ImGui::MenuItem("Rename"))
+					{
+						_firstRename = true;
+						_renameEntity = _selectionEntity;
+						strcpy_s(renameBuffer, _renameEntity->GetName().c_str());
+					}
+
+					ImGui::Separator();
+				}
+
+				if (ImGui::MenuItem("Delete Entity"))
+				{
+					for (auto& go : _selectionEntityArray)
+					{
+						SceneManagerEditor::GetCurrentNode()->scene->DestroyEntityImmediately(go);
+					}
+					SelectNone();
 				}
 
 				ImGui::Separator();
 			}
 
-			if (ImGui::MenuItem("Delete Entity"))
+			Transform* parent = _selectionEntity != nullptr ? _selectionEntity->GetTransform() : nullptr;
+
+			if (ImGui::MenuItem("Create Empty Entity"))
 			{
-				for (auto& go : _selectionEntityArray)
+				Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->CreateEntity("Empty Entity");
+				SetEntityPosition(entity, parent);
+			}
+			if (ImGui::BeginMenu("Create 3D Object"))
+			{
+				if (ImGui::MenuItem("Cube"))
 				{
-					SceneManagerEditor::GetCurrentNode()->scene->DestroyEntityImmediately(go);
+					Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiateCube(parent);
+					SetEntityPosition(entity, parent);
 				}
-				SelectNone();
+
+				if (ImGui::MenuItem("Sphere"))
+				{
+					Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiateSphere(parent);
+					SetEntityPosition(entity, parent);
+				}
+
+				if (ImGui::MenuItem("Plane"))
+				{
+					Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiatePlane(parent);
+					SetEntityPosition(entity, parent);
+				}
+
+				ImGui::EndMenu();
 			}
-
-			ImGui::Separator();
-		}
-
-		Transform* parent = _selectionEntity != nullptr ? _selectionEntity->GetTransform() : nullptr;
-
-		if (ImGui::MenuItem("Create Empty Entity"))
-		{
-			Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->CreateEntity("Empty Entity");
-			SetEntityPosition(entity, parent);
-		}
-		if (ImGui::BeginMenu("Create 3D Object"))
-		{
-			if (ImGui::MenuItem("Cube"))
-			{
-				Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiateCube(parent);
-				SetEntityPosition(entity, parent);
-			}
-
-			if (ImGui::MenuItem("Sphere"))
-			{
-				Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiateSphere(parent);
-				SetEntityPosition(entity, parent);
-			}
-
-			if (ImGui::MenuItem("Plane"))
-			{
-				Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiatePlane(parent);
-				SetEntityPosition(entity, parent);
-			}
-
-			ImGui::EndMenu();
-		}
-		ImGui::EndPopup();
-	}
-
-	ImGui::PopStyleColor(8);
-
+		},nullptr);
 }
 
 void HierarchyPanelEditor::DrawBlankAreaDropTarget()
 {
-	// ÎªÕâ¸ö°´Å¥Ìí¼ÓÍÏ·ÅÄ¿±ê
+	// ä¸ºè¿™ä¸ªæŒ‰é’®æ·»åŠ æ‹–æ”¾ç›®æ ‡
 	if (ImGui::BeginDragDropTargetCustom(ImGui::GetCurrentWindow()->WorkRect, ImGui::GetID("##FullWindowDropTarget")))
 	{
 		ImGuiDragDropFlags target_flags = 0;
@@ -311,7 +298,7 @@ void HierarchyPanelEditor::DrawBlankAreaDropTarget()
 
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG", target_flags))
 		{
-			// µ¥¸öÊµÌåÍÏ×§µ½¿Õ°×ÇøÓò
+			// å•ä¸ªå®ä½“æ‹–æ‹½åˆ°ç©ºç™½åŒºåŸŸ
 			Entity* draggedEntity = *(Entity**)payload->Data;
 			if (draggedEntity && draggedEntity->GetTransform())
 			{
@@ -320,7 +307,7 @@ void HierarchyPanelEditor::DrawBlankAreaDropTarget()
 		}
 		else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG_MULTI", target_flags))
 		{
-			// ¶à¸öÊµÌåÍÏ×§µ½¿Õ°×ÇøÓò
+			// å¤šä¸ªå®ä½“æ‹–æ‹½åˆ°ç©ºç™½åŒºåŸŸ
 			int count = payload->DataSize / sizeof(Entity*);
 			Entity** draggedEntities = (Entity**)payload->Data;
 
@@ -389,7 +376,7 @@ void HierarchyPanelEditor::DragEntitys(Entity* entity)
 	{
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
 		{
-			// µ¥¸öÊµÌåÍÏ×§
+			// å•ä¸ªå®ä½“æ‹–æ‹½
 			Entity* draggedEntity = *(Entity**)payload->Data;
 
 			if (draggedEntity->GetTransform()->HasChild(entity->GetTransform()) == false && draggedEntity != entity)

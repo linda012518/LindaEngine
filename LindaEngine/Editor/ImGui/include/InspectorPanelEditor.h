@@ -5,9 +5,6 @@
 
 namespace LindaEngine
 {
-	class Entity;
-	class Component;
-	class Material;
 	class LObject;
 }
 
@@ -23,12 +20,9 @@ namespace LindaEditor
 		void OnEvent(LindaEngine::IEventHandler* sender, int eventCode, LindaEngine::Event& eventData);
 
 	private:
-		void DrawComponents();
 		void DrawSundry();
 
 	private:
 		LindaEngine::LObject* _object = nullptr;
-		LindaEngine::Entity* _selectionEntity = nullptr;
-		bool _showPopup = false;
 	};
 }

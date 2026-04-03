@@ -5,6 +5,11 @@
 #include <string>
 #include <vector>
 
+namespace LindaEngine
+{
+	class LObject;
+}
+
 namespace LindaEditor
 {
 	enum class FileType
@@ -44,6 +49,8 @@ namespace LindaEditor
 
 		FileNode* GetFolderNode(FileNode* root, std::string path);
 		void AddNode(FileType type, std::string path);
+
+		LindaEngine::LObject* GetLObject(FileNode* node);
 
 	private:
 		bool _resDirty = true;

@@ -6,6 +6,12 @@
 #include "SceneManagerEditor.h"
 #include "NodeEditor.h"
 #include "Scene.h"
+#include "GUILayoutEditor.h"
+#include "EventEditor.h"
+#include "EventCodeEditor.h"
+#include "EventSystemEditor.h"
+#include "MaterialManager.h"
+#include "Material.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -43,6 +49,15 @@ void ContentBrowserPanelEditor::OnImGuiRender()
             _selectionNodes.clear();
         }
     }
+
+    GUILayoutEditor::PopupContextMenu(
+        [&]() {
+            if (ImGui::MenuItem("Refresh Content"))
+            {
+                _resDirty = true;
+                ReloadResources();
+            }
+        }, nullptr);
 
 	ImGui::End();
 }
@@ -252,6 +267,7 @@ void ContentBrowserPanelEditor::ReloadResources()
     _fileSystem.path = "Assets";
     _fileSystem.name = Path::GetFileNameNoExtension(_fileSystem.path);
     _fileSystem.type = FileType::Folder;
+    _fileSystem.children.clear();
     CollectFileFolder(_fileSystem);
     SortFileFolder(_fileSystem);
 }
@@ -419,6 +435,10 @@ void ContentBrowserPanelEditor::SelectSingle()
     _selectionNodes.clear();
     _selectedNode = _hoveredNode;
     _selectionNodes.push_back(_selectedNode);
+
+    SwitchInspectorObjectEditor sio;
+    sio.lobject = GetLObject(_selectedNode);
+    EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchInspectorObject, sio);
 }
 
 FileNode* ContentBrowserPanelEditor::GetFolderNode(FileNode* root, std::string path)
@@ -446,4 +466,36 @@ void ContentBrowserPanelEditor::AddNode(FileType type, std::string path)
     node.path = path;
     node.name = Path::GetFileNameNoExtension(node.path);
     root->children.push_back(node);
+}
+
+LObject* ContentBrowserPanelEditor::GetLObject(FileNode* node)
+{
+    switch (node->type)
+    {
+    case FileType::Folder:
+        break;
+    case FileType::Scene:
+        break;
+    case FileType::Material: 
+        return MaterialManager::GetMaterial(node->path).get();
+    case FileType::FBX:
+        break;
+    case FileType::Prefab:
+        break;
+    case FileType::Texture:
+        break;
+    case FileType::RenderTexture:
+        break;
+    case FileType::Shader:
+        break;
+    case FileType::ShaderLibrary:
+        break;
+    case FileType::Text:
+        break;
+    case FileType::Font:
+        break;
+    case FileType::Other:
+        break;
+    }
+    return nullptr;
 }

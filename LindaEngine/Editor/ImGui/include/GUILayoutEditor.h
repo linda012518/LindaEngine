@@ -4,6 +4,7 @@
 #include <functional>
 #include <initializer_list>
 #include <string>
+#include <vector>
 
 #include "glm/glm.hpp"
 
@@ -24,8 +25,10 @@ namespace LindaEditor
 		static void ComboSelectable(std::string name, int curIndex, std::vector<std::string>& value, DropdownCallback onChanged, float nameSize = -1.0f);
 		static void Vec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f);
 
+		static void PopupContextMenu(WidgetCallback enable, WidgetCallback disable);
 		static void Dropdown(std::string name, std::vector<std::string>& value, DropdownCallback onChanged);
 		
+
 		static float ImGuiLabelColumnWidth(std::initializer_list<const char*> labels);
 
 	private:

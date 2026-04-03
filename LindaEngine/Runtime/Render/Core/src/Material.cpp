@@ -5,6 +5,15 @@
 #include "MaterialManager.h"
 #include "Mesh.h"
 #include "Environment.h"
+#include "GUILayoutEditor.h"
+#include "TextureManager.h"
+#include "Texture.h"
+#include "Path.h"
+#include "ContentBrowserPanelEditor.h"
+
+#include "imgui/imgui.h"
+#include <imgui/imgui_internal.h>
+#include <imgui/imgui_stdlib.h>
 
 #define IMPLEMENT_SETMATERIALUNIFORM(dataType) \
 template<> \
@@ -17,6 +26,7 @@ void Material::SetUniformValue<dataType>(const char* name, dataType val, int cou
 }
 
 using namespace LindaEngine;
+using namespace LindaEditor;
 
 Ref<Material> Material::overrideMat = nullptr;
 std::string Material::overrideLightMode = "Color";
@@ -145,7 +155,107 @@ bool Material::Deserialize(YAML::Node& node)
 
 void Material::OnImguiRender()
 {
+	ImGui::PushID(this);
 
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+	ImGui::PopStyleColor(1);
+
+	const ImGuiStyle& style = ImGui::GetStyle();
+	const float lineH = ImGui::GetFrameHeight();
+	const float iconSize = lineH * 2.0f + style.ItemSpacing.y;
+
+	Ref<Texture> iconTex = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Material.png");
+	const ImTextureID iconId = iconTex ? (ImTextureID)(uintptr_t)iconTex->nativeColorID : (ImTextureID)0;
+
+	if (ImGui::BeginTable("MaterialImGuiHeader", 2, ImGuiTableFlags_SizingFixedFit))
+	{
+		ImGui::TableSetupColumn("icon", ImGuiTableColumnFlags_WidthFixed, iconSize * 0.8f);
+		ImGui::TableSetupColumn("fields", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableNextRow();
+
+		ImGui::TableSetColumnIndex(0);
+		ImGui::AlignTextToFramePadding();
+		if (iconId)
+			ImGui::Image(iconId, ImVec2(iconSize * 0.8f, iconSize), ImVec2(-0.13f, 1.25f), ImVec2(1.13f, -0.25f));
+		else
+			ImGui::Dummy(ImVec2(iconSize, iconSize));
+
+		ImGui::TableSetColumnIndex(1);
+		ImGui::TextUnformatted(Path::GetFileNameNoExtension(_state.materialPath).c_str());
+
+		ImVec4 bgColor = style.Colors[ImGuiCol_FrameBg];
+		ImVec4 bgActive = style.Colors[ImGuiCol_FrameBgActive];
+		ImGui::PushStyleColor(ImGuiCol_Header, bgColor);
+		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, bgColor);
+		ImGui::PushStyleColor(ImGuiCol_HeaderActive, bgActive);
+
+		ImGui::SetNextItemWidth(-FLT_MIN);
+		const ImVec2 availSize = ImVec2(ImGui::GetContentRegionAvail().x, lineH);
+		if (ImGui::Selectable("##shaderDrop", false, ImGuiSelectableFlags_Highlight, availSize))
+		{
+		}
+
+		ImGui::PopStyleColor(3);
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG"))
+			{
+				LindaEditor::FileNode* node = *(LindaEditor::FileNode**)payload->Data;
+				if (node && node->type == LindaEditor::FileType::Shader)
+				{
+					bool isSkin = false;
+					for (auto& pass : _passes)
+					{
+						for (auto& kw : pass->_state.keywords)
+						{
+							if (kw == "_Skin_Vertex_")
+							{
+								isSkin = true;
+								break;
+							}
+						}
+						if (isSkin)
+							break;
+					}
+
+					Ref<Material> srcMat = MaterialManager::GetMaterialByShader(node->path, isSkin);
+					if (srcMat)
+					{
+						std::string savedMatPath = _state.materialPath;
+						_state = srcMat->_state;
+						_state.materialPath = savedMatPath;
+						_passes = std::move(srcMat->_passes);
+						_hasError = false;
+					}
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+
+		ImVec2 itemMin = ImGui::GetItemRectMin();
+		ImVec2 itemMax = ImGui::GetItemRectMax();
+		const float itemHeight = itemMax.y - itemMin.y;
+		std::string shaderPathStr = _state.shaderPath;
+		std::string shaderLabel = shaderPathStr.empty() ? std::string("(Drag shader)") : Path::GetFileNameNoExtension(shaderPathStr);
+		const ImVec2 textSize = ImGui::CalcTextSize(shaderLabel.c_str());
+		const float textY = itemMin.y + (itemHeight - textSize.y) * 0.5f;
+		ImGui::SetCursorScreenPos(ImVec2(itemMin.x + style.FramePadding.x, textY));
+		if (shaderPathStr.empty())
+			ImGui::PushStyleColor(ImGuiCol_Text, style.Colors[ImGuiCol_TextDisabled]);
+		ImGui::TextUnformatted(shaderLabel.c_str());
+		if (shaderPathStr.empty())
+			ImGui::PopStyleColor();
+
+		ImGui::EndTable();
+	}
+
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+	ImGui::PopStyleColor(1);
+
+	ImGui::PopID();
 }
 
 bool Material::CanRender(std::string& lightMode, int minQueue, int maxQueue)
