@@ -8,7 +8,7 @@
 namespace LindaEngine
 {
 	class PostProcessEffectRenderer;
-	struct RenderTexture;
+	class RenderTexture;
 
 	class PostProcessPass : public ScriptablePass
 	{

@@ -6,7 +6,7 @@ namespace LindaEngine
 {
 	struct RenderState;
 	class RenderAPIContext;
-	struct RenderTexture;
+	class RenderTexture;
 	class Material;
 
 	class Graphic

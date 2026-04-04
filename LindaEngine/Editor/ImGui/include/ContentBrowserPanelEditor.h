@@ -34,7 +34,7 @@ namespace LindaEditor
 
 	private:
 		void DrawContent(FileNode& fs);
-		void DrawIcon(FileType type, float offsetX);
+		void DrawIcon(FileNode& fs, float offsetX);
 		void CollectFileFolder(FileNode& fs);
 		void SortFileFolder(FileNode& fs);
 		void ReloadResources();

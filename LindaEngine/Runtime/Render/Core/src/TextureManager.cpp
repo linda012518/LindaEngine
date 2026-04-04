@@ -71,6 +71,11 @@ Ref<Texture> TextureManager::GetTextureDirect(std::string path)
 
 }
 
+bool TextureManager::IsLoad(std::string path)
+{
+    return _textureMap.find(path) != _textureMap.end();
+}
+
 void TextureManager::DeleteTexture(Ref<Texture> texture)
 {
     for (auto itr = _textureMap.begin(); itr != _textureMap.end(); ) {

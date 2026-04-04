@@ -1,4 +1,4 @@
-#include "Material.h"
+﻿#include "Material.h"
 #include "ShaderManager.h"
 #include "MaterialPass.h"
 #include "YamlSerializer.h"
@@ -10,6 +10,7 @@
 #include "Texture.h"
 #include "Path.h"
 #include "ContentBrowserPanelEditor.h"
+#include "GUILayoutEditor.h"
 
 #include "imgui/imgui.h"
 #include <imgui/imgui_internal.h>
@@ -237,11 +238,20 @@ void Material::OnImguiRender()
 		ImVec2 itemMin = ImGui::GetItemRectMin();
 		ImVec2 itemMax = ImGui::GetItemRectMax();
 		const float itemHeight = itemMax.y - itemMin.y;
+		float contentY = itemMin.y + (itemHeight - 18.0f) * 0.5f; // 18是图标高度
+		float x = itemMin.x + style.FramePadding.x;
+		ImGui::SetCursorScreenPos(ImVec2(x, contentY));
+		Ref<Texture> matIconTex = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Shader.png");
+		const ImTextureID matIconId = matIconTex ? (ImTextureID)(uintptr_t)matIconTex->nativeColorID : (ImTextureID)0;
+		ImGui::Image(matIconId, ImVec2(18, 18), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::SameLine(0, 6);
+
 		std::string shaderPathStr = _state.shaderPath;
 		std::string shaderLabel = shaderPathStr.empty() ? std::string("(Drag shader)") : Path::GetFileNameNoExtension(shaderPathStr);
 		const ImVec2 textSize = ImGui::CalcTextSize(shaderLabel.c_str());
 		const float textY = itemMin.y + (itemHeight - textSize.y) * 0.5f;
-		ImGui::SetCursorScreenPos(ImVec2(itemMin.x + style.FramePadding.x, textY));
+		ImGui::SetCursorScreenPos(ImVec2(ImGui::GetCursorScreenPos().x, textY));
+
 		if (shaderPathStr.empty())
 			ImGui::PushStyleColor(ImGuiCol_Text, style.Colors[ImGuiCol_TextDisabled]);
 		ImGui::TextUnformatted(shaderLabel.c_str());
@@ -250,6 +260,151 @@ void Material::OnImguiRender()
 
 		ImGui::EndTable();
 	}
+
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+	ImGui::PopStyleColor(1);
+
+	for (auto& pass : _passes)
+	{
+		ImGui::TextUnformatted(("LightMode : " + pass->GetLightMode()).c_str());
+
+		std::vector<const char*> labels;
+		for (auto& uniform : pass->_state.uniformNameMap)
+		{
+			switch (uniform.second->dataType)
+			{
+			case UniformType::INT:
+			case UniformType::INT4:
+			case UniformType::FLOAT:
+			case UniformType::FLOAT4:
+				labels.push_back(uniform.first.c_str());
+				break;
+			}
+		}
+		float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth(labels) * 1.5f;
+
+		for (auto& uniform : pass->_state.uniformNameMap)
+		{
+			switch (uniform.second->dataType)
+			{
+			case UniformType::TEXTURE:
+			{
+				const ImGuiStyle& style = ImGui::GetStyle();
+				const float lineH = ImGui::GetFrameHeight();
+				const float iconSize = lineH * 2.85f;
+
+				// 获取图标纹理
+				Ref<TextureUniformData> tud = DynamicCastRef(TextureUniformData, uniform.second);
+				Ref<Texture> iconTex = TextureManager::GetTexture(tud->value);
+				const ImTextureID iconId = iconTex ? (ImTextureID)(uintptr_t)iconTex->nativeColorID : (ImTextureID)0;
+
+				static float posX = 0.0f, posY = 0.0f;
+				static float scaleX = 1.0f, scaleY = 1.0f;
+
+				if (ImGui::BeginTable("ThreeLineRow", 2, ImGuiTableFlags_SizingFixedFit))
+				{
+					// 列设置：左侧内容自适应，右侧图标固定宽度
+					ImGui::TableSetupColumn("content", ImGuiTableColumnFlags_WidthStretch);
+					ImGui::TableSetupColumn("icon", ImGuiTableColumnFlags_WidthFixed, iconSize);
+					ImGui::TableNextRow();
+
+					// === 第0列：左侧三行内容 ===
+					ImGui::TableSetColumnIndex(0);
+
+					float frontWidth = ImGui::CalcTextSize("    Offset     ").x;
+					float availableWidth = ImGui::GetContentRegionAvail().x;
+					float spacing = ImGui::GetStyle().ItemSpacing.x;
+					float componentWidth = (availableWidth - frontWidth - spacing) / 2.0f;
+					float inputWidth = componentWidth - ImGui::CalcTextSize("X").x - spacing;
+
+					// 第一行：标题
+					ImGui::TextUnformatted(uniform.first.c_str());
+
+					if (pass->_state.uniformNameMap.find(uniform.first + "_ST") != pass->_state.uniformNameMap.end())
+					{
+						ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.26f, 0.26f, 0.26f, 0.0f }); // 透明背景
+						ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.36f, 0.36f, 0.36f, 0.0f });
+						ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.56f, 0.56f, 0.56f, 0.0f });
+
+						glm::vec4& st = DynamicCastRef(Float4UniformData, uniform.second)->value;
+
+						// 第二行：Tiling x [ ] y [ ]
+						ImGui::AlignTextToFramePadding();
+						ImGui::TextUnformatted("    Tiling     ");
+						ImGui::SameLine();
+						ImGui::SetCursorPosX(frontWidth);
+						ImGui::Text("X"); 
+						ImGui::SameLine();
+						ImGui::SetNextItemWidth(inputWidth);
+						ImGui::DragFloat("##scaleX", &st.x, 0.01f);
+						ImGui::SameLine();
+						ImGui::Text("Y"); ImGui::SameLine();
+						ImGui::SetNextItemWidth(inputWidth);
+						ImGui::DragFloat("##scaleY", &st.y, 0.01f);
+
+						// 第三行：Offset x [ ] y [ ]
+						ImGui::AlignTextToFramePadding();
+						ImGui::TextUnformatted("    Offset     ");
+						ImGui::SameLine();
+						ImGui::SetCursorPosX(frontWidth);
+						ImGui::Text("X"); 
+						ImGui::SameLine();
+						ImGui::SetNextItemWidth(inputWidth);
+						ImGui::DragFloat("##offsetX", &st.z, 0.01f);
+						ImGui::SameLine();
+						ImGui::Text("Y"); 
+						ImGui::SameLine();
+						ImGui::SetNextItemWidth(inputWidth);
+						ImGui::DragFloat("##offsetY", &st.y, 0.01f);
+
+						ImGui::PopStyleColor(3);
+					}
+
+					// === 第1列：右侧图标（垂直居中）===
+					ImGui::TableSetColumnIndex(1);
+
+					ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 2.0f);
+					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+					if (iconId)
+					{
+						if (ImGui::ImageButton(uniform.first.c_str(), iconId, ImVec2(iconSize - 8, iconSize - 8)))
+						{
+
+						}
+					}
+					else
+						ImGui::Dummy(ImVec2(iconSize, iconSize));
+					ImGui::PopStyleVar(2);
+					ImGui::EndTable();
+				}
+				break;
+			}
+			case UniformType::INT:
+				GUILayoutEditor::DragInt(uniform.first, &(DynamicCastRef(IntUniformData, uniform.second)->value), nullptr, 1.0f, 0, 0, firstWidth);
+				break;
+			case UniformType::INT4:
+				GUILayoutEditor::DragInt4(uniform.first, (int*)&(DynamicCastRef(Int4UniformData, uniform.second)->value), nullptr, 1.0f, 0, 0, firstWidth);
+				break;
+			case UniformType::FLOAT:
+				GUILayoutEditor::DragFloat(uniform.first, &(DynamicCastRef(FloatUniformData, uniform.second)->value), nullptr, 0.001f, 0.0f, 0.0f, firstWidth);
+				break;
+			case UniformType::FLOAT4:
+			{
+				if (uniform.first.find("_TexelSize") == std::string::npos)
+					GUILayoutEditor::DragFloat4(uniform.first, (float*)&(DynamicCastRef(Float4UniformData, uniform.second)->value), nullptr, 0.001f, 0.0f, 0.0f, firstWidth);
+			}
+			break;
+			}
+
+		}
+
+		ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+		ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+		ImGui::PopStyleColor(1);
+	}
+
+	GUILayoutEditor::DragInt("RenderQueue        ", &_state.renderQueue, nullptr, 1.0f, 0, 5000);
 
 	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
 	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);

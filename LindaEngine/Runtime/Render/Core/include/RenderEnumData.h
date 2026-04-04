@@ -24,7 +24,7 @@ namespace LindaEngine
 
 	enum class TextureType
 	{
-		None, Tex2D, Cube, RenderTexture
+		Tex2D, Cube, RenderTexture
 	};
 
 	enum class CubemapSrcType

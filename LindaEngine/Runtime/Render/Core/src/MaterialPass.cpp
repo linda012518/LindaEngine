@@ -35,7 +35,7 @@ void MaterialPass::SetUniformValue<dataType>(const char* name, dataType val, int
 		Ref<UniformClass> matrix = CreateRef<UniformClass>(); \
 		matrix->name = name; \
 		matrix->value = val; \
-		_state.uniformNameMap[name] = matrix; \
+		_customUniformNameMap[name] = matrix; \
 	} \
 }
 
@@ -54,7 +54,7 @@ void MaterialPass::SetUniformValue<dataType>(const char* name, dataType val, int
 		array->name = name; \
 		array->value = val; \
 		array->arraySize = count; \
-		_state.uniformNameMap[name] = array; \
+		_customUniformNameMap[name] = array; \
 	} \
 }
 
@@ -115,14 +115,14 @@ void MaterialPass::Bind(Transform* transform)
 		}
 	}
 
-	UpdateUniforms();
+	_acitveChannel = 0;
+	UpdateUniforms(_state.uniformNameMap);
+	UpdateUniforms(_customUniformNameMap);
 }
 
-void MaterialPass::UpdateUniforms()
+void MaterialPass::UpdateUniforms(std::unordered_map<std::string, Ref<ShaderUniform>>& uniformNameMap)
 {
-	int acitveChannel = 0;
-
-	for (const auto& pair : _state.uniformNameMap) {
+	for (const auto& pair : uniformNameMap) {
 
 		switch (pair.second->dataType)
 		{
@@ -132,10 +132,10 @@ void MaterialPass::UpdateUniforms()
 			Ref<Texture> texture = TextureManager::GetTexture(tud->value);
 			if (nullptr != texture)
 			{
-				TextureManager::Bind(texture, acitveChannel);
-				_shader->SetInt(pair.first, acitveChannel++);
+				TextureManager::Bind(texture, _acitveChannel);
+				_shader->SetInt(pair.first, _acitveChannel++);
 				std::string texelSize = pair.first + texelSizeSuffix;
-				if (_state.uniformNameMap.find(texelSize) != _state.uniformNameMap.end())
+				if (uniformNameMap.find(texelSize) != uniformNameMap.end())
 				{
 					glm::vec4 size;
 					size.x = (float)texture->width;
@@ -150,10 +150,10 @@ void MaterialPass::UpdateUniforms()
 		case UniformType::TEXTUREPOINTER:
 		{
 			Ref<TexturePointerUniformData> tud = DynamicCastRef(TexturePointerUniformData, pair.second);
-			TextureManager::Bind(tud->value, acitveChannel, tud->renderTextureColorIndex);
-			_shader->SetInt(pair.first, acitveChannel++);
+			TextureManager::Bind(tud->value, _acitveChannel, tud->renderTextureColorIndex);
+			_shader->SetInt(pair.first, _acitveChannel++);
 			std::string texelSize = pair.first + texelSizeSuffix;
-			if (_state.uniformNameMap.find(texelSize) != _state.uniformNameMap.end())
+			if (uniformNameMap.find(texelSize) != uniformNameMap.end())
 			{
 				glm::vec4 size;
 				size.x = (float)tud->value->width;
@@ -284,7 +284,7 @@ void MaterialPass::SetUniformValue<Ref<Texture>>(const char* name, Ref<Texture> 
 		Ref<TexturePointerUniformData> tud = CreateRef<TexturePointerUniformData>();
 		tud->name = name;
 		tud->value = val;
-		_state.uniformNameMap[name] = tud;
+		_customUniformNameMap[name] = tud;
 		return;
 	}
 

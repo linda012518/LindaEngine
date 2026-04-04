@@ -6,7 +6,7 @@
 
 namespace LindaEngine
 {
-	struct Texture;
+	class Texture;
 
 	class TextureLoader
 	{

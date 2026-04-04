@@ -15,7 +15,7 @@ namespace LindaEngine
 	class Transform;
 	class MaterialPass;
 	struct VertexAttribute;
-	struct Texture;
+	class Texture;
 
 	class Material : public LObject, public ISerializable
 	{

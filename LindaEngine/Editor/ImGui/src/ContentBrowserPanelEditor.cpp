@@ -12,6 +12,8 @@
 #include "EventSystemEditor.h"
 #include "MaterialManager.h"
 #include "Material.h"
+#include "Texture.h"
+#include "TextureManager.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -158,7 +160,7 @@ void ContentBrowserPanelEditor::DrawContent(FileNode& fs)
         _hoveredNode = &fs;
     }
 
-    DrawIcon(fs.type, original_cursor_x);
+    DrawIcon(fs, original_cursor_x);
 
 	if (opened)
 	{
@@ -174,23 +176,29 @@ void ContentBrowserPanelEditor::DrawContent(FileNode& fs)
 
 }
 
-void ContentBrowserPanelEditor::DrawIcon(FileType type, float offsetX)
+void ContentBrowserPanelEditor::DrawIcon(FileNode& fs, float offsetX)
 {
     uint64_t nativeColorID = 0;
-    switch (type)
+
+    if (TextureManager::IsLoad(fs.path))
+        nativeColorID = TextureManager::GetTexture(fs.path)->nativeColorID;
+    else
     {
-    case FileType::Folder: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Folder.png")->nativeColorID; break;
-    case FileType::Scene: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Scene.png")->nativeColorID; break;
-    case FileType::Material: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Material.png")->nativeColorID; break;
-    case FileType::FBX: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/FBX.png")->nativeColorID; break;
-    case FileType::Font: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Font.png")->nativeColorID; break;
-    case FileType::Prefab: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Prefab.png")->nativeColorID; break;
-    case FileType::Texture: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Texture.png")->nativeColorID; break;
-    case FileType::RenderTexture: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/RenderTexture.png")->nativeColorID; break;
-    case FileType::Shader: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Shader.png")->nativeColorID; break;
-    case FileType::ShaderLibrary: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/ShaderLibrary.png")->nativeColorID; break;
-    case FileType::Text: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Text.png")->nativeColorID; break;
-    case FileType::Other: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Other.png")->nativeColorID; break;
+        switch (fs.type)
+        {
+        case FileType::Folder: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Folder.png")->nativeColorID; break;
+        case FileType::Scene: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Scene.png")->nativeColorID; break;
+        case FileType::Material: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Material.png")->nativeColorID; break;
+        case FileType::FBX: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/FBX.png")->nativeColorID; break;
+        case FileType::Font: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Font.png")->nativeColorID; break;
+        case FileType::Prefab: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Prefab.png")->nativeColorID; break;
+        case FileType::Texture: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Texture.png")->nativeColorID; break;
+        case FileType::RenderTexture: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/RenderTexture.png")->nativeColorID; break;
+        case FileType::Shader: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Shader.png")->nativeColorID; break;
+        case FileType::ShaderLibrary: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/ShaderLibrary.png")->nativeColorID; break;
+        case FileType::Text: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Text.png")->nativeColorID; break;
+        case FileType::Other: nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Other.png")->nativeColorID; break;
+        }
     }
 
     ImGui::SameLine();
@@ -483,7 +491,7 @@ LObject* ContentBrowserPanelEditor::GetLObject(FileNode* node)
     case FileType::Prefab:
         break;
     case FileType::Texture:
-        break;
+        return TextureManager::GetTextureDirect(node->path).get();
     case FileType::RenderTexture:
         break;
     case FileType::Shader:

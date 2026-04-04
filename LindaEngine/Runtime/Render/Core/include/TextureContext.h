@@ -8,8 +8,8 @@
 
 namespace LindaEngine
 {
-	struct Texture;
-	struct RenderTexture;
+	class Texture;
+	class RenderTexture;
 	class Material;
 
 	class TextureContext

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AutoPtr.h"
+#include "LObject.h"
 #include "RenderEnumData.h"
 
 #include <string>
@@ -8,8 +9,9 @@
 
 namespace LindaEngine
 {
-	struct Texture
+	class Texture : public LObject
 	{
+	public:
 		int width = -1;
 		int height = -1;
         TextureFormat colorFormat = TextureFormat::None;
@@ -31,15 +33,19 @@ namespace LindaEngine
 		static Ref<Texture> overrideTexture;
 
 		virtual ~Texture() = default;
+
+		virtual void OnImguiRender();
 	};
 
-	struct Texture2D : public Texture
+	class Texture2D : public Texture
 	{
+	public:
 		Texture2D() { type = TextureType::Tex2D; }
 	};
 
-	struct Cubemap : public Texture
+	class Cubemap : public Texture
 	{
+	public:
 		Cubemap() { type = TextureType::Cube; }
 
 		CubemapSrcType srcType = CubemapSrcType::EquireCtangular;
@@ -52,8 +58,9 @@ namespace LindaEngine
 		std::string back;
 	};
 
-	struct FramebufferTextureSpecification
+	class FramebufferTextureSpecification
 	{
+	public:
 		TextureFormat colorFormat = TextureFormat::None;
 		FilterMode filter = FilterMode::Bilinear;
 		TextureWrapMode warpU = TextureWrapMode::Clamp;
@@ -62,9 +69,10 @@ namespace LindaEngine
 		bool isRenderBuffer = false;
 	};
 
-	struct RenderTexture : public Texture
+	class RenderTexture : public Texture
 	{
 		friend class RenderTextureManager;
+	public:
 		RenderTexture() { type = TextureType::RenderTexture; }
 
 		int msaa = 1;

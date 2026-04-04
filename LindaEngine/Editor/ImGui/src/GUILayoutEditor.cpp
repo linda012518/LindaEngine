@@ -5,7 +5,7 @@
 
 using namespace LindaEditor;
 
-float ComputeImGuiLabelColumnWidth(std::initializer_list<const char*> labels)
+float ComputeImGuiLabelColumnWidth(std::vector<const char*> labels)
 {
 	float w = 0.f;
 	for (const char* s : labels)
@@ -26,7 +26,11 @@ void DrawWidget(UIFunction uiFunction, std::string name, float nameSize)
 		ImGui::TableSetupColumn("Control", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableNextRow();
 		ImGui::TableSetColumnIndex(0);
-		ImGui::Text(name.c_str());
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.26f, 0.26f, 0.26f, 0.0f }); // 透明背景
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.36f, 0.36f, 0.36f, 0.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.56f, 0.56f, 0.56f, 0.0f });
+		ImGui::Button(name.c_str());
+		ImGui::PopStyleColor(3);
 		ImGui::TableSetColumnIndex(1);
 		ImGui::SetNextItemWidth(-FLT_MIN);
 		uiFunction();
@@ -74,6 +78,90 @@ void GUILayoutEditor::DragInt(std::string name, int* value, WidgetCallback onCha
 	DrawWidget([&]() {
 		if (ImGui::DragInt(("##" + name).c_str(), value, speed, min, max) && onChanged)
 			onChanged();
+	}, name, nameSize);
+}
+
+void GUILayoutEditor::DragInt4(std::string name, int* value, WidgetCallback onChanged, float speed, int min, int max, float nameSize)
+{
+	DrawWidget([&]() {
+		ImGuiIO& io = ImGui::GetIO();
+		auto boldFont = io.Fonts->Fonts[0];
+
+		ImGui::PushID(name.c_str());
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.26f, 0.26f, 0.26f, 0.0f }); // 透明背景
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.36f, 0.36f, 0.36f, 0.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.56f, 0.56f, 0.56f, 0.0f });
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4{ 0.9f, 0.9f, 0.9f, 1.0f });
+
+		// 计算可用宽度，减去标签列宽和列间距
+		float availableWidth = ImGui::GetContentRegionAvail().x;
+		float spacing = ImGui::GetStyle().ItemSpacing.x;
+
+		//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 4.0f, 0 }); // 增加XYZW与输入框的间距
+
+		float lineHeight = GImGui->Font->LegacySize + GImGui->Style.FramePadding.y;// *2.0f;
+		ImVec2 buttonSize = { lineHeight * 0.65f, lineHeight };
+
+		// 每个组件的宽度：(总宽度 - 3个间距) / 4个组件
+		float componentWidth = (availableWidth - 3 * 4.0f) / 4.0f;
+		float labelWidth = buttonSize.x;
+		componentWidth = (availableWidth - spacing * 3) / 4.0f;
+		float inputWidth = componentWidth - labelWidth - spacing; // 4.0f是SameLine的默认间距
+
+		// X
+		ImGui::PushFont(boldFont);
+		ImGui::Button("X", buttonSize); // 用Button代替Text，可以垂直居中
+		ImGui::PopFont();
+		ImGui::SameLine(0);
+		ImGui::PushItemWidth(inputWidth);
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
+		ImGui::DragInt("##X", &value[0], speed, min, max);
+		ImGui::PopStyleVar(1);
+		ImGui::PopItemWidth();
+
+		// Y
+		ImGui::SameLine(0); // 组件之间的间距
+		ImGui::PushFont(boldFont);
+		ImGui::Button("Y", buttonSize);
+		ImGui::PopFont();
+		ImGui::SameLine(0);
+		ImGui::PushItemWidth(inputWidth);
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
+		ImGui::DragInt("##Y", &value[1], speed, min, max);
+		ImGui::PopStyleVar(1);
+		ImGui::PopItemWidth();
+
+		// Z
+		ImGui::SameLine(0);
+		ImGui::PushFont(boldFont);
+		ImGui::Button("Z", buttonSize);
+		ImGui::PopFont();
+		ImGui::SameLine(0);
+		ImGui::PushItemWidth(inputWidth);
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
+		ImGui::DragInt("##Z", &value[2], speed, min, max);
+		ImGui::PopStyleVar(1);
+		ImGui::PopItemWidth();
+
+		// W
+		ImGui::SameLine(0);
+		ImGui::PushFont(boldFont);
+		ImGui::Button("W", buttonSize);
+		ImGui::PopFont();
+		ImGui::SameLine(0);
+		ImGui::PushItemWidth(inputWidth);
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
+		ImGui::DragInt("##W", &value[3], speed, min, max);
+		ImGui::PopStyleVar(1);
+		ImGui::PopItemWidth();
+
+		ImGui::PopStyleColor(4);
+		//ImGui::PopStyleVar();
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+
 	}, name, nameSize);
 }
 
@@ -237,6 +325,90 @@ void GUILayoutEditor::Vec3Control(const std::string& label, glm::vec3& values, f
 	ImGui::PopID();
 }
 
+void GUILayoutEditor::DragFloat4(std::string name, float* value, WidgetCallback onChanged, float speed, float min, float max, float nameSize)
+{
+	DrawWidget([&]() {
+		ImGuiIO& io = ImGui::GetIO();
+		auto boldFont = io.Fonts->Fonts[0];
+
+		ImGui::PushID(name.c_str());
+
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.26f, 0.26f, 0.26f, 0.0f }); // 透明背景
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.36f, 0.36f, 0.36f, 0.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.56f, 0.56f, 0.56f, 0.0f });
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4{ 0.9f, 0.9f, 0.9f, 1.0f });
+
+		// 计算可用宽度，减去标签列宽和列间距
+		float availableWidth = ImGui::GetContentRegionAvail().x;
+		float spacing = ImGui::GetStyle().ItemSpacing.x;
+
+		//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 4.0f, 0 }); // 增加XYZW与输入框的间距
+
+		float lineHeight = GImGui->Font->LegacySize + GImGui->Style.FramePadding.y;// *2.0f;
+		ImVec2 buttonSize = { lineHeight * 0.65f, lineHeight };
+
+		// 每个组件的宽度：(总宽度 - 3个间距) / 4个组件
+		float labelWidth = buttonSize.x;
+		float componentWidth = (availableWidth - spacing * 3) / 4.0f;
+		float inputWidth = componentWidth - labelWidth - spacing; // 4.0f是SameLine的默认间距
+
+		// X
+		ImGui::PushFont(boldFont);
+		ImGui::Button("X", buttonSize); // 用Button代替Text，可以垂直居中
+		ImGui::PopFont();
+		ImGui::SameLine(0);
+		ImGui::PushItemWidth(inputWidth);
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
+		ImGui::DragFloat("##X", &value[0], speed, min, max);
+		ImGui::PopStyleVar(1);
+		ImGui::PopItemWidth();
+
+		// Y
+		ImGui::SameLine(0); // 组件之间的间距
+		ImGui::PushFont(boldFont);
+		ImGui::Button("Y", buttonSize);
+		ImGui::PopFont();
+		ImGui::SameLine(0);
+		ImGui::PushItemWidth(inputWidth);
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
+		ImGui::DragFloat("##Y", &value[1], speed, min, max);
+		ImGui::PopStyleVar(1);
+		ImGui::PopItemWidth();
+
+		// Z
+		ImGui::SameLine(0);
+		ImGui::PushFont(boldFont);
+		ImGui::Button("Z", buttonSize);
+		ImGui::PopFont();
+		ImGui::SameLine(0);
+		ImGui::PushItemWidth(inputWidth);
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
+		ImGui::DragFloat("##Z", &value[2], speed, min, max);
+		ImGui::PopStyleVar(1);
+		ImGui::PopItemWidth();
+
+		// W
+		ImGui::SameLine(0);
+		ImGui::PushFont(boldFont);
+		ImGui::Button("W", buttonSize);
+		ImGui::PopFont();
+		ImGui::SameLine(0);
+		ImGui::PushItemWidth(inputWidth);
+		ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
+		ImGui::DragFloat("##W", &value[3], speed, min, max);
+		ImGui::PopStyleVar(1);
+		ImGui::PopItemWidth();
+
+		ImGui::PopStyleColor(4);
+		//ImGui::PopStyleVar();
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+
+		}, name, nameSize);
+
+}
+
 void GUILayoutEditor::PopupContextMenu(WidgetCallback enable, WidgetCallback disable)
 {
 	ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));       // 菜单栏背景
@@ -307,7 +479,7 @@ void GUILayoutEditor::Dropdown(std::string name, std::vector<std::string>& value
 	ImGui::PopStyleColor(3);
 }
 
-float GUILayoutEditor::ImGuiLabelColumnWidth(std::initializer_list<const char*> labels)
+float GUILayoutEditor::ImGuiLabelColumnWidth(std::vector<const char*> labels)
 {
 	return ComputeImGuiLabelColumnWidth(labels);
 }

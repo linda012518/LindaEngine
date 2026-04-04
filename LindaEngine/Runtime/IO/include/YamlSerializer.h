@@ -6,8 +6,8 @@
 namespace LindaEngine
 {
 	class Material;
-	struct Texture;
-	struct RenderTexture;
+	class Texture;
+	class RenderTexture;
 
 	class YamlSerializer
 	{

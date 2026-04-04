@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "AutoPtr.h"
 #include "LObject.h"
@@ -28,7 +28,7 @@ namespace LindaEngine
 		bool IsCompiled() { return nullptr != _shader; }
 		void Bind(Transform* transform);
 
-		void UpdateUniforms();
+		void UpdateUniforms(std::unordered_map<std::string, Ref<ShaderUniform>>& uniformNameMap);
 		const std::string& GetLightMode() const { return _state.lightMode; }
 
 		template <typename T>
@@ -39,12 +39,14 @@ namespace LindaEngine
 
 	private:
 		MaterialPassState _state;
+		std::unordered_map<std::string, Ref<ShaderUniform>> _customUniformNameMap;
 		Ref<Shader> _shader = nullptr;
 		static Ref<MaterialPass> overrideMatPass;
 		bool _textureLoaded = false;
+		int _acitveChannel = 0;
 
 	private:
-		static RenderState _currentState; //µ±Ç°äÖÈ¾ÕıÔÚÓÃµÄ×´Ì¬
+		static RenderState _currentState; //å½“å‰æ¸²æŸ“æ­£åœ¨ç”¨çš„çŠ¶æ€
 		static RenderState _defualtState;
 	};
 }

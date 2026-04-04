@@ -5,7 +5,7 @@
 
 namespace LindaEngine
 {
-	struct Texture;
+	class Texture;
 	class Material;
 
 	class Environment
