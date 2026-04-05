@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "AutoPtr.h"
 #include "LObject.h"
@@ -11,6 +11,7 @@ namespace LindaEngine
 {
 	class Texture : public LObject
 	{
+		friend class YamlSerializer;
 	public:
 		int width = -1;
 		int height = -1;
@@ -20,33 +21,44 @@ namespace LindaEngine
 
 		TextureType type;
 		bool isGammaCorrection = false;
-        int mipmapCount = -1;
-		int anisotropy = 0;
+        int mipmapCount = 1;
+		int anisotropy = 1;
         FilterMode filter = FilterMode::Bilinear;
         TextureWrapMode warpU = TextureWrapMode::Clamp;
         TextureWrapMode warpV = TextureWrapMode::Clamp;
         TextureWrapMode warpW = TextureWrapMode::Clamp;
 		std::string path;
-		std::string nodePath;
+		//std::string nodePath; // å¦‚æœæ˜¯åŠ¨æ€åˆ›å»ºçš„ï¼Œå¯ä»¥æ‰‹åŠ¨è®¾ç½®ä¸€ä¸ªå”¯ä¸€è·¯å¾„
 		bool isUserCreate = false;
 
 		static Ref<Texture> overrideTexture;
 
 		virtual ~Texture() = default;
 
-		virtual void OnImguiRender();
+		static void OnImguiRender(Texture* texture);
+
+	protected:
+		TextureType type_temp;
+		bool isGammaCorrection_temp = false;
+		int mipmapCount_temp = 1;
+		int anisotropy_temp = 1;
+		FilterMode filter_temp = FilterMode::Bilinear;
+		TextureWrapMode warpU_temp = TextureWrapMode::Clamp;
+		TextureWrapMode warpV_temp = TextureWrapMode::Clamp;
+		TextureWrapMode warpW_temp = TextureWrapMode::Clamp;
+
 	};
 
 	class Texture2D : public Texture
 	{
 	public:
-		Texture2D() { type = TextureType::Tex2D; }
+		Texture2D() { type = TextureType::Tex2D; type_temp = type; }
 	};
 
 	class Cubemap : public Texture
 	{
 	public:
-		Cubemap() { type = TextureType::Cube; }
+		Cubemap() { type = TextureType::Cube; type_temp = type; }
 
 		CubemapSrcType srcType = CubemapSrcType::EquireCtangular;
 
@@ -73,7 +85,7 @@ namespace LindaEngine
 	{
 		friend class RenderTextureManager;
 	public:
-		RenderTexture() { type = TextureType::RenderTexture; }
+		RenderTexture() { type = TextureType::RenderTexture; type_temp = type; }
 
 		int msaa = 1;
 		bool isCube = false;
@@ -88,7 +100,7 @@ namespace LindaEngine
 		static Ref<RenderTexture> active;
 		static Ref<RenderTexture> finalRT;
 	private:
-		Ref<RenderTexture> internalRT;//µ±rtÊÇRenderBufferÊ±£¬µ÷ÓÃBlitĞèÒªÉú³É¶ÔÓ¦ÎÆÀí£¨µ÷ÓÃÕßÎŞ¸ĞÖª£©
+		Ref<RenderTexture> internalRT;//å½“rtæ˜¯RenderBufferæ—¶ï¼Œè°ƒç”¨Blitéœ€è¦ç”Ÿæˆå¯¹åº”çº¹ç†ï¼ˆè°ƒç”¨è€…æ— æ„ŸçŸ¥ï¼‰
 
 	};
 }

@@ -143,7 +143,8 @@ bool Camera::Serialize()
 	out << YAML::Key << "layerMask" << YAML::Value << _layerMask;
 	out << YAML::Key << "msaa" << YAML::Value << _msaa;
 	if (nullptr != _renderTexture)
-		out << YAML::Key << "renderTexture" << YAML::Value << _renderTexture->nodePath;
+		out << YAML::Key << "renderTexture" << YAML::Value << _renderTexture->path;
+		//out << YAML::Key << "renderTexture" << YAML::Value << _renderTexture->nodePath;
 	out << YAML::Key << "clearType" << YAML::Value << static_cast<int>(_clearType);
 	out << YAML::Key << "clearColor" << YAML::Value << _clearColor;
 	

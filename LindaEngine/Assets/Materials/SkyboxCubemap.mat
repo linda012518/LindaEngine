@@ -9,7 +9,7 @@ Material:
     - PassName: Skybox
       ShaderUniforms:
         - UniformName: skybox
-          Value: Assets/Maps/Yamls/PanoramicCube.texture
+          Value: Assets/Maps/skybox/newport_loft.hdr
           skybox: 1
       Keywords:
         []

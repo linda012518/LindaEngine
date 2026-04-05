@@ -6,6 +6,7 @@ using namespace LindaEngine;
 
 std::unordered_map<std::string, Ref<FBXResources>> FBXManager::_map;
 Ref<Mesh> FBXManager::_skybox = nullptr;
+Ref<Mesh> FBXManager::_sphere = nullptr;
 Ref<Mesh> FBXManager::_empty = nullptr;
 Ref<Mesh> FBXManager::_boundingBox = nullptr;
 Ref<Mesh> FBXManager::_frustumMesh = nullptr;
@@ -396,6 +397,75 @@ Ref<Mesh> FBXManager::GetEmpty()
 	_empty = CreateRef<Mesh>();
 	Mesh::Data& data = _empty->AddMeshData(Mesh::Data());
 	return _empty;
+}
+
+Ref<Mesh> FBXManager::GetShpere()
+{
+	if (nullptr != _sphere)
+		return _sphere;
+
+	_sphere = CreateRef<Mesh>();
+	Mesh::Data& data = _sphere->AddMeshData(Mesh::Data());
+	data.AddAttribute(VertexAttributeType::Position);
+	data.AddAttribute(VertexAttributeType::Normal);
+	data.AddAttribute(VertexAttributeType::Tangent);
+	data.AddAttribute(VertexAttributeType::UV0);
+	data.drawType = DrawType::TRIANGLE_STRIP;
+
+	const unsigned int X_SEGMENTS = 64;
+	const unsigned int Y_SEGMENTS = 64;
+	const float PI = 3.14159265359f;
+	for (unsigned int y = 0; y <= Y_SEGMENTS; ++y)
+	{
+		for (unsigned int x = 0; x <= X_SEGMENTS; ++x)
+		{
+			float xSegment = (float)x / (float)X_SEGMENTS;
+			float ySegment = (float)y / (float)Y_SEGMENTS;
+			const float theta = xSegment * 2.0f * PI;
+			const float phi = ySegment * PI;
+			const float sinPhi = std::sin(phi);
+			float xPos = std::cos(theta) * sinPhi;
+			float yPos = std::cos(phi);
+			float zPos = std::sin(theta) * sinPhi;
+
+			// Tangent along increasing u (theta); degenerates at poles where sin(phi)==0.
+			glm::vec3 tanU(-std::sin(theta) * sinPhi, 0.0f, std::cos(theta) * sinPhi);
+			const float tanLenSq = tanU.x * tanU.x + tanU.z * tanU.z;
+			if (tanLenSq > 1e-12f)
+				tanU = tanU / std::sqrt(tanLenSq);
+			else
+				tanU = glm::vec3(1.0f, 0.0f, 0.0f);
+
+			data.AddFloat3(glm::vec3(xPos, yPos, zPos));
+			data.AddFloat3(glm::vec3(xPos, yPos, zPos));
+			data.AddFloat3(tanU);
+			data.AddFloat2(glm::vec2(xSegment, ySegment));
+		}
+	}
+
+	bool oddRow = false;
+	for (int y = 0; y < Y_SEGMENTS; ++y)
+	{
+		if (!oddRow) // even rows: y == 0, y == 2; and so on
+		{
+			for (int x = 0; x <= X_SEGMENTS; ++x)
+			{
+				data.indexData.push_back(y * (X_SEGMENTS + 1) + x);
+				data.indexData.push_back((y + 1) * (X_SEGMENTS + 1) + x);
+			}
+		}
+		else
+		{
+			for (int x = X_SEGMENTS; x >= 0; --x)
+			{
+				data.indexData.push_back((y + 1) * (X_SEGMENTS + 1) + x);
+				data.indexData.push_back(y * (X_SEGMENTS + 1) + x);
+			}
+		}
+		oddRow = !oddRow;
+	}
+
+	return _sphere;
 }
 
 Ref<Mesh> FBXManager::GetBoundingBox()

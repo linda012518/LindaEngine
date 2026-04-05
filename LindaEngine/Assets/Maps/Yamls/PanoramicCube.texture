@@ -1,6 +1,6 @@
 Texture:
   FilePath: Assets/Maps/skybox/newport_loft.hdr
-  type: 2
+  type: 1
   isGammaCorrection: false
   mipmapCount: 6
   anisotropy: 1

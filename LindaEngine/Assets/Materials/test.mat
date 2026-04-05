@@ -24,7 +24,7 @@ Material:
           Value: white
           skybox: 1
         - UniformName: maskTexture
-          Value: Assets/Maps/Yamls/go.texture
+          Value: Assets/Maps/Rock.jpg
           maskTexture: 1
       Keywords:
         - NORMAL_MAP

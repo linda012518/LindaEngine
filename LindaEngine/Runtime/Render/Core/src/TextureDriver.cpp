@@ -40,6 +40,11 @@ void TextureDriver::CreateIBLBRDFMap(Ref<Texture> dest)
 	_context->CreateIBLBRDFMap(dest);
 }
 
+Ref<RenderTexture> TextureDriver::RenderMaterialBall(Ref<Material> material)
+{
+	return _context->RenderMaterialBall(material);
+}
+
 void TextureDriver::DeleteTexture(Ref<Texture> texture)
 {
 	_context->DeleteTexture(texture);

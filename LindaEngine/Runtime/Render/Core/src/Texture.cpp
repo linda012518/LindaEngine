@@ -1,7 +1,13 @@
-#include "Texture.h"
-#include "GUILayoutEditor.h"
+ï»¿#include "Texture.h"
 #include "TextureManager.h"
+#include "TextureDriver.h"
+#include "Material.h"
+#include "MaterialManager.h"
 #include "Path.h"
+#include "GUILayoutEditor.h"
+#include "EventEditor.h"
+#include "EventCodeEditor.h"
+#include "EventSystemEditor.h"
 
 #include "imgui/imgui.h"
 #include <imgui/imgui_internal.h>
@@ -39,9 +45,10 @@ Ref<Texture> Texture::overrideTexture = nullptr;
 Ref<RenderTexture> RenderTexture::active = nullptr;
 Ref<RenderTexture> RenderTexture::finalRT = nullptr;
 
-void Texture::OnImguiRender()
+void Texture::OnImguiRender(Texture* texture)
 {
-	ImGui::PushID(this);
+	std::string id = texture->path;
+	ImGui::PushID(id.c_str());
 
 	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
 	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
@@ -54,12 +61,21 @@ void Texture::OnImguiRender()
 		ImGui::TableNextRow();
 
 		ImGui::TableSetColumnIndex(0);
-		ImGui::Image((ImTextureID)(uintptr_t)nativeColorID, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		if (texture->type == TextureType::Tex2D)
+			ImGui::Image((ImTextureID)(uintptr_t)texture->nativeColorID, ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		else if (texture->type == TextureType::Cube)
+		{
+			static Ref<Material> material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/CubemapVisible.shader");
+			std::shared_ptr<Texture> tmp(texture, [](Texture*) { });
+			material->SetUniformValue("skybox", tmp);
+			Ref<RenderTexture> rt = TextureDriver::RenderMaterialBall(material);
+			ImGui::Image((ImTextureID)(uintptr_t)rt->nativeIDs[0], ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		}
 
 		ImGui::TableSetColumnIndex(1);
-		ImGui::TextUnformatted(("Name : " + Path::GetFileNameNoExtension(path)).c_str());
-		ImGui::TextUnformatted(("Width : " + std::to_string(width)).c_str());
-		ImGui::TextUnformatted(("Height : " + std::to_string(height)).c_str());
+		ImGui::TextUnformatted(("Name : " + Path::GetFileNameNoExtension(texture->path)).c_str());
+		ImGui::TextUnformatted(("Width : " + std::to_string(texture->width)).c_str());
+		ImGui::TextUnformatted(("Height : " + std::to_string(texture->height)).c_str());
 
 		ImGui::EndTable();
 	}
@@ -72,32 +88,32 @@ void Texture::OnImguiRender()
 	float firstButtonHeight = ImGui::GetFrameHeight();
 
 	static std::vector<std::string> namesTexture = { "Tex2D", "Cube" };
-	GUILayoutEditor::Dropdown("Texture Shape", (int)type, namesTexture, [&](int index) {
-		type = GetTextureTypeByString(namesTexture[index]);
+	GUILayoutEditor::Dropdown("Texture Shape", (int)texture->type_temp, namesTexture, [&](int index) {
+		texture->type_temp = GetTextureTypeByString(namesTexture[index]);
 		}, firstWidth);
 
-	GUILayoutEditor::Checkbox("sRGB", &isGammaCorrection, nullptr, firstWidth);
+	GUILayoutEditor::Checkbox("sRGB", &texture->isGammaCorrection_temp, nullptr, firstWidth);
 
-	GUILayoutEditor::DragInt("Mipmap Count", &mipmapCount, nullptr, 1.0f, 1, 6, firstWidth);
+	GUILayoutEditor::DragInt("Mipmap Count", &texture->mipmapCount_temp, nullptr, 1.0f, 1, 6, firstWidth);
 
-	GUILayoutEditor::DragInt("Anisotropy", &anisotropy, nullptr, 1.0f, 1, 8, firstWidth);
+	GUILayoutEditor::DragInt("Anisotropy", &texture->anisotropy_temp, nullptr, 1.0f, 1, 8, firstWidth);
 
 	static std::vector<std::string> namesFilter = { "Point", "Bilinear", "Trilinear" };
-	GUILayoutEditor::Dropdown("Filter Mode", (int)filter, namesFilter, [&](int index) {
-		filter = GetFilterModeByString(namesFilter[index]);
+	GUILayoutEditor::Dropdown("Filter Mode", (int)texture->filter_temp, namesFilter, [&](int index) {
+		texture->filter_temp = GetFilterModeByString(namesFilter[index]);
 		}, firstWidth);
 
 	static std::vector<std::string> names = { "Repeat", "Clamp", "Mirror" };
-	GUILayoutEditor::Dropdown("WarpU Mode", (int)warpU, names, [&](int index) {
-		warpU = GetWarpModeByString(names[index]);
+	GUILayoutEditor::Dropdown("WarpU Mode", (int)texture->warpU_temp, names, [&](int index) {
+		texture->warpU_temp = GetWarpModeByString(names[index]);
 		}, firstWidth);
 
-	GUILayoutEditor::Dropdown("WarpV Mode", (int)warpV, names, [&](int index) {
-		warpV = GetWarpModeByString(names[index]);
+	GUILayoutEditor::Dropdown("WarpV Mode", (int)texture->warpV_temp, names, [&](int index) {
+		texture->warpV_temp = GetWarpModeByString(names[index]);
 		}, firstWidth);
 
-	GUILayoutEditor::Dropdown("WarpW Mode", (int)warpW, names, [&](int index) {
-		warpW = GetWarpModeByString(names[index]);
+	GUILayoutEditor::Dropdown("WarpW Mode", (int)texture->warpW_temp, names, [&](int index) {
+		texture->warpW_temp = GetWarpModeByString(names[index]);
 		}, firstWidth);
 
 	float availableWidth = ImGui::GetContentRegionAvail().x;
@@ -106,14 +122,35 @@ void Texture::OnImguiRender()
 
 	if (ImGui::Button("Apply", ImVec2(componentWidth, firstButtonHeight)))
 	{
-		// TODO ¸üÐÂÎÆÀí
+		texture->type = texture->type_temp;
+		texture->isGammaCorrection = texture->isGammaCorrection_temp;
+		texture->mipmapCount = texture->mipmapCount_temp;
+		texture->anisotropy = texture->anisotropy_temp;
+		texture->filter = texture->filter_temp;
+		texture->warpU = texture->warpU_temp;
+		texture->warpV = texture->warpV_temp;
+		texture->warpW = texture->warpW_temp;
+
+		Ref<Texture> newTexture = TextureManager::GetTexture(texture->path, true);
+
+		// TODO æš‚æ—¶å…ˆè¿™æ ·å¤„ç†
+		SwitchInspectorObjectEditor sio;
+		sio.lobject = newTexture.get();
+		EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchInspectorObject, sio);
 	}
 
 	ImGui::SameLine();
 
 	if (ImGui::Button("Revert", ImVec2(componentWidth, firstButtonHeight)))
 	{
-		// TODO »Ö¸´ÎÆÀí
+		texture->type_temp = texture->type;
+		texture->isGammaCorrection_temp = texture->isGammaCorrection;
+		texture->mipmapCount_temp = texture->mipmapCount;
+		texture->anisotropy_temp = texture->anisotropy;
+		texture->filter_temp = texture->filter;
+		texture->warpU_temp = texture->warpU;
+		texture->warpV_temp = texture->warpV;
+		texture->warpW_temp = texture->warpW;
 	}
 
 	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));

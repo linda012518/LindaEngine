@@ -66,6 +66,7 @@ Shader
 				FragColor.a = 1.0;
 				FragColor = testVec4;
 				FragColor = vec4(ShadeSH9(worldNormal), 1.0);
+				FragColor = texture(maskTexture, uv);
 				// FragColor = vec4(worldNormal, 1.0);
 				// vec3 lightDir = normalize(_dirLightDirections[0].xyz);
 				// vec3 normal = normalize(worldNormal);

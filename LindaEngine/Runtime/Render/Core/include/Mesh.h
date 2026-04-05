@@ -62,6 +62,7 @@ namespace LindaEngine
 
 			void AddAttribute(VertexAttributeType attrType);
 			void AddAttribute(std::string name);
+			void AddFloat2(glm::vec2 float2);
 			void AddFloat3(glm::vec3 float3);
 			void AddFloat4(glm::vec4 float4);
 			void Draw();

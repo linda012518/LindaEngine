@@ -11,7 +11,7 @@ using namespace LindaEngine;
 std::unordered_map<std::string, Ref<Texture>> TextureManager::_textureMap;
 std::vector<Ref<RenderTexture>> RenderTextureManager::_renderTextures;
 
-Ref<Texture> TextureManager::GetTexture(std::string path)
+Ref<Texture> TextureManager::GetTexture(std::string path, bool reload)
 {
     try
     {
@@ -24,12 +24,29 @@ Ref<Texture> TextureManager::GetTexture(std::string path)
             }
             else
             {
-                Ref<Texture> texture = YamlSerializer::DeSerializeTexture(path.c_str());
+                std::string metaPath = path + ".meta";
+                Ref<Texture> texture = YamlSerializer::DeSerializeTexture(metaPath.c_str());
                 if (nullptr == texture)
                     return nullptr;
                 TextureLoader::Load(texture);
                 _textureMap[path] = texture;
             }
+        }
+        else if (true == reload)
+        {
+            std::string metaPath = path + ".meta";
+            Ref<Texture> temp = Texture::overrideTexture;
+            Texture::overrideTexture = _textureMap[path];
+            YamlSerializer::SerializeTexture(metaPath.c_str());
+            Texture::overrideTexture = temp;
+
+            DeleteTexture(_textureMap[path]);
+
+            Ref<Texture> texture = YamlSerializer::DeSerializeTexture(metaPath.c_str());
+            if (nullptr == texture)
+                return nullptr;
+            TextureLoader::Load(texture);
+            _textureMap[path] = texture;
         }
 
         return _textureMap[path];
@@ -44,22 +61,14 @@ Ref<Texture> TextureManager::GetTextureDirect(std::string path)
 {
     try
     {
-        auto itr = _textureMap.find(path);
-        if (itr == _textureMap.end())
+        if (_textureMap.find(path) == _textureMap.end())
         {
-            if (path == "white" || path == "black" || path == "gray" || path == "bump")
-            {
-                _textureMap[path] = TextureLoader::Load(path);
-            }
-            else
-            {
-                Ref<Texture2D> texture = CreateRef<Texture2D>();
-                if (nullptr == texture)
-                    return nullptr;
-                texture->path = path;
-                TextureLoader::Load(texture);
-                _textureMap[path] = texture;
-            }
+            Ref<Texture2D> texture = CreateRef<Texture2D>();
+            if (nullptr == texture)
+                return nullptr;
+            texture->path = path;
+            TextureLoader::Load(texture);
+            _textureMap[path] = texture;
         }
 
         return _textureMap[path];
@@ -68,7 +77,6 @@ Ref<Texture> TextureManager::GetTextureDirect(std::string path)
     {
         return nullptr;
     }
-
 }
 
 bool TextureManager::IsLoad(std::string path)
@@ -83,8 +91,8 @@ void TextureManager::DeleteTexture(Ref<Texture> texture)
             ++itr;
             continue;
         }
-        _textureMap.erase(itr);
         TextureLoader::Delete(itr->second);
+        _textureMap.erase(itr);
         break;
     }
 }

@@ -149,6 +149,11 @@ void Mesh::Data::AddAttribute(std::string name)
 	CalculateStride();
 }
 
+void Mesh::Data::AddFloat2(glm::vec2 float2)
+{
+	vertexData.insert(vertexData.end(), { float2.x, float2.y });
+}
+
 void Mesh::Data::AddFloat3(glm::vec3 float3)
 {
 	vertexData.insert(vertexData.end(), { float3.x, float3.y, float3.z });

@@ -16,6 +16,7 @@ namespace LindaEngine
 		void CreateIBLIrradianceMap(Ref<Texture> src, Ref<Texture> dest);
 		void CreateIBLPrefilterMap(Ref<Texture> src, Ref<Texture> dest);
 		void CreateIBLBRDFMap(Ref<Texture> dest);
+		Ref<RenderTexture> RenderMaterialBall(Ref<Material> material);
 		void DeleteTexture(Ref<Texture> texture);
 		void Bind(Ref<Texture> texture, int channel, int renderTextureColorIndex);
 		void BindRenderTarget(Ref<RenderTexture> texture);

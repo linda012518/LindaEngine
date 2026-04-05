@@ -113,7 +113,16 @@ Ref<Texture> YamlSerializer::DeSerializeTexture(const char* path)
 	texture->warpU = static_cast<TextureWrapMode>(data["warpU"].as<int>());
 	texture->warpV = static_cast<TextureWrapMode>(data["warpV"].as<int>());
 	texture->warpW = static_cast<TextureWrapMode>(data["warpW"].as<int>());
-	texture->nodePath = path;
+	//texture->nodePath = path;
+
+	texture->type_temp = texture->type;
+	texture->isGammaCorrection_temp = texture->isGammaCorrection;
+	texture->mipmapCount_temp = texture->mipmapCount;
+	texture->anisotropy_temp = texture->anisotropy;
+	texture->filter_temp = texture->filter;
+	texture->warpU_temp = texture->warpU;
+	texture->warpV_temp = texture->warpV;
+	texture->warpW_temp = texture->warpW;
 
 	return texture;
 

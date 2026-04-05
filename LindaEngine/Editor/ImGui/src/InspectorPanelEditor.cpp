@@ -6,6 +6,7 @@
 #include "glm/glm.hpp"
 #include "ComponentFactory.h"
 #include "GUILayoutEditor.h"
+#include "Texture.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -37,7 +38,13 @@ void InspectorPanelEditor::OnImGuiRender()
 	}
 
 	if (nullptr != _object)
-		_object->OnImguiRender();
+	{
+		Texture* texture = dynamic_cast<Texture*>(_object);
+		if (nullptr == texture)
+			_object->OnImguiRender();
+		else
+			Texture::OnImguiRender(texture);
+	}
 
 	DrawSundry();
 
@@ -65,6 +72,9 @@ void InspectorPanelEditor::OnEvent(IEventHandler* sender, int eventCode, Event& 
 
 void InspectorPanelEditor::DrawSundry()
 {
+	if (nullptr == _object)
+		return;
+
 	Entity* entity = dynamic_cast<Entity*>(_object);
 	if (nullptr == entity)
 		return;

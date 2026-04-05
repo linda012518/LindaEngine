@@ -115,7 +115,7 @@ void TextureLoader::LoadCubemap(Ref<Texture> texture)
     {
         Ref<Texture2D> panoramic = CreateRef<Texture2D>();
         panoramic->path = texture->path;
-        panoramic->nodePath = texture->nodePath;
+        //panoramic->nodePath = texture->nodePath;
         panoramic->isGammaCorrection = false;
         panoramic->mipmapCount = 6;
         panoramic->filter = FilterMode::Bilinear;

@@ -12,8 +12,8 @@
 #include "EventSystemEditor.h"
 #include "MaterialManager.h"
 #include "Material.h"
-#include "Texture.h"
-#include "TextureManager.h"
+#include "YamlSerializer.h"
+#include "TextureDriver.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -181,7 +181,13 @@ void ContentBrowserPanelEditor::DrawIcon(FileNode& fs, float offsetX)
     uint64_t nativeColorID = 0;
 
     if (TextureManager::IsLoad(fs.path))
-        nativeColorID = TextureManager::GetTexture(fs.path)->nativeColorID;
+    {
+        Ref<Texture> texture = TextureManager::GetTexture(fs.path);
+        if (texture->type == TextureType::Cube)
+            nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Texture.png")->nativeColorID;
+        else
+            nativeColorID = TextureManager::GetTexture(fs.path)->nativeColorID;
+    }
     else
     {
         switch (fs.type)
@@ -228,13 +234,15 @@ void ContentBrowserPanelEditor::DrawIcon(FileNode& fs, float offsetX)
 
 void ContentBrowserPanelEditor::CollectFileFolder(FileNode& fs)
 {
-    for (const auto& entry : std::filesystem::directory_iterator(fs.path)) {
+    for (const auto& entry : std::filesystem::directory_iterator(fs.path)) 
+    {
 
         char toReplace = '\\';
         char replacement = '/';
         std::string str = entry.path().string();
         size_t pos = str.find(toReplace);
-        while (pos != std::string::npos) {
+        while (pos != std::string::npos) 
+        {
             str.replace(pos, 1, 1, replacement);
             pos = str.find(toReplace, pos + 1);
         }
@@ -243,12 +251,31 @@ void ContentBrowserPanelEditor::CollectFileFolder(FileNode& fs)
         go.path = str;
         go.name = Path::GetFileNameNoExtension(go.path);
         
-        if (entry.is_directory()) {
+        if (entry.is_directory()) 
+        {
             go.type = FileType::Folder;
             CollectFileFolder(go);
         }
-        else {
+        else 
+        {
+            if (Path::GetFileExtensionName(go.path) == "meta")
+                continue;
+
             go.type = CheckFileType(go.path);
+            std::string metaPath = go.path + ".meta";
+            if (go.type == FileType::Texture && false == std::filesystem::exists(metaPath))
+            {
+                Ref<Texture> temp = Texture::overrideTexture;
+                Ref<Texture> texture = CreateRef<Texture>();
+                texture->path = go.path;
+                Texture::overrideTexture = texture;
+                YamlSerializer::SerializeTexture(metaPath.c_str());
+                Texture::overrideTexture = temp;
+            }
+            else if (go.type == FileType::RenderTexture)
+            {
+
+            }
         }
         fs.children.push_back(go);
     }
@@ -491,7 +518,7 @@ LObject* ContentBrowserPanelEditor::GetLObject(FileNode* node)
     case FileType::Prefab:
         break;
     case FileType::Texture:
-        return TextureManager::GetTextureDirect(node->path).get();
+        return TextureManager::GetTexture(node->path).get();
     case FileType::RenderTexture:
         break;
     case FileType::Shader:

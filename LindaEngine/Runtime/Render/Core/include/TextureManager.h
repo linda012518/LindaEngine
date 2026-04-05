@@ -16,7 +16,7 @@ namespace LindaEngine
 	class TextureManager
 	{
 	public:
-		static Ref<Texture> GetTexture(std::string path);
+		static Ref<Texture> GetTexture(std::string path, bool reload = false);
 		static Ref<Texture> GetTextureDirect(std::string path);
 		static bool IsLoad(std::string path);
 		static void DeleteTexture(Ref<Texture> texture);

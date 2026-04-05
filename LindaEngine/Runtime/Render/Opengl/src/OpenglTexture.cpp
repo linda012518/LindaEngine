@@ -10,8 +10,11 @@
 #include "GraphicsContext.h"
 #include "ShaderBuiltInUniform.h"
 #include "RenderPipeline.h"
-#include "Texture.h"
 #include "TextureManager.h"
+
+#include "glm/glm.hpp"
+#include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtc\type_ptr.hpp>
 
 #include <iostream>
 
@@ -22,6 +25,7 @@ void OpenglTexture::CreateTexture2D(Ref<Texture> texture, void* data, int channe
 	if (nullptr == data)
 		return;
 
+	DeleteTexture(texture);
 	Ref<Texture2D> tex2D = DynamicCastRef(Texture2D, texture);
 
 	GLenum dataFormat = GetDataFormat(channels);
@@ -39,6 +43,7 @@ void OpenglTexture::CreateCube(Ref<Texture> texture, void* right, void* left, vo
 	if (nullptr == right || nullptr == left || nullptr == top || nullptr == bottom || nullptr == front || nullptr == back)
 		return;
 
+	DeleteTexture(texture);
 	Ref<Cubemap> cubemap = DynamicCastRef(Cubemap, texture);
 
 	GLenum dataFormat = GetDataFormat(channels);
@@ -231,6 +236,57 @@ void OpenglTexture::CreateIBLBRDFMap(Ref<Texture> dest)
 	glDeleteRenderbuffers((int)rt->renderBuffers.size(), rt->renderBuffers.data());
 
 	Material::overrideLightMode = temp;
+}
+
+Ref<RenderTexture> OpenglTexture::RenderMaterialBall(Ref<Material> material)
+{
+	static bool isLoad = false;
+	static Ref<RenderTexture> rt = nullptr;
+	static int rtSize = 128;
+	static glm::mat4 vpMatrix = glm::mat4(1.0f);
+
+	if (false == isLoad)
+	{
+		isLoad = true;
+
+		FramebufferTextureSpecification color;
+		color.colorFormat = TextureFormat::RGBA8;
+
+		FramebufferTextureSpecification depth;
+		depth.colorFormat = TextureFormat::Depth16;
+		depth.isRenderBuffer = true;
+
+		rt = CreateRef<RenderTexture>();
+		rt->width = rtSize;
+		rt->height = rtSize;
+		rt->isGammaCorrection = false;
+		rt->msaa = 1;
+		rt->mipmapCount = 1;
+		rt->anisotropy = 1;
+		rt->colorAttachments.push_back(color);
+		rt->depthAttachment = depth;
+		CreateRenderTexture2D(rt);
+
+		vpMatrix = glm::ortho(-1.2f, 1.2f, -1.2f, 1.2f, 0.2f, 100.0f) * 
+			glm::lookAt(glm::vec3(0.0f, 0.0f, -2.0f), glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, rt->nativeColorID);
+	glViewport(0, 0, rtSize, rtSize);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	std::string temp = Material::overrideLightMode;
+	Material::overrideLightMode = "Color";
+
+	material->SetMat4("linda_CubemapVisibleMatrix_VP", vpMatrix);
+	material->Bind(0, nullptr, FBXManager::GetShpere()->GetMeshAttributes());
+	FBXManager::GetShpere()->Draw();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	Material::overrideLightMode = temp;
+
+	return rt;
 }
 
 void OpenglTexture::DeleteTexture(Ref<Texture> texture)

@@ -293,7 +293,8 @@ void MaterialPass::SetUniformValue<Ref<Texture>>(const char* name, Ref<Texture> 
 	if (nullptr == rt && val->isUserCreate == false)
 	{
 		Ref<TextureUniformData> tud = DynamicCastRef(TextureUniformData, _state.uniformNameMap[name]);
-		tud->value = val->nodePath;
+		//tud->value = val->nodePath;
+		tud->value = val->path;
 	}
 	else
 	{
