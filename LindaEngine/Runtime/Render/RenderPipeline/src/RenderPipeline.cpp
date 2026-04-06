@@ -10,6 +10,7 @@
 #include "LightSystem.h"
 #include "Timestamp.h"
 #include "Environment.h"
+#include "TextureManager.h"
 
 #include <algorithm>
 
@@ -31,6 +32,7 @@ void RenderPipeline::Finalize()
 
 void RenderPipeline::Tick()
 {
+    RenderTextureManager::Tick();
     Render();
 }
 

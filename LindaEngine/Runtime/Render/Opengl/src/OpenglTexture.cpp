@@ -240,36 +240,20 @@ void OpenglTexture::CreateIBLBRDFMap(Ref<Texture> dest)
 
 Ref<RenderTexture> OpenglTexture::RenderMaterialBall(Ref<Material> material)
 {
-	static bool isLoad = false;
-	static Ref<RenderTexture> rt = nullptr;
 	static int rtSize = 128;
-	static glm::mat4 vpMatrix = glm::mat4(1.0f);
+	static glm::mat4 vpMatrix = glm::ortho(-1.2f, 1.2f, -1.2f, 1.2f, 0.2f, 100.0f) *
+		glm::lookAt(glm::vec3(0.0f, 0.0f, -2.0f), glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-	if (false == isLoad)
-	{
-		isLoad = true;
+	std::vector<FramebufferTextureSpecification> fts;
+	FramebufferTextureSpecification color;
+	color.colorFormat = TextureFormat::RGBA8;
+	fts.push_back(color);
+	FramebufferTextureSpecification depth;
+	depth.colorFormat = TextureFormat::Depth16;
+	depth.isRenderBuffer = true;
+	fts.push_back(depth);
 
-		FramebufferTextureSpecification color;
-		color.colorFormat = TextureFormat::RGBA8;
-
-		FramebufferTextureSpecification depth;
-		depth.colorFormat = TextureFormat::Depth16;
-		depth.isRenderBuffer = true;
-
-		rt = CreateRef<RenderTexture>();
-		rt->width = rtSize;
-		rt->height = rtSize;
-		rt->isGammaCorrection = false;
-		rt->msaa = 1;
-		rt->mipmapCount = 1;
-		rt->anisotropy = 1;
-		rt->colorAttachments.push_back(color);
-		rt->depthAttachment = depth;
-		CreateRenderTexture2D(rt);
-
-		vpMatrix = glm::ortho(-1.2f, 1.2f, -1.2f, 1.2f, 0.2f, 100.0f) * 
-			glm::lookAt(glm::vec3(0.0f, 0.0f, -2.0f), glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	}
+	Ref<RenderTexture> rt = RenderTextureManager::Get(rtSize, rtSize, fts);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, rt->nativeColorID);
 	glViewport(0, 0, rtSize, rtSize);
@@ -284,6 +268,7 @@ Ref<RenderTexture> OpenglTexture::RenderMaterialBall(Ref<Material> material)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	RenderTextureManager::Release(rt);
 	Material::overrideLightMode = temp;
 
 	return rt;

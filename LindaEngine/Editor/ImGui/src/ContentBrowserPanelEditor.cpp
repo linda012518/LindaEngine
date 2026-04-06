@@ -54,6 +54,29 @@ void ContentBrowserPanelEditor::OnImGuiRender()
 
     GUILayoutEditor::PopupContextMenu(
         [&]() {
+            if (nullptr != _hoveredNode)
+            {
+                if (IsFileNodeSelected(_hoveredNode) == false || _selectionNodes.size() <= 1)
+                {
+                    SelectSingle();
+                    SwitchInspectorObjectEditor sio;
+                    sio.lobject = GetLObject(_selectedNode);
+                    EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchInspectorObject, sio);
+
+                    if (_selectedNode->type == FileType::Shader && ImGui::MenuItem("Create Material"))
+                    {
+                        Ref<Material> material = MaterialManager::GetMaterialByShader(_selectedNode->path);
+                        Material::overrideMat = material;
+                        std::string path = Path::GetFilePath(_selectedNode->path);
+                        std::string name = Path::GetFileNameNoExtension(_selectedNode->path);
+                        YamlSerializer::SerializeMaterial((path + name + ".mat").c_str());
+                        _resDirty = true;
+                        ReloadResources();
+                    }
+                }
+                ImGui::Separator();
+            }
+
             if (ImGui::MenuItem("Refresh Content"))
             {
                 _resDirty = true;
@@ -184,7 +207,13 @@ void ContentBrowserPanelEditor::DrawIcon(FileNode& fs, float offsetX)
     {
         Ref<Texture> texture = TextureManager::GetTexture(fs.path);
         if (texture->type == TextureType::Cube)
-            nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Texture.png")->nativeColorID;
+        {
+            static Ref<Material> material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/CubemapVisible.shader");
+            material->SetUniformValue("skybox", texture);
+            Ref<RenderTexture> rt = TextureDriver::RenderMaterialBall(material);
+            nativeColorID = rt->nativeIDs[0];
+            //nativeColorID = TextureManager::GetTextureDirect("BuiltInAssets/Icons/Texture.png")->nativeColorID;
+        }
         else
             nativeColorID = TextureManager::GetTexture(fs.path)->nativeColorID;
     }
@@ -454,6 +483,9 @@ void ContentBrowserPanelEditor::HandleNodeSelection(FileNode* node, bool isCtrlD
     else
     {
         SelectSingle();
+        SwitchInspectorObjectEditor sio;
+        sio.lobject = GetLObject(_selectedNode);
+        EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchInspectorObject, sio);
     }
 
 }
@@ -470,10 +502,6 @@ void ContentBrowserPanelEditor::SelectSingle()
     _selectionNodes.clear();
     _selectedNode = _hoveredNode;
     _selectionNodes.push_back(_selectedNode);
-
-    SwitchInspectorObjectEditor sio;
-    sio.lobject = GetLObject(_selectedNode);
-    EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchInspectorObject, sio);
 }
 
 FileNode* ContentBrowserPanelEditor::GetFolderNode(FileNode* root, std::string path)

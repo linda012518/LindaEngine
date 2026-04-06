@@ -87,6 +87,8 @@ namespace LindaEngine
 	public:
 		RenderTexture() { type = TextureType::RenderTexture; type_temp = type; }
 
+		static void OnImguiRender(RenderTexture* texture);
+
 		int msaa = 1;
 		bool isCube = false;
 		bool isLinkScreen = true;

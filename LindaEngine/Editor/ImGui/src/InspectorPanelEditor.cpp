@@ -43,7 +43,13 @@ void InspectorPanelEditor::OnImGuiRender()
 		if (nullptr == texture)
 			_object->OnImguiRender();
 		else
-			Texture::OnImguiRender(texture);
+		{
+			RenderTexture* rt = dynamic_cast<RenderTexture*>(_object);
+			if (nullptr == texture)
+				Texture::OnImguiRender(texture);
+			else
+				RenderTexture::OnImguiRender(rt);
+		}
 	}
 
 	DrawSundry();

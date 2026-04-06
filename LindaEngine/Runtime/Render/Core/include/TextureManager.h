@@ -40,11 +40,13 @@ namespace LindaEngine
 		static void Clear();
 		static void ClearLinkScreen();
 		static void SetRenderTarget(Ref<RenderTexture> texture);
+		static void Tick();
 
 	private:
 		static bool CompareAttachments(std::vector<FramebufferTextureSpecification>& left, std::vector<FramebufferTextureSpecification>& right);
 
 	private:
 		static std::vector<Ref<RenderTexture>> _renderTextures;
+		static std::vector<Ref<RenderTexture>> _dirtyTextures;
 	};
 }

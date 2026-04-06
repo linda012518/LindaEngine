@@ -10,7 +10,7 @@
 #include "Texture.h"
 #include "Path.h"
 #include "ContentBrowserPanelEditor.h"
-#include "GUILayoutEditor.h"
+#include "TextureDriver.h"
 
 #include "imgui/imgui.h"
 #include <imgui/imgui_internal.h>
@@ -297,7 +297,18 @@ void Material::OnImguiRender()
 				// 获取图标纹理
 				Ref<TextureUniformData> tud = DynamicCastRef(TextureUniformData, uniform.second);
 				Ref<Texture> iconTex = TextureManager::GetTexture(tud->value);
-				const ImTextureID iconId = iconTex ? (ImTextureID)(uintptr_t)iconTex->nativeColorID : (ImTextureID)0;
+
+				uint64_t iconId = 0;
+				if (iconTex->type == TextureType::Cube)
+				{
+					static Ref<Material> material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/CubemapVisible.shader");
+					material->SetUniformValue("skybox", iconTex);
+					Ref<RenderTexture> rt = TextureDriver::RenderMaterialBall(material);
+					iconId = rt->nativeIDs[0];
+				}
+				else
+					iconId = iconTex->nativeColorID;
+
 
 				static float posX = 0.0f, posY = 0.0f;
 				static float scaleX = 1.0f, scaleY = 1.0f;
@@ -376,6 +387,20 @@ void Material::OnImguiRender()
 					else
 						ImGui::Dummy(ImVec2(iconSize, iconSize));
 					ImGui::PopStyleVar(2);
+
+					if (ImGui::BeginDragDropTarget())
+					{
+						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILENODE_DRAG"))
+						{
+							LindaEditor::FileNode* node = *(LindaEditor::FileNode**)payload->Data;
+							if (node && node->type == LindaEditor::FileType::Texture)
+							{
+								DynamicCastRef(TextureUniformData, uniform.second)->value = node->path;
+							}
+						}
+						ImGui::EndDragDropTarget();
+					}
+
 					ImGui::EndTable();
 				}
 				break;

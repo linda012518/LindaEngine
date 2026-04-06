@@ -10,6 +10,7 @@ using namespace LindaEngine;
 
 std::unordered_map<std::string, Ref<Texture>> TextureManager::_textureMap;
 std::vector<Ref<RenderTexture>> RenderTextureManager::_renderTextures;
+std::vector<Ref<RenderTexture>> RenderTextureManager::_dirtyTextures;
 
 Ref<Texture> TextureManager::GetTexture(std::string path, bool reload)
 {
@@ -199,7 +200,7 @@ void RenderTextureManager::Release(Ref<RenderTexture> rt)
 {
     if (nullptr == rt)
         return;
-    _renderTextures.push_back(rt);
+    _dirtyTextures.push_back(rt);
 }
 
 void RenderTextureManager::DeleteImmediately(Ref<RenderTexture> rt)
@@ -220,6 +221,12 @@ void RenderTextureManager::Clear()
         DeleteImmediately(rt);
     }
     _renderTextures.clear(); 
+
+    for (auto& rt : _dirtyTextures)
+    {
+        DeleteImmediately(rt);
+    }
+    _dirtyTextures.clear();
 }
 
 void RenderTextureManager::ClearLinkScreen()
@@ -235,12 +242,33 @@ void RenderTextureManager::ClearLinkScreen()
             ++it;
         }
     }
+
+    for (auto it = _dirtyTextures.begin(); it != _dirtyTextures.end();)
+    {
+        Ref<RenderTexture> rt = *it;
+        if (rt->isLinkScreen == true) {
+            DeleteImmediately(rt);
+            it = _dirtyTextures.erase(it);
+        }
+        else {
+            ++it;
+        }
+    }
 }
 
 void RenderTextureManager::SetRenderTarget(Ref<RenderTexture> texture)
 {
     RenderTexture::active = texture;
     TextureDriver::BindRenderTarget(texture);
+}
+
+void RenderTextureManager::Tick()
+{
+    for (auto& rt : _dirtyTextures)
+    {
+        _renderTextures.push_back(rt);
+    }
+    _dirtyTextures.clear();
 }
 
 bool RenderTextureManager::CompareAttachments(std::vector<FramebufferTextureSpecification>& left, std::vector<FramebufferTextureSpecification>& right)

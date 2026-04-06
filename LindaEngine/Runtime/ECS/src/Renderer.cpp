@@ -215,7 +215,10 @@ void Renderer::SetMesh(Ref<Mesh> mesh)
 
 void Renderer::AddMaterial(int index, Ref<Material> mat)
 {
-	_materialList.insert(_materialList.begin() + index, mat);
+	if (index < _materialList.size())
+		_materialList[index] = mat;
+	else
+		_materialList.push_back(mat);
 
 	if (_type == RenderComponentType::Skybox || _type == RenderComponentType::ScreenTriangle)
 		return;

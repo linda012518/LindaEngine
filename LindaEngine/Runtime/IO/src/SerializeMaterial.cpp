@@ -263,7 +263,9 @@ void YamlSerializer::SerializeMaterialPass(YAML::Emitter& out)
 	out << YAML::Key << "RenderState";
 	out << YAML::Value << YAML::BeginMap;
 
-	RenderState& curState = *pass->_state.renderState.get();
+	RenderState curState;
+	if (nullptr != pass->_state.renderState)
+		curState = *pass->_state.renderState.get();
 	RenderState& defaultState = MaterialPass::_defualtState;
 
 	if (curState.colorMask != defaultState.colorMask)

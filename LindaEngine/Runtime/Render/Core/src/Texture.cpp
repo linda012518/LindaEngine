@@ -40,6 +40,61 @@ TextureWrapMode GetWarpModeByString(std::string type)
 	return TextureWrapMode::Clamp;
 }
 
+TextureFormat GetColorFormatByString(std::string type)
+{
+	if (type == "None") return TextureFormat::None;
+	else if (type == "R8") return TextureFormat::R8;
+	else if (type == "R16") return TextureFormat::R16;
+	else if (type == "R32") return TextureFormat::R32;
+	else if (type == "RG8") return TextureFormat::RG8;
+	else if (type == "RG16") return TextureFormat::RG16;
+	else if (type == "RG32") return TextureFormat::RG32;
+	else if (type == "RGB8") return TextureFormat::RGB8;
+	else if (type == "RGB16") return TextureFormat::RGB16;
+	else if (type == "RGB32") return TextureFormat::RGB32;
+	else if (type == "RGBA8") return TextureFormat::RGBA8;
+	else if (type == "RGBA16") return TextureFormat::RGBA16;
+	else if (type == "RGBA32") return TextureFormat::RGBA32;
+	else if (type == "Depth16") return TextureFormat::Depth16;
+	else if (type == "Depth24") return TextureFormat::Depth24;
+	else if (type == "Depth32") return TextureFormat::Depth32;
+	else if (type == "SRGB8") return TextureFormat::SRGB8;
+	else if (type == "SRGBA8") return TextureFormat::SRGBA8;
+	else if (type == "Depth24Stencil8") return TextureFormat::Depth24Stencil8;
+	else if (type == "Depth32Stencil8") return TextureFormat::Depth32Stencil8;
+	else if (type == "R32I") return TextureFormat::R32I;
+	return TextureFormat::RGBA8;
+}
+
+void DrawFramebufferTextureSpecification(FramebufferTextureSpecification& fts, float firstWidth)
+{
+	static std::vector<std::string> colorFormat = { "None", "R8", "R16", "R32", "RG8", "RG16", "RG32", "RGB8", "RGB16", "RGB32",
+ "RGBA8", "RGBA16", "RGBA32", "Depth16", "Depth24", "Depth32","SRGB8","SRGBA8","Depth24Stencil8","Depth32Stencil8","R32I" };
+	GUILayoutEditor::Dropdown("Color Format", (int)fts.colorFormat, colorFormat, [&](int index) {
+		fts.colorFormat = GetColorFormatByString(colorFormat[index]);
+		}, firstWidth);
+
+	static std::vector<std::string> namesFilter = { "Point", "Bilinear", "Trilinear" };
+	GUILayoutEditor::Dropdown("Filter Mode", (int)fts.filter, namesFilter, [&](int index) {
+		fts.filter = GetFilterModeByString(namesFilter[index]);
+		}, firstWidth);
+
+	static std::vector<std::string> names = { "Repeat", "Clamp", "Mirror" };
+	GUILayoutEditor::Dropdown("WarpU Mode", (int)fts.warpU, names, [&](int index) {
+		fts.warpU = GetWarpModeByString(names[index]);
+		}, firstWidth);
+
+	GUILayoutEditor::Dropdown("WarpV Mode", (int)fts.warpV, names, [&](int index) {
+		fts.warpV = GetWarpModeByString(names[index]);
+		}, firstWidth);
+
+	GUILayoutEditor::Dropdown("WarpW Mode", (int)fts.warpW, names, [&](int index) {
+		fts.warpW = GetWarpModeByString(names[index]);
+		}, firstWidth);
+
+	GUILayoutEditor::Checkbox("isRenderBuffer", &fts.isRenderBuffer, [&]() {}, firstWidth);
+}
+
 Ref<Texture> Texture::overrideTexture = nullptr;
 
 Ref<RenderTexture> RenderTexture::active = nullptr;
@@ -158,4 +213,44 @@ void Texture::OnImguiRender(Texture* texture)
 	ImGui::PopStyleColor(1);
 
 	ImGui::PopID();
+}
+
+void RenderTexture::OnImguiRender(RenderTexture* texture)
+{
+	float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth({ "Texture Shape", "Mipmap Count", "Anisotropy", "Filter Mode", "WarpW Mode" });
+
+	ImGui::PushID(texture);
+
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+	ImGui::PopStyleColor(1);
+
+	GUILayoutEditor::DragInt("Width", &texture->width, [&]() {}, 1.0f, 1, 0, firstWidth);
+	GUILayoutEditor::DragInt("Height", &texture->height, [&]() {}, 1.0f, 1, 0, firstWidth);
+	GUILayoutEditor::DragInt("MSAA", &texture->msaa, [&]() {}, 1.0f, 1, 8, firstWidth);
+	GUILayoutEditor::DragInt("Mipmap Count", &texture->mipmapCount, [&]() {}, 1.0f, 1, 8, firstWidth);
+	GUILayoutEditor::Checkbox("isCube", &texture->isCube, [&]() {}, firstWidth);
+	GUILayoutEditor::Checkbox("isLinkScreen", &texture->isLinkScreen, [&]() {}, firstWidth);
+	GUILayoutEditor::DragInt("Anisotropy", &texture->anisotropy, nullptr, 1.0f, 1, 8, firstWidth);
+
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+	ImGui::PopStyleColor(1);
+
+	ImGui::TextUnformatted("ColorAttachments");
+	for (auto& fts : texture->colorAttachments)
+	{
+		DrawFramebufferTextureSpecification(fts, firstWidth);
+	}
+
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+	ImGui::PopStyleColor(1);
+
+	ImGui::TextUnformatted("Depth Stencil Attachment");
+	DrawFramebufferTextureSpecification(texture->depthAttachment, firstWidth);
+
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+	ImGui::PopStyleColor(1);
 }
