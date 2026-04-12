@@ -336,15 +336,18 @@ void Entity::OnImguiRender()
 		ImGui::PopStyleColor(1);
 	}
 
-	GUILayoutEditor::PopupContextMenu(
-		[&]() {
-			if (ImGui::MenuItem("Remove component"))
-			{
-				RemoveComponentImmediately(_eidtorDirty);
+	if (nullptr != _eidtorDirty)
+	{
+		GUILayoutEditor::PopupContextMenu(
+			[&]() {
+				if (nullptr != _eidtorDirty && ImGui::MenuItem("Remove component"))
+				{
+					RemoveComponentImmediately(_eidtorDirty);
+					_eidtorDirty = nullptr;
+				}
+			},
+			[&]() {
 				_eidtorDirty = nullptr;
-			}
-		}, 
-		[&]() {
-			_eidtorDirty = nullptr;
-		});
+			});
+	}
 }

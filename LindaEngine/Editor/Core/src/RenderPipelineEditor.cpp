@@ -18,6 +18,7 @@ int RenderPipelineEditor::Initialize()
     _entity->SetDontDestory(true);
     activeCamera = _entity->AddComponent<PerspectiveCamera>();
     activeCamera->SetNearFar(0.01f, 10000.0f);
+    activeCamera->AddPostProcess("TonemappingPostProcess");
     activeCamera->AddPostProcess("OutLinePostProcess");
     _entity->AddComponent<OrthoCamera>();
     _entity->AddComponent<CameraController>();

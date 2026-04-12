@@ -34,7 +34,7 @@ EditViewPanelEditor::EditViewPanelEditor()
 	EventSystemEditor::Bind(EventCodeEditor::SwitchSelectEntity, this);
 
 	FramebufferTextureSpecification color;
-	color.colorFormat = TextureFormat::RGBA8;
+	color.colorFormat = TextureFormat::RGBA16;
 	_fboSpecs.push_back(color);
 	FramebufferTextureSpecification color2;
 	color2.colorFormat = TextureFormat::R32I;

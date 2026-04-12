@@ -5,6 +5,13 @@
 
 using namespace LindaEditor;
 
+bool GUILayoutEditor::_isOpen = false;
+std::string GUILayoutEditor::_title = "";
+std::string GUILayoutEditor::_message = "";
+std::string GUILayoutEditor::_cancelText = "";
+std::string GUILayoutEditor::_confirmText = "";
+WidgetCallback GUILayoutEditor::_callback = nullptr;
+
 float ComputeImGuiLabelColumnWidth(std::vector<const char*> labels)
 {
 	float w = 0.f;
@@ -165,10 +172,13 @@ void GUILayoutEditor::DragInt4(std::string name, int* value, WidgetCallback onCh
 	}, name, nameSize);
 }
 
-void GUILayoutEditor::ColorEdit4(std::string name, float* value, WidgetCallback onChanged, float nameSize)
+void GUILayoutEditor::ColorEdit4(std::string name, float* value, WidgetCallback onChanged, float nameSize, bool isHDR)
 {
+	ImGuiColorEditFlags flags = 0;
+	if (isHDR)
+		flags = ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_Float;
 	DrawWidget([&]() {
-		if (ImGui::ColorEdit4(("##" + name).c_str(), value) && onChanged)
+		if (ImGui::ColorEdit4(("##" + name).c_str(), value, flags) && onChanged)
 			onChanged();
 		}, name, nameSize);
 }
@@ -409,6 +419,16 @@ void GUILayoutEditor::DragFloat4(std::string name, float* value, WidgetCallback 
 
 }
 
+void GUILayoutEditor::ConfirmWindow(std::string title, std::string message, std::string cancelText, std::string confirmText, WidgetCallback callback)
+{
+	_isOpen = true;
+	_title = "    " + title;
+	_message = message;
+	_cancelText = cancelText;
+	_confirmText = confirmText;
+	_callback = callback;
+}
+
 void GUILayoutEditor::PopupContextMenu(WidgetCallback enable, WidgetCallback disable)
 {
 	ImGui::PushStyleColor(ImGuiCol_MenuBarBg, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));       // 菜单栏背景
@@ -477,6 +497,90 @@ void GUILayoutEditor::Dropdown(std::string name, std::vector<std::string>& value
 		ImGui::EndPopup();
 	}
 	ImGui::PopStyleColor(3);
+}
+
+void GUILayoutEditor::DrawConfirmWindow()
+{
+	if (_isOpen) {
+		ImGui::OpenPopup(_title.c_str());
+		_isOpen = false;
+	}
+
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	ImGui::SetNextWindowSize(ImVec2(600, 300)); // 固定宽度，自动高度
+
+	ImGuiWindowFlags flags = ImGuiWindowFlags_Modal
+		| ImGuiWindowFlags_NoMove
+		| ImGuiWindowFlags_NoSavedSettings
+		| ImGuiWindowFlags_AlwaysAutoResize;
+
+	if (ImGui::BeginPopupModal(_title.c_str(), nullptr, flags))
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(30, 25));
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+
+		ImGui::SetWindowFontScale(1.3f);
+		// 计算居中位置
+		ImVec2 text_size = ImGui::CalcTextSize(_message.c_str(), nullptr, false, 500);
+		float pos_x = (ImGui::GetWindowWidth() - text_size.x) * 0.5f;
+		float pos_y = (ImGui::GetWindowHeight() - text_size.y - 100) * 0.4f; // 偏上一点
+		ImGui::SetCursorPos(ImVec2(pos_x, pos_y));
+		ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + 500);
+		ImGui::TextWrapped("%s", _message.c_str());
+		ImGui::PopTextWrapPos();
+		ImGui::SetWindowFontScale(1.0f);
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::ItemSize(ImVec2(0, 60));
+		ImGui::Spacing();
+
+		// 计算按钮布局
+		float button_width = 220;
+		float button_height = 60;
+		float spacing = 60;
+		float total_width = button_width * 2 + spacing;
+
+		ImGui::SetCursorPosX((ImGui::GetWindowWidth() - total_width) * 0.5f);
+
+		//// 确认按钮（危险操作用红色）
+		//if (is_dangerous_) {
+		//	ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85f, 0.25f, 0.25f, 1.0f));
+		//	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.95f, 0.35f, 0.35f, 1.0f));
+		//	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.75f, 0.15f, 0.15f, 1.0f));
+		//}
+
+		if (ImGui::Button(_confirmText.c_str(), ImVec2(button_width, button_height))) {
+			if (_callback) _callback();
+			ImGui::CloseCurrentPopup();
+		}
+
+		//if (is_dangerous_) {
+		//	ImGui::PopStyleColor(3);
+		//}
+
+		ImGui::SameLine(0, spacing);
+
+		if (ImGui::Button(_cancelText.c_str(), ImVec2(button_width, button_height))) {
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::PopStyleVar();
+
+		ImGui::EndPopup();
+	}
 }
 
 float GUILayoutEditor::ImGuiLabelColumnWidth(std::vector<const char*> labels)

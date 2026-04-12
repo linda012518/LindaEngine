@@ -8,6 +8,7 @@
 using namespace LindaEngine;
 
 DYNAMIC_CREATE_CLASS(GrayPostProcess, PostProcessEffectRenderer)
+COLLECT_POSTPROCESS(GrayPostProcess)
 
 GrayPostProcess::GrayPostProcess()
 {

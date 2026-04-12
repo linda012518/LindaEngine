@@ -282,11 +282,11 @@ void Material::OnImguiRender()
 				break;
 			}
 		}
-		float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth(labels) * 1.5f;
+		float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth(labels);
 
-		for (auto& uniform : pass->_state.uniformNameMap)
+		for (auto& uniform : pass->_state.orderVisible)
 		{
-			switch (uniform.second->dataType)
+			switch (uniform->dataType)
 			{
 			case UniformType::TEXTURE:
 			{
@@ -295,7 +295,7 @@ void Material::OnImguiRender()
 				const float iconSize = lineH * 2.85f;
 
 				// 获取图标纹理
-				Ref<TextureUniformData> tud = DynamicCastRef(TextureUniformData, uniform.second);
+				Ref<TextureUniformData> tud = DynamicCastRef(TextureUniformData, uniform);
 				Ref<Texture> iconTex = TextureManager::GetTexture(tud->value);
 
 				uint64_t iconId = 0;
@@ -330,15 +330,16 @@ void Material::OnImguiRender()
 					float inputWidth = componentWidth - ImGui::CalcTextSize("X").x - spacing;
 
 					// 第一行：标题
-					ImGui::TextUnformatted(uniform.first.c_str());
+					ImGui::TextUnformatted(uniform->name.c_str());
 
-					if (pass->_state.uniformNameMap.find(uniform.first + "_ST") != pass->_state.uniformNameMap.end())
+					auto itr = pass->_state.uniformNameMap.find(uniform->name + "_ST");
+					if (itr != pass->_state.uniformNameMap.end())
 					{
 						ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.26f, 0.26f, 0.26f, 0.0f }); // 透明背景
 						ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.36f, 0.36f, 0.36f, 0.0f });
 						ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.56f, 0.56f, 0.56f, 0.0f });
-
-						glm::vec4& st = DynamicCastRef(Float4UniformData, uniform.second)->value;
+						
+						glm::vec4& st = DynamicCastRef(Float4UniformData, (*itr).second)->value;
 
 						// 第二行：Tiling x [ ] y [ ]
 						ImGui::AlignTextToFramePadding();
@@ -367,7 +368,7 @@ void Material::OnImguiRender()
 						ImGui::Text("Y"); 
 						ImGui::SameLine();
 						ImGui::SetNextItemWidth(inputWidth);
-						ImGui::DragFloat("##offsetY", &st.y, 0.01f);
+						ImGui::DragFloat("##offsetY", &st.w, 0.01f);
 
 						ImGui::PopStyleColor(3);
 					}
@@ -379,7 +380,7 @@ void Material::OnImguiRender()
 					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
 					if (iconId)
 					{
-						if (ImGui::ImageButton(uniform.first.c_str(), iconId, ImVec2(iconSize - 8, iconSize - 8)))
+						if (ImGui::ImageButton(uniform->name.c_str(), iconId, ImVec2(iconSize - 8, iconSize - 8)))
 						{
 
 						}
@@ -395,7 +396,7 @@ void Material::OnImguiRender()
 							LindaEditor::FileNode* node = *(LindaEditor::FileNode**)payload->Data;
 							if (node && node->type == LindaEditor::FileType::Texture)
 							{
-								DynamicCastRef(TextureUniformData, uniform.second)->value = node->path;
+								DynamicCastRef(TextureUniformData, uniform)->value = node->path;
 							}
 						}
 						ImGui::EndDragDropTarget();
@@ -406,18 +407,26 @@ void Material::OnImguiRender()
 				break;
 			}
 			case UniformType::INT:
-				GUILayoutEditor::DragInt(uniform.first, &(DynamicCastRef(IntUniformData, uniform.second)->value), nullptr, 1.0f, 0, 0, firstWidth);
+				GUILayoutEditor::DragInt(uniform->name, &(DynamicCastRef(IntUniformData, uniform)->value), nullptr, 1.0f, 0, 0, firstWidth);
 				break;
 			case UniformType::INT4:
-				GUILayoutEditor::DragInt4(uniform.first, (int*)&(DynamicCastRef(Int4UniformData, uniform.second)->value), nullptr, 1.0f, 0, 0, firstWidth);
+				GUILayoutEditor::DragInt4(uniform->name, (int*)&(DynamicCastRef(Int4UniformData, uniform)->value), nullptr, 1.0f, 0, 0, firstWidth);
 				break;
 			case UniformType::FLOAT:
-				GUILayoutEditor::DragFloat(uniform.first, &(DynamicCastRef(FloatUniformData, uniform.second)->value), nullptr, 0.001f, 0.0f, 0.0f, firstWidth);
+				GUILayoutEditor::DragFloat(uniform->name, &(DynamicCastRef(FloatUniformData, uniform)->value), nullptr, 0.001f, 0.0f, 0.0f, firstWidth);
 				break;
 			case UniformType::FLOAT4:
 			{
-				if (uniform.first.find("_TexelSize") == std::string::npos)
-					GUILayoutEditor::DragFloat4(uniform.first, (float*)&(DynamicCastRef(Float4UniformData, uniform.second)->value), nullptr, 0.001f, 0.0f, 0.0f, firstWidth);
+				auto float4Ptr = DynamicCastRef(Float4UniformData, uniform);
+				if (float4Ptr->isColor)
+				{
+					GUILayoutEditor::ColorEdit4(uniform->name, (float*)&(float4Ptr->value), nullptr, firstWidth, float4Ptr->isHDR);
+				}
+				else
+				{
+					if (uniform->name.find("_TexelSize") == std::string::npos && uniform->name.find("_ST") == std::string::npos)
+						GUILayoutEditor::DragFloat4(uniform->name, (float*)&(float4Ptr->value), nullptr, 0.001f, 0.0f, 0.0f, firstWidth);
+				}
 			}
 			break;
 			}

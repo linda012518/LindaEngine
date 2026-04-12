@@ -30,7 +30,7 @@ void PostProcessPass::Render(Camera* camera)
 		_dest = temp;
 	}
 
-	Ref<Material> material = MaterialManager::GetDefaultMaterial("BuiltInAssets/Shaders/CopyColor.shader");
+	Ref<Material> material = MaterialManager::GetDefaultMaterial("BuiltInAssets/Shaders/PostProcess/LinnerToGamma.shader");
 	Graphic::Blit(_source, nullptr == camera->GetRenderTarget() ? RenderTexture::finalRT : camera->GetRenderTarget(), material);
 
 	RenderTextureManager::Release(_source);

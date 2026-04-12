@@ -195,7 +195,94 @@ void OpenglTexture::CreateIBLPrefilterMap(Ref<Texture> src, Ref<Texture> dest)
 {
 	Ref<Material> material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/IBLPrefilter.shader");
 	material->SetTexture("skybox", src);
-	CreateCubeByMaterial(material, dest);
+
+	FramebufferTextureSpecification color;
+	color.colorFormat = dest->colorFormat;
+
+	FramebufferTextureSpecification depth;
+	depth.colorFormat = TextureFormat::Depth16;
+	depth.isRenderBuffer = true;
+
+	Ref<RenderTexture> rt = CreateRef<RenderTexture>();
+	rt->width = dest->width;
+	rt->height = dest->height;
+	rt->isCube = true;
+	rt->isGammaCorrection = false;
+	rt->msaa = 1;
+	rt->mipmapCount = 6;
+	rt->anisotropy = 1;
+	rt->colorAttachments.push_back(color);
+	rt->depthAttachment = depth;
+	CreateRenderTextureCubemap(rt);
+	dest->nativeColorID = rt->nativeIDs[0];
+
+	Ref<RenderTexture> tempRT = RenderTexture::active;
+	RenderTextureManager::SetRenderTarget(rt);
+	glViewport(0, 0, rt->width, rt->height);
+
+	Entity entity("temp");
+	CubeCamera* camera = entity.AddComponent<CubeCamera>();
+	camera->Tick();
+
+	std::string temp = Material::overrideLightMode;
+	Material::overrideLightMode = "Skybox";
+
+	unsigned int maxMipLevels = 6;
+	for (unsigned int mip = 0; mip < maxMipLevels; ++mip)
+	{
+		// reisze framebuffer according to mip-level size.
+		unsigned int mipWidth = static_cast<unsigned int>(128 * std::pow(0.5, mip));
+		unsigned int mipHeight = static_cast<unsigned int>(128 * std::pow(0.5, mip));
+		glBindRenderbuffer(GL_RENDERBUFFER, rt->renderBuffers[0]);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
+		glViewport(0, 0, mipWidth, mipHeight);
+
+		float roughness = (float)mip / (float)(maxMipLevels - 1);
+		//prefilterShader.setFloat("roughness", roughness);
+		material->SetFloat("roughness", roughness);
+		for (unsigned int i = 0; i < 6; ++i)
+		{
+			//prefilterShader.setMat4("view", captureViews[i]);
+			//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterMap, mip);
+
+			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			//renderCube();
+			material->SetMat4(ShaderBuiltInUniform::linda_SkyboxMatrix_V, camera->GetCubeViewMatrix(i));
+			material->SetMat4(ShaderBuiltInUniform::linda_SkyboxMatrix_P, camera->GetCubeProjectionMatrix());
+			material->Bind(0, nullptr, FBXManager::GetSkybox()->GetMeshAttributes());
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, dest->nativeColorID, mip);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			FBXManager::GetSkybox()->Draw();
+
+		}
+	}
+
+	//for (unsigned int i = 0; i < 6; ++i)
+	//{
+	//	material->SetMat4(ShaderBuiltInUniform::linda_SkyboxMatrix_V, camera->GetCubeViewMatrix(i));
+	//	material->SetMat4(ShaderBuiltInUniform::linda_SkyboxMatrix_P, camera->GetCubeProjectionMatrix());
+	//	material->Bind(0, nullptr, FBXManager::GetSkybox()->GetMeshAttributes());
+	//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, dest->nativeColorID, 0);
+	//	if (depth.isRenderBuffer == false) // 如果不用RenderBuffer，需要绑定纹理
+	//		glFramebufferTexture2D(GL_FRAMEBUFFER, GetRenderTextureDepthAttachment(depth.colorFormat), GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, rt->depthNativeID, mip);
+	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//	FBXManager::GetSkybox()->Draw();
+	//}
+
+	RenderTextureManager::SetRenderTarget(tempRT);
+
+	//if (dest->mipmapCount > 1)
+	//{
+	//	glBindTexture(GL_TEXTURE_CUBE_MAP, dest->nativeColorID);
+	//	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_LEVEL, dest->mipmapCount);
+	//	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	//}
+
+	glDeleteFramebuffers(1, &rt->nativeColorID);
+	glDeleteRenderbuffers((int)rt->renderBuffers.size(), rt->renderBuffers.data());
+
+	Material::overrideLightMode = temp;
+
 }
 
 void OpenglTexture::CreateIBLBRDFMap(Ref<Texture> dest)

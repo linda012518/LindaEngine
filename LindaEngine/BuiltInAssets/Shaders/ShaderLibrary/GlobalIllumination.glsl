@@ -37,5 +37,7 @@ vec3 ShadeSH9(vec3 normal)
 
     // 直接在sh里面计算好
     irradiance = max(irradiance, 0.0);
-    return pow(max(irradiance / linda_PI, 0.0), vec3(1.0 / 2.2));
+    // 在外面转gamma
+    // return pow(max(irradiance / linda_PI, 0.0), vec3(1.0 / 2.2));
+    return irradiance / linda_PI;
 }

@@ -104,6 +104,7 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 				pointer->name = uniformName;
 				pointer->value = tempStr.c_str();
 				matPass->_state.uniformNameMap[uniformName] = pointer;
+				matPass->_state.orderVisible.push_back(pointer);
 				break;
 			}
 			case UniformType::INT:
@@ -112,6 +113,7 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 				pointer->name = uniformName;
 				pointer->value = unif["Value"].as<int>();
 				matPass->_state.uniformNameMap[uniformName] = pointer;
+				matPass->_state.orderVisible.push_back(pointer);
 				break;
 			}
 			case UniformType::INT4:
@@ -120,6 +122,7 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 				pointer->name = uniformName;
 				pointer->value = unif["Value"].as<glm::ivec4>();
 				matPass->_state.uniformNameMap[uniformName] = pointer;
+				matPass->_state.orderVisible.push_back(pointer);
 				break;
 			}
 			case UniformType::FLOAT:
@@ -128,6 +131,7 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 				pointer->name = uniformName;
 				pointer->value = unif["Value"].as<float>();
 				matPass->_state.uniformNameMap[uniformName] = pointer;
+				matPass->_state.orderVisible.push_back(pointer);
 				break;
 			}
 			case UniformType::FLOAT4:
@@ -135,7 +139,12 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 				Ref<Float4UniformData> pointer = CreateRef<Float4UniformData>();
 				pointer->name = uniformName;
 				pointer->value = unif["Value"].as<glm::vec4>();
+				if (unif["isColor"])
+					pointer->isColor = unif["isColor"].as<bool>();
+				if (unif["isHDR"])
+					pointer->isHDR = unif["isHDR"].as<bool>();
 				matPass->_state.uniformNameMap[uniformName] = pointer;
+				matPass->_state.orderVisible.push_back(pointer);
 				break;
 			}
 			}
@@ -165,7 +174,7 @@ Ref<Material> YamlSerializer::DeSerializeMaterial(const char* path)
 					if (dsName == "DepthTest")
 						state.depthState.depthTest = depthState["DepthTest"].as<bool>();
 					else if (dsName == "DepthWrite")
-						state.depthState.depthWrite = depthState["DepthTest"].as<bool>();
+						state.depthState.depthWrite = depthState["DepthWrite"].as<bool>();
 					else if (dsName == "DepthFunc")
 						state.depthState.depthFunc = static_cast<DepthFunc>(depthState["DepthFunc"].as<int>());
 				}
@@ -248,8 +257,8 @@ void YamlSerializer::SerializeMaterialPass(YAML::Emitter& out)
 
 	out << YAML::Key << "ShaderUniforms";
 	out << YAML::Value << YAML::BeginSeq;
-	for (auto& uniform : pass->_state.uniformNameMap) {
-		SerializeMaterialUniform(out, uniform.second.get());
+	for (auto& uniform : pass->_state.orderVisible) {
+		SerializeMaterialUniform(out, uniform.get());
 	}
 	out << YAML::EndSeq;
 
@@ -382,6 +391,8 @@ void YamlSerializer::SerializeMaterialUniform(YAML::Emitter& out, void* uniform)
 		out << YAML::Value << YAML::BeginMap;
 		out << YAML::Key << "UniformName" << YAML::Value << pointer->name;
 		out << YAML::Key << "Value" << YAML::Value << pointer->value;
+		out << YAML::Key << "isColor" << YAML::Value << pointer->isColor;
+		out << YAML::Key << "isHDR" << YAML::Value << pointer->isHDR;
 		out << YAML::Key << pointer->name << YAML::Value << static_cast<int>(pointer->dataType);
 		out << YAML::EndMap;
 		break;

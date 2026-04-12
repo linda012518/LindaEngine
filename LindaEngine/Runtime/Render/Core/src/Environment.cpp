@@ -35,8 +35,8 @@ void Environment::RenderSkyboxMap()
 
     _prefilterMap = CreateRef<Cubemap>();
     _prefilterMap->isUserCreate = true;
-    _prefilterMap->width = 256;
-    _prefilterMap->height = 256;
+    _prefilterMap->width = 128;
+    _prefilterMap->height = 128;
     _prefilterMap->isGammaCorrection = false;
     _prefilterMap->mipmapCount = 6;
     _prefilterMap->anisotropy = 1;

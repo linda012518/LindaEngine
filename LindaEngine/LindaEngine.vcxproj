@@ -357,6 +357,7 @@
     <ClCompile Include="Editor\ImGui\UICore\Widgets\Texts\TextWrapped.cpp" />
     <ClCompile Include="Editor\Core\src\UniversalRendererEditor.cpp" />
     <ClCompile Include="SandboxApp\src\TestAnimation.cpp" />
+    <ClCompile Include="Runtime\Render\PostProcess\src\TonemappingPostProcess.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Editor\ImGui\include\GUILayoutEditor.h" />
@@ -982,6 +983,7 @@
     <ClInclude Include="Editor\ImGui\UICore\Widgets\Texts\TextWrapped.h" />
     <ClInclude Include="Editor\Core\include\UniversalRendererEditor.h" />
     <ClInclude Include="SandboxApp\include\TestAnimation.h" />
+    <ClInclude Include="Runtime\Render\PostProcess\include\TonemappingPostProcess.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="External\assimp\assimp\color4.inl" />

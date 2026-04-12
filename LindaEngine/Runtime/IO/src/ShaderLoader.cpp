@@ -236,6 +236,13 @@ void ShaderLoader::CollectProperties(std::string& tex, Ref<ShaderSourceCode> pas
 			std::string type = matches[1].str();
 			std::string name = matches[2].str();
 			std::string value = matches[3].str();
+			bool isColor = false;
+			bool isHDR = type == "HDRColor";
+			if (type == "Color" || true == isHDR)
+			{
+				isColor = true;
+				type = "vec4";
+			}
 			passState->properties += "uniform " + type + " " + name + ";\n";
 
 			if (type == "int")
@@ -244,6 +251,7 @@ void ShaderLoader::CollectProperties(std::string& tex, Ref<ShaderSourceCode> pas
 				uniform->name = name;
 				uniform->value = std::stoi(value);
 				passState->passState.uniformNameMap[name] = uniform;
+				passState->passState.orderVisible.push_back(uniform);
 			}
 			else if (type == "ivec4")
 			{
@@ -265,6 +273,7 @@ void ShaderLoader::CollectProperties(std::string& tex, Ref<ShaderSourceCode> pas
 				uniform->name = name;
 				uniform->value = c;
 				passState->passState.uniformNameMap[name] = uniform;
+				passState->passState.orderVisible.push_back(uniform);
 			}
 			else if (type == "float")
 			{
@@ -272,6 +281,7 @@ void ShaderLoader::CollectProperties(std::string& tex, Ref<ShaderSourceCode> pas
 				uniform->name = name;
 				uniform->value = std::stof(value);
 				passState->passState.uniformNameMap[name] = uniform;
+				passState->passState.orderVisible.push_back(uniform);
 			}
 			else if (type == "vec4")
 			{
@@ -292,7 +302,10 @@ void ShaderLoader::CollectProperties(std::string& tex, Ref<ShaderSourceCode> pas
 				Ref<Float4UniformData> uniform = CreateRef<Float4UniformData>();
 				uniform->name = name;
 				uniform->value = c;
+				uniform->isColor = isColor;
+				uniform->isHDR = isHDR;
 				passState->passState.uniformNameMap[name] = uniform;
+				passState->passState.orderVisible.push_back(uniform);
 			}
 			else if (type == "sampler2D" || type == "samplerCube" || type == "isampler2D" || type == "usampler2D")
 			{
@@ -300,6 +313,7 @@ void ShaderLoader::CollectProperties(std::string& tex, Ref<ShaderSourceCode> pas
 				uniform->name = name;
 				uniform->value = value;
 				passState->passState.uniformNameMap[name] = uniform;
+				passState->passState.orderVisible.push_back(uniform);
 			}
 			else
 			{

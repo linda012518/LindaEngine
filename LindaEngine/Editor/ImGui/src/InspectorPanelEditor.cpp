@@ -45,7 +45,7 @@ void InspectorPanelEditor::OnImGuiRender()
 		else
 		{
 			RenderTexture* rt = dynamic_cast<RenderTexture*>(_object);
-			if (nullptr == texture)
+			if (nullptr == rt)
 				Texture::OnImguiRender(texture);
 			else
 				RenderTexture::OnImguiRender(rt);

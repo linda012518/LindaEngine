@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "AutoPtr.h"
 #include "RenderEnumData.h"
@@ -13,6 +13,7 @@ namespace LindaEngine
 
 	struct MaterialPassState
 	{
+		std::vector<Ref<ShaderUniform>> orderVisible; // 用于Editor面板可视化，与uniformNameMap相等
 		std::unordered_map<std::string, Ref<ShaderUniform>> uniformNameMap;
 		std::vector<std::string> keywords;
 		std::string lightMode;

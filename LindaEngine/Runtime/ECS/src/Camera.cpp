@@ -13,6 +13,8 @@
 #include "GUILayoutEditor.h"
 
 #include "imgui/imgui.h"
+#include <imgui/imgui_internal.h>
+#include <imgui/imgui_stdlib.h>
 
 using namespace LindaEngine;
 using namespace LindaEditor;
@@ -264,6 +266,81 @@ void Camera::OnImguiRender()
 	GUILayoutEditor::Dropdown("ClearType", (int)_clearType, names, [&](int index) {
 		_clearType = GetClearTypeByString(names[index]);
 		});
+
+	static std::vector<std::string> postprocessNames = PostProcessEffectRenderer::GetPostProcessNames();
+	GUILayoutEditor::Dropdown("Add PostProcess", postprocessNames, [&](int index) {
+		bool has = false;
+		for (auto& go : _postStack)
+		{
+			if (go->GetClassName() != postprocessNames[index])
+				continue;
+			has = true;
+			break;
+		}
+		if (false == has)
+			AddPostProcess(postprocessNames[index]);
+		});
+
+	if (_postStack.size() <= 0) 
+		return;
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+	ImGui::PopStyleColor(1);
+
+	for (auto& go : _postStack)
+	{
+		if (nullptr == go)
+			continue;
+
+		ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, 0);
+
+		ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(1.0f, 1.0f, 1.0f, 1.00f));
+
+		std::string goID = "##" + std::string((const char*)go.get());
+		bool ret = go->IsEnable();
+		ImGui::Checkbox(goID.c_str(), &ret);
+		if (go->IsEnable() != ret)
+			go->SetEnable(ret);
+
+		ImGui::PopStyleVar(1);
+		ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, 1);
+
+		ImGui::SameLine();
+		ImGui::Spacing();
+		ImGui::SameLine();
+
+		ImGui::PopStyleColor(1);
+
+		ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.26f, 0.26f, 0.26f, 1.00f));
+		ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.36f, 0.36f, 0.36f, 1.00f));
+		ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.56f, 0.56f, 0.56f, 1.00f));
+
+		ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
+		treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_SpanAvailWidth;
+		if (ImGui::TreeNodeEx((void*)go.get(), treeNodeFlags, go->GetClassName().c_str()))
+		{
+			if (ImGui::IsItemHovered())
+				_postProcessDirty = go;
+			ImGui::TreePop();
+		}
+
+		ImGui::PopStyleVar(1);
+		ImGui::PopStyleColor(3);
+	}
+
+	GUILayoutEditor::PopupContextMenu(
+		[&]() {
+			if (ImGui::MenuItem("Remove PostProcess"))
+			{
+				_postStack.erase(std::remove(_postStack.begin(), _postStack.end(), _postProcessDirty), _postStack.end());
+				_postProcessDirty = nullptr;
+			}
+		}, nullptr);
+
+
+	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
+	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
+	ImGui::PopStyleColor(1);
 }
 
 /////////////////////////////////////////////////////////////////////

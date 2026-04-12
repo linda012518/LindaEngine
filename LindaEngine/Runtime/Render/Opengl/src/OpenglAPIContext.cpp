@@ -6,6 +6,8 @@ using namespace LindaEngine;
 
 void OpenglAPIContext::Initialize()
 {
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
 	glColorMask(true, true, true, true);
 
 	glEnable(GL_DEPTH_TEST);

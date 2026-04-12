@@ -51,6 +51,8 @@ namespace LindaEngine
 	{
 		Float4UniformData() { dataType = UniformType::FLOAT4; }
 		glm::vec4 value = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		bool isColor = false;
+		bool isHDR = false;
 	};
 
 	struct Float4ArrayUniformData : public ShaderUniform

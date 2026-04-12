@@ -35,6 +35,8 @@ void ContentBrowserPanelEditor::OnImGuiRender()
 {
 	ImGui::Begin("Content Browser");
 
+    GUILayoutEditor::DrawConfirmWindow();
+
 	for (auto& go : _fileSystem.children)
 	{
 		DrawContent(go);
@@ -49,6 +51,7 @@ void ContentBrowserPanelEditor::OnImGuiRender()
         {
             _selectedNode = nullptr;
             _selectionNodes.clear();
+            SendSwitchFileNodeMessage();
         }
     }
 
@@ -59,27 +62,88 @@ void ContentBrowserPanelEditor::OnImGuiRender()
                 if (IsFileNodeSelected(_hoveredNode) == false || _selectionNodes.size() <= 1)
                 {
                     SelectSingle();
-                    SwitchInspectorObjectEditor sio;
-                    sio.lobject = GetLObject(_selectedNode);
-                    EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchInspectorObject, sio);
+                    SendSwitchFileNodeMessage();
+
+                    if (ImGui::MenuItem("Delete"))
+                    {
+                        GUILayoutEditor::ConfirmWindow("Confirm Delete", "Confirm Delete Again", "Cancel", "Confirm", [&]() {
+                            if (_selectedNode->type == FileType::Folder)
+                                std::filesystem::remove_all(_selectedNode->path);
+                            else
+                                std::filesystem::remove(_selectedNode->path);
+                            // TODO 这里需要删除已经加载到内存的对象，处理依赖关系，如：Material / Texture / FBX / Scene / Prefab / Shader / ShaderLibrary
+                            _selectedNode = nullptr;
+                            _selectionNodes.clear();
+                            SendSwitchFileNodeMessage();
+                            ReloadResources();
+                            });
+                    }
+
+                    ImGui::Separator();
 
                     if (_selectedNode->type == FileType::Shader && ImGui::MenuItem("Create Material"))
                     {
-                        Ref<Material> material = MaterialManager::GetMaterialByShader(_selectedNode->path);
-                        Material::overrideMat = material;
                         std::string path = Path::GetFilePath(_selectedNode->path);
-                        std::string name = Path::GetFileNameNoExtension(_selectedNode->path);
-                        YamlSerializer::SerializeMaterial((path + name + ".mat").c_str());
-                        _resDirty = true;
-                        ReloadResources();
+                        std::string name = Path::GetFileNameNoExtension(_selectedNode->path) + ".mat";
+                        CreateMaterial(_selectedNode->path, path + name);
                     }
                 }
-                ImGui::Separator();
             }
+
+            if (ImGui::MenuItem("Create Unlit Material"))
+            {
+                static int count = 0;
+                std::string path = "";
+                if (nullptr != _hoveredNode)
+                {
+                    if (_hoveredNode->type == FileType::Folder)
+                        path = _hoveredNode->path + "/";
+                    else
+                        path = Path::GetFilePath(_hoveredNode->path);
+                }
+                else
+                    path = "Assets/";
+                std::string name = "Unlit_" + std::to_string(count) + ".mat";
+                std::string finalPath = path + name;
+                while (true == std::filesystem::exists(finalPath))
+                {
+                    count++;
+                    name = "Unlit_" + std::to_string(count) + ".mat";
+                    finalPath = path + name;
+                }
+                CreateMaterial("BuiltInAssets/Shaders/Unlit.shader", finalPath);
+                count++;
+            }
+
+            if (ImGui::MenuItem("Create Lit Material"))
+            {
+                static int count = 0;
+                std::string path = "";
+                if (nullptr != _hoveredNode)
+                {
+                    if (_hoveredNode->type == FileType::Folder)
+                        path = _hoveredNode->path + "/";
+                    else
+                        path = Path::GetFilePath(_hoveredNode->path);
+                }
+                else
+                    path = "Assets/";
+                std::string name = "Lit_" + std::to_string(count) + ".mat";
+                std::string finalPath = path + name;
+                while (true == std::filesystem::exists(finalPath))
+                {
+                    count++;
+                    name = "Lit_" + std::to_string(count) + ".mat";
+                    finalPath = path + name;
+                }
+                CreateMaterial("BuiltInAssets/Shaders/Lit.shader", finalPath);
+                count++;
+            }
+
+            ImGui::Separator();
 
             if (ImGui::MenuItem("Refresh Content"))
             {
-                _resDirty = true;
                 ReloadResources();
             }
         }, nullptr);
@@ -323,11 +387,6 @@ void ContentBrowserPanelEditor::SortFileFolder(FileNode& fs)
 
 void ContentBrowserPanelEditor::ReloadResources()
 {
-    if (_resDirty == false)
-        return;
-
-    _resDirty = false;
-
     _fileSystem.path = "Assets";
     _fileSystem.name = Path::GetFileNameNoExtension(_fileSystem.path);
     _fileSystem.type = FileType::Folder;
@@ -483,9 +542,7 @@ void ContentBrowserPanelEditor::HandleNodeSelection(FileNode* node, bool isCtrlD
     else
     {
         SelectSingle();
-        SwitchInspectorObjectEditor sio;
-        sio.lobject = GetLObject(_selectedNode);
-        EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchInspectorObject, sio);
+        SendSwitchFileNodeMessage();
     }
 
 }
@@ -502,6 +559,21 @@ void ContentBrowserPanelEditor::SelectSingle()
     _selectionNodes.clear();
     _selectedNode = _hoveredNode;
     _selectionNodes.push_back(_selectedNode);
+}
+
+void ContentBrowserPanelEditor::SendSwitchFileNodeMessage()
+{
+    SwitchInspectorObjectEditor sio;
+    sio.lobject = GetLObject(_selectedNode);
+    EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchInspectorObject, sio);
+}
+
+void ContentBrowserPanelEditor::CreateMaterial(std::string nodePath, std::string materialPath)
+{
+    Ref<Material> material = MaterialManager::GetMaterialByShader(nodePath);
+    Material::overrideMat = material;
+    YamlSerializer::SerializeMaterial(materialPath.c_str());
+    ReloadResources();
 }
 
 FileNode* ContentBrowserPanelEditor::GetFolderNode(FileNode* root, std::string path)
@@ -533,6 +605,9 @@ void ContentBrowserPanelEditor::AddNode(FileType type, std::string path)
 
 LObject* ContentBrowserPanelEditor::GetLObject(FileNode* node)
 {
+    if (nullptr == node)
+        return nullptr;
+
     switch (node->type)
     {
     case FileType::Folder:

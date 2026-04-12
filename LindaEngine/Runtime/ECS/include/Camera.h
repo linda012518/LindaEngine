@@ -109,6 +109,7 @@ namespace LindaEngine
 		int _layerMask;
 		Frustum _frustum;
 		std::vector<Ref<PostProcessEffectRenderer>> _postStack;
+		Ref<PostProcessEffectRenderer> _postProcessDirty;
 	};
 
 	class PerspectiveCamera : public Camera

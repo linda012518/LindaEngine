@@ -46,6 +46,8 @@ namespace LindaEditor
 		void HandleNodeSelection(FileNode* node, bool isCtrlDown);
 		void DeselectEntity(FileNode* node);
 		void SelectSingle();
+		void SendSwitchFileNodeMessage();
+		void CreateMaterial(std::string nodePath, std::string materialPath);
 
 		FileNode* GetFolderNode(FileNode* root, std::string path);
 		void AddNode(FileType type, std::string path);
@@ -53,7 +55,6 @@ namespace LindaEditor
 		LindaEngine::LObject* GetLObject(FileNode* node);
 
 	private:
-		bool _resDirty = true;
 		bool _doubleClicked = false;
 		FileNode _fileSystem;
 		FileNode* _selectedNode;

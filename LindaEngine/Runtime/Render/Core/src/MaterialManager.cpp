@@ -52,6 +52,15 @@ void MaterialManager::Clear()
     _materialMap.clear();
 }
 
+void MaterialManager::DeleteMaterial(std::string path, bool isSkin)
+{
+    std::string key = isSkin ? path + "isSkin" : path;
+    if (_materialMap.find(key) != _materialMap.end())
+    {
+        _materialMap.erase(key);
+    }
+}
+
 Ref<MaterialPass> MaterialManager::GetDefaultMaterialPass(const char* lightMode)
 {
     if (false == _isLoadDefault)

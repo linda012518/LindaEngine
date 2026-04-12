@@ -46,6 +46,15 @@
 				return (1.0 - g2) / (4.0 * linda_PI * pow(1.0 + g2 - 2.0 * g * cosTheta, 1.5));
 			}
 
+            vec3 UndoBakedSkyboxEnvEncoding(vec3 stored)
+            {
+	            const float eps = 1e-5;
+	            vec3 x = clamp(stored, vec3(0.0), vec3(1.0) - eps);
+	            vec3 reinhardLin = pow(x, vec3(2.2));
+	            reinhardLin = min(reinhardLin, vec3(1.0) - eps);
+	            return reinhardLin / (vec3(1.0) - reinhardLin);
+            }
+
 			void main()
 			{
                 vec3 dir = normalize(worldNormal);           // 视线方向
@@ -121,7 +130,7 @@
 
                 vec3 finalColor = baseColor + sunContribution;
                 finalColor += stars * starVisibility;
-
+                finalColor = UndoBakedSkyboxEnvEncoding(finalColor);
                 FragColor = vec4(finalColor, 1.0);
 			}
 		}

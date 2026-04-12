@@ -648,6 +648,9 @@
     <ClCompile Include="Editor\ImGui\src\GUILayoutEditor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Runtime\Render\PostProcess\src\TonemappingPostProcess.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="External\include\stb_image.h">
@@ -2517,6 +2520,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Editor\ImGui\include\GUILayoutEditor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Render\PostProcess\include\TonemappingPostProcess.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
