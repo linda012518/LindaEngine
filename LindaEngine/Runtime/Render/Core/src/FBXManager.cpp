@@ -238,7 +238,7 @@ Ref<Mesh> FBXManager::CreatePointLightMesh()
 	data.AddAttribute(VertexAttributeType::Position);
 	data.drawType = DrawType::LINES;
 
-	float scale = 0.2f;
+	float scale = 1.0f;
 	float radius = 1.0f * scale; // 半径
 	int segments = 36;
 	float angleStep = glm::two_pi<float>() / segments;

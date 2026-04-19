@@ -9,7 +9,7 @@ SkyboxPass::SkyboxPass()
 	_renderPassEvent = RenderPassEvent::BeforeRenderingSkybox;
 }
 
-void SkyboxPass::Render(Camera* camera)
+void SkyboxPass::Render(Weak<Camera> camera)
 {
 	if (camera->GetClearType() == CameraClearType::Skybox)
 		RendererSystem::DrawSkybox(camera);

@@ -12,6 +12,7 @@ using namespace LindaEngine;
 bool Application::_isQuit = false;
 AppState Application::state = AppState::Loading;
 AppModule Application::module = AppModule::Runtime;
+std::map<int, std::string> Application::layerToNameMap;
 Scope<Window> Application::_window;
 
 int Application::Initialize()
@@ -20,6 +21,7 @@ int Application::Initialize()
     SetFrameRate(60);
 
     YamlSerializer::DeSerializeGraphicsConfig(Path::graphicsConfig);
+    YamlSerializer::DeSerializeLayerConfig(Path::layerToNameMapConfig);
 
     _window = Window::Create();
     _graphicContext = GraphicsContext::Create(_window.get());

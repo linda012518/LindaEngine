@@ -4,7 +4,7 @@
 
 using namespace LindaEngine;
 
-std::vector<Camera*> CameraSystem::_components;
+std::vector<Weak<Camera>> CameraSystem::_components;
 
 void CameraSystem::Tick(float deltaTime)
 {
@@ -22,12 +22,13 @@ void CameraSystem::OnDeserializeFinish()
 	//}
 }
 
-void CameraSystem::Add(Camera* camera)
+void CameraSystem::Add(Weak<Camera> camera)
 {
+	camera->Initialize();
 	_components.push_back(camera);
 }
 
-void CameraSystem::Remove(Camera* camera)
+void CameraSystem::Remove(Weak<Camera> camera)
 {
 	auto itr = std::find(_components.begin(), _components.end(), camera);
 	if (itr != _components.end())
@@ -39,7 +40,7 @@ void CameraSystem::Clear()
 	if (false == _components.empty())
 		static_assert(true, "CameraSystem is not empty, Check destruction process.");
 
-	std::vector<Camera*> temp;
+	std::vector<Weak<Camera>> temp;
 
 	for (auto& com : _components) {
 		if (false == com->GetEntity().GetDontDestory())
@@ -54,9 +55,9 @@ void CameraSystem::Clear()
 	}
 }
 
-const std::vector<Camera*> CameraSystem::GetActiveCameraList()
+const std::vector<Weak<Camera>> CameraSystem::GetActiveCameraList()
 {
-	std::vector<Camera*> list;
+	std::vector<Weak<Camera>> list;
 
 	for (auto& com : _components) {
 		if (com->GetEntity().GetName() == "EditorModeMainCamera")

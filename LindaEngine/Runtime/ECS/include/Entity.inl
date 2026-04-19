@@ -5,19 +5,19 @@
 namespace LindaEngine
 {
 	template <typename TComponent, typename ... Args>
-	TComponent* Entity::AddComponent(Args&& ... args)
+	Weak<TComponent> Entity::AddComponent(Args&& ... args)
 	{
 		static_assert(std::is_base_of<Component, TComponent>::value, "T should derive from Component");
 		static_assert(!std::is_same<Transform, TComponent>::value, "You can't add a Transform from an actor");
 
 		Ref<TComponent> c = CreateRef<TComponent>(*this, std::forward<Args>(args)...);
 		_components.push_back(c);
-		OnComponentAdded(c.get());
-		return c.get();
+		OnComponentAdded(c);
+		return c;
 	}
 
 	template <typename TComponent>
-	TComponent* Entity::GetComponent()
+	Weak<TComponent> Entity::GetComponent()
 	{
 		static_assert(std::is_base_of<Component, TComponent>::value, "T should derive from Component");
 
@@ -27,7 +27,7 @@ namespace LindaEngine
 			result = DynamicCastRef(TComponent, *it);
 			if (result)
 			{
-				return result.get();
+				return result;
 			}
 		}
 		return nullptr;

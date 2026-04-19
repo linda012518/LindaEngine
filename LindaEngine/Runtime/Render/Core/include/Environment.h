@@ -22,6 +22,8 @@ namespace LindaEngine
 		static Ref<Texture> GetBRDFLUTMap();
 		static SHCoefficients& GetSH();
 
+		static Ref<Material> GetSkyboxMaterial() { return _material; }
+
 	private:
 		static SHCoefficients ComputeSHFromCubemap(Ref<Texture> cubemap);
 

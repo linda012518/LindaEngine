@@ -42,8 +42,8 @@ namespace LindaEngine
 
 		void SetPath(const char* path) { _state.materialPath = path; }
 		std::string& GetPath() { return _state.materialPath; }
-		void Bind(Ref<MaterialPass> pass, Transform* transform, const std::vector<VertexAttribute>& attributes);
-		void Bind(int pass, Transform* transform, const std::vector<VertexAttribute>& attributes);
+		void Bind(Ref<MaterialPass> pass, Weak<Transform> transform, const std::vector<VertexAttribute>& attributes);
+		void Bind(int pass, Weak<Transform> transform, const std::vector<VertexAttribute>& attributes);
 
 		template <typename T>
 		void SetUniformValue(const char* name, T val, int count = 1);
@@ -51,7 +51,7 @@ namespace LindaEngine
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
-		void OnImguiRender();
+		static void OnImguiRender(Weak<Material> material);
 
 		bool CanRender(std::string& lightMode, int minQueue, int maxQueue);
 		bool HasLightMode(std::string& lightMode);

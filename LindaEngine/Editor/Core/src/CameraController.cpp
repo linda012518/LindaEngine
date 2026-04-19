@@ -10,6 +10,8 @@
 #include "EventCodeEditor.h"
 #include "EventEditor.h"
 #include "EditViewPanelEditor.h"
+#include "Ray.h"
+#include "Physics.h"
 
 using namespace LindaEditor;
 using namespace LindaEngine;
@@ -38,7 +40,7 @@ void CameraController::Awake()
 	Bind(EventCode::KeyDown);
 	Bind(EventCode::KeyUp);
 
-	EventSystemEditor::Bind(EventCodeEditor::SwitchSelectEntity, this);
+	EventSystemEditor::Bind(EventCodeEditor::SwitchSelectEntity, shared_from_this());
 }
 
 void CameraController::Update()
@@ -60,10 +62,10 @@ void CameraController::OnDestroy()
 	Unbind(EventCode::KeyDown);
 	Unbind(EventCode::KeyUp);
 
-	EventSystemEditor::Unbind(EventCodeEditor::SwitchSelectEntity, this);
+	EventSystemEditor::Unbind(EventCodeEditor::SwitchSelectEntity, shared_from_this());
 }
 
-void CameraController::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
+void CameraController::OnEvent(Weak<IEventHandler> sender, int eventCode, Event& eventData)
 {
 	if (eventCode == EventCodeEditor::SwitchSelectEntity)
 	{
@@ -192,28 +194,49 @@ void CameraController::ProcessKeyEvent(int eventCode, Event& eventData)
 
 void CameraController::ScaleEvent(MouseEvent& event)
 {
-	glm::vec3 pos;
-	pos.x = (float)event.x;
-	pos.y = (float)event.y;
-	pos.z = 1.0f;
-	glm::vec3 far = _camera->ScreenToWorldPosition(pos);
-	//glm::vec3 eyePos = _transform->GetWorldPosition();
-	//glm::vec3 dir = glm::normalize(far - eyePos);
-	//glm::vec3 worldPos = dir * glm::abs(far.y - eyePos.y);
-	glm::vec3 moveVector = far * (event.wheel / _stanardWheelDelta) * _mouseWheelSpeed;
-	_transform->SetWorldPosition(_transform->GetWorldPosition() + moveVector);
+	glm::vec2 screenPos = EditViewPanelEditor::screenPos;
 
-	_lookRoundTarget += moveVector;
+	const float wheelFactor = (event.wheel / _stanardWheelDelta) * _mouseWheelSpeed;
+
+	Ray ray = _camera->ScreenPointToRay(screenPos);
+	RaycastHit hit = Physics::Raycast(ray);
+	if (hit.entities.size() > 0)
+	{
+		const glm::vec3& hitPos = hit.entities[0].point;
+		glm::vec3 moveVector = (hitPos - ray.origin) * wheelFactor;
+		_transform->SetWorldPosition(_transform->GetWorldPosition() + moveVector);
+
+		_lookRoundTarget += moveVector;
+	}
+	else
+	{
+		glm::vec3 moveVector = ray.direction * 10.0f * wheelFactor;
+		_transform->SetWorldPosition(_transform->GetWorldPosition() + moveVector);
+
+		_lookRoundTarget += moveVector;
+	}
 }
 
 void CameraController::PanningEvent(MouseEvent& event)
 {
 	if (false == _isPanning)
 		return;
+
+	glm::vec2 screenPos = EditViewPanelEditor::screenPos;
+
 	glm::vec2 mouseDelta = _lastMousePos - glm::vec2(event.x, event.y);
 	_lastMousePos.x = (float)event.x;
 	_lastMousePos.y = (float)event.y;
-	float distanceToTarget = glm::length(_transform->GetWorldPosition());//这里可以修改为相机到指向物体距离
+	float distanceToTarget = 10.0f;
+
+	Ray ray = _camera->ScreenPointToRay(screenPos);
+	RaycastHit hit = Physics::Raycast(ray);
+	if (hit.entities.size() > 0)
+	{
+		const glm::vec3& hitPos = hit.entities[0].point;
+		distanceToTarget = glm::distance(hitPos, ray.origin);
+	}
+
 	float adaptiveSpeed = _panSpeed * distanceToTarget;
 	glm::vec3 front, up, right;
 	_transform->GetWorldDir(front, up, right);
@@ -286,13 +309,13 @@ void CameraController::LookAtEntity()
 	_transform->SetWorldPosition(pair.second + front * _lookRoundDistance);
 }
 
-std::pair<float, glm::vec3> CameraController::CalculateLookAtData(Entity* entity)
+std::pair<float, glm::vec3> CameraController::CalculateLookAtData(Weak<Entity> entity)
 {
 	float defaultDis = 6.6f;
 	if (entity == nullptr)
 		return { defaultDis, glm::vec3(0.0f)};
 	
-	Renderer* render = entity->GetComponent<Renderer>();
+	Weak<Renderer> render = entity->GetComponent<Renderer>();
 	if (render == nullptr)
 		return { defaultDis, entity->GetTransform()->GetWorldPosition() };
 

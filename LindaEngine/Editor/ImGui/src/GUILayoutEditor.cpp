@@ -1,7 +1,8 @@
 ﻿#include "GUILayoutEditor.h"
 
-#include <imgui/imgui.h>
+#include "imgui/imgui.h"
 #include <imgui/imgui_internal.h>
+#include <imgui/imgui_stdlib.h>
 
 using namespace LindaEditor;
 
@@ -231,6 +232,72 @@ void GUILayoutEditor::Dropdown(std::string name, int curIndex, std::vector<std::
 		}, name, nameSize);
 }
 
+void GUILayoutEditor::DropdownCheckbox(std::string name, int curIndex, std::map<int, std::string>& value, DropdownCallback onChanged, float nameSize)
+{
+	DrawWidget([&]() {
+		std::string title = value.find(curIndex) == value.end() ? "Custom Multi" : value[curIndex];
+		if (ImGui::Button(title.c_str(), ImVec2(-1, 0))) {
+			ImGui::OpenPopup("##Dropdown");
+		}
+
+		ImVec2 buttonMin = ImGui::GetItemRectMin();
+		ImVec2 buttonMax = ImGui::GetItemRectMax();
+
+		ImGui::SetNextWindowPos(ImVec2(buttonMin.x, buttonMax.y));
+		ImGui::SetNextWindowSize(ImVec2(buttonMax.x - buttonMin.x, 0));
+
+		ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.8f, 0.8f, 0.85f, 0.95f));    // 背景色
+		ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.3f, 0.4f, 0.8f, 1.0f));        // 边框色
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));          // 字体色
+
+		if (ImGui::BeginPopup("##Dropdown", ImGuiWindowFlags_NoTitleBar |
+			ImGuiWindowFlags_NoResize |
+			ImGuiWindowFlags_NoMove))
+		{
+			ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.3f, 0.6f, 0.8f));        // 选中项背景
+			ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.4f, 0.7f, 0.8f)); // 悬停背景
+			ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.4f, 0.5f, 0.8f, 1.0f));  // 点击背景
+
+			ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5f, 0.5f));
+
+			for (auto& pair : value)
+			{
+				bool has = false;
+				if (curIndex == 0 && pair.first == 0)
+					has = true;
+				else if (curIndex != -1 && pair.first == -1)
+					has = false;
+				else
+					has = curIndex & pair.first;
+
+				ImGui::BeginDisabled(true);
+				ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.7f, 0.7f, 0.75f, 0.85f));
+				ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(0.2f, 0.6f, 0.2f, 1.0f));
+				//ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.7f, 0.7f, 0.75f, 0.85f));
+				//ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.7f, 0.7f, 0.75f, 0.85f));
+				ImGui::Checkbox(("##" + pair.second).c_str(), &has);
+				ImGui::PopStyleColor(2);
+				ImGui::EndDisabled();
+
+				ImGui::SameLine();
+				if (ImGui::Selectable(pair.second.c_str()))
+				{
+					if (onChanged)
+						onChanged(pair.first);
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			ImGui::PopStyleVar(1);
+
+			ImGui::PopStyleColor(3);
+			ImGui::EndPopup();
+		}
+		ImGui::PopStyleColor(3);
+
+		}, name, nameSize);
+}
+
 void GUILayoutEditor::ComboSelectable(std::string name, int curIndex, std::vector<std::string>& value, DropdownCallback onChanged, float nameSize)
 {
 	DrawWidget([&]() {
@@ -274,6 +341,34 @@ void GUILayoutEditor::ComboSelectable(std::string name, int curIndex, std::vecto
 		ImGui::PopStyleVar(1);
 		ImGui::PopStyleColor(1);
 
+		}, name, nameSize);
+}
+
+void GUILayoutEditor::ComboInputText(std::string name, int curIndex, std::vector<std::string>& value, DropdownCallback onChanged, float nameSize)
+{
+	DrawWidget([&]() {
+		const char* preview = "";
+		if (!value.empty() && curIndex >= 0 && curIndex < (int)value.size())
+			preview = value[curIndex].c_str();
+
+		ImGui::SetNextItemWidth(-FLT_MIN);
+
+		const ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton | ImGuiComboFlags_HeightRegular;
+
+		if (ImGui::BeginCombo(("##" + name).c_str(), preview, flags))
+		{
+			for (int n = 0; n < (int)value.size(); n++)
+			{
+				std::string inputLabel = "##Name" + std::to_string(n);
+				if (ImGui::InputText(inputLabel.c_str(), &value[n]))
+				{
+					if (onChanged)
+						onChanged(n);
+				}
+			}
+
+			ImGui::EndCombo();
+		}
 		}, name, nameSize);
 }
 

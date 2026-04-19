@@ -16,18 +16,19 @@ namespace LindaEngine
 
 namespace LindaEditor
 {
-	class EditViewPanelEditor : public ImGuiPanelEditor, public LindaEngine::IEventHandler
+	class EditViewPanelEditor : public std::enable_shared_from_this<EditViewPanelEditor>, public ImGuiPanelEditor, public LindaEngine::IEventHandler
 	{
 	public:
 		DECLARE_DYNAMIC_CREATE_CLASS(EditViewPanelEditor)
 		EditViewPanelEditor();
 		void OnImGuiRender();
 
-		void OnEvent(LindaEngine::IEventHandler* sender, int eventCode, LindaEngine::Event& eventData);
+		void OnEvent(Weak<LindaEngine::IEventHandler> sender, int eventCode, LindaEngine::Event& eventData);
 
 		Ref<LindaEngine::RenderTexture> GetRenderTexture() { return _renderTexture; }
 
 	private:
+		void Initialize();
 		void ProcessPick(ImVec2& viewportPanelSize, ImVec2& windowPos);
 		void DrawRect(ImVec2& windowPos);
 		void RenderGuizmo();
@@ -44,9 +45,11 @@ namespace LindaEditor
 		bool _gizmoSnap = true;
 		ImGuizmo::OPERATION _gizmoType = ImGuizmo::TRANSLATE;
 		ImGuizmo::MODE _gizmoMode = ImGuizmo::LOCAL;
-		LindaEngine::Entity* _selectionEntity = nullptr;
+		Weak<LindaEngine::Entity> _selectionEntity = nullptr;
+
 
 	public:
+		static glm::vec2 screenPos;
 		static bool hovered;
 		static Ref<LindaEngine::RenderTexture> pickRT;
 	};

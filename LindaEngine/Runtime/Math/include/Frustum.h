@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AutoPtr.h"
 #include "Plane.h"
 
 namespace LindaEngine
@@ -10,7 +11,7 @@ namespace LindaEngine
 
 	struct Frustum
 	{
-		void UpdateFrustum(Camera* cam);
+		void UpdateFrustum(Weak<Camera> cam);
 		bool AABBInside(AABBBoundingBox& aabb);
 		bool SphereInside(SphereBoundingBox& sphere);
 		bool PointInside(const glm::vec3& point);

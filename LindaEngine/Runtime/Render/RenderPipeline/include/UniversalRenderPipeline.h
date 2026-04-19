@@ -21,6 +21,9 @@ namespace LindaEngine
 
 	private:
 		UniversalRenderer _urp;
+
+	public:
+		static bool isFirstCamera;
 	};
 }
 

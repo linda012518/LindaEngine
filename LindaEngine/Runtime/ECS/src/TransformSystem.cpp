@@ -4,7 +4,7 @@
 
 using namespace LindaEngine;
 
-std::vector<Transform*> TransformSystem::_components;
+std::vector<Weak<Transform>> TransformSystem::_components;
 
 void TransformSystem::Tick(float deltaTime)
 {
@@ -23,12 +23,13 @@ void TransformSystem::OnDeserializeFinish()
 	}
 }
 
-void TransformSystem::Add(Transform* trans)
+void TransformSystem::Add(Weak<Transform> trans)
 {
+	trans->Initialize();
 	_components.push_back(trans);
 }
 
-void TransformSystem::Remove(Transform* trans)
+void TransformSystem::Remove(Weak<Transform> trans)
 {
 	auto itr = std::find(_components.begin(), _components.end(), trans);
 	if (itr != _components.end())
@@ -40,7 +41,7 @@ void TransformSystem::Clear()
 	if (false == _components.empty())
 		static_assert(true, "TransformSystem is not empty, Check destruction process.");
 
-	std::vector<Transform*> temp;
+	std::vector<Weak<Transform>> temp;
 
 	for (auto& com : _components) {
 		if (false == com->GetEntity().GetDontDestory())
@@ -55,12 +56,12 @@ void TransformSystem::Clear()
 	}
 }
 
-Transform* TransformSystem::Get(std::string& uuid)
+Weak<Transform> TransformSystem::Get(std::string& uuid)
 {
 	return Get(_components, uuid);
 }
 
-Transform* TransformSystem::Get(std::vector<Transform*>& list, std::string& uuid)
+Weak<Transform> TransformSystem::Get(std::vector<Weak<Transform>>& list, std::string& uuid)
 {
 	for (auto& com : list) {
 		if (com->GetEntity().GetUUID() != uuid)

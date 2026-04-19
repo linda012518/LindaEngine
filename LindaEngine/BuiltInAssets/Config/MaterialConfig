@@ -4,3 +4,4 @@ MaterialConfig:
   - BuiltInAssets/Shaders/Error.shader
   - BuiltInAssets/Shaders/CopyColor.shader
   - BuiltInAssets/Shaders/PostProcess/LinnerToGamma.shader
+  - BuiltInAssets/Shaders/PostProcess/MergeMultipleCamera.shader

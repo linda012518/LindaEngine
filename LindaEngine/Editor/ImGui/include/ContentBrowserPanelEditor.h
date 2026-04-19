@@ -52,7 +52,7 @@ namespace LindaEditor
 		FileNode* GetFolderNode(FileNode* root, std::string path);
 		void AddNode(FileType type, std::string path);
 
-		LindaEngine::LObject* GetLObject(FileNode* node);
+		Weak<LindaEngine::LObject> GetLObject(FileNode* node);
 
 	private:
 		bool _doubleClicked = false;

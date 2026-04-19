@@ -26,7 +26,7 @@ namespace LindaEngine
 		void AddKeyword(std::string& key);
 		bool CompileShader(std::string shaderPath, const std::vector<VertexAttribute>& attributes);
 		bool IsCompiled() { return nullptr != _shader; }
-		void Bind(Transform* transform);
+		void Bind(Weak<Transform> transform);
 
 		void UpdateUniforms(std::unordered_map<std::string, Ref<ShaderUniform>>& uniformNameMap);
 		const std::string& GetLightMode() const { return _state.lightMode; }

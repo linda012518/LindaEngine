@@ -10,7 +10,7 @@ if (itr##array != array.end()) \
 	array.erase(itr##array);
 
 #define ADDTOLIST(func, array) \
-void BehaviorSystem::Add##func(Behavior* behavior, bool none) { if (none) return; array.push_back(behavior); }
+void BehaviorSystem::Add##func(Weak<Behavior> behavior, bool none) { if (none) return; array.push_back(behavior); }
 
 #define IMPLEMENT_LIFECYCLEFUN(fun, array, condition, callFun) \
 void BehaviorSystem::fun() \
@@ -27,22 +27,22 @@ void BehaviorSystem::fun() \
 
 using namespace LindaEngine;
 
-std::vector<Behavior*> BehaviorSystem::_awakes;
-std::vector<Behavior*> BehaviorSystem::_onEnables;
-std::vector<Behavior*> BehaviorSystem::_starts;
-std::vector<Behavior*> BehaviorSystem::_fixUpdates;
-std::vector<Behavior*> BehaviorSystem::_onTriggerEvents;
-std::vector<Behavior*> BehaviorSystem::_onCollisionEvents;
-std::vector<Behavior*> BehaviorSystem::_onMouseEvents;
-std::vector<Behavior*> BehaviorSystem::_updates;
-std::vector<Behavior*> BehaviorSystem::_lateUpdates;
-std::vector<Behavior*> BehaviorSystem::_onPreCulls;
-std::vector<Behavior*> BehaviorSystem::_onPreRenders;
-std::vector<Behavior*> BehaviorSystem::_onRenderObjects;
-std::vector<Behavior*> BehaviorSystem::_onPostRenders;
-std::vector<Behavior*> BehaviorSystem::_onApplicationPauses;
-std::vector<Behavior*> BehaviorSystem::_onApplicationQuits;
-std::vector<Behavior*> BehaviorSystem::_onDisables;
+std::vector<Weak<Behavior>> BehaviorSystem::_awakes;
+std::vector<Weak<Behavior>> BehaviorSystem::_onEnables;
+std::vector<Weak<Behavior>> BehaviorSystem::_starts;
+std::vector<Weak<Behavior>> BehaviorSystem::_fixUpdates;
+std::vector<Weak<Behavior>> BehaviorSystem::_onTriggerEvents;
+std::vector<Weak<Behavior>> BehaviorSystem::_onCollisionEvents;
+std::vector<Weak<Behavior>> BehaviorSystem::_onMouseEvents;
+std::vector<Weak<Behavior>> BehaviorSystem::_updates;
+std::vector<Weak<Behavior>> BehaviorSystem::_lateUpdates;
+std::vector<Weak<Behavior>> BehaviorSystem::_onPreCulls;
+std::vector<Weak<Behavior>> BehaviorSystem::_onPreRenders;
+std::vector<Weak<Behavior>> BehaviorSystem::_onRenderObjects;
+std::vector<Weak<Behavior>> BehaviorSystem::_onPostRenders;
+std::vector<Weak<Behavior>> BehaviorSystem::_onApplicationPauses;
+std::vector<Weak<Behavior>> BehaviorSystem::_onApplicationQuits;
+std::vector<Weak<Behavior>> BehaviorSystem::_onDisables;
 //std::vector<Behavior*> BehaviorSystem::_onDestroys;
 
 void BehaviorSystem::Tick()
@@ -62,12 +62,12 @@ void BehaviorSystem::OnDeserializeFinish()
 
 }
 
-void BehaviorSystem::Add(Behavior* behavior)
+void BehaviorSystem::Add(Weak<Behavior> behavior)
 {
 	behavior->Initialize();
 }
 
-void BehaviorSystem::Remove(Behavior* behavior)
+void BehaviorSystem::Remove(Weak<Behavior> behavior)
 {
 	REMOVETOLIST(_awakes, behavior);
 	REMOVETOLIST(_onEnables, behavior);
@@ -187,7 +187,7 @@ void BehaviorSystem::DoStart()
 	}
 }
 
-void BehaviorSystem::AddAwake(Behavior* behavior, bool none)
+void BehaviorSystem::AddAwake(Weak<Behavior> behavior, bool none)
 {
 	if (none) return;
 	_awakes.push_back(behavior);
@@ -210,9 +210,9 @@ ADDTOLIST(OnApplicationQuit, _onApplicationQuits);
 ADDTOLIST(OnDisable, _onDisables);
 //ADDTOLIST(OnDestroy, _onDestroys);
 
-void BehaviorSystem::ClearFunctionArray(std::vector<Behavior*> array)
+void BehaviorSystem::ClearFunctionArray(std::vector<Weak<Behavior>> array)
 {
-	std::vector<Behavior*> temp;
+	std::vector<Weak<Behavior>> temp;
 
 	for (auto& com : array) {
 		if (false == com->GetEntity().GetDontDestory())

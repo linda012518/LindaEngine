@@ -11,7 +11,7 @@ PrecomputedAmbientPass::PrecomputedAmbientPass()
 	Environment::ComputeBRDFLutMap();
 }
 
-void PrecomputedAmbientPass::Render(Camera* camera)
+void PrecomputedAmbientPass::Render(Weak<Camera> camera)
 {
 	if (false == Light::mainLightDirty)
 		return;

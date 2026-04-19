@@ -19,24 +19,26 @@ namespace LindaEngine
 		static void Tick(float deltaTime);
 		static void OnDeserializeFinish();
 
-		static void Add(Renderer* renderer);
-		static void Remove(Renderer* renderer);
+		static void Add(Weak<Renderer> renderer);
+		static void Remove(Weak<Renderer> renderer);
 		static void Clear();
 
-		static void DrawRenderers(Camera* camera, DrawingSettings* settings);
-		static void DrawRenderer(Renderer* renderer, Ref<Material> material);
-		static void DrawSkybox(Camera* camera);
+		static void DrawRenderers(Weak<Camera> camera, DrawingSettings& settings);
+		static void DrawRenderer(Weak<Renderer> renderer, Ref<Material> material);
+		static void DrawSkybox(Weak<Camera> camera);
 		static void DrawAdjunct();
 		static void DrawErrorRenderer();
 
-	private:
-		static void Cull(Camera* camera, DrawingSettings* settings);
-		static void FillDrawables(DrawingSettings* settings);
-		static void SortDrawables(DrawingSettings* settings);
+		static std::vector<Weak<Renderer>>& GetRenderers() { return _components; }
 
 	private:
-		static std::vector<Renderer*> _components;
-		static std::vector<Renderer*> _tempRenderables;
+		static void Cull(Weak<Camera> camera, DrawingSettings& settings);
+		static void FillDrawables(DrawingSettings& settings);
+		static void SortDrawables(DrawingSettings& settings);
+
+	private:
+		static std::vector<Weak<Renderer>> _components;
+		static std::vector<Weak<Renderer>> _tempRenderables;
 		static std::vector<Ref<Drawable>> _drawables;
 	};
 }

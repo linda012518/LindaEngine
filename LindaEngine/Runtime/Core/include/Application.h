@@ -1,10 +1,13 @@
 #pragma once
 
 #include "IRuntimeModule.h"
-
 #include "Window.h"
 #include "GraphicsContext.h"
 #include "AppState.h"
+
+#include <map>
+#include <string>
+#include <vector>
 
 namespace LindaEngine
 {
@@ -21,6 +24,7 @@ namespace LindaEngine
 		static Window& GetWindow() { return *_window; }
 		static AppState state;
 		static AppModule module;
+		static std::map<int, std::string> layerToNameMap;
 
 	protected:
 		virtual void OnPreRender() { }

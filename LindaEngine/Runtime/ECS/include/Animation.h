@@ -41,6 +41,6 @@ namespace LindaEngine
 		std::vector<Ref<AnimationClip>> _clips;
 		float _currentTime = 0.0f;
 		Ref<AnimationClip> _currentClip;
-		std::unordered_map<std::string, Transform*> _boneMap;
+		std::unordered_map<std::string, Weak<Transform>> _boneMap;
 	};
 }

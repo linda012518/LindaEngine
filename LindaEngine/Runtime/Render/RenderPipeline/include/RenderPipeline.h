@@ -21,10 +21,10 @@ namespace LindaEngine
 		static Ref<UniformDataGlobal> GetGlobalUniformData() { return _uniformGlobal; }
 
 	protected:
-		const std::vector<Camera*> CheckCameraList();
-		void SetupShaderParameters(Camera* camera);
-		void SetupLightListShaderParameters(Camera* camera, UniformDataGlobal::Data& block);
-		void SetupCameraShaderParameters(Camera* camera, UniformDataGlobal::Data& block);
+		const std::vector<Weak<Camera>> CheckCameraList();
+		void SetupShaderParameters(Weak<Camera> camera);
+		void SetupLightListShaderParameters(Weak<Camera> camera, UniformDataGlobal::Data& block);
+		void SetupCameraShaderParameters(Weak<Camera> camera, UniformDataGlobal::Data& block);
 
 		virtual void Render() = 0;
 

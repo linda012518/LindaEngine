@@ -10,7 +10,7 @@ using namespace LindaEngine;
 
 void TestAnimation::Start()
 {
-	Animation* anim = _entity.AddComponent<Animation>();
+	Weak<Animation> anim = _entity.AddComponent<Animation>();
 	auto clip = FBXLoader::LoadAnimationClip("Assets/Meshs/Lethe@idle.FBX");
 	anim->SetClip(clip);
 	anim->PlayAnimation(0);

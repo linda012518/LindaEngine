@@ -152,6 +152,28 @@ int main()
 	////cc.Initialize();
 	//return 1;
 
+	//Ref<Entity> entity = CreateRef<Entity>("test", true);
+	//Weak<Entity> weakEntity = entity;
+	//entity = nullptr;
+	//if (weakEntity)
+	//	int id = weakEntity->GetID();
+	// 
+	//Ref<Texture2D>	tex2d = CreateRef<Texture2D>();
+	//Weak<Texture> weakTex2d = tex2d;
+	//Ref<Texture2D>	texd = tex2d;
+	//Weak<Texture> weakTex2d11 = weakTex2d;
+	//Ref<Texture> tex = CreateRef<Texture2D>();
+	//Weak<Texture> weakEntity = tex;
+	//Weak<Texture2D> go = DynamicCastWeak(Texture2D, weakEntity);
+
+	//std::map<int, std::string> layerToNameMap;
+	//layerToNameMap[-1] = "Everything";
+	//layerToNameMap[0] = "Nothing";
+	//for (int i = 1; i < 32; i++)
+	//	layerToNameMap[1 << (i - 1)] = "Layer " + std::to_string(i);
+	//Application::layerToNameMap = layerToNameMap;
+	//YamlSerializer::SerializeLayerConfig(Path::layerToNameMapConfig);
+	//return 0;
 #ifdef LindaEditor
 	ApplicationEditor app;
 #else

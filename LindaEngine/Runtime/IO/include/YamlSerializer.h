@@ -24,6 +24,9 @@ namespace LindaEngine
 		static void SerializeGraphicsConfig(const char* path);
 		static bool DeSerializeGraphicsConfig(const char* path);
 
+		static void SerializeLayerConfig(const char* path);
+		static bool DeSerializeLayerConfig(const char* path);
+
 	public:
 		static YAML::Emitter* out;
 

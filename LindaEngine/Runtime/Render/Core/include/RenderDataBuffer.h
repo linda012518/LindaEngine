@@ -16,8 +16,8 @@ namespace LindaEngine
 
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
-		virtual void SetVertexAttribute(std::vector<VertexAttribute>* attrs) = 0;
-		virtual const std::vector<VertexAttribute>* GetAttributes() const = 0;
+		virtual void SetVertexAttribute(std::vector<VertexAttribute>& attrs) = 0;
+		virtual const std::vector<VertexAttribute>& GetAttributes() const = 0;
 		virtual uint32_t GetCount() const = 0;
 		virtual void SetData(void* data, uint32_t size) = 0;
 

@@ -7,10 +7,12 @@
 using namespace LindaEngine;
 
 const char* Path::overridePath;
+const char* Path::layerToNameMapConfig = "Assets/Config/LayerToNameMapConfig";
 const char* Path::graphicsConfig = "Assets/Config/GraphicsConfig";
 const char* Path::sceneConfig = "Assets/Config/SceneConfig";
 const char* Path::shaderConfig = "BuiltInAssets/Config/ShaderConfig";
 const char* Path::materialConfig = "BuiltInAssets/Config/MaterialConfig";
+const char* Path::editorModeMainCameraName = "EditorModeMainCamera";
 
 std::vector<std::string> Path::GetFileDirectorys(const char* path)
 {

@@ -91,7 +91,7 @@ bool MaterialPass::CompileShader(std::string shaderPath, const std::vector<Verte
 	return _shader->HasError();
 }
 
-void MaterialPass::Bind(Transform* transform)
+void MaterialPass::Bind(Weak<Transform> transform)
 {
 	if (nullptr == _shader)
 		return;

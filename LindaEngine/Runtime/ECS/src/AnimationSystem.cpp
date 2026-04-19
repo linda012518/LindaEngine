@@ -3,7 +3,7 @@
 
 using namespace LindaEngine;
 
-std::vector<Animation*> AnimationSystem::_components;
+std::vector<Weak<Animation>> AnimationSystem::_components;
 
 void AnimationSystem::Tick(float deltaTime)
 {
@@ -22,12 +22,13 @@ void AnimationSystem::OnDeserializeFinish()
 	}
 }
 
-void AnimationSystem::Add(Animation* anim)
+void AnimationSystem::Add(Weak<Animation> anim)
 {
+	anim->Initialize();
 	_components.push_back(anim);
 }
 
-void AnimationSystem::Remove(Animation* anim)
+void AnimationSystem::Remove(Weak<Animation> anim)
 {
 	auto itr = std::find(_components.begin(), _components.end(), anim);
 	if (itr != _components.end())
@@ -39,7 +40,7 @@ void AnimationSystem::Clear()
 	if (false == _components.empty())
 		static_assert(true, "AnimationSystem is not empty, Check destruction process.");
 
-	std::vector<Animation*> temp;
+	std::vector<Weak<Animation>> temp;
 
 	for (auto& com : _components) {
 		if (false == com->GetEntity().GetDontDestory())

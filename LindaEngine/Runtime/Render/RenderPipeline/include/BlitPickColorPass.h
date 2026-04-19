@@ -8,6 +8,6 @@ namespace LindaEngine
 	{
 	public:
 		BlitPickColorPass();
-		void Render(Camera* camera);
+		void Render(Weak<Camera> camera);
 	};
 }

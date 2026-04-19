@@ -11,7 +11,7 @@ namespace LindaEngine
 	{
 		Ref<Material> material = nullptr;
 		Mesh::Data* meshData = nullptr;
-		Transform* transform = nullptr;
+		Weak<Transform> transform = nullptr;
 		float distanceToCamera = 0.0f;
 
 		void Draw();

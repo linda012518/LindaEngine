@@ -1,4 +1,4 @@
-#include "RenderPipelineEditor.h"
+﻿#include "RenderPipelineEditor.h"
 #include "TextureManager.h"
 #include "Graphic.h"
 #include "GraphicsContext.h"
@@ -6,18 +6,20 @@
 #include "Camera.h"
 #include "Entity.h"
 #include "CameraController.h"
+#include "Path.h"
 
 using namespace LindaEditor;
 using namespace LindaEngine;
 
-LindaEngine::Camera* RenderPipelineEditor::activeCamera = nullptr;
+Weak<LindaEngine::Camera> RenderPipelineEditor::activeCamera = nullptr;
 
 int RenderPipelineEditor::Initialize()
 {
-    _entity = CreateRef<Entity>("EditorModeMainCamera");
+    _entity = CreateRef<Entity>(Path::editorModeMainCameraName);
     _entity->SetDontDestory(true);
     activeCamera = _entity->AddComponent<PerspectiveCamera>();
     activeCamera->SetNearFar(0.01f, 10000.0f);
+	// TODO 后处理应用主相机的后处理列表
     activeCamera->AddPostProcess("TonemappingPostProcess");
     activeCamera->AddPostProcess("OutLinePostProcess");
     _entity->AddComponent<OrthoCamera>();
@@ -36,7 +38,8 @@ void RenderPipelineEditor::Finalize()
 
 void RenderPipelineEditor::Render()
 {
-    Camera* camera = activeCamera;
+	Camera::currentRenderCamera = activeCamera;
+    Weak<Camera> camera = activeCamera;
 
     camera->SetRenderTarget(RenderTexture::finalRT);
     SetupShaderParameters(camera);

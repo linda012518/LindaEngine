@@ -19,7 +19,7 @@ namespace LindaEngine
 		Component(Entity& entity, bool enable = true);
 		virtual ~Component();
 
-		Transform* GetTransform() { return _transform; }
+		Weak<Transform> GetTransform() { return _transform; }
 		Entity& GetEntity() const;
 		bool IsActive() const;
 		bool IsDirty();
@@ -29,6 +29,7 @@ namespace LindaEngine
 		void SetEnable(bool enable);
 		bool GetEnable() { return _enable; }
 
+		virtual void Initialize() {}
 		virtual void Tick() {}
 		virtual void Destroy() {}
 		virtual void TransformDirty() {}
@@ -40,7 +41,7 @@ namespace LindaEngine
 	protected:
 		bool _enable;
 		Entity& _entity;
-		Transform* _transform;
+		Weak<Transform> _transform;
 
 	private:
 		bool _enableDirty;

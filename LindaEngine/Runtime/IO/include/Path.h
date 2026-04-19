@@ -15,9 +15,11 @@ namespace LindaEngine
 		static std::string GetFileExtensionName(std::string& path);
 
 		static const char* overridePath;
+		static const char* layerToNameMapConfig;
 		static const char* graphicsConfig;
 		static const char* sceneConfig;
 		static const char* shaderConfig;
 		static const char* materialConfig;
+		static const char* editorModeMainCameraName;
 	};
 }

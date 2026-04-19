@@ -10,19 +10,20 @@ namespace LindaEngine
 
 namespace LindaEditor
 {
-	class InspectorPanelEditor : public ImGuiPanelEditor, public LindaEngine::IEventHandler
+	class InspectorPanelEditor : public std::enable_shared_from_this<InspectorPanelEditor>, public ImGuiPanelEditor, public LindaEngine::IEventHandler
 	{
 	public:
 		DECLARE_DYNAMIC_CREATE_CLASS(InspectorPanelEditor)
 		InspectorPanelEditor();
 		void OnImGuiRender();
 
-		void OnEvent(LindaEngine::IEventHandler* sender, int eventCode, LindaEngine::Event& eventData);
+		void OnEvent(Weak<LindaEngine::IEventHandler> sender, int eventCode, LindaEngine::Event& eventData);
 
 	private:
+		void Initialize();
 		void DrawSundry();
 
 	private:
-		LindaEngine::LObject* _object = nullptr;
+		Weak<LindaEngine::LObject> _object = nullptr;
 	};
 }

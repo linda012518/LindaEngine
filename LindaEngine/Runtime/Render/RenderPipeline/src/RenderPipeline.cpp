@@ -36,17 +36,17 @@ void RenderPipeline::Tick()
     Render();
 }
 
-const std::vector<Camera*> RenderPipeline::CheckCameraList()
+const std::vector<Weak<Camera>> RenderPipeline::CheckCameraList()
 {
     //1 查找可用阴影相机
     //2 查找可用颜色相机
     //3 相机排序
-    std::vector<Camera*> list = CameraSystem::GetActiveCameraList();
-    std::sort(list.begin(), list.end(), [](Camera* a, Camera* b) { return a->GetDepth() < b->GetDepth(); });
+    std::vector<Weak<Camera>> list = CameraSystem::GetActiveCameraList();
+    std::sort(list.begin(), list.end(), [](Weak<Camera> a, Weak<Camera> b) { return a->GetDepth() < b->GetDepth(); });
     return list;
 }
 
-void RenderPipeline::SetupShaderParameters(Camera* camera)
+void RenderPipeline::SetupShaderParameters(Weak<Camera> camera)
 {
     UniformDataGlobal::Data& block = _uniformGlobal->data;
 
@@ -63,13 +63,13 @@ void RenderPipeline::SetupShaderParameters(Camera* camera)
     _uniformGlobal->SetUniformBufferData();
 }
 
-void RenderPipeline::SetupLightListShaderParameters(Camera* camera, UniformDataGlobal::Data& block)
+void RenderPipeline::SetupLightListShaderParameters(Weak<Camera> camera, UniformDataGlobal::Data& block)
 {
     //1 查找可用灯光
     //2 设置灯光参数到shader
     //3 设置阴影相机
 
-    const std::vector<Light*> lightList = LightSystem::GetLightList(camera);
+    std::vector<Weak<Light>> lightList = LightSystem::GetLightList(camera);
     int dirLightCount = 0;
     int pointLightCount = 0;
     int spotLightCount = 0;
@@ -80,7 +80,7 @@ void RenderPipeline::SetupLightListShaderParameters(Camera* camera, UniformDataG
         {
         case LightType::DirectionLight:
         {
-            DirectionLight* dirLight = dynamic_cast<DirectionLight*>(light);
+            Weak<DirectionLight> dirLight = DynamicCastWeak(DirectionLight, light);
             if (nullptr == dirLight)
                 break;
             block.dirLightColors[dirLightCount] = dirLight->GetFinalColor();
@@ -90,12 +90,13 @@ void RenderPipeline::SetupLightListShaderParameters(Camera* camera, UniformDataG
         break;
         case LightType::SpotLight:
         {
-            SpotLight* spotLight = dynamic_cast<SpotLight*>(light);
+            Weak<SpotLight> spotLight = DynamicCastWeak(SpotLight, light);
             if (nullptr == spotLight)
                 break;
             block.spotLightColors[spotLightCount] = spotLight->GetFinalColor();
             block.spotLightDirections[spotLightCount] = glm::vec4(spotLight->GetDirection(), 1.0f);
-            block.spotLightPositions[spotLightCount] = glm::vec4(spotLight->GetPosition(), 1.0f);
+            float atten = 1.0f / glm::max(spotLight->GetRange() * spotLight->GetRange(), 0.00001f);
+            block.spotLightPositions[spotLightCount] = glm::vec4(spotLight->GetPosition(), atten);
 
             float innerCos = glm::cos(glm::radians(0.5f * spotLight->GetInnerAngle()));
             float outerCos = glm::cos(glm::radians(0.5f * spotLight->GetOuterAngle()));
@@ -106,7 +107,7 @@ void RenderPipeline::SetupLightListShaderParameters(Camera* camera, UniformDataG
         break;
         case LightType::PointLight:
         {
-            PointLight* pointLight = dynamic_cast<PointLight*>(light);
+            Weak<PointLight> pointLight = DynamicCastWeak(PointLight, light);
             if (nullptr == pointLight)
                 break;
             float atten = 1.0f / glm::max(pointLight->GetRange() * pointLight->GetRange(), 0.00001f);
@@ -122,7 +123,7 @@ void RenderPipeline::SetupLightListShaderParameters(Camera* camera, UniformDataG
     block.lightCount.z = spotLightCount;
 }
 
-void RenderPipeline::SetupCameraShaderParameters(Camera* camera, UniformDataGlobal::Data& block)
+void RenderPipeline::SetupCameraShaderParameters(Weak<Camera> camera, UniformDataGlobal::Data& block)
 {
     block.view = camera->GetViewMatrix();
     block.project = camera->GetProjectMatrix();

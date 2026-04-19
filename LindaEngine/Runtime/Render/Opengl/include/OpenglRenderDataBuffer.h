@@ -13,15 +13,15 @@ namespace LindaEngine
 
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
-		virtual void SetVertexAttribute(std::vector<VertexAttribute>* attrs) override;
-		virtual const std::vector<VertexAttribute>* GetAttributes() const override;
+		virtual void SetVertexAttribute(std::vector<VertexAttribute>& attrs) override;
+		virtual const std::vector<VertexAttribute>& GetAttributes() const override;
 		virtual uint32_t GetCount() const override { return _count; };
 		virtual void SetData(void* data, uint32_t size) override;
 
 	private:
 		unsigned int _rendererID;
 		uint32_t _count;
-		std::vector<VertexAttribute>* attributes;
+		std::vector<VertexAttribute> attributes;
 	};
 
 	class OpenGLIndexBuffer : public IndexBuffer

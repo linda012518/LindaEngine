@@ -13,12 +13,12 @@ DYNAMIC_CREATE(Animation)
 
 Animation::Animation(Entity& entity, bool enable) : Component(entity, enable)
 {
-	AnimationSystem::Add(this);
+	//AnimationSystem::Add(DynamicCastWeak(Animation, GetWeak()));
 }
 
 Animation::~Animation()
 {
-
+	//AnimationSystem::Remove(DynamicCastWeak(Animation, GetWeak()));
 }
 
 void Animation::Tick()
@@ -121,7 +121,7 @@ void Animation::TickAnimation(float deltaTime)
 
 	for (auto& track : _currentClip->tracks)
 	{
-		Transform* bone = _boneMap[track.name];
+		Weak<Transform> bone = _boneMap[track.name];
 		if (nullptr == bone)
 			continue;
 		bone->SetLocalPosition(track.TickPosition(_currentTime));
@@ -137,7 +137,7 @@ void Animation::UpdateBoneMap()
 	std::vector<BoneTrack>& tracks = _currentClip->tracks;
 	for (auto& track : tracks)
 	{
-		Transform* bone = Transform::GetChildByName(_transform, track.name);
+		Weak<Transform> bone = Transform::GetChildByName(_transform, track.name);
 		if (nullptr == bone)
 			continue;
 		_boneMap[track.name] = bone;

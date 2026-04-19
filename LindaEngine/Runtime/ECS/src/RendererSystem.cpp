@@ -14,8 +14,8 @@
 
 using namespace LindaEngine;
 
-std::vector<Renderer*> RendererSystem::_components;
-std::vector<Renderer*> RendererSystem::_tempRenderables;
+std::vector<Weak<Renderer>> RendererSystem::_components;
+std::vector<Weak<Renderer>> RendererSystem::_tempRenderables;
 std::vector<Ref<Drawable>> RendererSystem::_drawables;
 
 void RendererSystem::Tick(float deltaTime)
@@ -34,12 +34,13 @@ void RendererSystem::OnDeserializeFinish()
 	//}
 }
 
-void RendererSystem::Add(Renderer* renderer)
+void RendererSystem::Add(Weak<Renderer> renderer)
 {
+	renderer->Initialize();
 	_components.push_back(renderer);
 }
 
-void RendererSystem::Remove(Renderer* renderer)
+void RendererSystem::Remove(Weak<Renderer> renderer)
 {
 	auto itr = std::find(_components.begin(), _components.end(), renderer);
 	if (itr != _components.end())
@@ -54,7 +55,7 @@ void RendererSystem::Clear()
 	_drawables.clear();
 	_tempRenderables.clear();
 
-	std::vector<Renderer*> temp;
+	std::vector<Weak<Renderer>> temp;
 
 	for (auto& com : _components) {
 		if (false == com->GetEntity().GetDontDestory())
@@ -69,9 +70,9 @@ void RendererSystem::Clear()
 	}
 }
 
-void RendererSystem::DrawRenderers(Camera* camera, DrawingSettings* settings)
+void RendererSystem::DrawRenderers(Weak<Camera> camera, DrawingSettings& settings)
 {
-	Material::overrideLightMode = settings->lightMode;
+	Material::overrideLightMode = settings.lightMode;
 
 	Cull(camera, settings);
 	FillDrawables(settings);
@@ -83,9 +84,9 @@ void RendererSystem::DrawRenderers(Camera* camera, DrawingSettings* settings)
 	}
 }
 
-void RendererSystem::DrawRenderer(Renderer* renderer, Ref<Material> material)
+void RendererSystem::DrawRenderer(Weak<Renderer> renderer, Ref<Material> material)
 {
-	Mesh* mesh = renderer->GetMesh();
+	Weak<Mesh> mesh = renderer->GetMesh();
 	if (nullptr == mesh)
 		return;
 	int count = (int)mesh->GetAllMeshData().size();
@@ -99,7 +100,7 @@ void RendererSystem::DrawRenderer(Renderer* renderer, Ref<Material> material)
 	}
 }
 
-void RendererSystem::DrawSkybox(Camera* camera)
+void RendererSystem::DrawSkybox(Weak<Camera> camera)
 {
 	Renderer::RenderSkybox((glm::mat4&)camera->GetSkyboxProjectMatrix());
 }
@@ -126,7 +127,7 @@ void RendererSystem::DrawErrorRenderer()
 
 	for (auto& renderer : _components)
 	{
-		Mesh* mesh = renderer->GetMesh();
+		Weak<Mesh> mesh = renderer->GetMesh();
 		if (nullptr == mesh)
 			continue;
 		int count = (int)mesh->GetAllMeshData().size();
@@ -135,7 +136,7 @@ void RendererSystem::DrawErrorRenderer()
 			if (false == renderer->HasError(i))
 				continue;
 
-			SkinMeshRenderer* skinPtr = dynamic_cast<SkinMeshRenderer*>(renderer);
+			Weak<SkinMeshRenderer> skinPtr = DynamicCastWeak(SkinMeshRenderer, renderer);
 			if (nullptr != skinPtr)
 			{
 				std::vector<glm::mat4>& matrices = skinPtr->GetFinalBoneMatrix();
@@ -154,7 +155,7 @@ void RendererSystem::DrawErrorRenderer()
 	}
 }
 
-void RendererSystem::Cull(Camera* camera, DrawingSettings* settings)
+void RendererSystem::Cull(Weak<Camera> camera, DrawingSettings& settings)
 {
 	//TODO 距离剔除 视锥裁剪 遮挡剔除 可见灯光 可见反射Cubemap 可见SH
 	Frustum& frustum = camera->GetFrustum();
@@ -163,7 +164,7 @@ void RendererSystem::Cull(Camera* camera, DrawingSettings* settings)
 	int layer = camera->GetLayerMask();
 	glm::vec3 forward, up, right;
 	camera->GetTransform()->GetWorldDir(forward, up, right);
-	CullSettings& cs = settings->cullSettings;
+	CullSettings& cs = settings.cullSettings;
 
 	_tempRenderables.clear();
 
@@ -186,7 +187,7 @@ void RendererSystem::Cull(Camera* camera, DrawingSettings* settings)
 	}
 }
 
-void RendererSystem::FillDrawables(DrawingSettings* settings)
+void RendererSystem::FillDrawables(DrawingSettings& settings)
 {
 	_drawables.clear();
 
@@ -195,7 +196,7 @@ void RendererSystem::FillDrawables(DrawingSettings* settings)
 		int count = (int)renderer->GetMesh()->GetAllMeshData().size();
 		for (int i = 0; i < count; i++)
 		{
-			if (false == renderer->CanRender(i, settings->renderQueueRange.minQueue, settings->renderQueueRange.maxQueue))
+			if (false == renderer->CanRender(i, settings.renderQueueRange.minQueue, settings.renderQueueRange.maxQueue))
 				continue;
 
 			Ref<Drawable> da = renderer->GetDrawable(i);
@@ -205,9 +206,9 @@ void RendererSystem::FillDrawables(DrawingSettings* settings)
 	}
 }
 
-void RendererSystem::SortDrawables(DrawingSettings* settings)
+void RendererSystem::SortDrawables(DrawingSettings& settings)
 {
-	switch (settings->sortSettings.criteria)
+	switch (settings.sortSettings.criteria)
 	{
 	case SortingCriteria::SortingLayer:
 		break;

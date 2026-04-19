@@ -1,5 +1,7 @@
 #pragma once
 
+#include "AutoPtr.h"
+
 namespace LindaEngine
 {
 	struct Event;
@@ -9,7 +11,7 @@ namespace LindaEngine
 	public:
 		virtual ~IEventHandler() = default;
 
-		virtual void OnEvent(IEventHandler* sender, int eventCode, Event& eventData) = 0;
+		virtual void OnEvent(Weak<IEventHandler> sender, int eventCode, Event& eventData) = 0;
 	};
 }
 

@@ -7,6 +7,7 @@
 #include "ComponentFactory.h"
 #include "GUILayoutEditor.h"
 #include "Texture.h"
+#include "Material.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -19,17 +20,16 @@ DYNAMIC_CREATE_CLASS(InspectorPanelEditor, ImGuiPanelEditor)
 
 InspectorPanelEditor::InspectorPanelEditor()
 {
-	EventSystemEditor::Bind(EventCodeEditor::SwitchSelectEntity, this);
-	EventSystemEditor::Bind(EventCodeEditor::SwitchInspectorObject, this);
 }
 
 void InspectorPanelEditor::OnImGuiRender()
 {
+	Initialize();
 	bool close = true;
 	ImGuiWindowFlags window_flags = 0;
 	window_flags |= ImGuiWindowFlags_NoCollapse;
 
-	ImGui::Begin("Inspector", &close, window_flags);
+	ImGui::Begin("  Inspector  ", &close, window_flags);
 
 	if (nullptr == _object)
 	{
@@ -39,16 +39,22 @@ void InspectorPanelEditor::OnImGuiRender()
 
 	if (nullptr != _object)
 	{
-		Texture* texture = dynamic_cast<Texture*>(_object);
-		if (nullptr == texture)
+		Weak<Texture> texture = DynamicCastWeak(Texture, _object);
+		Weak<Material> material = DynamicCastWeak(Material, _object);
+		if (nullptr == texture && nullptr == material)
 			_object->OnImguiRender();
 		else
 		{
-			RenderTexture* rt = dynamic_cast<RenderTexture*>(_object);
-			if (nullptr == rt)
-				Texture::OnImguiRender(texture);
+			if (nullptr != material)
+				Material::OnImguiRender(material);
 			else
-				RenderTexture::OnImguiRender(rt);
+			{
+				Weak<RenderTexture> rt = DynamicCastWeak(RenderTexture, _object);
+				if (nullptr == rt)
+					Texture::OnImguiRender(texture);
+				else
+					RenderTexture::OnImguiRender(rt);
+			}
 		}
 	}
 
@@ -57,7 +63,7 @@ void InspectorPanelEditor::OnImGuiRender()
 	ImGui::End();
 }
 
-void InspectorPanelEditor::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
+void InspectorPanelEditor::OnEvent(Weak<LindaEngine::IEventHandler> sender, int eventCode, Event& eventData)
 {
 	switch (eventCode)
 	{
@@ -76,12 +82,22 @@ void InspectorPanelEditor::OnEvent(IEventHandler* sender, int eventCode, Event& 
 	}
 }
 
+void InspectorPanelEditor::Initialize()
+{
+	static bool initialized = false;
+	if (initialized)
+		return;
+	initialized = true;
+	EventSystemEditor::Bind(EventCodeEditor::SwitchSelectEntity, shared_from_this());
+	EventSystemEditor::Bind(EventCodeEditor::SwitchInspectorObject, shared_from_this());
+}
+
 void InspectorPanelEditor::DrawSundry()
 {
 	if (nullptr == _object)
 		return;
 
-	Entity* entity = dynamic_cast<Entity*>(_object);
+	Weak<Entity> entity = DynamicCastWeak(Entity, _object);
 	if (nullptr == entity)
 		return;
 

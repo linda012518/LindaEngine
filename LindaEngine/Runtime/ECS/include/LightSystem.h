@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AutoPtr.h"
 #include <vector>
 #include <string>
 
@@ -14,16 +15,16 @@ namespace LindaEngine
 		static void Tick(float deltaTime);
 		static void OnDeserializeFinish();
 
-		static void Add(Light* light);
-		static void Remove(Light* light);
+		static void Add(Weak<Light> light);
+		static void Remove(Weak<Light> light);
 		static void Clear();
 
-		static const std::vector<Light*> GetLightList(Camera* camera);
+		static const std::vector<Weak<Light>> GetLightList(Weak<Camera> camera);
 
 	private:
 		static void UpdateMainLight();
 
 	private:
-		static std::vector<Light*> _components;
+		static std::vector<Weak<Light>> _components;
 	};
 }

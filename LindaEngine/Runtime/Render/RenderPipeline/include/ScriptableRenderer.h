@@ -14,7 +14,7 @@ namespace LindaEngine
 	public:
 		void Initialize();
 		void Finalize();
-		void Render(Camera* camera);
+		void Render(Weak<Camera> camera);
 
 	protected:
 		void AddRenderPass(Ref<ScriptablePass> pass);

@@ -9,7 +9,7 @@ DYNAMIC_CREATE_CLASS(ConsolePanelEditor, ImGuiPanelEditor)
 
 void ConsolePanelEditor::OnImGuiRender()
 {
-	ImGui::Begin("Console");
+	ImGui::Begin("  Console  ");
 	for (size_t i = 0; i < 20; i++)
 	{
 		ImGui::Text("Hello, world!");

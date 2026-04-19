@@ -1,6 +1,8 @@
 #ifndef LINDA_SURFACE_DATA_INCLUDED
 #define LINDA_SURFACE_DATA_INCLUDED
 
+#include "BuiltInAssets/Shaders/ShaderLibrary/Common.glsl"
+
 struct SurfaceData
 {
     vec3  albedo;

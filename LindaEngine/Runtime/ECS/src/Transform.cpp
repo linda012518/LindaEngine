@@ -30,15 +30,15 @@ using namespace LindaEditor;
 
 Transform::Transform(Entity& entity) : Component(entity, true)
 {
-	TransformSystem::Add(this);
+	//TransformSystem::Add(DynamicCastWeak(Transform, GetWeak()));
 }
 
 Transform::~Transform()
 {
-	TransformSystem::Remove(this);
+	//TransformSystem::Remove(DynamicCastWeak(Transform, GetWeak()));
 }
 
-bool Transform::HasChild(Transform* transform)
+bool Transform::HasChild(Weak<Transform> transform)
 {
 	if (_children.empty())
 		return false;
@@ -68,19 +68,19 @@ const glm::mat4& Transform::GetViewMat() const
 	return _viewMatrix;
 }
 
-const Transform* Transform::GetParent() const
+const Weak<Transform> Transform::GetParent() const
 {
 	return _parent;
 }
 
-const std::list<Transform*>& Transform::GetChildren() const
+const std::list<Weak<Transform>>& Transform::GetChildren() const
 {
 	return _children;
 }
 
-const Transform* Transform::Find(std::string path) const
+const Weak<Transform> Transform::Find(std::string path) const
 {
-	std::list<Transform*> list = _children;
+	std::list<Weak<Transform>> list = _children;
 	std::vector<std::string> directorys = Path::GetFileDirectorys(path.c_str());
 
 	bool hasPath = directorys[0] == _entity.GetName();
@@ -112,7 +112,7 @@ const Transform* Transform::Find(std::string path) const
 	return nullptr;
 }
 
-Transform* Transform::GetChildByName(Transform* parent, std::string name)
+Weak<Transform> Transform::GetChildByName(Weak<Transform> parent, std::string name)
 {
 	for (auto& go : parent->GetChildren())
 	{
@@ -120,7 +120,7 @@ Transform* Transform::GetChildByName(Transform* parent, std::string name)
 			return go;
 		else
 		{
-			Transform* ret = GetChildByName(go, name);
+			Weak<Transform> ret = GetChildByName(go, name);
 			if (nullptr != ret)
 				return ret;
 		}
@@ -168,7 +168,7 @@ const glm::quat& Transform::GetWorldRotation() const
 	return _worldRotation;
 }
 
-void Transform::SetParent(Transform* parent)
+void Transform::SetParent(Weak<Transform> parent)
 {
 	if (_parent == parent)
 		return;
@@ -176,14 +176,16 @@ void Transform::SetParent(Transform* parent)
 	UpdateWhenLocalChange();
 	_worldChange = true;
 
+	Weak<Transform> thisWeak = DynamicCastWeak(Transform, GetWeak());
+
 	if (_parent)
-		_parent->_children.remove(this);
+		_parent->_children.remove(thisWeak);
 
 	_parent = parent;
 
 	if (nullptr != _parent)
 	{
-		_parent->_children.push_back(this);
+		_parent->_children.push_back(thisWeak);
 		_parentID = _parent->GetEntity().GetUUID();
 	}
 	else

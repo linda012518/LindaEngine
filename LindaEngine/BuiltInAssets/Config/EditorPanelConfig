@@ -1,4 +1,5 @@
 EditorPanelConfig:
+  - EnvironmentPanelEditor
   - ConsolePanelEditor
   - ContentBrowserPanelEditor
   - EditViewPanelEditor

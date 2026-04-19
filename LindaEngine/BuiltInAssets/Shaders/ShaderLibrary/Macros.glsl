@@ -14,5 +14,10 @@
 #define linda_PI_DIV_FOUR 0.78539816339744830961
 
 #define Transform_UV(tex, name) ((tex.xy) * name##_ST.xy + name##_ST.zw)
+#define rcp(x) (1.0 / (x))
+#define Pow2(x) ((x) * (x))
+#define Pow3(x) ((x) * (x) * (x))
+#define Pow4(x) ((x) * (x) * (x) * (x))
+#define Pow5(x) ((x) * (x) * (x) * (x) * (x))
 
 #endif // LINDA_MACROS_INCLUDED

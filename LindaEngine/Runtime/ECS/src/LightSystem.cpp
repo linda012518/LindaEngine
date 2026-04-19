@@ -6,7 +6,7 @@
 
 using namespace LindaEngine;
 
-std::vector<Light*> LightSystem::_components;
+std::vector<Weak<Light>> LightSystem::_components;
 
 void LightSystem::Tick(float deltaTime)
 {
@@ -29,12 +29,13 @@ void LightSystem::OnDeserializeFinish()
 	}
 }
 
-void LightSystem::Add(Light* light)
+void LightSystem::Add(Weak<Light> light)
 {
+	light->Initialize();
 	_components.push_back(light);
 }
 
-void LightSystem::Remove(Light* light)
+void LightSystem::Remove(Weak<Light> light)
 {
 	auto itr = std::find(_components.begin(), _components.end(), light);
 	if (itr != _components.end())
@@ -46,7 +47,7 @@ void LightSystem::Clear()
 	if (false == _components.empty())
 		static_assert(true, "LightSystem is not empty, Check destruction process.");
 
-	std::vector<Light*> temp;
+	std::vector<Weak<Light>> temp;
 
 	for (auto& com : _components) {
 		if (false == com->GetEntity().GetDontDestory())
@@ -61,9 +62,9 @@ void LightSystem::Clear()
 	}
 }
 
-const std::vector<Light*> LightSystem::GetLightList(Camera* camera)
+const std::vector<Weak<Light>> LightSystem::GetLightList(Weak<Camera> camera)
 {
-	std::vector<Light*> list;
+	std::vector<Weak<Light>> list;
 
 	Frustum& frustum = camera->GetFrustum();
 
@@ -80,7 +81,7 @@ const std::vector<Light*> LightSystem::GetLightList(Camera* camera)
 
 void LightSystem::UpdateMainLight()
 {
-	std::vector<Light*> directionLights;
+	std::vector<Weak<Light>> directionLights;
 	for (auto& light : _components)
 	{
 		if (light->GetLightType() != LightType::DirectionLight)
@@ -89,7 +90,7 @@ void LightSystem::UpdateMainLight()
 	}
 	if (directionLights.size() <= 0)
 		return;
-	Light* main = directionLights[0];
+	Weak<Light> main = directionLights[0];
 	for (auto& light : directionLights)
 	{
 		if (light->GetIntensity() > main->GetIntensity())

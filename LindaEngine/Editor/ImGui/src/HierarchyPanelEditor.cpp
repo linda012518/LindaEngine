@@ -20,24 +20,25 @@ using namespace LindaEditor;
 using namespace LindaEngine;
 
 static char renameBuffer[256] = "";
-std::vector<LindaEngine::Entity*> HierarchyPanelEditor::_selectionEntityArray;
+std::vector<Weak<Entity>> HierarchyPanelEditor::_selectionEntityArray;
 
 DYNAMIC_CREATE_CLASS(HierarchyPanelEditor, ImGuiPanelEditor)
 
 HierarchyPanelEditor::HierarchyPanelEditor()
 {
-	EventSystemEditor::Bind(EventCodeEditor::PickEntityID, this);
 	_cameraCtrl = RenderPipelineEditor::activeCamera->GetEntity().GetComponent<CameraController>();
 }
 
 void HierarchyPanelEditor::OnImGuiRender()
 {
+	Initialize();
+
 	bool close = true;
 	ImGuiWindowFlags window_flags = 0;
 	window_flags |= ImGuiWindowFlags_NoCollapse;
 	window_flags |= ImGuiWindowFlags_UnsavedDocument;
 
-	ImGui::Begin("Hierarchy", &close, window_flags);
+	ImGui::Begin("  Hierarchy  ", &close, window_flags);
 
 	DrawEntitys();
 
@@ -57,7 +58,7 @@ void HierarchyPanelEditor::OnImGuiRender()
 	ImGui::End();
 }
 
-void HierarchyPanelEditor::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
+void HierarchyPanelEditor::OnEvent(Weak<IEventHandler> sender, int eventCode, Event& eventData)
 {
 	PickEntityIDEditor& event = dynamic_cast<PickEntityIDEditor&>(eventData);
 	auto& ids = event.selectID;
@@ -65,7 +66,7 @@ void HierarchyPanelEditor::OnEvent(IEventHandler* sender, int eventCode, Event& 
 	_selectionEntityArray.clear();
 	for (auto& pair : ids)
 	{
-		Entity* go = SceneManagerEditor::GetCurrentNode()->scene->GetEntity(pair.first);
+		Weak<Entity> go = SceneManagerEditor::GetCurrentNode()->scene->GetEntity(pair.first);
 		if (nullptr == go)
 			continue;
 		_selectionEntityArray.push_back(go);
@@ -75,6 +76,15 @@ void HierarchyPanelEditor::OnEvent(IEventHandler* sender, int eventCode, Event& 
 	else
 		_selectionEntity = nullptr;
 	SendSwitchEntityMessage();
+}
+
+void HierarchyPanelEditor::Initialize()
+{
+	static bool initialized = false;
+	if (initialized)
+		return;
+	initialized = true;
+	EventSystemEditor::Bind(EventCodeEditor::PickEntityID, shared_from_this());
 }
 
 void HierarchyPanelEditor::DrawEntitys()
@@ -88,18 +98,18 @@ void HierarchyPanelEditor::DrawEntitys()
 	{
 		if (nullptr != go->GetTransform()->GetParent())
 			continue;
-		DrawEntityRecursive(go.get(), &index);
+		DrawEntityRecursive(go, &index);
 	}
 
 	ImGui::PopStyleVar();
 }
 
-void HierarchyPanelEditor::DrawEntityRecursive(Entity* entity, int* index)
+void HierarchyPanelEditor::DrawEntityRecursive(Weak<Entity> entity, int* index)
 {
 	entity->SetIndex(*index);
 	*index += 1;
 
-	const std::list<Transform*>& children = entity->GetTransform()->GetChildren();
+	const std::list<Weak<Transform>>& children = entity->GetTransform()->GetChildren();
 	bool hasChildren = children.size() > 0;
 
 	bool isSelected = IsEntitySelected(entity);
@@ -125,7 +135,7 @@ void HierarchyPanelEditor::DrawEntityRecursive(Entity* entity, int* index)
 	if (_renameEntity == entity)
 	{
 		// 重命名状态下：绘制一个空的树节点（用于布局）
-		opened = ImGui::TreeNodeEx((void*)entity, flags, "");
+		opened = ImGui::TreeNodeEx((void*)entity.Lock().get(), flags, "");
 
 		// 绘制输入框
 		ImGui::SameLine();
@@ -153,7 +163,7 @@ void HierarchyPanelEditor::DrawEntityRecursive(Entity* entity, int* index)
 	}
 	else
 	{
-		opened = ImGui::TreeNodeEx((void*)entity, flags, entity->GetName().c_str());
+		opened = ImGui::TreeNodeEx((void*)entity.Lock().get(), flags, entity->GetName().c_str());
 	}
 
 	if (isSelected)
@@ -218,7 +228,8 @@ void HierarchyPanelEditor::DrawEntityRecursive(Entity* entity, int* index)
 		{
 			for (auto& child : children)
 			{
-				DrawEntityRecursive(&child->GetEntity(), index);
+				Weak<Entity> go = DynamicCastWeak(Entity, child->GetEntity().GetWeak());
+				DrawEntityRecursive(go, index);
 			}
 		}
 		ImGui::TreePop();
@@ -256,30 +267,30 @@ void HierarchyPanelEditor::DrawContextMenu()
 				ImGui::Separator();
 			}
 
-			Transform* parent = _selectionEntity != nullptr ? _selectionEntity->GetTransform() : nullptr;
+			Weak<Transform> parent = _selectionEntity != nullptr ? _selectionEntity->GetTransform() : nullptr;
 
 			if (ImGui::MenuItem("Create Empty Entity"))
 			{
-				Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->CreateEntity("Empty Entity");
+				Weak<Entity> entity = SceneManagerEditor::GetCurrentNode()->scene->CreateEntity("Empty Entity");
 				SetEntityPosition(entity, parent);
 			}
 			if (ImGui::BeginMenu("Create 3D Object"))
 			{
 				if (ImGui::MenuItem("Cube"))
 				{
-					Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiateCube(parent);
+					Weak<Entity> entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiateCube(parent);
 					SetEntityPosition(entity, parent);
 				}
 
 				if (ImGui::MenuItem("Sphere"))
 				{
-					Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiateSphere(parent);
+					Weak<Entity> entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiateSphere(parent);
 					SetEntityPosition(entity, parent);
 				}
 
 				if (ImGui::MenuItem("Plane"))
 				{
-					Entity* entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiatePlane(parent);
+					Weak<Entity> entity = SceneManagerEditor::GetCurrentNode()->scene->InstantiatePlane(parent);
 					SetEntityPosition(entity, parent);
 				}
 
@@ -353,20 +364,20 @@ void HierarchyPanelEditor::DrawBlankAreaDropTarget()
 	}
 }
 
-void HierarchyPanelEditor::DragEntitys(Entity* entity)
+void HierarchyPanelEditor::DragEntitys(Weak<Entity> entity)
 {
 	if (ImGui::BeginDragDropSource())
 	{
 		if (_selectionEntityArray.size() > 1 && IsEntitySelected(entity))
 		{
-			std::vector<Entity*> draggingList(_selectionEntityArray.begin(), _selectionEntityArray.end());
-			ImGui::SetDragDropPayload("ENTITY_DRAG_MULTI", draggingList.data(), draggingList.size() * sizeof(Entity*));
+			std::vector<Weak<Entity>> draggingList(_selectionEntityArray.begin(), _selectionEntityArray.end());
+			ImGui::SetDragDropPayload("ENTITY_DRAG_MULTI", draggingList.data(), draggingList.size() * sizeof(Weak<Entity>));
 			ImGui::Text("Dragging");
 		}
 		else
 		{
 			SelectSingle();
-			ImGui::SetDragDropPayload("ENTITY_DRAG", &_selectionEntity, sizeof(Entity*));
+			ImGui::SetDragDropPayload("ENTITY_DRAG", &_selectionEntity, sizeof(Weak<Entity>));
 			ImGui::Text("Dragging");
 		}
 		ImGui::EndDragDropSource();
@@ -377,22 +388,21 @@ void HierarchyPanelEditor::DragEntitys(Entity* entity)
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
 		{
 			// 单个实体拖拽
-			Entity* draggedEntity = *(Entity**)payload->Data;
+			Weak<Entity> draggedEntity = *(Weak<Entity>*)payload->Data;
 
 			if (draggedEntity->GetTransform()->HasChild(entity->GetTransform()) == false && draggedEntity != entity)
 			{
-				Transform* parentTransform = entity->GetTransform();
-				Transform* childTransform = draggedEntity->GetTransform();
+				Weak<Transform> parentTransform = entity->GetTransform();
+				Weak<Transform> childTransform = draggedEntity->GetTransform();
 				childTransform->SetParent(parentTransform);
 			}
 		}
 		else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG_MULTI"))
 		{
-			int count = payload->DataSize / sizeof(Entity*);
-			Entity** draggedEntities = (Entity**)payload->Data;
+			size_t count = payload->DataSize / sizeof(Weak<Entity>);
+			Weak<Entity>* draggedEntities = (Weak<Entity>*)payload->Data;
 
 			bool isValid = true;
-			std::vector<Entity*> allChildren;
 			for (int i = 0; i < count; i++)
 			{
 				if (false == draggedEntities[i]->GetTransform()->HasChild(entity->GetTransform()))
@@ -403,7 +413,7 @@ void HierarchyPanelEditor::DragEntitys(Entity* entity)
 
 			if (isValid)
 			{
-				Transform* parentTransform = entity->GetTransform();
+				Weak<Transform> parentTransform = entity->GetTransform();
 				for (int i = 0; i < count; i++)
 				{
 					if (draggedEntities[i] != entity)
@@ -447,7 +457,7 @@ void HierarchyPanelEditor::DragEntitys(Entity* entity)
 	}
 }
 
-void HierarchyPanelEditor::HandleEntitySelection(Entity* entity, bool isCtrlDown, bool isShiftDown)
+void HierarchyPanelEditor::HandleEntitySelection(Weak<Entity> entity, bool isCtrlDown, bool isShiftDown)
 {
 	if (isShiftDown)
 	{
@@ -480,19 +490,19 @@ void HierarchyPanelEditor::HandleEntitySelection(Entity* entity, bool isCtrlDown
 	}
 }
 
-bool HierarchyPanelEditor::IsEntitySelected(Entity* entity)
+bool HierarchyPanelEditor::IsEntitySelected(Weak<Entity> entity)
 {
 	return std::find(_selectionEntityArray.begin(), _selectionEntityArray.end(), entity) != _selectionEntityArray.end();
 }
 
-void HierarchyPanelEditor::DeselectEntity(Entity* entity)
+void HierarchyPanelEditor::DeselectEntity(Weak<Entity> entity)
 {
 	auto itr = std::find(_selectionEntityArray.begin(), _selectionEntityArray.end(), entity);
 	if (itr != _selectionEntityArray.end())
 		_selectionEntityArray.erase(itr);
 }
 
-void HierarchyPanelEditor::SelectRange(Entity* entity)
+void HierarchyPanelEditor::SelectRange(Weak<Entity> entity)
 {
 	_selectionEntityArray.clear();
 	if (nullptr == _selectionEntity)
@@ -520,7 +530,7 @@ void HierarchyPanelEditor::SelectRange(Entity* entity)
 			int index = go->GetIndex();
 			if (index < min || index > max)
 				continue;
-			_selectionEntityArray.push_back(go.get());
+			_selectionEntityArray.push_back(go);
 		}
 	}
 }
@@ -549,12 +559,12 @@ void HierarchyPanelEditor::SendSwitchEntityMessage()
 	EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchSelectEntity, ssee);
 }
 
-void HierarchyPanelEditor::SetEntityPosition(Entity* entity, Transform* parent)
+void HierarchyPanelEditor::SetEntityPosition(Weak<Entity> entity, Weak<Transform> parent)
 {
 	if (nullptr != parent)
 		return;
 
-	Transform* cameraTransform = _cameraCtrl->GetTransform();
+	Weak<Transform> cameraTransform = _cameraCtrl->GetTransform();
 	glm::vec3 front, up, right;
 	cameraTransform->GetLocalDir(front, up, right);
 	auto pair = _cameraCtrl->CalculateLookAtData(entity);

@@ -6,7 +6,7 @@
 
 using namespace LindaEngine;
 
-void Frustum::UpdateFrustum(Camera* cam)
+void Frustum::UpdateFrustum(Weak<Camera> cam)
 {
 	const glm::mat4& m = cam->GetViewProjectMatrix();
 

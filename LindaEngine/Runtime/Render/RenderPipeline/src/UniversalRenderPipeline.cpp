@@ -10,6 +10,8 @@
 
 using namespace LindaEngine;
 
+bool UniversalRenderPipeline::isFirstCamera = false;
+
 int UniversalRenderPipeline::Initialize()
 {
     RenderPipeline::Initialize();
@@ -35,8 +37,9 @@ void UniversalRenderPipeline::Render()
     //7 渲染天空
     //8 渲染透明物体
 
-    const std::vector<Camera*> cameraList = CheckCameraList();
+    const std::vector<Weak<Camera>> cameraList = CheckCameraList();
 
+    isFirstCamera = true;
     for (auto& camera : cameraList)
     {
         Camera::currentRenderCamera = camera;
@@ -74,25 +77,27 @@ void UniversalRenderPipeline::Render()
             rt = RenderTextureManager::Get(width, height, fts, camera->GetMSAA());
         }
         RenderTextureManager::SetRenderTarget(rt);
-
-        Graphic::SetViewport(0, 0, width, height);
+		glm::vec4& viewport = camera->GetViewport();
+        Graphic::SetViewport((int)(viewport.x * width), (int)(viewport.y * height), (int)((viewport.z - viewport.x) * width), (int)((viewport.w - viewport.y) * height));
         glm::vec4& color = camera->GetClearColor();
-        Graphic::SetClearColor(color.r, color.g, color.b, color.a);
+        Graphic::SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         switch (camera->GetClearType())
         {
         case CameraClearType::Skybox:
         case CameraClearType::SolidColor:
+            Graphic::SetClearColor(color.r, color.g, color.b, color.a);
             Graphic::Clear(true, true, true);
             break;
         case CameraClearType::DepthOnly:
-            Graphic::Clear(false, true, true);
+            Graphic::Clear(true, true, true);
             break;
         case CameraClearType::DontClear:
-            Graphic::Clear(false, false, false);
+            Graphic::Clear(false, true, true);
             break;
         }
 
         _urp.Render(camera);
+        isFirstCamera = false;
     }
 
     Camera::currentRenderCamera = nullptr;

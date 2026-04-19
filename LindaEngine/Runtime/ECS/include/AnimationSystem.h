@@ -10,11 +10,11 @@ namespace LindaEngine
 		static void Tick(float deltaTime);
 		static void OnDeserializeFinish();
 
-		static void Add(Animation* anim);
-		static void Remove(Animation* anim);
+		static void Add(Weak<Animation> anim);
+		static void Remove(Weak<Animation> anim);
 		static void Clear();
 
 	private:
-		static std::vector<Animation*> _components;
+		static std::vector<Weak<Animation>> _components;
 	};
 }

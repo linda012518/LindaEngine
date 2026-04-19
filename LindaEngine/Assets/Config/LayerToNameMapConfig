@@ -1,0 +1,34 @@
+LayerToNameMap:
+  -1: Everything
+  0: Nothing
+  1: Layer 1
+  2: Layer 2
+  4: Layer 3
+  8: Layer 4
+  16: Layer 5
+  32: Layer 6
+  64: Layer 7
+  128: Layer 8
+  256: Layer 9
+  512: Layer 10
+  1024: Layer 11
+  2048: Layer 12
+  4096: Layer 13
+  8192: Layer 14
+  16384: Layer 15
+  32768: Layer 16
+  65536: Layer 17
+  131072: Layer 18
+  262144: Layer 19
+  524288: Layer 20
+  1048576: Layer 21
+  2097152: Layer 22
+  4194304: Layer 23
+  8388608: Layer 24
+  16777216: Layer 25
+  33554432: Layer 26
+  67108864: Layer 27
+  134217728: Layer 28
+  268435456: Layer 29
+  536870912: Layer 30
+  1073741824: Layer 31

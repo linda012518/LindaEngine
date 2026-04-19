@@ -29,7 +29,7 @@ PlayViewPanelEditor::PlayViewPanelEditor()
 void PlayViewPanelEditor::OnImGuiRender()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(1, 1));
-	ImGui::Begin("Play View");
+	ImGui::Begin("  Play View  ");
 
 	ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 

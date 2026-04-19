@@ -8,7 +8,7 @@ DrawErrorPass::DrawErrorPass()
 	_renderPassEvent = RenderPassEvent::AfterRenderingTransparents;
 }
 
-void DrawErrorPass::Render(Camera* camera)
+void DrawErrorPass::Render(Weak<Camera> camera)
 {
 	RendererSystem::DrawErrorRenderer();
 }

@@ -45,7 +45,7 @@ namespace LindaEngine
 		static Drawable& GetBoundingBoxRenderer();
 		void RenderBoundingBox();
 
-		Mesh* GetMesh() { return _mesh.get(); }
+		Weak<Mesh> GetMesh() { return _mesh; }
 		RenderComponentType GetType() { return _type; }
 		AABBBoundingBox& GetBoundingBox() { return _aabb; }
 		std::vector<Ref<Material>>& GetMaterials() { return _materialList; }
@@ -91,10 +91,10 @@ namespace LindaEngine
 
 		void AddMaterial(int index, Ref<Material> mat) override;
 
-		void SetBones(std::vector<Transform*> bones);
-		std::vector<Transform*>& GetBones();
-		void SetRootBone(Transform* root);
-		Transform* GetRootBone();
+		void SetBones(std::vector<Weak<Transform>> bones);
+		std::vector<Weak<Transform>>& GetBones();
+		void SetRootBone(Weak<Transform> root);
+		Weak<Transform> GetRootBone();
 
 		void SetBonesData(std::vector<BoneData> data);
 		std::vector<BoneData>& GetBonesData();
@@ -102,8 +102,8 @@ namespace LindaEngine
 		std::vector<glm::mat4>& GetFinalBoneMatrix() { return _boneMatrices; }
 
 	private:
-		Transform* _rootBone = nullptr;
-		std::vector<Transform*> _bones;
+		Weak<Transform> _rootBone = nullptr;
+		std::vector<Weak<Transform>> _bones;
 		std::vector<BoneData> _bonesData;
 		std::vector<glm::mat4> _boneMatrices;
 	};

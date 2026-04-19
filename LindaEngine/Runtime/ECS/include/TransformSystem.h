@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AutoPtr.h"
 #include <vector>
 #include <string>
 
@@ -14,13 +15,13 @@ namespace LindaEngine
 		static void Tick(float deltaTime);
 		static void OnDeserializeFinish();
 
-		static void Add(Transform* trans);
-		static void Remove(Transform* trans);
+		static void Add(Weak<Transform> trans);
+		static void Remove(Weak<Transform> trans);
 		static void Clear();
-		static Transform* Get(std::string& uuid);
-		static Transform* Get(std::vector<Transform*>& list, std::string& uuid);
+		static Weak<Transform> Get(std::string& uuid);
+		static Weak<Transform> Get(std::vector<Weak<Transform>>& list, std::string& uuid);
 
 	private:
-		static std::vector<Transform*> _components;
+		static std::vector<Weak<Transform>> _components;
 	};
 }

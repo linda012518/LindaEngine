@@ -28,12 +28,12 @@ DYNAMIC_CREATE(SkinMeshRenderer)
 
 Renderer::Renderer(Entity& entity, bool enable) : Component(entity, enable)
 {
-	RendererSystem::Add(this);
+	//RendererSystem::Add(DynamicCastWeak(Renderer, GetWeak()));
 }
 
 Renderer::~Renderer()
 {
-	RendererSystem::Remove(this);
+	//RendererSystem::Remove(DynamicCastWeak(Renderer, GetWeak()));
 }
 
 bool Renderer::Serialize()
@@ -170,6 +170,7 @@ void Renderer::OnImguiRender()
 				if (ImGui::MenuItem("Clear Material"))
 				{
 					//RemoveMaterial((int)i);
+					//ImGui::CloseCurrentPopup();
 				}
 				ImGui::EndPopup();
 			}
@@ -252,10 +253,6 @@ bool Renderer::HasError(int index)
 
 bool Renderer::InLayerMask(int layer)
 {
-	if (-1 == layer)
-		return false;
-	if (0 == layer)
-		return true;
 	return _entity.GetLayer() & layer;
 }
 
@@ -317,7 +314,7 @@ void Renderer::RenderBoundingBox()
 	drawable.transform->SetLocalPosition(_transform->GetWorldScale() * _mesh->GetBoundingBox().center);
 	drawable.transform->SetWorldScale(_transform->GetWorldScale() * _mesh->GetBoundingBox().size);
 	drawable.transform->Tick();
-	Transform* parent = (Transform*)drawable.transform->GetParent();
+	Weak<Transform> parent = (Weak<Transform>)drawable.transform->GetParent();
 	parent->SetWorldPosition(_transform->GetWorldPosition());
 	parent->SetWorldRotation(_transform->GetWorldRotation());
 	parent->Tick();
@@ -404,7 +401,7 @@ void SkinMeshRenderer::Tick()
 	_boneMatrices.assign((size_t)maxBoneId + 1, glm::mat4(1.0f));
 	for (int n = 0; n < size1; n++)
 	{
-		Transform* bone = _bones[n];
+		Weak<Transform> bone = _bones[n];
 		if (bone == nullptr)
 			continue;
 
@@ -501,6 +498,12 @@ void SkinMeshRenderer::OnImguiRender()
 		ImGui::EndTable();
 	}
 
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_OpenOnArrow;
+
+	bool opened = ImGui::TreeNodeEx((void*)this, flags, "All Bones");
+	if (false == opened)
+		return;
+
 	for (size_t i = 0; i < _bones.size(); ++i)
 	{
 		ImGui::PushID((int)i);
@@ -519,6 +522,7 @@ void SkinMeshRenderer::OnImguiRender()
 		}
 		ImGui::PopID();
 	}
+	ImGui::TreePop();
 }
 
 void SkinMeshRenderer::AddMaterial(int index, Ref<Material> mat)
@@ -527,22 +531,22 @@ void SkinMeshRenderer::AddMaterial(int index, Ref<Material> mat)
 	mat->AddKeyword("_Skin_Vertex_");
 }
 
-void SkinMeshRenderer::SetBones(std::vector<Transform*> bones)
+void SkinMeshRenderer::SetBones(std::vector<Weak<Transform>> bones)
 {
 	_bones = bones;
 }
 
-std::vector<Transform*>& SkinMeshRenderer::GetBones()
+std::vector<Weak<Transform>>& SkinMeshRenderer::GetBones()
 {
 	return _bones;
 }
 
-void SkinMeshRenderer::SetRootBone(Transform* root)
+void SkinMeshRenderer::SetRootBone(Weak<Transform> root)
 {
 	_rootBone = root;
 }
 
-Transform* SkinMeshRenderer::GetRootBone()
+Weak<Transform> SkinMeshRenderer::GetRootBone()
 {
 	return _rootBone;
 }

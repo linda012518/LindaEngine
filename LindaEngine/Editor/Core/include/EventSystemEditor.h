@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AutoPtr.h"
 #include <unordered_map>
 
 namespace LindaEngine
@@ -13,13 +14,13 @@ namespace LindaEditor
 	class EventSystemEditor
 	{
 	public:
-		static std::unordered_map<int, std::list<LindaEngine::IEventHandler*>> _eventMap;
+		static std::unordered_map<int, std::list<Weak<LindaEngine::IEventHandler>>> _eventMap;
 
-		static void Bind(int code, LindaEngine::IEventHandler* obj);
+		static void Bind(int code, Weak<LindaEngine::IEventHandler> obj);
 
-		static void Unbind(int code, LindaEngine::IEventHandler* obj);
+		static void Unbind(int code, Weak<LindaEngine::IEventHandler> obj);
 
-		static void Dispatch(LindaEngine::IEventHandler* sender, int code, LindaEngine::Event& eventData);
+		static void Dispatch(Weak<LindaEngine::IEventHandler> sender, int code, LindaEngine::Event& eventData);
 
 		static void Clear();
 

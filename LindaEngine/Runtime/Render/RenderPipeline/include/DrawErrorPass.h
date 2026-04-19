@@ -8,6 +8,6 @@ namespace LindaEngine
 	{
 	public:
 		DrawErrorPass();
-		void Render(Camera* camera);
+		void Render(Weak<Camera> camera);
 	};
 }

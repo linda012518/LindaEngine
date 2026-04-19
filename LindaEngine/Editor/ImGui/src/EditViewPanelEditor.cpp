@@ -26,12 +26,12 @@ using namespace LindaEngine;
 
 bool EditViewPanelEditor::hovered = false;
 Ref<RenderTexture> EditViewPanelEditor::pickRT = nullptr;
+glm::vec2 EditViewPanelEditor::screenPos = glm::vec2(0.0f);
 
 DYNAMIC_CREATE_CLASS(EditViewPanelEditor, ImGuiPanelEditor)
 
 EditViewPanelEditor::EditViewPanelEditor()
 {
-	EventSystemEditor::Bind(EventCodeEditor::SwitchSelectEntity, this);
 
 	FramebufferTextureSpecification color;
 	color.colorFormat = TextureFormat::RGBA16;
@@ -55,8 +55,10 @@ EditViewPanelEditor::EditViewPanelEditor()
 
 void EditViewPanelEditor::OnImGuiRender()
 {
+	Initialize();
+
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(1, 1));
-	ImGui::Begin("Edit View");
+	ImGui::Begin("  Edit View  ");
 
 	hovered = ImGui::IsWindowHovered();
 
@@ -81,6 +83,9 @@ void EditViewPanelEditor::OnImGuiRender()
 	uint64_t textureID = _renderTexture->nativeIDs[0];
 	ImGui::Image(reinterpret_cast<void*>(textureID), viewportPanelSize, ImVec2(0, 1), ImVec2(1, 0));
 
+	ImVec2 mousePos = ImGui::GetMousePos();
+	screenPos = glm::ivec2(glm::abs(mousePos.x - windowPos.x), glm::abs(mousePos.y - windowPos.y));
+
 	RenderGuizmoButton(viewportPanelSize);
 	RenderGuizmo();
 	DrawRect(windowPos);
@@ -90,10 +95,19 @@ void EditViewPanelEditor::OnImGuiRender()
 	ImGui::PopStyleVar();
 }
 
-void EditViewPanelEditor::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
+void EditViewPanelEditor::OnEvent(Weak<LindaEngine::IEventHandler> sender, int eventCode, Event& eventData)
 {
 	SwitchSelectEntityEditor& event = dynamic_cast<SwitchSelectEntityEditor&>(eventData);
 	_selectionEntity = event.selectionEntity;
+}
+
+void EditViewPanelEditor::Initialize()
+{
+	static bool initialized = false;
+	if (initialized)
+		return;
+	initialized = true;
+	EventSystemEditor::Bind(EventCodeEditor::SwitchSelectEntity, shared_from_this());
 }
 
 void EditViewPanelEditor::ProcessPick(ImVec2& viewportPanelSize, ImVec2& windowPos)

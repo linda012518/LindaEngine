@@ -8,6 +8,6 @@ namespace LindaEngine
 	{
 	public:
 		PrecomputedAmbientPass();
-		void Render(Camera* camera);
+		void Render(Weak<Camera> camera);
 	};
 }

@@ -86,18 +86,6 @@
                 vec3 backColor = mix(groundColor, horizonColor, step(0.0, viewHeight));
                 vec3 baseColor = mix(frontColor, backColor, blend);
 
-                //vec3 baseColor;
-                //if (viewHeight >= 0.0) {
-                //    blend = 1.0 - viewHeight;
-                //    blend = pow(blend, 1.5);
-                //    baseColor = mix(topColor, horizonColor, blend);
-                //} else {
-                //    blend = -viewHeight;
-                //    blend = pow(blend, 0.4);
-                //    blend = smoothstep(0.2, 0.4, blend);
-                //    baseColor = mix(horizonColor, groundColor, blend);
-                //}
-
                 // 太阳圆盘和光晕
                 float sunAngle = angleBetween(dir, sunDir);
                 float sunAngularRadius = 0.02;
@@ -130,7 +118,7 @@
 
                 vec3 finalColor = baseColor + sunContribution;
                 finalColor += stars * starVisibility;
-                finalColor = UndoBakedSkyboxEnvEncoding(finalColor);
+                finalColor = pow(finalColor, vec3(2.2)); // 输出线性空间颜色
                 FragColor = vec4(finalColor, 1.0);
 			}
 		}

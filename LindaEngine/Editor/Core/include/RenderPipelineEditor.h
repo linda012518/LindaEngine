@@ -26,7 +26,7 @@ namespace LindaEditor
 		Ref<LindaEngine::Entity> _entity = nullptr;
 
 	public:
-		static LindaEngine::Camera* activeCamera;
+		static Weak<LindaEngine::Camera> activeCamera;
 	};
 }
 

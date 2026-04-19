@@ -30,8 +30,6 @@ namespace LindaEngine
 		virtual void OnDisable();
 		virtual void OnDestroy();
 
-		virtual void Initialize() = 0;
-
 	private:
 		bool CanEnable();
 		bool CanDisable();

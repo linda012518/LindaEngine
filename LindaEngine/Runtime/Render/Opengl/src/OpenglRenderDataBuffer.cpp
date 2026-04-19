@@ -61,7 +61,6 @@ void OpenGLIndexBuffer::Unbind() const
 
 OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size, int vertexStride, bool isStatic)
 {
-	attributes = nullptr;
 	_count = size / vertexStride;
 	_rendererID = 0;
 	glGenBuffers(1, &_rendererID);
@@ -71,7 +70,6 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size, int vertexStride, bool isS
 
 OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size, int vertexStride, bool isStatic)
 {
-	attributes = nullptr;
 	_count = size / vertexStride;
 	_rendererID = 0;
 	glGenBuffers(1, &_rendererID);
@@ -95,12 +93,12 @@ void OpenGLVertexBuffer::Unbind() const
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void OpenGLVertexBuffer::SetVertexAttribute(std::vector<VertexAttribute>* attrs)
+void OpenGLVertexBuffer::SetVertexAttribute(std::vector<VertexAttribute>& attrs)
 {
 	attributes = attrs;
 }
 
-const std::vector<VertexAttribute>* OpenGLVertexBuffer::GetAttributes() const
+const std::vector<VertexAttribute>& OpenGLVertexBuffer::GetAttributes() const
 {
 	return attributes;
 }
@@ -140,7 +138,7 @@ void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& buffer, int ver
 {
 	Bind();
 	buffer->Bind();
-	for (auto& attr : *buffer->GetAttributes())
+	for (auto& attr : buffer->GetAttributes())
 	{
 		glEnableVertexAttribArray(attr.index);
 		glVertexAttribPointer(attr.index, attr.size, VertexAttributeTypeToOpenGLType(attr.attributeType), attr.normalized ? GL_TRUE : GL_FALSE, vertexStride, (const void*)(intptr_t)attr.offset);

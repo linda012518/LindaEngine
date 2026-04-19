@@ -19,44 +19,44 @@
 
 using namespace LindaEngine;
 
-Entity* Scene::CreateEntity(const char* name, bool active)
+Weak<Entity> Scene::CreateEntity(const char* name, bool active)
 {
 	Ref<Entity> e = CreateRef<Entity>(name, active);
 	_entitys.push_back(e);
-	return e.get();
+	return e;
 }
 
-Entity* Scene::InstantiateCube(Transform* parent)
+Weak<Entity> Scene::InstantiateCube(Weak<Transform> parent)
 {
 	return InstantiateFBX("BuiltInAssets/Meshs/Cube.FBX", parent);
 }
 
-Entity* Scene::InstantiateSphere(Transform* parent)
+Weak<Entity> Scene::InstantiateSphere(Weak<Transform> parent)
 {
 	return InstantiateFBX("BuiltInAssets/Meshs/Sphere.FBX", parent);
 }
 
-Entity* Scene::InstantiatePlane(Transform* parent)
+Weak<Entity> Scene::InstantiatePlane(Weak<Transform> parent)
 {
 	return InstantiateFBX("BuiltInAssets/Meshs/Plane.FBX", parent);
 }
 
-Entity* Scene::InstantiatePrefab(std::string path, Transform* parent)
+Weak<Entity> Scene::InstantiatePrefab(std::string path, Weak<Transform> parent)
 {
 	return DeserializePrefab(path, parent);
 }
 
-Entity* Scene::InstantiateFBX(std::string path, Transform* parent)
+Weak<Entity> Scene::InstantiateFBX(std::string path, Weak<Transform> parent)
 {
 	Ref<FBXResources> res = FBXManager::GetFBX(path);
 
-	Entity* entity = CreateEntityFromFBX(res, parent);
+	Weak<Entity> entity = CreateEntityFromFBX(res, parent);
 
-	std::vector<Transform*> transforms;
-	std::vector<SkinMeshRenderer*> renderers;
+	std::vector<Weak<Transform>> transforms;
+	std::vector<Weak<SkinMeshRenderer>> renderers;
 	CollectBonesComponents(entity, transforms, renderers);
 
-	std::vector<Transform*> bones;
+	std::vector<Weak<Transform>> bones;
 	for (auto& renderer : renderers)
 	{
 		bones.clear();
@@ -64,7 +64,7 @@ Entity* Scene::InstantiateFBX(std::string path, Transform* parent)
 		std::vector<BoneData>& data = renderer->GetBonesData();
 		for (auto& boneData : data)
 		{
-			Transform* bone = GetTransformByBoneName(transforms, boneData.name);
+			Weak<Transform> bone = GetTransformByBoneName(transforms, boneData.name);
 			bones.push_back(bone);
 		}
 		renderer->SetBones(bones);
@@ -74,34 +74,34 @@ Entity* Scene::InstantiateFBX(std::string path, Transform* parent)
 	return entity;
 }
 
-void Scene::DestroyEntity(Entity* entity)
+void Scene::DestroyEntity(Weak<Entity> entity)
 {
 	_dirtyEntitys.push_back(entity);
 }
 
-void Scene::DestroyEntityImmediately(Entity* entity)
+void Scene::DestroyEntityImmediately(Weak<Entity> entity)
 {
-	Transform* trans = entity->GetTransform();
+	Weak<Transform> trans = entity->GetTransform();
 	trans->SetParent(nullptr);
 	DestroyEntityIncludeChild(entity);
 }
 
-Entity* Scene::GetEntity(const char* name)
+Weak<Entity> Scene::GetEntity(const char* name)
 {
 	for (auto& e : _entitys) {
 		if (e->GetName() != name)
 			continue;
-		return e.get();
+		return e;
 	}
 	return nullptr;
 }
 
-Entity* Scene::GetEntity(int id)
+Weak<Entity> Scene::GetEntity(int id)
 {
 	for (auto& e : _entitys) {
 		if (e->_entityID != id)
 			continue;
-		return e.get();
+		return e;
 	}
 	return nullptr;
 }
@@ -110,7 +110,7 @@ void Scene::DestroyEntity()
 {
 	for (auto& e : _dirtyEntitys) 
 	{
-		Transform* trans = e->GetTransform();
+		Weak<Transform> trans = e->GetTransform();
 		trans->SetParent(nullptr);
 		DestroyEntityIncludeChild(e);
 	}
@@ -126,13 +126,14 @@ void Scene::UpdateEntityComponents()
 	}
 }
 
-void Scene::DestroyEntityIncludeChild(Entity* entity)
+void Scene::DestroyEntityIncludeChild(Weak<Entity> entity)
 {
-	Transform* trans = entity->GetTransform();
-	const std::list<Transform*>& children = trans->GetChildren();
+	Weak<Transform> trans = entity->GetTransform();
+	const std::list<Weak<Transform>>& children = trans->GetChildren();
 	for (auto& t : children)
 	{
-		DestroyEntityIncludeChild(&(t->GetEntity()));
+		Weak<Entity> child = DynamicCastWeak(Entity, t->GetEntity().GetWeak());
+		DestroyEntityIncludeChild(child);
 	}
 
 	for (auto iter = _entitys.begin(); iter != _entitys.end(); ++iter) {
@@ -145,11 +146,11 @@ void Scene::DestroyEntityIncludeChild(Entity* entity)
 	}
 }
 
-Entity* Scene::CreateEntityFromFBX(Ref<FBXResources> res, Transform* parent)
+Weak<Entity> Scene::CreateEntityFromFBX(Ref<FBXResources> res, Weak<Transform> parent)
 {
-	Entity* entity = CreateEntity(res->name.c_str());
+	Weak<Entity> entity = CreateEntity(res->name.c_str());
 
-	Transform* transform = entity->GetTransform();
+	Weak<Transform> transform = entity->GetTransform();
 	transform->SetParent(parent);
 	transform->SetLocalPosition(res->localPosition);
 	transform->SetLocalRotation(res->localRotation);
@@ -157,10 +158,10 @@ Entity* Scene::CreateEntityFromFBX(Ref<FBXResources> res, Transform* parent)
 
 	if (nullptr != res->mesh)
 	{
-		Renderer* renderer = nullptr;
+		Weak<Renderer> renderer = nullptr;
 		if (res->boneCount > 0)
 		{
-			SkinMeshRenderer* skinRenderer = entity->AddComponent<SkinMeshRenderer>();
+			Weak<SkinMeshRenderer> skinRenderer = entity->AddComponent<SkinMeshRenderer>();
 			skinRenderer->SetBonesData(res->bones);
 			renderer = skinRenderer;
 		}
@@ -182,27 +183,28 @@ Entity* Scene::CreateEntityFromFBX(Ref<FBXResources> res, Transform* parent)
 	return entity;
 }
 
-void Scene::CollectBonesComponents(Entity* entity, std::vector<Transform*>& transforms, std::vector<SkinMeshRenderer*>& renderers)
+void Scene::CollectBonesComponents(Weak<Entity> entity, std::vector<Weak<Transform>>& transforms, std::vector<Weak<SkinMeshRenderer>>& renderers)
 {
-	Renderer* renderer = entity->GetComponent<Renderer>();
+	Weak<Renderer> renderer = entity->GetComponent<Renderer>();
 	if (nullptr == renderer)
 	{
 		transforms.push_back(entity->GetTransform());
 	}
 	else
 	{
-		SkinMeshRenderer* skinPtr = dynamic_cast<SkinMeshRenderer*>(renderer);
+		Weak<SkinMeshRenderer> skinPtr = DynamicCastWeak(SkinMeshRenderer, renderer);
 		if (nullptr != skinPtr)
 			renderers.push_back(skinPtr);
 	}
 
 	for (auto& go : entity->GetTransform()->GetChildren())
 	{
-		CollectBonesComponents(&go->GetEntity(), transforms, renderers);
+		Weak<Entity> child = DynamicCastWeak(Entity, go->GetEntity().GetWeak());
+		CollectBonesComponents(child, transforms, renderers);
 	}
 }
 
-Transform* Scene::GetTransformByBoneName(std::vector<Transform*>& transforms, std::string name)
+Weak<Transform> Scene::GetTransformByBoneName(std::vector<Weak<Transform>>& transforms, std::string name)
 {
 	for (auto& t : transforms)
 	{
@@ -259,7 +261,7 @@ void Scene::ResetSceneUUID()
 	ResetUUID(_entitys);
 }
 
-void Scene::DuplicateEntity(Entity* entity)
+void Scene::DuplicateEntity(Weak<Entity> entity)
 {
 
 }
@@ -273,7 +275,7 @@ bool Scene::Serialize()
 	out << YAML::Value << YAML::BeginMap;
 	out << YAML::Key << "FileName" << YAML::Value << _path;
 
-	out << YAML::Key << "SkyboxMaterial" << YAML::Value << Renderer::GetSkyboxMaterial()->GetPath();
+	out << YAML::Key << "SkyboxMaterial" << YAML::Value << Environment::GetSkyboxMaterial()->GetPath();
 
 	out << YAML::Key << "Entitys";
 	out << YAML::Value << YAML::BeginSeq;
@@ -323,7 +325,7 @@ bool Scene::Deserialize(YAML::Node& node)
 
 }
 
-bool Scene::SerializePrefab(std::string path, Entity* entity)
+bool Scene::SerializePrefab(std::string path, Weak<Entity> entity)
 {
 	YAML::Emitter out;
 	YamlSerializer::out = &out;
@@ -355,22 +357,22 @@ bool Scene::SerializePrefab(std::string path, Entity* entity)
 
 }
 
-void Scene::SerializeHierarchyPrefab(Entity* entity)
+void Scene::SerializeHierarchyPrefab(Weak<Entity> entity)
 {
 	for (auto& trans : entity->GetTransform()->GetChildren())
 	{
-		Entity& go = trans->GetEntity();
-		go.Serialize();
-		SerializeHierarchyPrefab(&go);
+		Weak<Entity> go = DynamicCastWeak(Entity, trans->GetEntity().GetWeak());
+		go->Serialize();
+		SerializeHierarchyPrefab(go);
 	}
 }
 
-Entity* Scene::DeserializePrefab(std::string path, Transform* parent)
+Weak<Entity> Scene::DeserializePrefab(std::string path, Weak<Transform> parent)
 {
 	YAML::Node data;
 	try
 	{
-		std::vector<Transform*> list;
+		std::vector<Weak<Transform>> list;
 		std::vector<Ref<Entity>> entityArray;
 
 		data = YAML::LoadFile(path);
@@ -387,7 +389,7 @@ Entity* Scene::DeserializePrefab(std::string path, Transform* parent)
 			entityArray.push_back(e);
 		}
 
-		Transform* ret = nullptr;
+		Weak<Transform> ret = nullptr;
 		for (auto& go : list)
 		{
 			if (nullptr == go)
@@ -406,7 +408,9 @@ Entity* Scene::DeserializePrefab(std::string path, Transform* parent)
 		}
 		ResetUUID(entityArray);
 		if (nullptr != ret)
-			return &ret->GetEntity();
+		{
+			return DynamicCastWeak(Entity, ret->GetEntity().GetWeak());
+		}
 		else
 			return nullptr;
 	}

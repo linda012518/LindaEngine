@@ -16,13 +16,13 @@ DYNAMIC_CREATE(DirectionLight)
 DYNAMIC_CREATE(SpotLight)
 DYNAMIC_CREATE(PointLight)
 
-Light* Light::mainLight = nullptr;
+Weak<Light> Light::mainLight = nullptr;
 bool Light::mainLightDirty = false;
 float Light::mainAngleX = 0.0f;
 
 Light::Light(Entity& entity, bool enable) : Component(entity, enable)
 {
-	LightSystem::Add(this);
+	//LightSystem::Add(DynamicCastWeak(Light, GetWeak()));
 
 	_lightType = LightType::None;
 	_intensity = 1.0f;
@@ -32,7 +32,7 @@ Light::Light(Entity& entity, bool enable) : Component(entity, enable)
 
 Light::~Light()
 {
-	LightSystem::Remove(this);
+	//LightSystem::Remove(DynamicCastWeak(Light, GetWeak()));
 }
 
 bool Light::Serialize()
@@ -80,7 +80,7 @@ void Light::OnImguiRender()
 void Light::TransformDirty()
 {
 	CalculateAABB();
-	if (this != mainLight)
+	if (this != mainLight.Lock().get())
 		return;
 
 	float angle = _transform->GetLocalEulerAngles().x;
@@ -166,7 +166,7 @@ bool SpotLight::Serialize()
 	Light::Serialize();
 	YAML::Emitter& out = *YamlSerializer::out;
 
-	out << YAML::Key << "Name" << YAML::Value << "DirectionLight";
+	out << YAML::Key << "Name" << YAML::Value << "SpotLight";
 	out << YAML::Key << "range" << YAML::Value << _range;
 	out << YAML::Key << "innerAngle" << YAML::Value << _innerAngle;
 	out << YAML::Key << "outerAngle" << YAML::Value << _outerAngle;
@@ -284,7 +284,7 @@ bool PointLight::Serialize()
 	Light::Serialize();
 	YAML::Emitter& out = *YamlSerializer::out;
 
-	out << YAML::Key << "Name" << YAML::Value << "DirectionLight";
+	out << YAML::Key << "Name" << YAML::Value << "PointLight";
 	out << YAML::Key << "range" << YAML::Value << _range;
 
 	out << YAML::EndMap;

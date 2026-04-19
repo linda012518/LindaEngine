@@ -8,6 +8,6 @@ namespace LindaEngine
 	{
 	public:
 		AdjunctPass();
-		void Render(Camera* camera);
+		void Render(Weak<Camera> camera);
 	};
 }

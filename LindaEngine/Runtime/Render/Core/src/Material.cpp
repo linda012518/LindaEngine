@@ -96,7 +96,7 @@ void Material::SetMat4(const std::string& name, const glm::mat4& mat, int count,
 	_passes[pass]->SetUniformValue<glm::mat4>(name.c_str(), mat);
 }
 
-void Material::Bind(Ref<MaterialPass> pass, Transform* transform, const std::vector<VertexAttribute>& attributes)
+void Material::Bind(Ref<MaterialPass> pass, Weak<Transform> transform, const std::vector<VertexAttribute>& attributes)
 {
 	_hasError = pass->CompileShader(_state.shaderPath, attributes);
 	SetTexture("linda_PrefilterSpecCube", Environment::GetPrefilterMap());
@@ -105,7 +105,7 @@ void Material::Bind(Ref<MaterialPass> pass, Transform* transform, const std::vec
 	pass->Bind(transform);
 }
 
-void Material::Bind(int pass, Transform* transform, const std::vector<VertexAttribute>& attributes)
+void Material::Bind(int pass, Weak<Transform> transform, const std::vector<VertexAttribute>& attributes)
 {
 	Bind(_passes[pass], transform, attributes);
 }
@@ -154,9 +154,11 @@ bool Material::Deserialize(YAML::Node& node)
 	return true;
 }
 
-void Material::OnImguiRender()
+void Material::OnImguiRender(Weak<Material> material)
 {
-	ImGui::PushID(this);
+	static bool dirty = false;
+
+	ImGui::PushID(material.Lock().get());
 
 	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
 	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
@@ -183,7 +185,7 @@ void Material::OnImguiRender()
 			ImGui::Dummy(ImVec2(iconSize, iconSize));
 
 		ImGui::TableSetColumnIndex(1);
-		ImGui::TextUnformatted(Path::GetFileNameNoExtension(_state.materialPath).c_str());
+		ImGui::TextUnformatted(Path::GetFileNameNoExtension(material->_state.materialPath).c_str());
 
 		ImVec4 bgColor = style.Colors[ImGuiCol_FrameBg];
 		ImVec4 bgActive = style.Colors[ImGuiCol_FrameBgActive];
@@ -207,7 +209,7 @@ void Material::OnImguiRender()
 				if (node && node->type == LindaEditor::FileType::Shader)
 				{
 					bool isSkin = false;
-					for (auto& pass : _passes)
+					for (auto& pass : material->_passes)
 					{
 						for (auto& kw : pass->_state.keywords)
 						{
@@ -224,11 +226,13 @@ void Material::OnImguiRender()
 					Ref<Material> srcMat = MaterialManager::GetMaterialByShader(node->path, isSkin);
 					if (srcMat)
 					{
-						std::string savedMatPath = _state.materialPath;
-						_state = srcMat->_state;
-						_state.materialPath = savedMatPath;
-						_passes = std::move(srcMat->_passes);
-						_hasError = false;
+						std::string savedMatPath = material->_state.materialPath;
+						material->_state = srcMat->_state;
+						material->_state.materialPath = savedMatPath;
+						material->_passes = std::move(srcMat->_passes);
+						material->_hasError = false;
+
+						dirty = true;
 					}
 				}
 			}
@@ -246,7 +250,7 @@ void Material::OnImguiRender()
 		ImGui::Image(matIconId, ImVec2(18, 18), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::SameLine(0, 6);
 
-		std::string shaderPathStr = _state.shaderPath;
+		std::string shaderPathStr = material->_state.shaderPath;
 		std::string shaderLabel = shaderPathStr.empty() ? std::string("(Drag shader)") : Path::GetFileNameNoExtension(shaderPathStr);
 		const ImVec2 textSize = ImGui::CalcTextSize(shaderLabel.c_str());
 		const float textY = itemMin.y + (itemHeight - textSize.y) * 0.5f;
@@ -265,7 +269,7 @@ void Material::OnImguiRender()
 	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
 	ImGui::PopStyleColor(1);
 
-	for (auto& pass : _passes)
+	for (auto& pass : material->_passes)
 	{
 		ImGui::TextUnformatted(("LightMode : " + pass->GetLightMode()).c_str());
 
@@ -349,11 +353,13 @@ void Material::OnImguiRender()
 						ImGui::Text("X"); 
 						ImGui::SameLine();
 						ImGui::SetNextItemWidth(inputWidth);
-						ImGui::DragFloat("##scaleX", &st.x, 0.01f);
+						if (ImGui::DragFloat("##scaleX", &st.x, 0.01f))
+							dirty = true;
 						ImGui::SameLine();
 						ImGui::Text("Y"); ImGui::SameLine();
 						ImGui::SetNextItemWidth(inputWidth);
-						ImGui::DragFloat("##scaleY", &st.y, 0.01f);
+						if (ImGui::DragFloat("##scaleY", &st.y, 0.01f))
+							dirty = true;
 
 						// 第三行：Offset x [ ] y [ ]
 						ImGui::AlignTextToFramePadding();
@@ -363,12 +369,14 @@ void Material::OnImguiRender()
 						ImGui::Text("X"); 
 						ImGui::SameLine();
 						ImGui::SetNextItemWidth(inputWidth);
-						ImGui::DragFloat("##offsetX", &st.z, 0.01f);
+						if (ImGui::DragFloat("##offsetX", &st.z, 0.01f))
+							dirty = true;
 						ImGui::SameLine();
 						ImGui::Text("Y"); 
 						ImGui::SameLine();
 						ImGui::SetNextItemWidth(inputWidth);
-						ImGui::DragFloat("##offsetY", &st.w, 0.01f);
+						if (ImGui::DragFloat("##offsetY", &st.w, 0.01f))
+							dirty = true;
 
 						ImGui::PopStyleColor(3);
 					}
@@ -397,6 +405,7 @@ void Material::OnImguiRender()
 							if (node && node->type == LindaEditor::FileType::Texture)
 							{
 								DynamicCastRef(TextureUniformData, uniform)->value = node->path;
+								dirty = true;
 							}
 						}
 						ImGui::EndDragDropTarget();
@@ -407,25 +416,25 @@ void Material::OnImguiRender()
 				break;
 			}
 			case UniformType::INT:
-				GUILayoutEditor::DragInt(uniform->name, &(DynamicCastRef(IntUniformData, uniform)->value), nullptr, 1.0f, 0, 0, firstWidth);
+				GUILayoutEditor::DragInt(uniform->name, &(DynamicCastRef(IntUniformData, uniform)->value), [&]() { dirty = true; }, 1.0f, 0, 0, firstWidth);
 				break;
 			case UniformType::INT4:
-				GUILayoutEditor::DragInt4(uniform->name, (int*)&(DynamicCastRef(Int4UniformData, uniform)->value), nullptr, 1.0f, 0, 0, firstWidth);
+				GUILayoutEditor::DragInt4(uniform->name, (int*)&(DynamicCastRef(Int4UniformData, uniform)->value), [&]() { dirty = true; }, 1.0f, 0, 0, firstWidth);
 				break;
 			case UniformType::FLOAT:
-				GUILayoutEditor::DragFloat(uniform->name, &(DynamicCastRef(FloatUniformData, uniform)->value), nullptr, 0.001f, 0.0f, 0.0f, firstWidth);
+				GUILayoutEditor::DragFloat(uniform->name, &(DynamicCastRef(FloatUniformData, uniform)->value), [&]() { dirty = true; }, 0.001f, 0.0f, 0.0f, firstWidth);
 				break;
 			case UniformType::FLOAT4:
 			{
 				auto float4Ptr = DynamicCastRef(Float4UniformData, uniform);
 				if (float4Ptr->isColor)
 				{
-					GUILayoutEditor::ColorEdit4(uniform->name, (float*)&(float4Ptr->value), nullptr, firstWidth, float4Ptr->isHDR);
+					GUILayoutEditor::ColorEdit4(uniform->name, (float*)&(float4Ptr->value), [&]() { dirty = true; }, firstWidth, float4Ptr->isHDR);
 				}
 				else
 				{
 					if (uniform->name.find("_TexelSize") == std::string::npos && uniform->name.find("_ST") == std::string::npos)
-						GUILayoutEditor::DragFloat4(uniform->name, (float*)&(float4Ptr->value), nullptr, 0.001f, 0.0f, 0.0f, firstWidth);
+						GUILayoutEditor::DragFloat4(uniform->name, (float*)&(float4Ptr->value), [&]() { dirty = true; }, 0.001f, 0.0f, 0.0f, firstWidth);
 				}
 			}
 			break;
@@ -438,13 +447,36 @@ void Material::OnImguiRender()
 		ImGui::PopStyleColor(1);
 	}
 
-	GUILayoutEditor::DragInt("RenderQueue        ", &_state.renderQueue, nullptr, 1.0f, 0, 5000);
+	GUILayoutEditor::DragInt("RenderQueue        ", &material->_state.renderQueue, [&]() { dirty = true; }, 1.0f, 0, 5000);
 
 	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
 	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
 	ImGui::PopStyleColor(1);
 
 	ImGui::PopID();
+
+	if (dirty)
+	{
+		dirty = false;
+
+		bool isSkin = false;
+		for (auto& pass : material->_passes)
+		{
+			for (auto& kw : pass->_state.keywords)
+			{
+				if (kw == "_Skin_Vertex_")
+				{
+					isSkin = true;
+					break;
+				}
+			}
+			if (isSkin)
+				break;
+		}
+
+		Material::overrideMat = MaterialManager::GetMaterial(material->_state.materialPath, isSkin);
+		YamlSerializer::SerializeMaterial(material->_state.materialPath.c_str());
+	}
 }
 
 bool Material::CanRender(std::string& lightMode, int minQueue, int maxQueue)

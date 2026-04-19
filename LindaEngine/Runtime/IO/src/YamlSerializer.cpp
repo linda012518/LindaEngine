@@ -1,5 +1,6 @@
 #include "YamlSerializer.h"
 #include "GraphicsContext.h"
+#include "Application.h"
 
 #include <fstream>
 #include <iostream>
@@ -75,6 +76,61 @@ bool YamlSerializer::DeSerializeGraphicsConfig(const char* path)
 	config.appName = appName.c_str();
 	config.graphicsAPI = static_cast<GraphicsDriverAPI>(data["graphicsAPI"].as<int>());
 	config.platformOS = static_cast<Platform>(data["platformOS"].as<int>());
+
+	return true;
+}
+
+void YamlSerializer::SerializeLayerConfig(const char* path)
+{
+	auto& map = Application::layerToNameMap;
+
+	YAML::Emitter out;
+	out << YAML::BeginMap;
+	out << YAML::Key << "LayerToNameMap";
+	out << YAML::Value << YAML::BeginMap;
+	for (const auto& pair : map)
+	{
+		out << YAML::Key << pair.first << YAML::Value << pair.second;
+	}
+	out << YAML::EndMap;
+	out << YAML::EndMap;
+
+	try
+	{
+		std::ofstream fout(path);
+		fout << out.c_str();
+	}
+	catch (const std::exception&)
+	{
+		std::cout << "YamlSerializer::SerializeLayerConfig Error" << path << "\n" << std::endl;
+	}
+
+}
+
+bool YamlSerializer::DeSerializeLayerConfig(const char* path)
+{
+	YAML::Node data;
+	try
+	{
+		data = YAML::LoadFile(path);
+	}
+	catch (const std::exception&)
+	{
+		return false;
+	}
+
+	data = data["LayerToNameMap"];
+	if (!data)
+		return false;
+
+	auto& map = Application::layerToNameMap;
+
+	for (const auto& pair : data)
+	{
+		int key = pair.first.as<int>();
+		std::string value = pair.second.as<std::string>();
+		map[key] = value;
+	}
 
 	return true;
 }

@@ -14,7 +14,7 @@ BlitPickColorPass::BlitPickColorPass()
 	_renderPassEvent = RenderPassEvent::AfterRenderingTransparents;
 }
 
-void BlitPickColorPass::Render(Camera* camera)
+void BlitPickColorPass::Render(Weak<Camera> camera)
 {
 	// 拾取纹理未变更，Editor 后处理会有多个纹理输出占用
 	Material::isPickPass = true;

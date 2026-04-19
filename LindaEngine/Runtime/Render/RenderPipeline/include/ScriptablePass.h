@@ -32,7 +32,7 @@ namespace LindaEngine
         virtual ~ScriptablePass() = default;
         virtual void Initialize() {}
         virtual void Finalize() {}
-        virtual void Render(Camera* camera) = 0;
+        virtual void Render(Weak<Camera> camera) = 0;
 
         RenderPassEvent& GetRenderPassEvent() { return _renderPassEvent; }
 

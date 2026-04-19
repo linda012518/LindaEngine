@@ -10,8 +10,8 @@ DrawObjectsPass::DrawObjectsPass(RenderPassEvent event, DrawingSettings& setting
 	_renderPassEvent = event;
 }
 
-void DrawObjectsPass::Render(Camera* camera)
+void DrawObjectsPass::Render(Weak<Camera> camera)
 {
-	RendererSystem::DrawRenderers(camera, &_settings);
+	RendererSystem::DrawRenderers(camera, _settings);
 }
 

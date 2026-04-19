@@ -5,14 +5,14 @@
 
 using namespace LindaEngine;
 
-std::unordered_map<int, std::list<IEventHandler*>> EventSystem::_eventMap;
+std::unordered_map<int, std::list<Weak<IEventHandler>>> EventSystem::_eventMap;
 
-void EventSystem::Bind(int code, IEventHandler* obj)
+void EventSystem::Bind(int code, Weak<IEventHandler> obj)
 {
     auto it1 = _eventMap.find(code);
     if (it1 != _eventMap.end())
     {
-        std::list<IEventHandler*>& go = _eventMap[code];
+        std::list<Weak<IEventHandler>>& go = _eventMap[code];
 
         auto it2 = std::find(go.begin(), go.end(), obj);
         if (it2 == go.end())
@@ -22,19 +22,19 @@ void EventSystem::Bind(int code, IEventHandler* obj)
     }
     else
     {
-        std::list<IEventHandler*> go;
+        std::list<Weak<IEventHandler>> go;
         go.push_back(obj);
         _eventMap[code] = go;
     }
 }
 
-void EventSystem::Unbind(int code, IEventHandler* obj)
+void EventSystem::Unbind(int code, Weak<IEventHandler> obj)
 {
     auto it1 = _eventMap.find(code);
     if (it1 == _eventMap.end())
         return;
 
-    std::list<IEventHandler*>& go = _eventMap[code];
+    std::list<Weak<IEventHandler>>& go = _eventMap[code];
 
     auto it2 = std::find(go.begin(), go.end(), obj);
     if (it2 != go.end())
@@ -43,20 +43,20 @@ void EventSystem::Unbind(int code, IEventHandler* obj)
     }
 }
 
-void EventSystem::Dispatch(IEventHandler* sender, int code, Event& eventData)
+void EventSystem::Dispatch(Weak<IEventHandler> sender, int code, Event& eventData)
 {
     auto itr = _eventMap.find(code);
     if (itr == _eventMap.end())
         return;
 
-    std::list<IEventHandler*> go = _eventMap[code];
+    std::list<Weak<IEventHandler>> go = _eventMap[code];
 
     for (auto it = go.begin(); it != go.end(); ++it) {
 
-        IEventHandler* temp = *it;
-        if (nullptr != temp)
+        Weak<IEventHandler> temp = *it;
+        if (temp)
         {
-            Component* com = dynamic_cast<Component*>(temp);
+            Weak<Component> com = DynamicCastWeak(Component, temp);
             if (nullptr != com && false == com->IsEnable())
                 continue;
             temp->OnEvent(sender, code, eventData);
@@ -66,7 +66,7 @@ void EventSystem::Dispatch(IEventHandler* sender, int code, Event& eventData)
 
 void EventSystem::Clear()
 {
-    std::unordered_map<int, std::list<IEventHandler*>> temp = _eventMap;
+    std::unordered_map<int, std::list<Weak<IEventHandler>>> temp = _eventMap;
 
     _eventMap.clear();
 
@@ -74,11 +74,11 @@ void EventSystem::Clear()
     {
         for (auto& obj : dic.second)
         {
-            Entity* entity = dynamic_cast<Entity*>(obj);
+            Weak<Entity> entity = DynamicCastWeak(Entity, obj);
             if (nullptr != entity && entity->GetDontDestory())
                 Bind(dic.first, obj);
 
-            Component* com = dynamic_cast<Component*>(obj);
+            Weak<Component> com = DynamicCastWeak(Component, obj);
             if (nullptr != com && com->GetEntity().GetDontDestory())
                 Bind(dic.first, obj);
         }

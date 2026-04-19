@@ -8,7 +8,7 @@ AdjunctPass::AdjunctPass()
 	_renderPassEvent = RenderPassEvent::AfterRenderingTransparents;
 }
 
-void AdjunctPass::Render(Camera* camera)
+void AdjunctPass::Render(Weak<Camera> camera)
 {
 	RendererSystem::DrawAdjunct();
 }

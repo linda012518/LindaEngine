@@ -8,7 +8,7 @@ namespace LindaEngine
 	{
 	public:
 		SkyboxPass();
-		void Render(Camera* camera);
+		void Render(Weak<Camera> camera);
 	};
 }
 

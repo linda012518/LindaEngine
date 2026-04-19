@@ -35,7 +35,7 @@ namespace LindaEngine
 
 		virtual ~Texture() = default;
 
-		static void OnImguiRender(Texture* texture);
+		static void OnImguiRender(Weak<Texture> texture);
 
 	protected:
 		TextureType type_temp;
@@ -87,7 +87,7 @@ namespace LindaEngine
 	public:
 		RenderTexture() { type = TextureType::RenderTexture; type_temp = type; }
 
-		static void OnImguiRender(RenderTexture* texture);
+		static void OnImguiRender(Weak<RenderTexture> texture);
 
 		int msaa = 1;
 		bool isCube = false;

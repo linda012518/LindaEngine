@@ -8,6 +8,16 @@
 #include "BehaviorSystem.h"
 #include "Application.h"
 #include "GUILayoutEditor.h"
+#include "TransformSystem.h"
+#include "Renderer.h"
+#include "RendererSystem.h"
+#include "Light.h"
+#include "LightSystem.h"
+#include "Camera.h"
+#include "CameraSystem.h"
+#include "Animation.h"
+#include "AnimationSystem.h"
+#include "Application.h"
 
 #include "imgui/imgui.h"
 #include <imgui/imgui_internal.h>
@@ -19,6 +29,21 @@
 
 using namespace LindaEngine;
 using namespace LindaEditor;
+
+#define ADD_SYSTEM(ClassName, pointer) \
+Weak<ClassName> pointer##ClassName = DynamicCastWeak(ClassName, pointer); \
+if (nullptr != pointer##ClassName) \
+{ \
+	ClassName##System::Add(pointer##ClassName); \
+}
+
+#define REMOVE_SYSTEM(ClassName, pointer) \
+Weak<ClassName> pointer##ClassName = DynamicCastWeak(ClassName, pointer); \
+if (nullptr != pointer##ClassName) \
+{ \
+	ClassName##System::Remove(pointer##ClassName); \
+}
+
 
 int Entity::_id = 0;
 
@@ -37,8 +62,8 @@ Entity::Entity(const char* name, bool active)
 
 	Ref<Transform> c = CreateRef<Transform>(*this);
 	_components.push_back(c);
-	OnComponentAdded(c.get());
-	_transform = c.get();
+	OnComponentAdded(c);
+	_transform = c;
 }
 
 Entity::~Entity()
@@ -73,7 +98,7 @@ void Entity::SetActive(bool active)
 
 bool Entity::IsActive()
 {
-	const Transform* parent = _transform->GetParent();
+	const Weak<Transform> parent = _transform->GetParent();
 	return _active && (parent != nullptr ? parent->GetEntity().IsActive() : true);
 }
 
@@ -81,7 +106,7 @@ void Entity::Destroy()
 {
 	for (auto& com : _components) {
 		com->Destroy();
-		OnComponentRemoved(com.get());
+		OnComponentRemoved(com);
 	}
 	_components.clear();
 	_behaviors.clear();
@@ -96,37 +121,65 @@ void Entity::TransformDirty()
 	}
 }
 
-Transform* Entity::GetTransform()
+Weak<Transform> Entity::GetTransform()
 {
 	return _transform;
 }
 
-void Entity::OnComponentAdded(Component* com)
+void Entity::OnComponentAdded(Weak<Component> com)
 {
-	Behavior* pointer = dynamic_cast<Behavior*>(com);
-	if (nullptr == pointer)
-		return;
-
-	if (Application::state != AppState::Running)
-		BehaviorSystem::Add(pointer);
-	else
+	Weak<Behavior> pointer = DynamicCastWeak(Behavior, com);
+	if (nullptr != pointer)
 	{
-		_behaviors.push_back(pointer);
+		if (Application::state != AppState::Running)
+			BehaviorSystem::Add(pointer);
+		else
+		{
+			_behaviors.push_back(pointer);
+		}
 	}
+
+	ADD_SYSTEM(Transform, com);
+	ADD_SYSTEM(Renderer, com);
+	ADD_SYSTEM(Light, com);
+	ADD_SYSTEM(Camera, com);
+	ADD_SYSTEM(Animation, com);
+	//Weak<Transform> pointerTransform = DynamicCastWeak(Transform, com);
+	//if (nullptr != pointerTransform)
+	//{
+	//	TransformSystem::Add(pointerTransform);
+	//}
+
+	//Weak<Renderer> pointerRenderer = DynamicCastWeak(Renderer, com);
+	//if (nullptr != pointerRenderer)
+	//{
+	//	RendererSystem::Add(pointerRenderer);
+	//}
 }
 
-void Entity::OnComponentRemoved(Component* com)
+void Entity::OnComponentRemoved(Weak<Component> com)
 {
-	Behavior* pointer = dynamic_cast<Behavior*>(com);
+	Weak<Behavior> pointer = DynamicCastWeak(Behavior, com);
 	if (nullptr != pointer)
 	{
 		pointer->OnDestroy();
 		BehaviorSystem::Remove(pointer);
 		return;
 	}
+
+	REMOVE_SYSTEM(Transform, com);
+	REMOVE_SYSTEM(Renderer, com);
+	REMOVE_SYSTEM(Light, com);
+	REMOVE_SYSTEM(Camera, com);
+	REMOVE_SYSTEM(Animation, com);
+	//Weak<Transform> pointerTransform = DynamicCastWeak(Transform, com);
+	//if (nullptr != pointerTransform)
+	//{
+	//	TransformSystem::Remove(pointerTransform);
+	//}
 }
 
-void Entity::UpdateChildrenDirty(Transform* parent)
+void Entity::UpdateChildrenDirty(Weak<Transform> parent)
 {
 	for (auto& child : parent->GetChildren())
 	{
@@ -144,7 +197,7 @@ void Entity::RemoveDirtyComponents()
 	{
 		for (auto it = _components.begin(); it != _components.end(); ++it)
 		{
-			if (com != (*it).get())
+			if (com != (*it))
 				continue;
 			OnComponentRemoved(com);
 			_components.erase(it);
@@ -175,26 +228,26 @@ void Entity::ClearDirty()
 	_activeDirty = false;
 }
 
-Component* Entity::AddComponent(std::string className)
+Weak<Component> Entity::AddComponent(std::string className)
 {
 	Ref<Component> pointer = ComponentFactory::CreateComponent(className, *this, true);
 	_components.push_back(pointer);
-	OnComponentAdded(pointer.get());
-	return pointer.get();
+	OnComponentAdded(pointer);
+	return pointer;
 }
 
-void Entity::RemoveComponent(Component* com)
+void Entity::RemoveComponent(Weak<Component> com)
 {
 	static_assert(!std::is_same<Transform, Component>::value, "You can't remove a Transform from an actor");
 
 	_dirtyComponents.push_back(com);
 }
 
-void Entity::RemoveComponentImmediately(Component* com)
+void Entity::RemoveComponentImmediately(Weak<Component> com)
 {
 	for (auto it = _components.begin(); it != _components.end(); ++it)
 	{
-		if (com != (*it).get())
+		if (com != (*it))
 			continue;
 		OnComponentRemoved(com);
 		_components.erase(it);
@@ -252,7 +305,7 @@ bool Entity::Deserialize(YAML::Node& node)
 			//pointer->Deserialize(com);
 			//_components.push_back(pointer);
 			//OnComponentAdded(pointer.get());
-			Component* pointer = AddComponent(comName);
+			Weak<Component> pointer = AddComponent(comName);
 			pointer->Deserialize(com);
 		}
 	}
@@ -279,6 +332,19 @@ void Entity::OnImguiRender()
 	if (go != _name)
 		SetName(go);
 
+	GUILayoutEditor::DropdownCheckbox("Layer", _layer, Application::layerToNameMap, [&](int index) {
+		if (index == -1) _layer = -1;
+		else if (index == 0) _layer = 0;
+		else
+		{
+			bool has = index & _layer;
+			if (has)
+				_layer &= ~index;
+			else
+				_layer |= index;
+		}
+		});
+
 	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
 	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);
 	ImGui::PopStyleColor(1);
@@ -288,16 +354,16 @@ void Entity::OnImguiRender()
 	{
 		if (nullptr == go)
 			continue;
-		Component* component = go.get();
-		bool isTransform = nullptr != dynamic_cast<Transform*>(component);
+		Weak<Component> component = go;
+		bool isTransform = nullptr != DynamicCastWeak(Transform, component);
 
 		ImGui::PushStyleVarY(ImGuiStyleVar_FramePadding, 0);
 
 		ImGui::PushStyleColor(ImGuiCol_CheckMark, ImVec4(1.0f, 1.0f, 1.0f, 1.00f));
 		if (isTransform)
 			ImGui::BeginDisabled();
-
-		std::string goID = "##" + std::string((const char*)component);
+		
+		std::string goID = "##" + std::string((const char*)component.Lock().get());
 		bool ret = component->GetEnable();
 		ImGui::Checkbox(goID.c_str(), &ret);
 		if (component->GetEnable() != ret)
@@ -320,10 +386,11 @@ void Entity::OnImguiRender()
 
 		ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
 		treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_SpanAvailWidth;
-		if (ImGui::TreeNodeEx((void*)component, treeNodeFlags, component->GetClassName().c_str()))
+		bool opened = ImGui::TreeNodeEx((void*)component.Lock().get(), treeNodeFlags, component->GetClassName().c_str());
+		if (ImGui::IsItemHovered() && false == isTransform)
+			_eidtorDirty = component;
+		if (opened)
 		{
-			if (ImGui::IsItemHovered() && false == isTransform)
-				_eidtorDirty = component;
 			component->OnImguiRender();
 			ImGui::TreePop();
 		}

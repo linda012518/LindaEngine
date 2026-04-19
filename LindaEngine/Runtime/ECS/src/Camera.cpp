@@ -11,6 +11,8 @@
 #include "ClassFactory.h"
 #include "TextureManager.h"
 #include "GUILayoutEditor.h"
+#include "Application.h"
+#include "Ray.h"
 
 #include "imgui/imgui.h"
 #include <imgui/imgui_internal.h>
@@ -23,11 +25,11 @@ DYNAMIC_CREATE(PerspectiveCamera)
 DYNAMIC_CREATE(OrthoCamera)
 DYNAMIC_CREATE(CubeCamera)
 
-Camera* Camera::currentRenderCamera = nullptr;
+Weak<Camera> Camera::currentRenderCamera = nullptr;
 
 Camera::Camera(Entity& entity, bool enable) : Component(entity, enable)
 {
-	CameraSystem::Add(this);
+	//CameraSystem::Add(DynamicCastWeak(Camera, GetWeak()));
 	_transform->OnCameraAdded();
 
 	_viewMatrix = glm::mat4(1.0);
@@ -48,16 +50,21 @@ Camera::Camera(Entity& entity, bool enable) : Component(entity, enable)
 	_cameraType = CameraType::None;
 	_clearType = CameraClearType::Skybox;
 	_clearColor = glm::vec4(0.0, 0.0, 0.0, 1.0);
+	_viewport = glm::vec4(0.0, 0.0, 1.0, 1.0);
 	_depth = -1;
 	_msaa = 1;
-	_layerMask = 0;
+	_layerMask = -1;
 	_renderTexture = nullptr;
+	_hdrEnable = true;
+	_width = GraphicsContext::graphicsConfig.screenNewWidth;
+	_height = GraphicsContext::graphicsConfig.screenNewHeight;
 }
 
 Camera::~Camera()
 {
-	CameraSystem::Remove(this);
-	_transform->OnCameraRemoved();
+	//CameraSystem::Remove(DynamicCastWeak(Camera, GetWeak()));
+	if (_transform)
+		_transform->OnCameraRemoved();
 	_postStack.clear();
 	if (nullptr != _renderTexture)
 		RenderTextureManager::Release(_renderTexture);
@@ -85,7 +92,7 @@ void Camera::MakeViewProjectionMatrix()
 	_viewProjectMatrix = _projectMatrix * _viewMatrix;
 	_viewProjectInverseMatrix = glm::inverse(_viewProjectMatrix);
 
-	_frustum.UpdateFrustum(this);
+	_frustum.UpdateFrustum(DynamicCastWeak(Camera, GetWeak()));
 }
 
 void Camera::Tick()
@@ -149,6 +156,7 @@ bool Camera::Serialize()
 		//out << YAML::Key << "renderTexture" << YAML::Value << _renderTexture->nodePath;
 	out << YAML::Key << "clearType" << YAML::Value << static_cast<int>(_clearType);
 	out << YAML::Key << "clearColor" << YAML::Value << _clearColor;
+	out << YAML::Key << "viewport" << YAML::Value << _viewport;
 	
 	if (_postStack.size() > 0)
 	{
@@ -176,6 +184,8 @@ bool Camera::Deserialize(YAML::Node& node)
 		_renderTexture = YamlSerializer::DeSerializeRenderTexture(node["renderTexture"].as<std::string>().c_str());
 	_clearType = static_cast<CameraClearType>(node["clearType"].as<int>());
 	_clearColor = node["clearColor"].as<glm::vec4>();
+	if (node["viewport"])
+		_viewport = node["viewport"].as<glm::vec4>();
 
 	auto postStack = node["PostProcess"];
 	if (!postStack)
@@ -199,8 +209,8 @@ glm::vec3 Camera::ScreenToWorldPosition(glm::vec3& screenPos)
 	v.z = screenPos.z;
 	v.w = 1.0;
 
-	v.x = (v.x) / GraphicsContext::graphicsConfig.screenNewWidth;
-	v.y = (GraphicsContext::graphicsConfig.screenNewHeight - v.y) / GraphicsContext::graphicsConfig.screenNewHeight;
+	v.x = (v.x) / _width;
+	v.y = (_height - v.y) / _height;
 
 	v.x = v.x * 2.0f - 1.0f;
 	v.y = v.y * 2.0f - 1.0f;
@@ -210,6 +220,20 @@ glm::vec3 Camera::ScreenToWorldPosition(glm::vec3& screenPos)
 	v = v / v.w;
 
 	return v;
+}
+
+Ray Camera::ScreenPointToRay(glm::vec2& screenPos)
+{
+	glm::vec3 pos;
+	pos.x = screenPos.x;
+	pos.y = screenPos.y;
+	pos.z = 1.0f;
+	glm::vec3 maxWorld = ScreenToWorldPosition(pos);
+
+	Ray ray;
+	ray.origin = _transform->GetWorldPosition();
+	ray.direction = glm::normalize(maxWorld - ray.origin);
+	return ray;
 }
 
 CameraClearType Camera::GetClearTypeByString(std::string str)
@@ -232,7 +256,7 @@ std::string Camera::GetStringByClearType(CameraClearType type)
 
 void Camera::OnImguiRender()
 {
-	float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth({ "ClearType", "ClearColor", "Depth", "MSAA" });
+	float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth({ "ClearType", "ClearColor", "Layer Mask", "MSAA" });
 
 	GUILayoutEditor::DragFloat("Near", &_zNear, [&]() {
 		if (_zNear < 0.01f)
@@ -257,15 +281,29 @@ void Camera::OnImguiRender()
 		}, 1, 1, 8, firstWidth);
 
 	GUILayoutEditor::ColorEdit4("ClearColor", (float*)&_clearColor, nullptr, firstWidth);
+	GUILayoutEditor::DragFloat4("Viewport", (float*)&_viewport, nullptr, 0.01f, 0.0f, 1.0f, firstWidth);
 
 	GUILayoutEditor::Checkbox("HDR", &_hdrEnable, [&]() {
 		//TODO 这里要清掉有前的RT
 		}, firstWidth);
 
+	GUILayoutEditor::DropdownCheckbox("Layer Mask", _layerMask, Application::layerToNameMap, [&](int index) {
+		if (index == -1) _layerMask = -1;
+		else if (index == 0) _layerMask = 0;
+		else
+		{
+			bool has = index & _layerMask;
+			if (has)
+				_layerMask &= ~index;
+			else
+				_layerMask |= index;
+		}
+		}, firstWidth);
+
 	static std::vector<std::string> names = { "Skybox", "SolidColor", "DepthOnly", "DontClear" };
 	GUILayoutEditor::Dropdown("ClearType", (int)_clearType, names, [&](int index) {
 		_clearType = GetClearTypeByString(names[index]);
-		});
+		}, firstWidth);
 
 	static std::vector<std::string> postprocessNames = PostProcessEffectRenderer::GetPostProcessNames();
 	GUILayoutEditor::Dropdown("Add PostProcess", postprocessNames, [&](int index) {
@@ -350,10 +388,18 @@ PerspectiveCamera::PerspectiveCamera(Entity& entity, bool enable) : Camera(entit
 	_cameraType = CameraType::PerspectiveCamera;
 	_fov = 60.0f;
 	_aspectRatio = (float)GraphicsContext::graphicsConfig.screenNewWidth / (float)GraphicsContext::graphicsConfig.screenNewHeight;
-	Bind(EventCode::WindowResize);
 }
 
 PerspectiveCamera::~PerspectiveCamera()
+{
+}
+
+void PerspectiveCamera::Initialize()
+{
+	Bind(EventCode::WindowResize);
+}
+
+void PerspectiveCamera::Destroy()
 {
 	Unbind(EventCode::WindowResize);
 }
@@ -365,7 +411,11 @@ void PerspectiveCamera::MakeProjectionMatrix()
 		_renderTextureDirty = false;
 		_projectDirty = true;
 		if (nullptr != _renderTexture)
+		{
 			_aspectRatio = (float)_renderTexture->width / (float)_renderTexture->height;
+			_width = _renderTexture->width;
+			_height = _renderTexture->height;
+		}
 		else
 			_aspectRatio = (float)GraphicsContext::graphicsConfig.screenNewWidth / (float)GraphicsContext::graphicsConfig.screenNewHeight;
 	}
@@ -407,16 +457,22 @@ bool PerspectiveCamera::Deserialize(YAML::Node& node)
 	return true;
 }
 
-void PerspectiveCamera::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
+void PerspectiveCamera::OnEvent(Weak<IEventHandler> sender, int eventCode, Event& eventData)
 {
 	if (nullptr == _renderTexture && eventCode == EventCode::WindowResize)
 	{
 		WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
 		if (wre.isMinimized == true)
 			return;
-		_aspectRatio = (float)wre.width / (float)wre.height;
+		float width = (_viewport.z - _viewport.x) * wre.width;
+		float height = (_viewport.w - _viewport.y) * wre.height;
+		_aspectRatio = width / height;
+		_width = (int)width;
+		_height = (int)height;
+		//_aspectRatio = (float)wre.width / (float)wre.height;
 		_projectDirty = true;
 	}
+	RenderTextureManager::ClearLinkScreen();
 }
 
 void PerspectiveCamera::OnImguiRender()
@@ -444,10 +500,18 @@ OrthoCamera::OrthoCamera(Entity& entity, bool enable) : Camera(entity, enable)
 	_scale = 1.0f;
 	_aspectRatio = (float)GraphicsContext::graphicsConfig.screenNewWidth / (float)GraphicsContext::graphicsConfig.screenNewHeight;
 	_projectSkyboxMatrix = glm::mat4(1.0f);
-	Bind(EventCode::WindowResize);
 }
 
 OrthoCamera::~OrthoCamera()
+{
+}
+
+void OrthoCamera::Initialize()
+{
+	Bind(EventCode::WindowResize);
+}
+
+void OrthoCamera::Destroy()
 {
 	Unbind(EventCode::WindowResize);
 }
@@ -493,18 +557,26 @@ bool OrthoCamera::Deserialize(YAML::Node& node)
 	return true;
 }
 
-void OrthoCamera::OnEvent(IEventHandler* sender, int eventCode, Event& eventData)
+void OrthoCamera::OnEvent(Weak<IEventHandler> sender, int eventCode, Event& eventData)
 {
 	if (nullptr == _renderTexture && eventCode == EventCode::WindowResize)
 	{
 		WindowResizeEvent& wre = dynamic_cast<WindowResizeEvent&>(eventData);
 		if (wre.isMinimized == true)
 			return;
-		_aspectRatio = (float)wre.width / (float)wre.height;
-		_halfWidth = wre.width * 0.5f;
-		_halfHeight = wre.height * 0.5f;
+		float width = (_viewport.z - _viewport.x) * wre.width;
+		float height = (_viewport.w - _viewport.y) * wre.height;
+		_aspectRatio = width / height;
+		_halfWidth = width * 0.5f;
+		_halfHeight = height * 0.5f;
+		_width = (int)width;
+		_height = (int)height;
+		//_aspectRatio = (float)wre.width / (float)wre.height;
+		//_halfWidth = wre.width * 0.5f;
+		//_halfHeight = wre.height * 0.5f;
 		_projectDirty = true;
 	}
+	RenderTextureManager::ClearLinkScreen();
 }
 
 void OrthoCamera::OnImguiRender()

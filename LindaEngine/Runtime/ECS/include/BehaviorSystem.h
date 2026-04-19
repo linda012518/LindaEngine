@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AutoPtr.h"
 #include <vector>
 
 namespace LindaEngine
@@ -12,8 +13,8 @@ namespace LindaEngine
 		static void Tick();
 		static void OnDeserializeFinish();
 
-		static void Add(Behavior* behavior);
-		static void Remove(Behavior* behavior);
+		static void Add(Weak<Behavior> behavior);
+		static void Remove(Weak<Behavior> behavior);
 		static void Clear();
 		static void Finalize();
 
@@ -41,44 +42,44 @@ namespace LindaEngine
 		static void DoOnDisable();
 		static void DoOnDestroy();
 		/////////////////////////////////////////////////////////////////////////////
-		static void AddAwake(Behavior* behavior, bool none);
-		static void AddOnEnable(Behavior* behavior, bool none);
-		static void AddStart(Behavior* behavior, bool none);
-		static void AddFixUpdate(Behavior* behavior, bool none);
-		static void AddOnTriggerEvent(Behavior* behavior, bool none);
-		static void AddOnCollisionEvent(Behavior* behavior, bool none);
-		static void AddOnMouseEvent(Behavior* behavior, bool none);
-		static void AddUpdate(Behavior* behavior, bool none);
-		static void AddLateUpdate(Behavior* behavior, bool none);
-		static void AddOnPreCull(Behavior* behavior, bool none);
-		static void AddOnPreRender(Behavior* behavior, bool none);
-		static void AddOnRenderObject(Behavior* behavior, bool none);
-		static void AddOnPostRender(Behavior* behavior, bool none);
-		static void AddOnApplicationPause(Behavior* behavior, bool none);
-		static void AddOnApplicationQuit(Behavior* behavior, bool none);
-		static void AddOnDisable(Behavior* behavior, bool none);
-		static void AddOnDestroy(Behavior* behavior, bool none);
+		static void AddAwake(Weak<Behavior> behavior, bool none);
+		static void AddOnEnable(Weak<Behavior> behavior, bool none);
+		static void AddStart(Weak<Behavior> behavior, bool none);
+		static void AddFixUpdate(Weak<Behavior> behavior, bool none);
+		static void AddOnTriggerEvent(Weak<Behavior> behavior, bool none);
+		static void AddOnCollisionEvent(Weak<Behavior> behavior, bool none);
+		static void AddOnMouseEvent(Weak<Behavior> behavior, bool none);
+		static void AddUpdate(Weak<Behavior> behavior, bool none);
+		static void AddLateUpdate(Weak<Behavior> behavior, bool none);
+		static void AddOnPreCull(Weak<Behavior> behavior, bool none);
+		static void AddOnPreRender(Weak<Behavior> behavior, bool none);
+		static void AddOnRenderObject(Weak<Behavior> behavior, bool none);
+		static void AddOnPostRender(Weak<Behavior> behavior, bool none);
+		static void AddOnApplicationPause(Weak<Behavior> behavior, bool none);
+		static void AddOnApplicationQuit(Weak<Behavior> behavior, bool none);
+		static void AddOnDisable(Weak<Behavior> behavior, bool none);
+		static void AddOnDestroy(Weak<Behavior> behavior, bool none);
 
 	private:
-		static void ClearFunctionArray(std::vector<Behavior*> array);
+		static void ClearFunctionArray(std::vector<Weak<Behavior>> array);
 
 	private:
-		static std::vector<Behavior*> _awakes;
-		static std::vector<Behavior*> _onEnables;
-		static std::vector<Behavior*> _starts;
-		static std::vector<Behavior*> _fixUpdates;
-		static std::vector<Behavior*> _onTriggerEvents;
-		static std::vector<Behavior*> _onCollisionEvents;
-		static std::vector<Behavior*> _onMouseEvents;
-		static std::vector<Behavior*> _updates;
-		static std::vector<Behavior*> _lateUpdates;
-		static std::vector<Behavior*> _onPreCulls;
-		static std::vector<Behavior*> _onPreRenders;
-		static std::vector<Behavior*> _onRenderObjects;
-		static std::vector<Behavior*> _onPostRenders;
-		static std::vector<Behavior*> _onApplicationPauses;
-		static std::vector<Behavior*> _onApplicationQuits;
-		static std::vector<Behavior*> _onDisables;
+		static std::vector<Weak<Behavior>> _awakes;
+		static std::vector<Weak<Behavior>> _onEnables;
+		static std::vector<Weak<Behavior>> _starts;
+		static std::vector<Weak<Behavior>> _fixUpdates;
+		static std::vector<Weak<Behavior>> _onTriggerEvents;
+		static std::vector<Weak<Behavior>> _onCollisionEvents;
+		static std::vector<Weak<Behavior>> _onMouseEvents;
+		static std::vector<Weak<Behavior>> _updates;
+		static std::vector<Weak<Behavior>> _lateUpdates;
+		static std::vector<Weak<Behavior>> _onPreCulls;
+		static std::vector<Weak<Behavior>> _onPreRenders;
+		static std::vector<Weak<Behavior>> _onRenderObjects;
+		static std::vector<Weak<Behavior>> _onPostRenders;
+		static std::vector<Weak<Behavior>> _onApplicationPauses;
+		static std::vector<Weak<Behavior>> _onApplicationQuits;
+		static std::vector<Weak<Behavior>> _onDisables;
 		//static std::vector<Behavior*> _onDestroys;
 
 	};

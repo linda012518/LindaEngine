@@ -151,7 +151,7 @@ void OpenglTexture::CreateCubeByMaterial(Ref<Material> material, Ref<Texture> de
 	glViewport(0, 0, rt->width, rt->height);
 
 	Entity entity("temp");
-	CubeCamera* camera = entity.AddComponent<CubeCamera>();
+	Weak<CubeCamera> camera = entity.AddComponent<CubeCamera>();
 	camera->Tick();
 
 	std::string temp = Material::overrideLightMode;
@@ -221,7 +221,7 @@ void OpenglTexture::CreateIBLPrefilterMap(Ref<Texture> src, Ref<Texture> dest)
 	glViewport(0, 0, rt->width, rt->height);
 
 	Entity entity("temp");
-	CubeCamera* camera = entity.AddComponent<CubeCamera>();
+	Weak<CubeCamera> camera = entity.AddComponent<CubeCamera>();
 	camera->Tick();
 
 	std::string temp = Material::overrideLightMode;

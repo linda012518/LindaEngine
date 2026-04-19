@@ -6,6 +6,9 @@
 #include "ComponentSystem.h"
 #include "BehaviorSystem.h"
 #include "SceneManager.h"
+#include "EventEditor.h"
+#include "EventCodeEditor.h"
+#include "EventSystemEditor.h"
 
 #include <yaml-cpp/yaml.h>
 
@@ -91,6 +94,11 @@ bool SceneManagerEditor::LoadScene(std::string path)
 {
 	try
 	{
+		std::unordered_map<int, int> selectID;
+		PickEntityIDEditor pick;
+		pick.selectID = selectID;
+		EventSystemEditor::Dispatch(nullptr, EventCodeEditor::PickEntityID, pick);
+
 		std::string readPath = path;
 		if (path == "")
 			readPath = _defaultScenePath;

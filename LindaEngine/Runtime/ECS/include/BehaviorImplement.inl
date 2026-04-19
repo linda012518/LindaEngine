@@ -15,22 +15,22 @@
 	} \
 	void className::Initialize() \
 	{ \
-		LindaEngine::BehaviorSystem::AddAwake(this, OVERRIDE(LindaEngine::Behavior, className, Awake)); \
-		LindaEngine::BehaviorSystem::AddOnEnable(this, OVERRIDE(LindaEngine::Behavior, className, OnEnable)); \
-		LindaEngine::BehaviorSystem::AddStart(this, OVERRIDE(LindaEngine::Behavior, className, Start)); \
-		LindaEngine::BehaviorSystem::AddFixUpdate(this, OVERRIDE(LindaEngine::Behavior, className, FixUpdate)); \
-		LindaEngine::BehaviorSystem::AddOnTriggerEvent(this, OVERRIDE(LindaEngine::Behavior, className, OnTriggerEvent)); \
-		LindaEngine::BehaviorSystem::AddOnCollisionEvent(this, OVERRIDE(LindaEngine::Behavior, className, OnCollisionEvent)); \
-		LindaEngine::BehaviorSystem::AddOnMouseEvent(this, OVERRIDE(LindaEngine::Behavior, className, OnMouseEvent)); \
-		LindaEngine::BehaviorSystem::AddUpdate(this, OVERRIDE(LindaEngine::Behavior, className, Update)); \
-		LindaEngine::BehaviorSystem::AddLateUpdate(this, OVERRIDE(LindaEngine::Behavior, className, LateUpdate)); \
-		LindaEngine::BehaviorSystem::AddOnPreCull(this, OVERRIDE(LindaEngine::Behavior, className, OnPreCull)); \
-		LindaEngine::BehaviorSystem::AddOnPreRender(this, OVERRIDE(LindaEngine::Behavior, className, OnPreRender)); \
-		LindaEngine::BehaviorSystem::AddOnRenderObject(this, OVERRIDE(LindaEngine::Behavior, className, OnRenderObject)); \
-		LindaEngine::BehaviorSystem::AddOnPostRender(this, OVERRIDE(LindaEngine::Behavior, className, OnPostRender)); \
-		LindaEngine::BehaviorSystem::AddOnApplicationPause(this, OVERRIDE(LindaEngine::Behavior, className, OnApplicationPause)); \
-		LindaEngine::BehaviorSystem::AddOnApplicationQuit(this, OVERRIDE(LindaEngine::Behavior, className, OnApplicationQuit)); \
-		LindaEngine::BehaviorSystem::AddOnDisable(this, OVERRIDE(LindaEngine::Behavior, className, OnDisable)); \
+		LindaEngine::BehaviorSystem::AddAwake(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, Awake)); \
+		LindaEngine::BehaviorSystem::AddOnEnable(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, OnEnable)); \
+		LindaEngine::BehaviorSystem::AddStart(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, Start)); \
+		LindaEngine::BehaviorSystem::AddFixUpdate(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, FixUpdate)); \
+		LindaEngine::BehaviorSystem::AddOnTriggerEvent(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, OnTriggerEvent)); \
+		LindaEngine::BehaviorSystem::AddOnCollisionEvent(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, OnCollisionEvent)); \
+		LindaEngine::BehaviorSystem::AddOnMouseEvent(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, OnMouseEvent)); \
+		LindaEngine::BehaviorSystem::AddUpdate(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, Update)); \
+		LindaEngine::BehaviorSystem::AddLateUpdate(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, LateUpdate)); \
+		LindaEngine::BehaviorSystem::AddOnPreCull(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, OnPreCull)); \
+		LindaEngine::BehaviorSystem::AddOnPreRender(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, OnPreRender)); \
+		LindaEngine::BehaviorSystem::AddOnRenderObject(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, OnRenderObject)); \
+		LindaEngine::BehaviorSystem::AddOnPostRender(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, OnPostRender)); \
+		LindaEngine::BehaviorSystem::AddOnApplicationPause(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, OnApplicationPause)); \
+		LindaEngine::BehaviorSystem::AddOnApplicationQuit(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, OnApplicationQuit)); \
+		LindaEngine::BehaviorSystem::AddOnDisable(DynamicCastWeak(Behavior, GetWeak()), OVERRIDE(LindaEngine::Behavior, className, OnDisable)); \
 	} \
 	bool className::Serialize() \
 	{ \

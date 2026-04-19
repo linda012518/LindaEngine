@@ -46,18 +46,18 @@ namespace LindaEngine
 		void Destroy();
 		void TransformDirty();
 
-		Transform* GetTransform();
+		Weak<Transform> GetTransform();
 
 		template <typename TComponent, typename ... Args>
-		TComponent* AddComponent(Args&& ... args);
+		Weak<TComponent> AddComponent(Args&& ... args);
 
 		template <typename TComponent>
-		TComponent* GetComponent();
+		Weak<TComponent> GetComponent();
 
-		Component* AddComponent(std::string className);
+		Weak<Component> AddComponent(std::string className);
 
-		void RemoveComponent(Component* com);
-		void RemoveComponentImmediately(Component* com);
+		void RemoveComponent(Weak<Component> com);
+		void RemoveComponentImmediately(Weak<Component> com);
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
@@ -70,9 +70,9 @@ namespace LindaEngine
 		}
 
 	private:
-		void OnComponentAdded(Component* com);
-		void OnComponentRemoved(Component* com);
-		void UpdateChildrenDirty(Transform* parent);
+		void OnComponentAdded(Weak<Component> com);
+		void OnComponentRemoved(Weak<Component> com);
+		void UpdateChildrenDirty(Weak<Transform> parent);
 		void RemoveDirtyComponents();
 		void AddBehaviorsToSystem();
 
@@ -82,14 +82,14 @@ namespace LindaEngine
 		bool _active;
 		bool _activeDirty;
 		std::string _uuid;
-		Transform* _transform;
+		Weak<Transform> _transform;
 		std::vector<Ref<Component>> _components;
-		std::vector<Component*> _dirtyComponents;
-		std::vector<Behavior*> _behaviors;
+		std::vector<Weak<Component>> _dirtyComponents;
+		std::vector<Weak<Behavior>> _behaviors;
 		bool _isDontDestory;
 		int _hierarchyIndex;
 
-		Component* _eidtorDirty = nullptr;
+		Weak<Component> _eidtorDirty = nullptr;
 
 		static int _id;
 		int _entityID;

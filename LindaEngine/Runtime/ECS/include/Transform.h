@@ -36,8 +36,8 @@ namespace LindaEngine
 
 		std::string _parentID;
 
-		Transform* _parent = nullptr;
-		std::list<Transform*> _children;
+		Weak<Transform> _parent = nullptr;
+		std::list<Weak<Transform>> _children;
 
 		bool _hasCamera = false;
 
@@ -49,15 +49,15 @@ namespace LindaEngine
 		void OnCameraRemoved() { _hasCamera = false; }
 		std::string& GetParentID() { return _parentID; }
 		void SetParentID(std::string id) { _parentID = id; }
-		bool HasChild(Transform* transform);
+		bool HasChild(Weak<Transform> transform);
 
 		const glm::mat4& GetLocalToWorldMat() const;
 		const glm::mat4& GetWorldToLocalMat() const;
 		const glm::mat4& GetViewMat() const;
-		const Transform* GetParent() const;
-		const std::list<Transform*>& GetChildren() const;
-		const Transform* Find(std::string path) const;
-		static Transform* GetChildByName(Transform* parent, std::string name);
+		const Weak<Transform> GetParent() const;
+		const std::list<Weak<Transform>>& GetChildren() const;
+		const Weak<Transform> Find(std::string path) const;
+		static Weak<Transform> GetChildByName(Weak<Transform> parent, std::string name);
 
 		glm::vec3& GetLocalPosition();
 		glm::vec3& GetLocalEulerAngles();
@@ -69,7 +69,7 @@ namespace LindaEngine
 		const glm::vec3& GetWorldEulerAngles() const;
 		const glm::quat& GetWorldRotation() const;
 
-		void SetParent(Transform* parent);
+		void SetParent(Weak<Transform> parent);
 		void GetWorldDir(glm::vec3& forward, glm::vec3& up, glm::vec3& right);
 		void GetLocalDir(glm::vec3& forward, glm::vec3& up, glm::vec3& right);
 

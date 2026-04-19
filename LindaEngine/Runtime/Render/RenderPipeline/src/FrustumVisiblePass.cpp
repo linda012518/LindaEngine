@@ -20,12 +20,12 @@ FrustumVisiblePass::FrustumVisiblePass()
 	_lightMaterial = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/LightVisible.shader");
 }
 
-void FrustumVisiblePass::Render(Camera* camera)
+void FrustumVisiblePass::Render(Weak<Camera> camera)
 {
 	std::string temp = Material::overrideLightMode;
 	Material::overrideLightMode = "Adjunct";
 
-	const std::vector<Camera*> cameraList = CameraSystem::GetActiveCameraList();
+	const std::vector<Weak<Camera>> cameraList = CameraSystem::GetActiveCameraList();
 	for (auto& playCamera : cameraList)
 	{
 		_cameraMaterial->SetUniformValue<glm::mat4>(ShaderBuiltInUniform::linda_FrustumMatrix_I_VP.c_str(), playCamera->GetViewProjectInverseMatrix());
@@ -35,7 +35,7 @@ void FrustumVisiblePass::Render(Camera* camera)
 		drawable.Draw();
 	}
 
-	const std::vector<Light*> lights = LightSystem::GetLightList(RenderPipelineEditor::activeCamera);
+	std::vector<Weak<Light>> lights = LightSystem::GetLightList(RenderPipelineEditor::activeCamera);
 	for (auto& light : lights)
 	{
 		glm::mat4 model = glm::mat4(1.0f);
@@ -63,6 +63,7 @@ void FrustumVisiblePass::Render(Camera* camera)
 			CalculateSpotLightMat(model, light, true);
 			DrawLightWireframe(LightType::SpotLight, model);
 			_lightMaterial->SetUniformValue<glm::vec4>("color", glm::vec4(0.35, 0.35, 0.2, 1.0));
+			model = glm::mat4(1.0f);
 			CalculateSpotLightMat(model, light, false);
 			DrawLightWireframe(LightType::SpotLight, model);
 		}
@@ -70,7 +71,8 @@ void FrustumVisiblePass::Render(Camera* camera)
 		case LightType::PointLight:
 		{
 			glm::vec3 position = light->GetTransform()->GetWorldPosition();
-			float scale = ((PointLight*)light)->GetRange();
+			Weak<PointLight> pointLight = DynamicCastWeak(PointLight, light);
+			float scale = pointLight->GetRange();
 
 			model[0][0] = scale;
 			model[1][1] = scale;
@@ -100,11 +102,11 @@ void FrustumVisiblePass::DrawLightWireframe(LightType type, glm::mat4& model)
 	drawable.Draw();
 }
 
-void FrustumVisiblePass::CalculateSpotLightMat(glm::mat4& model, Light* light, bool isInner)
+void FrustumVisiblePass::CalculateSpotLightMat(glm::mat4& model, Weak<Light> light, bool isInner)
 {
 	glm::vec3 position = light->GetTransform()->GetWorldPosition();
 	glm::quat rotation = light->GetTransform()->GetWorldRotation();
-	SpotLight* spotLight = ((SpotLight*)light);
+	Weak<SpotLight> spotLight = DynamicCastWeak(SpotLight, light);
 	float angle = isInner ? spotLight->GetInnerAngle() : spotLight->GetOuterAngle();
 	float distance = spotLight->GetRange();
 	float scaleXY = glm::tan(glm::radians(angle / 2)) * distance;  // 根据距离和角度计算底面半径

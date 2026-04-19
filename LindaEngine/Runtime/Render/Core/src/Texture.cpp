@@ -100,7 +100,7 @@ Ref<Texture> Texture::overrideTexture = nullptr;
 Ref<RenderTexture> RenderTexture::active = nullptr;
 Ref<RenderTexture> RenderTexture::finalRT = nullptr;
 
-void Texture::OnImguiRender(Texture* texture)
+void Texture::OnImguiRender(Weak<Texture> texture)
 {
 	std::string id = texture->path;
 	ImGui::PushID(id.c_str());
@@ -121,8 +121,7 @@ void Texture::OnImguiRender(Texture* texture)
 		else if (texture->type == TextureType::Cube)
 		{
 			static Ref<Material> material = MaterialManager::GetMaterialByShader("BuiltInAssets/Shaders/CubemapVisible.shader");
-			std::shared_ptr<Texture> tmp(texture, [](Texture*) { });
-			material->SetUniformValue("skybox", tmp);
+			material->SetUniformValue("skybox", texture.Lock());
 			Ref<RenderTexture> rt = TextureDriver::RenderMaterialBall(material);
 			ImGui::Image((ImTextureID)(uintptr_t)rt->nativeIDs[0], ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		}
@@ -190,7 +189,7 @@ void Texture::OnImguiRender(Texture* texture)
 
 		// TODO 暂时先这样处理
 		SwitchInspectorObjectEditor sio;
-		sio.lobject = newTexture.get();
+		sio.lobject = newTexture;
 		EventSystemEditor::Dispatch(nullptr, EventCodeEditor::SwitchInspectorObject, sio);
 	}
 
@@ -215,11 +214,11 @@ void Texture::OnImguiRender(Texture* texture)
 	ImGui::PopID();
 }
 
-void RenderTexture::OnImguiRender(RenderTexture* texture)
+void RenderTexture::OnImguiRender(Weak<RenderTexture> texture)
 {
 	float firstWidth = GUILayoutEditor::ImGuiLabelColumnWidth({ "Texture Shape", "Mipmap Count", "Anisotropy", "Filter Mode", "WarpW Mode" });
 
-	ImGui::PushID(texture);
+	ImGui::PushID(texture.Lock().get());
 
 	ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
 	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal, 2);

@@ -10,7 +10,7 @@ namespace LindaEngine
 	public:
 		DrawObjectsPass(RenderPassEvent event, DrawingSettings& settings);
 
-		void Render(Camera* camera);
+		void Render(Weak<Camera> camera);
 
 	private:
 		DrawingSettings _settings;

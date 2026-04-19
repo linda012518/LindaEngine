@@ -122,7 +122,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include;./Runtime/Render/RenderPipeline/include;./Runtime/Render/PostProcess/include;./Editor/IO/include;./Editor/Tools/include;./Editor/ImGui/UICore/Core;./Editor/ImGui/UICore/Widgets;./Editor/ImGui/UICore/Plugins;./Editor/ImGui/UICore/Panel;./Runtime/Render/Animation/include;./SandboxApp/include;./External/nlohmann;./External/ImGuizmo</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./External/include;./External/glad/include;./Runtime/Core/include;./Runtime/Render/Core/include;./Runtime/Window/include;./Runtime/Render/Opengl/include;./Runtime/ECS/include;./Temp;./Runtime/Math/include;./External/yaml-cpp/include;./Runtime/IO/include;./External/glm;./External/assimp;./Runtime/Tools/include;./Editor/Core/include;./Runtime/Physics/inlude;./External/imgui;./Editor/ImGui/include;./Runtime/Render/RenderPipeline/include;./Runtime/Render/PostProcess/include;./Editor/IO/include;./Editor/Tools/include;./Editor/ImGui/UICore/Core;./Editor/ImGui/UICore/Widgets;./Editor/ImGui/UICore/Plugins;./Editor/ImGui/UICore/Panel;./Runtime/Render/Animation/include;./SandboxApp/include;./External/nlohmann;./External/ImGuizmo;./Runtime/Physics/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,6 +147,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Editor\ImGui\src\GUILayoutEditor.cpp" />
+    <ClCompile Include="Editor\ImGui\src\EnvironmentPanelEditor.cpp" />
+    <ClCompile Include="Runtime\Physics\src\Physics.cpp" />
     <ClCompile Include="Runtime\Render\RenderPipeline\src\PrecomputedAmbientPass.cpp" />
     <ClCompile Include="Runtime\Render\Core\src\Environment.cpp" />
     <ClCompile Include="External\imgui\imgui\imgui_stdlib.cpp" />
@@ -361,6 +363,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Editor\ImGui\include\GUILayoutEditor.h" />
+    <ClInclude Include="Editor\ImGui\include\EnvironmentPanelEditor.h" />
+    <ClInclude Include="Runtime\Physics\include\Physics.h" />
     <ClInclude Include="Runtime\Render\RenderPipeline\include\PrecomputedAmbientPass.h" />
     <ClInclude Include="Runtime\Render\Core\include\Environment.h" />
     <ClInclude Include="External\imgui\imgui\imgui_stdlib.h" />

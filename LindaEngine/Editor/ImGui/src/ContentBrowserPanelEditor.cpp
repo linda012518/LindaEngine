@@ -33,7 +33,7 @@ ContentBrowserPanelEditor::ContentBrowserPanelEditor()
 
 void ContentBrowserPanelEditor::OnImGuiRender()
 {
-	ImGui::Begin("Content Browser");
+	ImGui::Begin("  Content Browser  ");
 
     GUILayoutEditor::DrawConfirmWindow();
 
@@ -450,7 +450,7 @@ void ContentBrowserPanelEditor::DrawBlankAreaDropTarget()
         }
         else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG", target_flags))
         {
-            Entity* draggedEntity = *(Entity**)payload->Data;
+            Weak<Entity> draggedEntity = *(Weak<Entity>*)payload->Data;
             std::string prefabPath = "Assets/" + draggedEntity->GetName() + ".prefab";
             SceneManagerEditor::GetCurrentNode()->scene->SerializePrefab(prefabPath, draggedEntity);
             AddNode(FileType::Prefab, prefabPath);
@@ -496,7 +496,7 @@ void ContentBrowserPanelEditor::DragNodes(FileNode* fs)
         }
         else if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_DRAG"))
         {
-            Entity* draggedEntity = *(Entity**)payload->Data;
+            Weak<Entity> draggedEntity = *(Weak<Entity>*)payload->Data;
             std::string prefabPath;
             if (fs->type == FileType::Folder)
                 prefabPath = fs->path + "/";
@@ -603,7 +603,7 @@ void ContentBrowserPanelEditor::AddNode(FileType type, std::string path)
     root->children.push_back(node);
 }
 
-LObject* ContentBrowserPanelEditor::GetLObject(FileNode* node)
+Weak<LindaEngine::LObject> ContentBrowserPanelEditor::GetLObject(FileNode* node)
 {
     if (nullptr == node)
         return nullptr;
@@ -615,13 +615,13 @@ LObject* ContentBrowserPanelEditor::GetLObject(FileNode* node)
     case FileType::Scene:
         break;
     case FileType::Material: 
-        return MaterialManager::GetMaterial(node->path).get();
+        return MaterialManager::GetMaterial(node->path);
     case FileType::FBX:
         break;
     case FileType::Prefab:
         break;
     case FileType::Texture:
-        return TextureManager::GetTexture(node->path).get();
+        return TextureManager::GetTexture(node->path);
     case FileType::RenderTexture:
         break;
     case FileType::Shader:

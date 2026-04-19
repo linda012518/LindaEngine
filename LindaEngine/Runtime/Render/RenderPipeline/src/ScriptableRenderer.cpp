@@ -23,7 +23,7 @@ void ScriptableRenderer::Finalize()
     _renderPasses.clear();
 }
 
-void ScriptableRenderer::Render(Camera* camera)
+void ScriptableRenderer::Render(Weak<Camera> camera)
 {
     for (auto& pass : _renderPasses)
     {

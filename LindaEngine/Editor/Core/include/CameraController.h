@@ -17,8 +17,8 @@ namespace LindaEngine
 		void Update();
 		void OnDestroy();
 
-		void OnEvent(IEventHandler* sender, int eventCode, Event& eventData);
-		std::pair<float, glm::vec3> CalculateLookAtData(Entity* entity);
+		void OnEvent(Weak<IEventHandler> sender, int eventCode, Event& eventData);
+		std::pair<float, glm::vec3> CalculateLookAtData(Weak<Entity> entity);
 
 	private:
 		void ProcessMouseEvent(int eventCode, Event& eventData);
@@ -30,11 +30,11 @@ namespace LindaEngine
 		void LookAtEntity();
 
 	private:
-		PerspectiveCamera* _camera = nullptr;
-		float _mouseWheelSpeed = 0.001f;
+		Weak<PerspectiveCamera> _camera = nullptr;
+		float _mouseWheelSpeed = 0.1f;
 		float _stanardWheelDelta = 120.0f;
 
-		float _panSpeed = 0.002f;
+		float _panSpeed = 0.001f;
 		bool _isPanning = false;
 
 		glm::vec2 _lastMousePos;
@@ -46,7 +46,7 @@ namespace LindaEngine
 		bool _altHeld = false;
 		float _rotateSpeed = 0.1f;
 
-		Entity* _selectedEntity = nullptr;
+		Weak<Entity> _selectedEntity = nullptr;
 
 	public:
 		static bool isLookRound;

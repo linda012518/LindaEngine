@@ -4,14 +4,14 @@
 using namespace LindaEngine;
 using namespace LindaEditor;
 
-std::unordered_map<int, std::list<IEventHandler*>> EventSystemEditor::_eventMap;
+std::unordered_map<int, std::list<Weak<IEventHandler>>> EventSystemEditor::_eventMap;
 
-void EventSystemEditor::Bind(int code, IEventHandler* obj)
+void EventSystemEditor::Bind(int code, Weak<IEventHandler> obj)
 {
     auto it1 = _eventMap.find(code);
     if (it1 != _eventMap.end())
     {
-        std::list<IEventHandler*>& go = _eventMap[code];
+        std::list<Weak<IEventHandler>>& go = _eventMap[code];
 
         auto it2 = std::find(go.begin(), go.end(), obj);
         if (it2 == go.end())
@@ -21,19 +21,19 @@ void EventSystemEditor::Bind(int code, IEventHandler* obj)
     }
     else
     {
-        std::list<IEventHandler*> go;
+        std::list<Weak<IEventHandler>> go;
         go.push_back(obj);
         _eventMap[code] = go;
     }
 }
 
-void EventSystemEditor::Unbind(int code, IEventHandler* obj)
+void EventSystemEditor::Unbind(int code, Weak<IEventHandler> obj)
 {
     auto it1 = _eventMap.find(code);
     if (it1 == _eventMap.end())
         return;
 
-    std::list<IEventHandler*>& go = _eventMap[code];
+    std::list<Weak<IEventHandler>>& go = _eventMap[code];
 
     auto it2 = std::find(go.begin(), go.end(), obj);
     if (it2 != go.end())
@@ -42,17 +42,17 @@ void EventSystemEditor::Unbind(int code, IEventHandler* obj)
     }
 }
 
-void EventSystemEditor::Dispatch(IEventHandler* sender, int code, Event& eventData)
+void EventSystemEditor::Dispatch(Weak<IEventHandler> sender, int code, Event& eventData)
 {
     auto itr = _eventMap.find(code);
     if (itr == _eventMap.end())
         return;
 
-    std::list<IEventHandler*> go = _eventMap[code];
+    std::list<Weak<IEventHandler>> go = _eventMap[code];
 
     for (auto it = go.begin(); it != go.end(); ++it) {
 
-        IEventHandler* temp = *it;
+        Weak<IEventHandler> temp = *it;
         if (nullptr != temp)
             temp->OnEvent(sender, code, eventData);
     }

@@ -22,17 +22,27 @@ int LObject::GetID() const
 	return _selfID;
 }
 
+Ref<LObject> LObject::GetShared()
+{
+	return shared_from_this();
+}
+
+Weak<LObject> LObject::GetWeak()
+{
+	return GetShared();
+}
+
 void LObject::Bind(int eventCode)
 {
-	EventSystem::Bind(eventCode, this);
+	EventSystem::Bind(eventCode, GetWeak());
 }
 
 void LObject::Unbind(int eventCode)
 {
-	EventSystem::Unbind(eventCode, this);
+	EventSystem::Unbind(eventCode, GetWeak());
 }
 
-void LObject::Dispatch(IEventHandler* sender, int eventCode, Event& eventData)
+void LObject::Dispatch(Weak<IEventHandler> sender, int eventCode, Event& eventData)
 {
 	EventSystem::Dispatch(sender, eventCode, eventData);
 }

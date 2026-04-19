@@ -184,7 +184,7 @@ void Mesh::Data::Draw()
 		if (vertexData.size() > 3)
 		{
 			Ref<VertexBuffer> vertexBuffer = VertexBuffer::Create(&vertexData[0], (uint32_t)vertexData.size() * 4, vertexStride);
-			vertexBuffer->SetVertexAttribute(&attributes);
+			vertexBuffer->SetVertexAttribute(attributes);
 			vertexArray->AddVertexBuffer(vertexBuffer, vertexStride);
 			if (indexData.size() > 3)
 				vertexArray->SetIndexBuffer(IndexBuffer::Create(&indexData[0], (uint32_t)indexData.size()));

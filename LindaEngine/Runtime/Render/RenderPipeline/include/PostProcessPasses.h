@@ -14,11 +14,16 @@ namespace LindaEngine
 	{
 	public:
 		PostProcessPass();
-		void Render(Camera* camera);
+		void Render(Weak<Camera> camera);
+
+	private:
+		void StackingCamera(Weak<Camera> camera, Ref<RenderTexture> outputRT);
 
 	private:
 		Ref<RenderTexture> _source;
 		Ref<RenderTexture> _dest;
+
+		static Ref<RenderTexture> _multipleCameraRT;
 	};
 }
 

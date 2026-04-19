@@ -8,5 +8,10 @@ namespace LindaEngine
 	{
 		glm::vec3 origin;
 		glm::vec3 direction;
+
+		glm::vec3 At(float t) const 
+		{
+			return origin + direction * t;
+		}
 	};
 }

@@ -3,7 +3,7 @@ Scene:
   SkyboxMaterial: BuiltInAssets/Materials/ProceduralSkybox.mat
   Entitys:
     - Name: Main Camera
-      Layer: 1
+      Layer: -1
       ID: 0617baa2-a444-1829-0000-000000000001
       Active: true
       Components:
@@ -17,14 +17,14 @@ Scene:
           zNear: 0.3
           zFar: 1000
           depth: -1
-          layerMask: 0
+          layerMask: -1
           msaa: 4
           clearType: 0
           clearColor: [0, 0.3, 0, 1]
           Name: PerspectiveCamera
           fov: 60
     - Name: Directional Light
-      Layer: 1
+      Layer: -1
       ID: bf0c1a8b-30ec-38d7-0000-000000000002
       Active: true
       Components:

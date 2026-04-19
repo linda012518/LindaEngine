@@ -43,8 +43,22 @@ void OutLinePostProcess::Finalize()
 
 void OutLinePostProcess::Render(Ref<RenderTexture> src, Ref<RenderTexture> dest)
 {
-	std::vector<Entity*>& entitys = HierarchyPanelEditor::GetSelectedEntity();
+	std::vector<Weak<Entity>>& entitys = HierarchyPanelEditor::GetSelectedEntity();
 	if (entitys.size() <= 0)
+	{
+		Graphic::Blit(src, dest);
+		return;
+	}
+
+	std::vector<Weak<Renderer>> renders;
+	for (auto& entity : entitys)
+	{
+		Weak<Renderer> render = entity->GetComponent<Renderer>();
+		if (nullptr == render)
+			continue;
+		renders.push_back(render);
+	}
+	if (renders.size() <= 0)
 	{
 		Graphic::Blit(src, dest);
 		return;
@@ -71,13 +85,10 @@ void OutLinePostProcess::Render(Ref<RenderTexture> src, Ref<RenderTexture> dest)
 	Graphic::SetViewport(0, 0, width, height);
 	Graphic::SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	Graphic::Clear(true, true, true);
-	for (auto& entity : entitys)
+	for (auto& render : renders)
 	{
-		Renderer* render = entity->GetComponent<Renderer>();
-		if (nullptr == render)
-			continue;
 		Ref<Material> mat = _maskMaterial;
-		SkinMeshRenderer* skinPtr = dynamic_cast<SkinMeshRenderer*>(render);
+		Weak<SkinMeshRenderer> skinPtr = DynamicCastWeak(SkinMeshRenderer, render);
 		if (nullptr != skinPtr)
 		{
 			mat = _maskMaterialSkin;

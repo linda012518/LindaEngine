@@ -32,7 +32,8 @@
 
 			void main()
 			{
-				FragColor = texture(mainTexture, uv) * color;
+				vec3 albedo = pow(texture(mainTexture, uv).rgb, vec3(2.2));
+				FragColor = vec4(albedo, 1.0) * color;
 			}
 		}
 	}

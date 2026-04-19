@@ -15,7 +15,7 @@ namespace LindaEditor
 {
 	struct SwitchSelectEntityEditor : public LindaEngine::Event
 	{
-		LindaEngine::Entity* selectionEntity = nullptr;
+		Weak<LindaEngine::Entity> selectionEntity = nullptr;
 	};
 
 	struct PickEntityIDEditor : public LindaEngine::Event
@@ -25,6 +25,6 @@ namespace LindaEditor
 
 	struct SwitchInspectorObjectEditor : public LindaEngine::Event
 	{
-		LindaEngine::LObject* lobject = nullptr;
+		Weak<LindaEngine::LObject> lobject = nullptr;
 	};
 }

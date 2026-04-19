@@ -13,11 +13,11 @@ namespace LindaEngine
 	{
 	public:
 		FrustumVisiblePass();
-		void Render(Camera* camera);
+		void Render(Weak<Camera> camera);
 
 	private:
 		void DrawLightWireframe(LightType type, glm::mat4& model);
-		void CalculateSpotLightMat(glm::mat4& model, Light* light, bool isInner);
+		void CalculateSpotLightMat(glm::mat4& model, Weak<Light> light, bool isInner);
 
 	private:
 		Ref<Material> _cameraMaterial;

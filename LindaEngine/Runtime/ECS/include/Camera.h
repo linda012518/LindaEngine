@@ -11,6 +11,8 @@
 
 namespace LindaEngine
 {
+	struct Ray;
+
 	enum class CameraType
 	{
 		None, PerspectiveCamera, OrthoCamera, CubeCamera, DirectionalCamera, SpotCamera, PointCamera
@@ -56,6 +58,7 @@ namespace LindaEngine
 		std::vector<Ref<PostProcessEffectRenderer>>& GetPostStack() { return _postStack; }
 		bool HasPostProcess() { return _postStack.size() > 0; }
 		glm::vec4& GetClearColor() { return _clearColor; }
+		glm::vec4& GetViewport() { return _viewport; }
 
 		void AddPostProcess(Ref<PostProcessEffectRenderer> postProcess);
 		Ref<PostProcessEffectRenderer> AddPostProcess(std::string postProcess);
@@ -68,6 +71,7 @@ namespace LindaEngine
 		void SetHDR(bool hdr) { _hdrEnable = hdr; }
 		void SetRenderTarget(Ref<RenderTexture> target);
 		void SetClearColor(glm::vec4& color) { _clearColor = color; }
+		void SetViewport(glm::vec4& viewport) { _viewport = viewport; }
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
@@ -75,13 +79,14 @@ namespace LindaEngine
 		virtual void OnImguiRender();
 
 		glm::vec3 ScreenToWorldPosition(glm::vec3& screenPos);
+		Ray ScreenPointToRay(glm::vec2& screenPos);
 
 	protected:
 		static CameraClearType GetClearTypeByString(std::string str);
 		static std::string GetStringByClearType(CameraClearType type);
 
 	public:
-		static Camera* currentRenderCamera;
+		static Weak<Camera> currentRenderCamera;
 
 	protected:
 		glm::mat4 _viewMatrix;
@@ -101,6 +106,7 @@ namespace LindaEngine
 
 		CameraType _cameraType;
 		glm::vec4 _clearColor;
+		glm::vec4 _viewport;
 		CameraClearType _clearType;
 		int _depth;
 		Ref<RenderTexture> _renderTexture;
@@ -110,6 +116,9 @@ namespace LindaEngine
 		Frustum _frustum;
 		std::vector<Ref<PostProcessEffectRenderer>> _postStack;
 		Ref<PostProcessEffectRenderer> _postProcessDirty;
+
+		int _width;
+		int _height;
 	};
 
 	class PerspectiveCamera : public Camera
@@ -121,6 +130,8 @@ namespace LindaEngine
 		PerspectiveCamera(Entity& entity, bool enable = true);
 		virtual ~PerspectiveCamera();
 
+		void Initialize();
+		void Destroy();
 		float GetAspectRatio() { return _aspectRatio; }
 		float GetFOV() { return _fov; }
 
@@ -131,7 +142,7 @@ namespace LindaEngine
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
-		void OnEvent(IEventHandler* sender, int eventCode, Event& eventData);
+		void OnEvent(Weak<IEventHandler> sender, int eventCode, Event& eventData);
 
 		void OnImguiRender();
 
@@ -147,13 +158,15 @@ namespace LindaEngine
 		OrthoCamera(Entity& entity, bool enable = true);
 		virtual ~OrthoCamera();
 
+		void Initialize();
+		void Destroy();
 		const glm::mat4& GetSkyboxProjectMatrix();
 		virtual void MakeProjectionMatrix();
 
 		bool Serialize();
 		bool Deserialize(YAML::Node& node);
 
-		void OnEvent(IEventHandler* sender, int eventCode, Event& eventData);
+		void OnEvent(Weak<IEventHandler> sender, int eventCode, Event& eventData);
 
 		void OnImguiRender();
 
